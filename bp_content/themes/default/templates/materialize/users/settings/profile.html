@@ -1,0 +1,190 @@
+{% extends "/materialize/base.html" %}
+
+<!-- ADD PAGE HEAD ELEMENTS -->
+{% block title %}<title>Configuración » Perfil</title>{% endblock %}
+   
+{% block page_css %}
+	<style shim-shadowdom>
+	    paper-tabs {
+	      background-color: transparent;
+	      color: #fff;
+	      cursor:pointer;
+	    }
+
+	    paper-tabs[noink][nobar] paper-tab.core-selected {
+	      color: #ff6623;      
+	    }
+
+	    paper-tabs::shadow #selectionBar {
+	      background-color: rgba(255, 102, 35, 1);
+	    }
+
+	    paper-tabs paper-tab::shadow #ink {
+	      color: rgba(255, 102, 35, 1);
+	    }
+
+	    paper-tab {
+	      cursor:pointer;
+	    }
+  	</style>
+{% endblock %}
+
+{% block page_components %}
+    <link href="/boilerplate/webcomponents/bower_components/paper-tabs/paper-tabs.html" rel="import">
+{% endblock %}
+
+
+<!-- ADD PAGE BODY ELEMENTS-->
+{% block breadcrums %}
+	<!--breadcrumbs start-->
+    <div id="breadcrumbs-wrapper" class=" grey lighten-3">
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <h5 class="breadcrumbs-title">Perfil</h5>
+            <ol class="breadcrumb">
+                <li><a href="{{ uri_for("materialize-home") }}">Inicio</a></li>
+                <li><a href="{{ uri_for("materialize-settings-profile") }}">Configuración</a></li>
+                <li class="active">Perfil</li>
+            </ol>
+          </div>
+        </div>
+        <paper-tabs id="scrollableTabs" selected="0" scrollable style="margin-left: -20px;background-color: #2A2D41;width: 110%;">
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Perfil</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Hogar</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-cfe") }}', '_top')">Recibo</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Invitados</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-roomies") }}', '_top')">Familia</paper-tab>
+      </paper-tabs>
+      </div>
+    </div>
+    <!--breadcrumbs end-->
+{% endblock %}
+
+{% block page_content %}
+	<div class="section">
+		<div class="container">
+		<div class="row">
+			<div class="col s12 m3 center" style="margin-top:8px;">
+				<form id="user_picture_form" action="/img/upload/" enctype="multipart/form-data" method="post" style="margin-top:15px">
+		                <div class="form-group">
+		                    <label class="controls">
+		                    <span class="col s12" style="color: #ff6623;font-size: 1.1em;font-family: roboto-light;margin-bottom: 10px;">Haz clic para actualizar la imagen.</span>
+		                        {% if has_picture %}
+		                        	<img id="blah" src="/img/" alt="your image" class="circle responsive-img valign" style="max-height:150px;"/>
+		                        {% else %}
+		                        	<img id="blah" src="/{{theme}}/materialize/images/ninja.png" alt="your image" class="circle responsive-img valign" style="max-height:150px;"/>
+		                        {% endif %}
+		                        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+		                        <input class="btn btn-success" type='file' id="picture" name="picture" style="display:none;"/>
+		                    </label>
+		                </div>                      
+		        </form> 
+			</div>
+
+            <div class="col s12 m9">
+	            <div class="">
+	                <div class="row">
+	                  <form class="col s12" id="form_edit_profile" action="{{ url|safe }}" method="post">
+	                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+			            <input type="hidden" name="username" value="{{username}}">
+			            <input type="hidden" name="country" value="">
+			            <input type="hidden" name="tz" value="">
+	                    <div class="row">
+	                      <div class="input-field col s6">
+	                        <input id="name" name="name" type="text" value="{{name}}">
+	                        <label for="name">Nombre</label>
+	                      </div>
+	                    
+	                      <div class="input-field col s6">
+	                        <input id="last_name" name="last_name" type="text" value="{{last_name}}">
+	                        <label for="last_name">Apellido</label>
+	                      </div>
+	                    </div>
+	                    <div class="row">
+	                      <div class="input-field col s6 m4">
+	                        <input id="phone" name="phone" type="tel" value="{{phone}}">
+	                        <label for="phone">Teléfono</label>
+	                      </div>
+	                      <div class="input-field col s6 m4">
+	                        <select id="gender" name="gender">
+	                          {% if gender == '' or gender == 'male' %}
+	                          	<option value="male" selected>Masculino</option>
+	                          	<option value="female">Femenino</option>
+	                          {% else %}
+	                          	<option value="male">Masculino</option>
+	                          	<option value="female" selected>Femenino</option>
+	                          {% endif %}
+	                        </select>
+	                        <label>Sexo</label>
+	                      </div>                        
+	                      <div class="input-field col s6 m4">
+	                        <input id="birth" name="birth" type="date" class="datepicker" value="{{birth}}">
+	                        <label for="birth">Fecha de nacimiento</label>
+	                      </div>
+	                    </div>
+	                    <div class="row">
+	                        <div class="input-field col s12 center">
+	                          <button class="btn cyan waves-effect waves-light center" id="submit_profile_form" >Guardar cambios
+	                            <i class="mdi-content-send right"></i>
+	                          </button>
+	                          <a class="btn-flat dropdown-button waves-effect grey lighten-2 accent-2 white-text center" href="#!" data-activates="dropdown2">Otras opciones<i class="mdi-navigation-arrow-drop-down right"></i></a><ul id="dropdown2" class="dropdown-content" style="width: 217px; position: absolute; top: 36px; left: 397.796875px; opacity: 1; display: none;">
+	                            <li><a href="{{ uri_for("materialize-settings-password") }}" class="-text" style="  font-size: 1em; color: rgb(118, 118, 118);display: block;padding: 10px;">Cambiar contraseña</a>
+	                            </li>
+	                            <li><a href="{{ uri_for("materialize-settings-email") }}" class="-text" style="  font-size: 1em; color: rgb(118, 118, 118);display: block;padding: 10px;">Cambiar email</a>
+	                            </li>
+	                            <li><a href="{{ uri_for("materialize-settings-delete") }}" class="-text" style="  font-size: 1em; color: rgb(210, 210, 210);display: block;padding: 10px;">Eliminar cuenta</a>
+	                            </li>
+	                          </ul>
+	                          
+	                        </div>
+	                    </div>
+	                  </form>
+	                </div>
+	              </div>
+	            </div>
+	          </div>
+	    </div>
+	    </div>
+   	</div>
+{% endblock %}
+
+{% block sidebar_right %}
+{% endblock %}
+
+{% block page_floatings %}
+{% endblock %}
+
+{% block page_footer %}
+{% endblock %}
+
+<!-- ADD PAGE SCRIPT ELEMENTS-->
+{% block page_scripts %}
+	<script type="text/javascript">
+
+		document.querySelector('#submit_profile_form').addEventListener('click', function() { 
+			//document.getElementById("name").value = cleanUpSpecialChars(document.getElementById("name").value);
+            //document.getElementById("last_name").value = cleanUpSpecialChars(document.getElementById("last_name").value);
+            document.getElementById("form_edit_profile").submit()
+		});
+
+		function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#blah').attr('src', e.target.result);
+	                $('#picture').hide();
+	                $('#blah').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	            $( '#user_picture_form' ).submit();
+	        }
+	    }
+	    
+	    $("#picture").change(function(){
+	        readURL(this);
+	    });
+	</script>
+{% endblock %}

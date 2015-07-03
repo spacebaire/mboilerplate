@@ -1,0 +1,714 @@
+{% extends base_layout %}
+
+{% block title %}
+  Alta » Zona
+{% endblock %}
+
+{% block menu_bar %}    
+{% endblock %}
+
+{% block menu_bar_controls %}
+{% endblock %}
+
+{% block mediaCSS %}
+  <style shim-shadowdom>
+    paper-radio-group.custom-radio {
+      float: left;
+    }
+
+    paper-radio-group.custom-radio paper-radio-button::shadow #ink[checked] {
+      color: #ff6623;
+    }
+    
+    paper-radio-group.custom-radio paper-radio-button::shadow #onRadio {
+      background-color: #ff6623;
+    }
+
+    paper-radio-group.custom-radio paper-radio-button[checked]::shadow #offRadio {
+      border-color: #ff6623;
+    }
+    
+    paper-radio-button {
+      display: block;
+    }  
+
+    paper-checkbox.custom-checkbox::shadow #ink[checked] {
+      color: #FBE4BB;
+    }
+
+    paper-checkbox.custom-checkbox::shadow #checkbox.checked {
+      background-color: #ff6623;
+      border-color: #ff6623;
+    }
+
+    .custom-slider paper-slider::shadow #sliderKnobInner,
+    .custom-slider paper-slider::shadow #sliderKnobInner::before,
+    .custom-slider paper-slider::shadow #sliderBar::shadow #activeProgress {
+      background-color: #FF6623;
+    }
+    
+  </style>
+    <link rel="stylesheet" href="/{{ theme }}/css/lib/datepicker.css">
+    <style>
+      .datepicker:before { display:none!important; }  .datepicker:after { display:none!important; }
+    </style>
+{% endblock %}
+
+
+{% block disclaimers %}
+{% endblock %}
+
+{% block content %} 
+    <div class="home_content" style="margin-top:-35px">
+            <h1>
+                Último paso, obtén tu límite de alto consumo (DAC).
+            </h1>
+        <p>
+            Con la siguiente información tendrás tu límite de alto consumo y lograrás compararte mejor con hogares similares de tu área. <br> Tu información es privada, si tienes alguna duda consulta nuestras <a href="{{uri_for("materialize-faq")}}" target="_blank">preguntas frecuentes</a>, <a href="{{uri_for("materialize-tou")}}" target="_blank">términos de uso</a> y <a href="{{uri_for("materialize-privacy")}}" target="_blank">aviso de privacidad</a>.
+        </p>
+        
+
+         <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6 spaced">
+              <div class="card" style="height:auto; min-height: 440px;">
+                  <div class="card-image" style="background: #CF2256;">
+                    <span class="card-title flow-text">Mi zona <a class="desktop-only-sabias yellow-ghost flow-text modal-trigger" style="opacity:0; margin-left:40px;" id="sabiasque" href="#modal1">Sabías que...</a></span>
+                  </div>  
+                  <div class="card-content">
+                    <core-icon icon="maps:place" style="position: absolute;left: 35px;top: -37px;background:transparent; fill:white;" aria-label="my-location" role="img"></core-icon>
+                    <div id="_zipcode_" class="row" style="margin-bottom:0px;">
+                          <paper-input-decorator class="custom" label="Escribe aquí tu código postal" style="max-width: 200px;font-family: roboto-medium;float:left; font-size:14px;" layout="" vertical="">
+                            <input is="core-input" name="_zipcode" id="_zipcode" type="text" placeholder="Escribe aquí tu código postal" onkeyup="setQ(this); passShadow(this);" value="{{zipcode}}" aria-label="Escribe aquí tu código postal">
+                          </paper-input-decorator>                      
+                          <paper-button id="selectColonia" class="inactive menu inactive-ripple inactive-hover" data-activates="ddColonia" onclick="toggleVis('ddColonia');"style="float: left; height: 40px; color: white; min-width: 60%; pointer-events: none;" disabled="" role="button" aria-disabled="">
+                            Colonia<b class="caret"></b>
+                          </paper-button>
+                          <div id="ddColonia" class="dropdown-content" style="margin-top: -15px; border-radius: 5px; max-height: 270px; min-width: 108px; overflow: scroll; top: 75px !important; right: 15px !important; display: none; left: 295.046875px;"></div>                          
+                    </div>
+
+
+                    <div id="nozipcode" class="row" style="display:none; margin-bottom:10px; margin-top:-10px;">
+                        <div class="col-sm-12 col-md-4">
+                          <paper-button id="selectEstado" class="inactive menu inactive-ripple inactive-hover" data-activates="ddEstado" style="float: left; height: 40px; color: rgb(255, 102, 35); min-width: 60%; cursor:pointer;" role="button" onclick="toggleVis('ddEstado');">Estado<b class="caret"></b></paper-button>
+                          <div id="ddEstado" class="dropdown-content" style="margin-top: -30px; border-radius: 5px; max-height: 270px; min-width: 108px; overflow: scroll; top: 75px !important; right: 15px !important; left: 5px; display:none;">
+                            <paper-shadow z="3" style="padding-bottom:2px;">
+                              <ul style="border: 1px solid #FF6623;border-radius: 4px 4px 0px 0px; border-bottom: none;">
+                              <li onclick="changeEstado(this)">Aguascalientes</li>
+                              <li onclick="changeEstado(this)">Baja California</li>
+                              <li onclick="changeEstado(this)">Baja California Sur</li>
+                              <li onclick="changeEstado(this)">Campeche</li>
+                              <li onclick="changeEstado(this)">Chihuahua</li>
+                              <li onclick="changeEstado(this)">Chiapas</li>
+                              <li onclick="changeEstado(this)">Coahuila de Zaragoza</li>
+                              <li onclick="changeEstado(this)">Colima</li>
+                              <li onclick="changeEstado(this)">Distrito Federal</li>
+                              <li onclick="changeEstado(this)">Durango</li>
+                              <li onclick="changeEstado(this)">Guerrero</li>
+                              <li onclick="changeEstado(this)">Guanajuato</li>
+                              <li onclick="changeEstado(this)">Hidalgo</li>
+                              <li onclick="changeEstado(this)">Jalisco</li>
+                              <li onclick="changeEstado(this)">Mexico</li>
+                              <li onclick="changeEstado(this)">Michoacan de Ocampo</li>
+                              <li onclick="changeEstado(this)">Morelos</li>
+                              <li onclick="changeEstado(this)">Nayarit</li>
+                              <li onclick="changeEstado(this)">Nuevo Leon</li>
+                              <li onclick="changeEstado(this)">Oaxaca</li>
+                              <li onclick="changeEstado(this)">Puebla</li>
+                              <li onclick="changeEstado(this)">Queretaro</li>
+                              <li onclick="changeEstado(this)">Quintana Roo</li>
+                              <li onclick="changeEstado(this)">Sinaloa</li>
+                              <li onclick="changeEstado(this)">San Luis Potosi</li>
+                              <li onclick="changeEstado(this)">Sonora</li>
+                              <li onclick="changeEstado(this)">Tabasco</li>
+                              <li onclick="changeEstado(this)">Tamaulipas</li>
+                              <li onclick="changeEstado(this)">Tlaxcala</li>
+                              <li onclick="changeEstado(this)">Veracruz de Ignacio de la Llave</li>
+                              <li onclick="changeEstado(this)">Yucatan</li>
+                              <li onclick="changeEstado(this)">Zacatecas</li>
+                              </ul>
+                            </paper-shadow>
+                          </div>                          
+                        </div>
+                      <div class="col-sm-12 col-md-4">
+                        <paper-button id="selectMunicipio" class="inactive menu inactive-ripple inactive-hover" data-activates="ddMunicipio" style="float: left; height: 40px; color: white; min-width: 60%; pointer-events: none;" disabled="" role="button" aria-disabled="" onclick="toggleVis('ddMunicipio');">Municipio<b class="caret"></b></paper-button>
+                        <div id="ddMunicipio" class="dropdown-content" style="margin-top: -30px; border-radius: 5px; max-height: 270px; max-width: 130px; overflow: scroll; top: 75px !important; right: 15px !important; display: none; left: 0px;"></div>
+                      </div>
+                      <div class="col-sm-12 col-md-4">
+                        <paper-button id="selectColonia2" class="inactive menu inactive-ripple inactive-hover" data-activates="ddColonia2" style="float: left; height: 40px; color: white; min-width: 60%; pointer-events: none;" disabled="" role="button" aria-disabled="" onclick="toggleVis('ddColonia2');">Colonia<b class="caret"></b></paper-button>
+                        <div id="ddColonia2" class="dropdown-content" style="margin-top: -30px; border-radius: 5px; max-height: 270px; min-width: 108px; overflow: scroll; top: 75px !important; right: 15px !important; display: none; left: 0px;"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <a onclick="zipcodeToggle(this)" id="zipcode_control" style="cursor:pointer; color:#8C8C8C; font-size:12px;">No tienes tu código postal o tu colonia no aparece, <span style="color:#428BCA">haz clic aquí.</span></a>
+                        <div id="map" style="margin-top:20px; min-height: 250px; opacity: 0.5; position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(255, 255, 255);"></div>
+                      </div>
+                      <div class="col-sm-12"> 
+                        <p class="flow-text" style="font-size: 11px;margin-bottom: -30px; display:none;" id="map-tip">Si no vives en el polígono marcado, arrastra el marcador hasta tu hogar o el polígono más cercano.</p>
+                      
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 spaced">
+               <div class="card" style="height:auto;">
+                  <div class="card-image" style="background: #CF2256;">
+                    <span class="card-title flow-text">Mi hogar</span>
+                  </div>  
+                  <div class="card-content">
+                    <core-icon icon="home" style="position: absolute;left: 35px;top: -37px;background:transparent; fill:white;"></core-icon>                    
+                    <div class="row" style="margin-bottom:0px;">
+                      <div class="col s12 m12">
+                        <section>                    
+                          <h5 style="text-align:left; color:rgb(165, 165, 165);">Vivo en:</h5>                          
+                          <paper-radio-group selected="{{kind}}" class="custom-radio" id="_kind" onchange="passShadow(this);">
+                            <paper-radio-button name="house" style="float:left;"label="Casa"></paper-radio-button>
+                            <paper-radio-button name="apartment" style="float:left;"label="Departamento"></paper-radio-button>
+                          </paper-radio-group>                          
+                        </section>
+                      </div>
+                      <div class="col s12 m12">
+                        <section>
+                          <h5 style="text-align:left; color:rgb(165, 165, 165); padding-top: 10px; border-top: 1px solid rgba(211, 211, 211, 0.21);">Habitamos:</h5>                          
+                          <paper-radio-group selected="{{num_hab}}" class="custom-radio" id="_num_hab" onchange="passShadow(this);">
+                            <paper-radio-button name="one" style="float:left;"label="1 a 2 personas"></paper-radio-button>
+                            <paper-radio-button name="three" style="float:left;"label="3 a 4 personas"></paper-radio-button>
+                            <paper-radio-button name="five" style="float:left;"label="Más de 5 personas"></paper-radio-button>
+                          </paper-radio-group>
+                        </section>                        
+                      </div>
+                      <div class="col s12 m12">
+                        <section>                    
+                          <h5 style="text-align:left; color:rgb(165, 165, 165); padding-top: 10px; border-top: 1px solid rgba(211, 211, 211, 0.21);">En un espacio:</h5>
+                          <paper-radio-group selected="{{size}}" class="custom-radio" id="_size" onchange="passShadow(this);">
+                            <paper-radio-button name="small" style="float:left;"label="Chico"></paper-radio-button><span class="flow-text" style="margin-left:-15px; font-size:12px; float:left; margin-top:-3px;">(&lt;200m<sup>2</sup>)</span>
+                            <paper-radio-button name="medium" style="float:left;"label="Mediano"></paper-radio-button><span class="flow-text" style="margin-left:-15px; font-size:12px; float:left; margin-top:-3px;">(&lt;400m<sup>2</sup>)</span>
+                            <paper-radio-button name="large" style="float:left;"label="Grande"></paper-radio-button><span class="flow-text" style="margin-left:-15px; font-size:12px; float:left; margin-top:-3px;">(&gt;400m<sup>2</sup>)</span>
+                          </paper-radio-group>                          
+                        </section>
+                      </div>
+                      <div class="col s12 m12">
+                        <section>
+                          <h5 style="text-align:left; color:rgb(165, 165, 165); padding-top: 10px; border-top: 1px solid rgba(211, 211, 211, 0.21);">Tengo paneles solares:
+                          {% if panels > 0 %}
+                            <paper-checkbox id="s_panelsLabel" style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showPanels(this);" checked></paper-checkbox></h5>                     
+                            <div id="solar_panels" style="display:block">                    
+                          {% else %}
+                            <paper-checkbox id="s_panelsLabel" style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showPanels(this);"></paper-checkbox></h5>                     
+                            <div id="solar_panels" style="display:none">
+                          {% endif %}                    
+                          <div><span class="inputLabel" style="margin-top: 3px;font-weight: 200;">Cantidad de paneles solares: <span id="num_panels">{{panels}}</span></span></div>
+                          <paper-slider value="{{panels}}" pin max="40" id="_panels" onchange="passShadow(this);"></paper-slider>    
+
+                          <div><span class="inputLabel" style="margin-top: 3px;font-weight: 200;">Cada uno con capacidad: <span id="cap_panels">{{capacity}}</span> Watts</span></div>
+                          <paper-slider value="{{capacity}}" pin step="10" min="150" max="350" id="_capacity" onchange="passShadow(this);"></paper-slider>
+
+                          <div><span id="capacityLabel" class="inputLabel" style="margin-top: 16px;font-weight: 200;">Instalados desde:</span></div>
+                          <input class="datepicker" name="_since" id="_since" type="date" onchange="passShadow(this)" value="{{since}}" style="color: #1a237e;font-family: roboto-light;padding: 5px;font-size: 12px;width: 225px;border-bottom: 1px solid rgb(255, 102, 35); margin-bottom: 10px;">
+                          </div>
+                        </section> 
+                    </div>                                      
+                  </div>
+                  <div class="card-action" style="margin-bottom:-15px;">
+                      <a onclick="sendForm('form_edit_home')" style="cursor:pointer;">{% trans %}Guardar mis cambios{% endtrans %}</a>
+                      
+                  </div>
+                </div>
+            </div>  
+
+            
+       
+
+            <fieldset>
+              <form id="form_edit_home" action="{{ url|safe }}" method="post">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="text" name="kind" id="kind" value="{{kind}}" hidden>
+                <input type="text" name="num_hab" id="num_hab" value="{{num_hab}}" hidden>
+                <input type="text" name="size" id="size" value="{{size}}" hidden>
+                <input type="text" name="zipcode" id="zipcode" value="{{zipcode}}" hidden>
+                <input type="text" name="ageb" id="ageb" value="{{ageb}}" hidden>
+                <input type="number" name="dacl" id="dacl" value="{{dacl}}" hidden>
+                <input type="text" name="latlng" id="latlng" value="{{latlng}}" hidden>
+                <input type="text" name="neighborhood" id="neighborhood" value="{{neighborhood}}" hidden>
+                <input type="text" name="municipality" id="municipality" value="{{municipality}}" hidden>
+                <input type="text" name="state" id="state" value="{{state}}" hidden>
+                <input type="text" name="region" id="region" value="{{region}}" hidden>
+                <input type="text" name="fee" id="fee" value="{{fee}}" hidden>
+                <input type="text" name="flag" id="flag" value="{{flag}}" hidden>
+                <input type="number" name="panels" id="panels" value="{{panels}}" hidden>
+                <input type="number" name="capacity" id="capacity" value="{{capacity}}" hidden>
+                <input type="text" name="since" id="since" value="{{since}}" hidden>
+              </form>
+            </fieldset>
+          </div>
+<!--           <div class="row" style="margin-top:35px;">
+            <center class="save">
+              <div class="card-action">
+              <a onclick="sendForm('form_edit_home')" style="cursor:pointer;">{% trans %}Guardar mis cambios{% endtrans %}</a>
+            </center>
+          </div> -->
+    </div>
+
+<!-- Modal Structure -->
+<div id="modal1" class="modal" style="max-height:240px">
+  <h4>La zona donde vives</h4><br>
+  <p id="ageb_info" class="flow-text"></p>
+</div>
+<paper-toast id="toastEditHome" text="{% trans %}Por favor ingresa tu código postal y elige una colonia.{% endtrans %}" style="z-index:9999" class="warning" duration="6000" autoclosedisabled></paper-toast>
+
+<!-- Jinja2 Pre-processing -->
+<input id="coords" value="{{latlng}}" hidden>
+<input id="neigh" value="{{neighborhood}}" hidden>
+{% endblock %}
+
+{% block mediaJS %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=drawing,places,panoramio,weather,visualization"></script>
+<script src="http://libs.cartocdn.com/cartodb.js/v3/3.12/cartodb.js"></script>
+<script src="/{{ theme }}/js/lib/bootstrap-datepicker.js"></script>
+<script>
+  var numPanels = document.querySelector('#_panels');
+  numPanels.addEventListener('core-change', function() {
+    document.querySelector('#num_panels').textContent = numPanels.value;
+    document.getElementById('panels').value = numPanels.value;
+  });
+
+  var capPanels = document.querySelector('#_capacity');
+  capPanels.addEventListener('core-change', function() {
+    document.querySelector('#cap_panels').textContent = capPanels.value;
+    document.getElementById('capacity').value = capPanels.value;
+  });
+
+  if(is_Safari && !Modernizr.touch && !Modernizr.inputtypes.date){
+      $('.datepicker').datepicker({
+          format: 'yyyy-mm-dd'
+      }).on('changeDate', function(ev) {
+        document.getElementById('since').value = document.getElementById('_since').value; 
+      });
+  }
+
+  var zipcode,ageb,latlng,neighborhood,municipality,state;
+  var sql = new cartodb.SQL({ user: 'mexico' })
+  var cp,col,edo,mun, latlng, ageb, dacl, region, fee, flag;
+  google.maps.event.addDomListener(window, 'load', initMap);
+  var map, mapOptions, mapCenter = [25.68686156049293,-100.31496082543947], geocoder, marker, _html;
+  
+  var coords = document.getElementById("coords").value.split(",");
+
+  $(document).ready(function(){
+    $('#selectColonia').dropdown();
+    $('.modal-trigger').leanModal();
+  });
+
+  function sendForm(formID){
+    if (cp > 4 && col != ''){
+        setValues();
+        document.getElementById(formID).submit();
+    }else{
+      document.querySelector('#toastEditHome').show();
+    }
+        
+  }
+
+  function showPanels(elem){
+    if(is_Safari){
+      elem = document.getElementById(elem.id);
+      if (!elem.checked){
+         document.getElementById('solar_panels').style.display = 'none';
+         document.getElementById('_panels').value = 0;
+         document.getElementById('panels').value = 0;
+      }else{
+         document.getElementById('solar_panels').style.display = 'block';
+      }
+    }
+    else{
+      if (!elem.checked){
+         document.getElementById('solar_panels').style.display = 'none';
+         document.getElementById('_panels').value = 0;
+         document.getElementById('panels').value = 0;
+      }else{
+         document.getElementById('solar_panels').style.display = 'block';
+      }
+    }
+  }
+
+  function setValues(){
+      document.getElementById("kind").value = document.getElementById("_kind").selected;
+      document.getElementById("num_hab").value = document.getElementById("_num_hab").selected;
+      document.getElementById("size").value = document.getElementById("_size").selected;
+      var cps = cp.toString();
+      while (cps.length < 5){
+        cps = '0' + cps;
+      }
+      document.getElementById("zipcode").value = cps;
+      document.getElementById("neighborhood").value = col;
+      document.getElementById("state").value = edo;
+      document.getElementById("municipality").value = mun;
+      document.getElementById("latlng").value = latlng;
+      document.getElementById("ageb").value = ageb;
+      document.getElementById("dacl").value = dacl;      
+      document.getElementById("region").value = region;      
+      document.getElementById("fee").value = fee;  
+      document.getElementById("flag").value = flag;  
+
+      console.log(document.getElementById("kind").value);
+      console.log(document.getElementById("num_hab").value);
+      console.log(document.getElementById("size").value);
+      console.log(document.getElementById("zipcode").value);
+      console.log(document.getElementById("neighborhood").value);
+      console.log(document.getElementById("state").value);
+      console.log(document.getElementById("municipality").value);
+      console.log(document.getElementById("latlng").value);
+      console.log(document.getElementById("ageb").value);
+      console.log(document.getElementById("dacl").value);      
+      console.log(document.getElementById("region").value);      
+      console.log(document.getElementById("fee").value);  
+      console.log(document.getElementById("flag").value); 
+  }
+
+  function initMap(){
+      mapOptions = {
+        center: new google.maps.LatLng(mapCenter[0], mapCenter[1]),
+        zoom: 13,
+        minZoom:5,
+        zoomControl: false,
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.SMALL,  
+        },
+        mapTypeControl: false,
+        scrollwheel: false,
+        streetViewControl: false,
+        panControl:false,
+        backgroundColor: '#FFF',
+        rotateControl:true,
+        overviewMapControl:true,
+        draggable:false
+      };
+      map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      geocoder = new google.maps.Geocoder();
+      marker = new google.maps.Marker({draggable:true});
+
+      if (coords.length > 1){
+        var myLatlng = new google.maps.LatLng(coords[0],coords[1]);
+        marker.setPosition(myLatlng);
+        map.setOptions({draggable:true, zoomControl:true});
+        map.setCenter(myLatlng);
+        map.setZoom(14);
+        marker.setMap(map);
+        document.getElementById("map").style.opacity = 1.0;
+        document.getElementById("map-tip").style.display = "block";
+        setQ(document.getElementById('_zipcode'), true);
+      }      
+
+      google.maps.event.addListener(marker, 'dragend', function() {
+        map.setCenter(marker.getPosition());
+        loadAgeb(map.getCenter().lat(), map.getCenter().lng());
+      });
+
+  }
+
+  function setQ(element, a){
+    a = typeof a !== 'undefined' ? a : false;
+    var sc = document.getElementById("selectColonia");
+    sc.disabled = true;
+    sc.style.color ="white";
+    if (element.value.length > 4 && element.value.length < 6){
+      var n = "select d_codigo,d_asenta,d_municipio,d_estado,d_tarifa,d_region,d_flag from nacional_codigos_postales where d_codigo = ";
+      var dd = document.getElementById("ddColonia"), html='';
+      
+      n+=element.value;      
+      dd.innerHTML = "";
+      sql.execute(n).done(function(data) {
+        var response;
+        html += '<paper-shadow z="3" style="padding-bottom:2px;"><ul style="border: 1px solid #FF6623;border-radius: 4px 4px 0px 0px; border-bottom: none;">';
+        for (var i = 0; i<data.total_rows;i++){
+          html += '<li onclick="changeContent(this)">'+data.rows[i].d_asenta+'</li>';
+          response = true;
+          sc.disabled = false;
+          sc.style.color ="rgb(255, 102, 35)";
+        }
+
+        if(response)
+          html += '<li onclick="changeContent(this)">OTRA</li>';
+
+        html += '</ul></paper-shadow>';
+        dd.innerHTML = html;
+
+        cp=data.rows[0].d_codigo;
+        if (a) 
+          col = document.getElementById("neigh").value;
+        else
+          col=data.rows[0].d_asenta;
+        mun=data.rows[0].d_municipio;
+        edo=data.rows[0].d_estado;
+        fee=data.rows[0].d_tarifa;
+        region=data.rows[0].d_region;
+        if (data.rows[0].d_flag)
+          flag = 1;
+        else
+          flag = 0;
+        dacl=dacls[fee];
+
+        if (coords.length > 1){
+          loadAgeb(coords[0],coords[1]);
+        }
+        if (document.getElementById("neigh").value != 'False'){
+          var _sc = document.getElementById("selectColonia");
+          _sc.innerHTML = document.getElementById("neigh").value +'<b class="caret"></b>';
+          sc.style.color ="rgb(26, 35, 126)";
+          document.getElementById("zipcode_control").style.display = 'none';
+        }
+
+        if (!response)
+          alert("Ese código postal no existe.");
+
+      }).error(function(errors) {});
+    }else{
+      sc.innerHTML = 'Colonia<b class="caret"></b>';
+      marker.setMap(null);
+      document.getElementById("map-tip").style.display = "none";
+      document.getElementById("map").style.opacity = 0.5;
+      map.setOptions({draggable:false, zoomControl:false});
+      document.getElementById("sabiasque").style.opacity = 0;
+    }
+  }
+
+  function changeContent(element){
+    var sc = document.getElementById("selectColonia");
+    sc.innerHTML = element.innerHTML+'<b class="caret"></b>';
+    sc.style.color ="rgb(26, 35, 126)";
+    col = element.innerHTML;
+    document.getElementById("ddColonia").style.display ="none";
+    updateMapCenter();   
+  }
+
+  function changeEstado(element){
+    var sc = document.getElementById("selectEstado");
+    sc.innerHTML = element.innerHTML+'<b class="caret"></b>';
+    edo = element.innerHTML;
+    document.getElementById("ddEstado").style.display ="none";
+    getMunicipios(edo);       
+  }
+
+  function changeMunicipio(element){
+    var sc = document.getElementById("selectMunicipio");
+    sc.innerHTML = element.innerHTML+'<b class="caret"></b>';
+    mun = element.innerHTML;
+    document.getElementById("ddMunicipio").style.display ="none";
+    getColonias(mun);   
+  }
+
+  function changeColonia(element){
+    var sc = document.getElementById("selectColonia2");
+    sc.innerHTML = element.innerHTML+'<b class="caret"></b>';
+    col = element.innerHTML;
+    document.getElementById("ddColonia2").style.display ="none";
+    var n = "select d_codigo,d_tarifa,d_region,d_flag from nacional_codigos_postales where d_asenta = '" + col + "' and d_estado = '" + edo + "' and d_municipio = '" + mun + "'";
+    sql.execute(n).done(function(data) {
+        cp = data.rows[0].d_codigo;
+        fee=data.rows[0].d_tarifa;
+        region=data.rows[0].d_region;
+        if (data.rows[0].d_flag)
+          flag = 1;
+        else
+          flag = 0;
+        dacl=dacls[fee];
+        updateMapCenter();  
+    });
+    
+  }
+  
+  function getMunicipios(){
+     var n = "select distinct(d_municipio) from nacional_codigos_postales where d_estado = '" + edo + "' order by d_municipio asc";
+     var dd = document.getElementById("ddMunicipio");
+
+     sql.execute(n).done(function(data) {
+        var response;
+        var sc = document.getElementById("selectMunicipio");
+        sc.innerHTML = 'Municipio<b class="caret"></b>';
+        marker.setMap(null);
+        document.getElementById("map-tip").style.display = "none";
+        document.getElementById("map").style.opacity = 0.5;
+        map.setOptions({draggable:false, zoomControl:false});
+        document.getElementById("sabiasque").style.opacity = 0;
+
+        var dc = document.getElementById("selectColonia2");
+        dc.innerHTML = 'Colonia<b class="caret"></b>';
+        var ddc = document.getElementById("ddMunicipio");
+        ddc.innerHTML = '';
+        ddc.style.display == 'none';
+
+        html = '<paper-shadow z="3" style="padding-bottom:2px;"><ul style="border: 1px solid #FF6623;border-radius: 4px 4px 0px 0px; border-bottom: none;">';
+        for (var i = 0; i<data.total_rows;i++){
+          html += '<li onclick="changeMunicipio(this)">'+data.rows[i].d_municipio+'</li>';
+          response = true;
+          sc.disabled = false;
+          sc.style.color ="rgb(255, 102, 35)";
+        }
+        html += '</ul></paper-shadow>';
+        dd.innerHTML = html;
+
+        if (response)
+          dd.style.display = 'block';
+      });
+  }
+
+  function getColonias(){
+     var n = "select distinct(d_asenta) from nacional_codigos_postales where d_municipio = '" + mun + "'  and d_estado = '" + edo + "' order by d_asenta asc";
+     var dd = document.getElementById("ddColonia2");
+     var dc = document.getElementById("selectColonia2");
+     dc.innerHTML = 'Colonia<b class="caret"></b>';
+     var ddc = document.getElementById("ddMunicipio");
+     dd.innerHTML = '';
+     marker.setMap(null);
+     document.getElementById("map-tip").style.display = "none";
+     document.getElementById("map").style.opacity = 0.5;
+     map.setOptions({draggable:false, zoomControl:false});
+     document.getElementById("sabiasque").style.opacity = 0;
+
+
+     sql.execute(n).done(function(data) {
+        var response;
+        var sc = document.getElementById("selectColonia2");
+        html = '<paper-shadow z="3" style="padding-bottom:2px;"><ul style="border: 1px solid #FF6623;border-radius: 4px 4px 0px 0px; border-bottom: none;">';
+        for (var i = 0; i<data.total_rows;i++){
+          html += '<li onclick="changeColonia(this)">'+data.rows[i].d_asenta+'</li>';
+          response = true;
+          sc.disabled = false;
+          sc.style.color ="rgb(255, 102, 35)";
+        }
+        html += '</ul></paper-shadow>';
+        dd.innerHTML = html;
+
+        if (response)
+          dd.style.display = 'block';
+      });
+  }
+
+  function updateMapCenter(){
+    var address = cp + ", " + col + ", " + mun + ", " + edo + ", Mexico";
+    geocoder.geocode( { 'address': address.replace('OTRA,','')}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {       
+        map.setOptions({draggable:true, zoomControl:true});
+        map.setCenter(results[0].geometry.location);
+        map.setZoom(14);
+        marker.setPosition(results[0].geometry.location);
+        marker.setMap(map);
+        document.getElementById("map").style.opacity = 1.0;
+        document.getElementById("map-tip").style.display = "block";
+        loadAgeb(map.getCenter().lat(), map.getCenter().lng());
+      } else {
+        console.log('Geocode was not successful for the following reason: ' + status);
+      }
+    }); 
+  }
+
+  function loadAgeb(lat,lng){
+    latlng = lat + ", " + lng;
+    var _query = "SELECT * FROM "+edos[edo]+"_ageb_urb_pob WHERE ST_Intersects(ST_Buffer(ST_SetSRID(ST_Point("+lng+","+lat+"),4326),0.005),"+edos[edo]+"_ageb_urb_pob.the_geom)";
+    var _tile_style = "#"+edos[edo]+"_ageb_urb_pob{polygon-fill: #FF6600;polygon-opacity: 0.1;line-color: #FF6600;line-width: 1;line-opacity: 1;}";
+
+    cartodb.createLayer(map, {
+      user_name: 'mexico',
+      type: 'cartodb',
+      sublayers: [{
+        sql:  _query,
+        cartocss: _tile_style
+      }]
+    }).addTo(map);
+
+    
+    var pob, viv, hab, luz, ref, tel;
+    sql.execute(_query.replace(".005",".000001")).done(function(data) {
+      for (var i = 0; i<data.total_rows;i++){
+        pob = data.rows[i].pob1;
+        console.log(data.rows[i]);
+        ageb = data.rows[i].cvegeo;
+      } 
+
+      sql.execute(_query.replace(".005",".000001").replace(/pob/g,"eco")).done(function(data) {
+          var temp = 0;
+          for (var i = 0; i<data.total_rows;i++){
+            //console.log(data.rows[i]);
+          } 
+
+          sql.execute(_query.replace(".005",".000001").replace(/pob/g,"viv")).done(function(data) {
+            for (var i = 0; i<data.total_rows;i++){
+              viv = data.rows[i].viv0;
+              hab = data.rows[i].viv2_r;
+              luz = data.rows[i].viv14;
+              ref = data.rows[i].viv26;
+              tel = data.rows[i].viv32;
+              //console.log(data.rows[i]);
+            }
+            viv = Math.round(viv*(hab/100));
+            ref = Math.round(ref/viv*100);
+            tel = Math.ceil(tel/viv*100);
+            _html =  'Según el INEGI, se caracteriza por tener un total de <span style="color: #ff2633;">' + addCommas(pob) + '</span> habitantes, distribuidos en <span style="color: #ff2633;">' + addCommas(viv) + '</span> hogares. De esos hogares, <span style="color: #ff2633;">' + addCommas(luz) + '</span> cuentan con luz eléctrica y características similares a tu hogar. Por ejemplo, <span style="color: #ff2633;">' + addCommas(tel) + '%</span> cuentan con televisor y <span style="color: #ff2633;">' + addCommas(ref) + '%</span> cuentan con refrigerador.';
+            document.getElementById("ageb_info").innerHTML = _html;
+            document.getElementById("sabiasque").style.opacity = 1;
+          }).error(function(errors) {});  
+
+      }).error(function(errors) {});
+
+    }).error(function(errors) {});
+  }
+
+  function zipcodeToggle(element){
+    if (element.innerHTML.indexOf('No tienes') != -1){
+      element.innerHTML = 'Para volver a la vista anterior, <span style="color:#428BCA">haz clic aquí.</span>';
+      document.getElementById("_zipcode_").style.display = 'none';
+      document.getElementById("nozipcode").style.display = 'block';
+    } else{
+      element.innerHTML = 'No tienes tu código postal o tu colonia no aparece, <span style="color:#428BCA">haz clic aquí.</span>';
+      document.getElementById("nozipcode").style.display = 'none';
+      document.getElementById("_zipcode_").style.display = 'block';
+
+    }
+
+  }
+
+  var edos = Array();
+  edos['Aguascalientes']= 'ags';
+  edos['Baja California']= 'bc';
+  edos['Baja California Sur']= 'bcs';
+  edos['Campeche']= 'camp';
+  edos['Chihuahua']= 'chih';
+  edos['Chiapas']= 'chis';
+  edos['Coahuila de Zaragoza']= 'coah';
+  edos['Colima']= 'col';
+  edos['Distrito Federal']= 'df';
+  edos['Durango']= 'dgo';
+  edos['Guerrero']= 'gro';
+  edos['Guanajuato']= 'gto';
+  edos['Hidalgo']= 'hgo';
+  edos['Jalisco']= 'jal';
+  edos['Mexico']= 'mex';
+  edos['Michoacan de Ocampo']= 'mich';
+  edos['Morelos']= 'mor';
+  edos['Nayarit']= 'nay';
+  edos['Nuevo Leon']= 'nl';
+  edos['Oaxaca']= 'oax';
+  edos['Puebla']= 'pue';
+  edos['Queretaro']= 'qro';
+  edos['Quintana Roo']= 'qroo';
+  edos['Sinaloa']= 'sin';
+  edos['San Luis Potosi']= 'slp';
+  edos['Sonora']= 'son';
+  edos['Tabasco']= 'tab';
+  edos['Tamaulipas']= 'tamps';
+  edos['Tlaxcala']= 'tlax';
+  edos['Veracruz de Ignacio de la Llave']= 'ver';
+  edos['Yucatan']= 'yuc';
+  edos['Zacatecas']= 'zac';
+
+  var dacls = Array();
+  dacls['1'] = 3000;
+  dacls['1A'] = 3600;
+  dacls['1B'] = 4800;
+  dacls['1C'] = 10200;
+  dacls['1D'] = 12000;
+  dacls['1E'] = 24000;
+  dacls['1F'] = 24600;
+</script>
+{% endblock %}

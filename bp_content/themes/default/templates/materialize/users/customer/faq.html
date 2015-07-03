@@ -1,0 +1,153 @@
+{% extends "/materialize/base.html" %}
+{% block title %}<title>Invictus » FAQ</title>{% endblock %}
+
+
+   
+{% block page_css %}
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link href="/{{theme}}/materialize/css/prism.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="/{{theme}}/materialize/css/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="/{{theme}}/css/lib/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Raleway|Open+Sans' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+        blockquote {  border-left: 5px solid #ff6623!important; cursor: pointer;}
+        .fixed-action-btn {display: none!important;}
+    </style>
+{% endblock %}
+
+
+{% block page_components %}
+    <link href="/boilerplate/webcomponents/bower_components/core-icon-button/core-icon-button.html" rel="import">
+    <link href="/boilerplate/webcomponents/bower_components/core-collapse/core-collapse.html" rel="import">
+    <link href="/boilerplate/webcomponents/bower_components/paper-icon-button/paper-icon-button.html" rel="import">
+{% endblock %}
+    
+
+
+{% block breadcrums %}
+    <!--breadcrumbs start-->
+    <div id="breadcrumbs-wrapper" class=" grey lighten-3">
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <h5 class="breadcrumbs-title">Preguntas frecuentes</h5>
+            <ol class="breadcrumb">
+                <li><a href="{{uri_for("materialize-home")}}">Inicio</a></li>
+                <li><a href="#">Dudas</a></li>
+                <li class="active">Preguntas frecuentes</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--breadcrumbs end-->
+{% endblock %}
+
+{% block page_content %}
+    <div class="section">
+        <p class="caption">Si la respuesta que buscas no aparece, <a href="{{ uri_for("materialize-contact") }}">contáctanos</a>. 
+            <core-icon-button id="foldTop" icon="unfold-more" title="contraer todo" style="float:right;padding:5px; color: #fff; background: #FF6522;border-radius: 30px;" onclick="toggleAll(this)"></core-icon-button>
+        </p>
+        <div class="divider"></div>
+            <blockquote class="orange-quote" onclick="document.querySelector('#collapse1').toggle();">¿Cómo funciona la Plataforma?</blockquote>
+            <core-collapse id="collapse1" class="faq">
+            <div class="content">
+              <p class="flow-text">
+                Invictus es una herramienta diseñada para ayudarte a analizar, monitorear y reducir tu consumo de energía eléctrica; apoyándose en tu recibo de luz y el historial de tu consumo. Nuestro equipo de expertos se fundamenta en tu ubicación geográfica dentro del país y en el comportamiento de tu consumo para poder brindarte consejos de alto valor para ti.
+              </p>
+            </div>
+            </core-collapse>
+
+            <blockquote class="orange-quote" onclick="document.querySelector('#collapse2').toggle();">¿Porqué es gratis?</blockquote>
+            <core-collapse id="collapse2" class="faq">
+            <div class="content">
+              <p class="flow-text">
+                Invictus es gratis (hoy y para siempre) porque tenemos la firme convicción que cada uno debe entender su consumo y su gasto de electricidad.
+              </p>
+            </div>
+            </core-collapse>
+
+            <blockquote class="orange-quote" onclick="document.querySelector('#collapse3').toggle();">¿De dónde obtenemos tus datos?</blockquote>
+            <core-collapse id="collapse3" class="faq">
+            <div class="content">
+              <p class="flow-text">
+                Al darnos acceso a tu recibo de la CFE podemos obtener tu historial de consumo y gasto desde los servicios web de la CFE. Este proceso es totalmente legal, nunca tendrás problema alguno con la CFE y puedes revocarnos con total seguridad tu acceso en el momento que lo desees. 
+              </p>
+            </div>
+            </core-collapse>
+
+            <blockquote class="orange-quote" onclick="document.querySelector('#collapse4').toggle();">¿Qué vamos hacer de tus datos y porqué accesar a tu recibo?</blockquote>
+            <core-collapse id="collapse4" class="faq">
+            <div class="content">
+              <p class="flow-text">
+                Tus datos son confidenciales y privados, eres la única persona que tiene derecho a compartirlos. Para nosotros, tus datos son importantes para generar mayor precisión en nuestras recomendaciones de ahorro para ti. Recuerda que entre más ahorres tú, más eficientes seremos todos.
+              </p>
+            </div>
+            </core-collapse>
+
+            <blockquote class="orange-quote" onclick="document.querySelector('#collapse5').toggle();">¿Porqué te conviene invitar amigos y vecinos?</blockquote>
+            <core-collapse id="collapse5" class="faq">
+            <div class="content">
+              <p class="flow-text">
+                Más usuarios somos en la plataforma mejores comparaciones podremos lograr. Nuestro objetivo es compararte con casas similares que tienen el mismo perfil de consumo y que viven cerca de ti para que sepas detectar con mayor facilidad tus áreas de oportunidad. Asimismo, al invitar a más personas a usar Invictus estás incrementando la posibilidad de compartir mejores prácticas y promover la innovación colectiva.
+              </p>
+            </div>
+            </core-collapse>
+
+            <blockquote class="orange-quote" onclick="document.querySelector('#collapse6').toggle();">¿Porqué brindarnos información sobre tu hogar?</blockquote>
+            <core-collapse id="collapse6" class="faq">
+            <div class="content">
+              <p class="flow-text">
+                Estando seguro que tu información es totalmente confidencial, entre más información nos proporcionas sobre tu hogar, tus aparatos y la manera de cómo los usas, mejor precisión podemos darte en cuanto al desglose de tu consumo y así brindarte de manera cada vez más personalizada las acciones que te harán ahorrar más.
+              </p>
+            </div>
+            </core-collapse>
+
+            <blockquote class="orange-quote" onclick="document.querySelector('#collapse7').toggle();">¿Qué supuestos utilizamos para detallar tu consumo cuando conocemos poco sobre tu hogar?</blockquote>
+            <core-collapse id="collapse7" class="faq">
+            <div class="content">
+              <p class="flow-text">
+                Para ser precisos, utilizamos estadísticas de la <a href="http://www.conuee.gob.mx/wb/">CONUEE</a> que enriquecemos con variables de temperatura y una experiencia interna adquirida con +3 años de diagnóstico energético en hogares mexicanos. Asimismo, buscamos generar cada vez mayor inteligencia contextual sobre ti para poder ayudarte cada vez más y mejor.
+              </p>
+            </div>
+            </core-collapse>
+
+            <blockquote class="orange-quote" onclick="document.querySelector('#collapse8').toggle();">¿Qué pasa si mi tarifa no es residencial?</blockquote>
+            <core-collapse id="collapse8" class="faq">
+            <div class="content">
+              <p class="flow-text">
+                Si tienes una tarifa HM u OM en tu hogar, puedes utilizar la plataforma de manera normal, la mayoría de las secciones aplican para ti. Sin embargo, continuamos trabajando para adecuar todo a las diferentes tarifas. 
+              </p>
+            </div>
+            </core-collapse>
+
+    </div>
+{% endblock %}
+
+{% block page_footer %}
+{% endblock %}
+
+{% block page_scripts %}
+<script type="text/javascript">
+    function toggleAll(element){
+        var id;
+        if (element.icon == 'unfold-less'){
+            document.getElementById('foldTop').icon = 'unfold-more';
+            for (var i = 1, j = document.querySelectorAll('.faq').length; i <= j; i++){
+                id = "#collapse" + i;
+                if (document.querySelector(id).opened){
+                    document.querySelector(id).toggle();
+                }
+            }
+        }else{
+            document.getElementById('foldTop').icon = 'unfold-less';
+            for (var i = 1, j = document.querySelectorAll('.faq').length; i <= j; i++){
+                id = "#collapse" + i;
+                if (!document.querySelector(id).opened){
+                    document.querySelector(id).toggle();
+                }
+            }           
+        }
+    }
+</script>
+{% endblock %}

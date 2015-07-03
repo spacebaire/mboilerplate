@@ -1,0 +1,96 @@
+{% extends "/materialize/base.html" %}
+{% block title %}<title>Invictus » Contáctanos</title>{% endblock %}
+
+
+   
+{% block page_css %}
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link href="/{{theme}}/materialize/css/prism.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="/{{theme}}/materialize/css/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="/{{theme}}/css/lib/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Raleway|Open+Sans' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+        blockquote {  border-left: 5px solid #ff6623!important; cursor: pointer;}
+        .fixed-action-btn {display: none!important;}
+    </style>
+{% endblock %}
+
+{% block breadcrums %}
+    <!--breadcrumbs start-->
+    <div id="breadcrumbs-wrapper" class=" grey lighten-3">
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <h5 class="breadcrumbs-title">Contáctanos</h5>
+            <ol class="breadcrumb">
+                <li><a href="{{uri_for("materialize-home")}}">Inicio</a></li>
+                <li><a href="#">Dudas</a></li>
+                <li class="active">Contáctanos</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--breadcrumbs end-->
+{% endblock %}
+
+
+{% block page_content %}
+    <div class="section">
+
+        <form id="form_contact" action="{{ url|safe }}" method="post">
+            <input type="hidden" name="exception" value="{{ exception|e }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <div class="col s12 m12 l6">
+                    <div class="card-panel">
+                      <div class="row">
+                        <form class="col s12">
+                          <div class="row">
+                            <div class="input-field col s12">
+                              <i class="mdi-action-account-circle prefix" style="color: #00BCD4;"></i>
+                              <input id="name" name="name" type="text" class="validate" value="{{name}}">
+                              <label for="first_name">Nombre</label>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="input-field col s12">
+                              <i class="mdi-communication-email prefix" style="color: #00BCD4;"></i>
+                              <input id="email" name="email" type="email" class="validate" value="{{email}}">
+                              <label for="email">Email</label>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="input-field col s12">
+                              <i class="mdi-action-question-answer prefix" style="color: #00BCD4;"></i>
+                              <textarea id="message" name="message" class="materialize-textarea validate" length="120"></textarea>
+                              <label for="message">Mensaje</label>
+                            </div>
+                            <div class="row">
+                              <div class="input-field col s12">
+                                <button class="btn cyan waves-effect waves-light right orange" style="margin-right:20px;" type="submit" name="action">Enviar
+                                  <i class="mdi-content-send right"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                </div>
+        </form>
+
+
+
+
+    </div>
+{% endblock %}
+
+
+
+{% block page_footer %}
+{% endblock %}
+
+
+
+{% block page_scripts %}
+{% endblock %}
