@@ -1,0 +1,616 @@
+/* MAIN HTML BODY STYLING */
+paper-toast{
+  width: 100%;
+  left:0px;
+  text-align:center;
+  letter-spacing: 1.5px;
+  font-size: 16px!important;
+}
+body:before {
+    content: "";
+    position: fixed;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+    -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+    box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+    z-index: 100;
+}
+
+body {
+	font-family: Roboto;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #333;
+	background-color: #f0f0f0;
+}
+
+.shifter .shifter-handle { 
+  float: right; margin: -6px 0 0; 
+}
+.shifter .shifter-navigation { 
+  background: #f9f9f9; padding: 12px 18px 12px; margin-top:64px;
+}
+.shifter .shifter-navigation a { 
+  color: #777; display: block; font-size: 18px; margin-left:20px!important; color: #777;display: block;font-size: 14px;
+  margin: 0 0 0px;padding: 8px;border-radius: 3px;text-decoration: none;
+}
+.shifter .shifter-navigation a:hover {
+  background: rgba(119, 119, 119, 0.17); 
+}
+
+#main-menu{
+  position: fixed;top: 0px;left: 0px;width: 100%;height: 10px;-webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.5);-moz-box-shadow: 0px 0px 10px rgba(0,0,0,.5);box-shadow: 0px 0px 10px rgba(0,0,0,.5);
+  z-index: 100;height: 64px; margin: 0px 0px 0px 0px; position: fixed;width: 100%;border-bottom: 1px solid #f9f9f9;background: white;overflow: hidden;
+}
+
+.disclaimer{
+  position: fixed;
+  top: 50px;
+  width: 101%;
+  height: auto;
+  left: 0px;
+  text-align: center;
+  z-index: 999;
+  background: rgb(205, 55, 53);
+  color: white;
+  font-size: 14px;
+  font-family: roboto-thin;
+  letter-spacing: 1.5px; 
+  padding:10px;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(240, 240, 240);
+}
+
+.success{
+  background: rgb(92, 184, 92)!important;
+}
+
+/* MAIN PAGE CONTENT */
+
+#page{
+  background: #f0f0f0;
+}
+
+.card {
+  background: white;
+  height: 496px;
+}
+
+.card .card-image{
+  min-height: 50px; 
+  background:#253238;
+}
+
+.card .card-image span.card-title{
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bold;
+  position:absolute;
+  bottom: -6px!important;
+  left: 55px!important;
+}
+
+.card .card-content{
+  position:relative;
+}
+
+.card .card-content p {
+letter-spacing: .1px;
+}
+
+.card .card-action a{
+  border: 1px solid;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #FF6623;
+  margin-left: 15px!important;
+  margin-right: 0px!important;
+}
+
+.card .card-action a:hover {
+  color: white!important;
+  background: #ff6623;
+  text-decoration: none;
+}
+
+.spaced{
+  margin-bottom:30px;
+}
+
+.save .card-action a{
+  border: 1px solid;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #FF6623;
+}
+
+.save .card-action a:hover {
+  color: white!important;
+  background: #ff6623;
+  text-decoration: none;
+}
+
+.indicator{
+font-size: 22px;
+font-family: roboto-medium;
+color: #607687;
+}
+
+.indicator-title{
+  font-family: roboto-light;
+margin-bottom: -2px;
+color: #607687;
+font-size: 14px;
+}
+
+.hc-tooltip{
+  color:rgb(151,161,172);
+  font-family:roboto-light;
+}
+
+#not_logged{
+	background: url(http://mihogarinvictus.appspot.com/default/img/background.png) no-repeat;
+	background-position: 0% 0%;
+	background-size: 100%;
+	position: absolute; top:0px; left:0px; height:40%; width: 100%; z-index: 2;
+  height: 100%;
+}
+
+.g-recaptcha{transform: scale(0.8); -webkit-transform: scale(0.8);}
+
+.legal{
+  color:#BDBDBF;
+  margin-bottom: -5px;
+}
+
+.orange-quote{
+	border-left: 5px solid rgba(255, 101, 34, 0.43);
+	color: #FF6522;
+  cursor: pointer;
+}
+
+.bignbold{
+  font-size: 42px!important;
+  font-family: roboto-black!important;
+  padding: 20px!important;
+  text-shadow: 2px 2px rgba(0, 0, 0, 0.15);
+}
+
+nav{
+  z-index: 2;
+}
+
+a.yellow-ghost{
+  color: #ffab40; 
+  text-transform:uppercase; 
+  padding: 8px 12px;
+  border: 1px solid;
+  border-radius: 4px;  
+} 
+
+a.yellow-ghost:hover{
+  color: white!important;
+  background: #ff6623;
+  text-decoration: none;
+}
+
+.navbar-default .navbar-nav>li>a.orange-ghost{
+  color: #ff6623!important; 
+  padding:5px!important; 
+  border: 1px solid!important;
+  border-radius: 4px!important;  
+}
+.navbar-default .navbar-nav>li>a.orange-ghost:hover{
+  text-decoration: none!important; 
+  background: rgba(255, 102, 35, 0.2)!important;
+}
+
+a.white-ghost{
+  color: #fff; 
+  padding:5px; 
+  border: 3px solid;
+  border-radius: 4px; 
+  background: rgba(0,0,0,0.1);
+  text-shadow: 1px 1px 2px rgba(98, 98, 98, 0.4);
+}
+a.white-ghost:hover{
+  text-decoration: none; 
+  color: #fff; 
+  background: rgba(0, 0, 0, 0.05);
+}
+
+a.orange-ghost{
+  color: #ff6623!important; 
+  padding:5px!important; 
+  border: 1px solid!important;
+  border-radius: 4px!important;  
+}
+a.orange-ghost:hover{
+  text-decoration: none!important; 
+  color: #ff6623!important; 
+  background: rgba(255, 102, 35, 0.2)!important;
+}
+.multiple_emails-input{
+  max-width: 320px!important;
+  font-size: 12px!important;
+  color: #1A237E!important;
+  border: 1px solid #FF6623!important;
+  border-radius: 4px!important;
+}
+
+h5.appliances{
+  font-size: 18px;
+  font-family: roboto-thin;
+  text-align: center;
+  color: rgb(97, 97, 97);
+  padding-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+
+/*
+
+TOOLBAR 
+ELEMENTS
+
+*/
+
+nav{
+	background-color: rgb(255, 255, 255)!important;
+	border-color: #e7e7e7!important;
+	position: fixed;
+	top:0;
+}
+
+.menu-a{
+	color: #777777;
+	text-decoration: none!important;
+}
+
+paper-button.menu {
+  margin-top:5px;
+}
+
+paper-button.active {
+  color: rgb(255, 102, 35);
+  font-weight: 300;
+}
+
+paper-button.active-hover:hover {
+  background: rgba(255, 102, 35, 0.2);
+}
+
+paper-button.active-hover-logged:hover {
+	background: rgba(255, 102, 35, 0.2);
+	height:72px;
+}
+
+paper-button.active-ripple::shadow #ripple {
+  color: rgb(255, 102, 35);
+}
+
+paper-button.inactive {
+  color: #777;
+  font-weight: 300;
+}
+
+paper-button.inactive-hover:hover {
+  background: rgba(119, 119, 119, 0.17);
+  height:72px;
+}
+
+paper-button.inactive-ripple::shadow #ripple {
+  color: #777;
+}
+
+paper-button.register {
+  color: #fff;
+  background:#0D1A47;	
+}
+
+paper-button.register-hover:hover {
+  font-weight: bold;
+}
+
+paper-button.register-ripple::shadow #ripple {
+  color: rgba(255, 255, 255, 0.61);
+}
+
+.glyphicon.menu{
+	margin-top: -5px;
+	margin-right: 5px;
+}
+
+paper-toast{
+	margin-bottom: 10px;
+	background: #272727;
+}
+
+paper-toast.danger{
+	background: #ff2626;
+	
+}
+paper-toast.warning{
+	background: #F99D1C;
+	
+}
+paper-toast.info{
+	background: #00a9ff;
+	
+}
+paper-toast.success{
+	background: #2dcc70;
+}
+paper-toast.action{
+	background: #0054CC;
+}
+
+.toast-additionals{
+	position: absolute;
+	bottom: 20px;
+	text-align: right;
+	width: 100%;
+	right: 2%;
+	cursor: pointer;
+	display: none;
+}
+/*
+
+HOME WITHOUT 
+USER LOGIN
+
+*/
+.mycard{
+	background: white;
+	height: auto;
+    position: relative;
+/*    margin: 16px;*/
+    border-radius: 2px;
+	display: inline-block;
+	z-index: 10;
+	min-height: 300px;
+
+}
+
+.mycard.full {
+    min-width: 280px;
+    max-width: 1300px;
+    width: 95%;
+    
+}
+
+.mycard.half {
+    min-width: 280px;
+    max-width: 630px;
+    width: 46%;
+}
+
+.mycardcontent{
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 15px;
+}
+
+.mycardcontent h1{
+	color: #1A237E; 
+  font-family: lato; 
+  margin-top: 12px;
+  font-size: 20px;
+  margin-left: 5px;
+  margin-bottom: 20px;
+}
+
+paper-fab.home {
+  position: absolute;
+  bottom: -27px;
+  right: 1em;
+  z-index: 10;
+  margin-right: 1%;
+  background:#fff; 
+  color: #1A237E;
+}
+paper-fab.mini {
+  bottom: -20px;
+}
+
+paper-shadow {
+	background: white;
+	border-radius: 3px;
+}
+
+.custom /deep/ ::-webkit-input-placeholder {
+  color: rgb(255, 102, 35);
+}
+
+.custom /deep/ ::-moz-placeholder {
+  color: rgb(255, 102, 35);
+}
+
+.custom /deep/ :-ms-input-placeholder {
+  color: rgb(255, 102, 35);
+}
+
+.custom /deep/ .label-text,
+.custom /deep/ .error {
+  color: rgb(255, 102, 35);
+}
+
+.custom /deep/ .unfocused-underline {
+  background-color: rgb(255, 102, 35);
+}
+
+.custom[focused] /deep/ .floated-label .label-text {
+  color: #0D1A47;
+}
+
+.custom /deep/ .focused-underline {
+  background-color: #0D1A47;
+}
+
+.custom /deep/ .cursor {
+  background-color: #1a237e;
+}
+
+.custom.invalid /deep/ .floated-label .label-text,
+.custom /deep/ .error {
+  color: #f06292;
+}
+
+.custom.invalid /deep/ .focused-underline,
+.custom.invalid /deep/ .cursor {
+  background-color: #f06292;
+}
+
+.custom {
+  color: #1a237e;
+  font-family: roboto-light;
+  padding: 5px;
+  font-size: 12px;
+  width: 200px;
+}
+/*
+
+HOME WITH 
+USER LOGIN
+
+*/
+.home_content{
+	text-align: center;
+	font-family: roboto;
+   /*margin-top: 35px;*/
+}
+
+.home_content p{
+  font-family: roboto-light;
+  letter-spacing: 0.25px
+}
+
+/*==========  FONTS  ==========*/
+@font-face {font-family: "Roboto-Black"; src: url(../fonts/Roboto-Black.ttf) ;}
+@font-face {font-family: "Roboto-BlackItalic"; src: url(../fonts/Roboto-BlackItalic.ttf);}
+@font-face {font-family: "Roboto-Bold"; src: url(../fonts/Roboto-Bold.ttf);}
+@font-face {font-family: "Roboto-BoldItalic"; src: url(../fonts/Roboto-BoldItalic.ttf);}
+@font-face {font-family: "Roboto-Italic"; src: url(../fonts/Roboto-Italic.ttf);}
+@font-face {font-family: "Roboto-Light"; src: url(../fonts/Roboto-Light.ttf);}
+@font-face {font-family: "Roboto-LightItalic"; src: url(../fonts/Roboto-LightItalic.ttf);}
+@font-face {font-family: "Roboto-Medium"; src: url(../fonts/Roboto-Medium.ttf);}
+@font-face {font-family: "Roboto-MediumItalic"; src: url(../fonts/Roboto-MediumItalic.ttf);}
+@font-face {font-family: "Roboto-Regular"; src: url(../fonts/Roboto-Regular.ttf);}
+@font-face {font-family: "Roboto-Thin"; src: url(../fonts/Roboto-Thin.ttf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(../fonts/Roboto-ThinItalic.ttf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(../fonts/BryantPro-Bold.otf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(../fonts/BryantPro-Light.otf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(../fonts/BryantPro-Medium.otf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(../fonts/BryantPro-Regular.otf);}
+@font-face {font-family: 'weather'; src: url('../fonts/weather.otf'); font-weight: normal; font-style: normal;}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v11/8qcEw_nrk_5HEcCpYdJu8BTbgVql8nDJpwnrE27mub0.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v11/MDadn8DQ_3oT6kvnUq_2r_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+/*
+
+#weather {
+  width: 100px;
+  margin: 0px auto;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+i {
+  color: blue;
+  font-family: weather;
+  font-size: 100px;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.0;
+}
+
+.icon-0:before { content: ":"; }
+.icon-1:before { content: "p"; }
+.icon-2:before { content: "S"; }
+.icon-3:before { content: "Q"; }
+.icon-4:before { content: "S"; }
+.icon-5:before { content: "W"; }
+.icon-6:before { content: "W"; }
+.icon-7:before { content: "W"; }
+.icon-8:before { content: "W"; }
+.icon-9:before { content: "I"; }
+.icon-10:before { content: "W"; }
+.icon-11:before { content: "I"; }
+.icon-12:before { content: "I"; }
+.icon-13:before { content: "I"; }
+.icon-14:before { content: "I"; }
+.icon-15:before { content: "W"; }
+.icon-16:before { content: "I"; }
+.icon-17:before { content: "W"; }
+.icon-18:before { content: "U"; }
+.icon-19:before { content: "Z"; }
+.icon-20:before { content: "Z"; }
+.icon-21:before { content: "Z"; }
+.icon-22:before { content: "Z"; }
+.icon-23:before { content: "Z"; }
+.icon-24:before { content: "E"; }
+.icon-25:before { content: "E"; }
+.icon-26:before { content: "3"; }
+.icon-27:before { content: "a"; }
+.icon-28:before { content: "A"; }
+.icon-29:before { content: "a"; }
+.icon-30:before { content: "A"; }
+.icon-31:before { content: "6"; }
+.icon-32:before { content: "1"; }
+.icon-33:before { content: "6"; }
+.icon-34:before { content: "1"; }
+.icon-35:before { content: "W"; }
+.icon-36:before { content: "1"; }
+.icon-37:before { content: "S"; }
+.icon-38:before { content: "S"; }
+.icon-39:before { content: "S"; }
+.icon-40:before { content: "M"; }
+.icon-41:before { content: "W"; }
+.icon-42:before { content: "I"; }
+.icon-43:before { content: "W"; }
+.icon-44:before { content: "a"; }
+.icon-45:before { content: "S"; }
+.icon-46:before { content: "U"; }
+.icon-47:before { content: "S"; }
+
+#weather h2 {
+  margin: 0 0 8px;
+  color: black;
+  font-size: 50px;
+  font-weight: 300;
+  text-align: center;
+  text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
+}
+*/
+/*==========  FONTS  ==========*//*
+@font-face {font-family: "Roboto-Black"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-Black.ttf) ;}
+@font-face {font-family: "Roboto-BlackItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-BlackItalic.ttf);}
+@font-face {font-family: "Roboto-Bold"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-Bold.ttf);}
+@font-face {font-family: "Roboto-BoldItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-BoldItalic.ttf);}
+@font-face {font-family: "Roboto-Italic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-Italic.ttf);}
+@font-face {font-family: "Roboto-Light"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-Light.ttf);}
+@font-face {font-family: "Roboto-LightItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-LightItalic.ttf);}
+@font-face {font-family: "Roboto-Medium"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-Medium.ttf);}
+@font-face {font-family: "Roboto-MediumItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-MediumItalic.ttf);}
+@font-face {font-family: "Roboto-Regular"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-Regular.ttf);}
+@font-face {font-family: "Roboto-Thin"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-Thin.ttf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/Roboto-ThinItalic.ttf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/BryantPro-Bold.otf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/BryantPro-Light.otf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/BryantPro-Medium.otf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(http://mihogarinvictus.appspot.com/default/fonts/BryantPro-Regular.otf);}*/

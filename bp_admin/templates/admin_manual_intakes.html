@@ -1,0 +1,336 @@
+{% extends 'admin_base.html' %}
+
+{% block header_title %}
+    {% trans %}Manual Intakes{% endtrans %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+  <center style="font-size:12px">
+    <div class="col-sm-12">
+        <div style="margin-bottom:15px;">
+          <span>
+            <span id="del_Label" style="display:block;">
+              Escribe 'SI' si quieres eliminar los campos:
+              <input id = "delete" type="text" style="text-align: center;width: 240px;margin:6px;" value='no' placeholder="no">
+            </span>
+          </span>
+        </div>
+        <div style="margin-bottom:15px;">
+          <span>
+            <span id="homeid_Label" style="display:block;">
+              ID del hogar de usuario:
+              <input id="_homeid" type="text" style="text-align: center;width: 240px;margin:6px;">
+            </span>
+          </span>
+        </div>
+
+        <div style="margin-bottom:15px; position:relative">
+          <span>
+            <span id="cfe_error_Label" style="display:block;">
+              CFE Error Type:
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">domiciliated</button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" style="right:0px">
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="passDD(this)" id="domiciliated">domiciliated</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="passDD(this)" id="none">none</a></li>
+                </ul>
+              </div>
+            </span>
+          </span>
+        </div>
+
+        <div style="margin-bottom:15px;">
+            <span>
+              AÑO DE CONSUMO
+              <select id="year" name="year" style="display:block; width:160px;"></select>
+            </span>
+        </div>
+
+
+        <!-- MONTHS -->
+        <div style="margin-bottom:15px;">
+            <span>
+              Diciembre
+              <paper-checkbox is="core-input" name="dic_" id="dic_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+              <span id="dic_Label" class="inputLabel" style="display:none;">
+                <input id = "dic_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value="-12-" >
+                Dia del Mes:
+                <input type="number" style="margin:6px" id = "dic-Day" value="15" min="1" max="31">                
+                Consumo Kwh:
+                <input id = "dic_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+                Consumo $$$:
+                <input id = "dic_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+              </span>
+          </span>
+        </div>
+        <div style="margin-bottom:15px;">
+          <span>
+              Noviembre
+              <paper-checkbox is="core-input" name="nov_" id="nov_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+              <span id="nov_Label" class="inputLabel" style="display:none;">
+                <input id = "nov_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-11-">
+                Dia del Mes:
+                <input type="number" style="margin:6px" style="margin:6px" id = "nov-Day" value="15" min="1" max="30">                
+                Consumo Kwh:
+                <input id = "nov_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+                Consumo $$$:
+                <input id = "nov_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+              </span>
+          </span>
+        </div>
+      <div style="margin-bottom:15px;">
+          <span>
+            Octubre
+            <paper-checkbox is="core-input" name="oct_" id="oct_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+            <span id="oct_Label" class="inputLabel" style="display:none;">
+              <input id = "oct_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-10-">
+                Dia del Mes:
+                <input type="number" style="margin:6px" id = "oct-Day" value="15" min="1" max="31">                
+              Consumo Kwh:
+              <input id = "oct_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+              Consumo $$$:
+              <input id = "oct_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+            </span>
+          </span>
+      </div>
+      <div style="margin-bottom:15px;">
+          <span>
+            Septiembre
+            <paper-checkbox is="core-input" name="sep_" id="sep_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+            <span id="sep_Label" class="inputLabel" style="display:none;">
+              <input id = "sep_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-09-">
+                Dia del Mes:
+                <input type="number" style="margin:6px" id = "sep-Day" value="15" min="1" max="30">                
+              Consumo Kwh:
+              <input id = "sep_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+              Consumo $$$:
+              <input id = "sep_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+            </span>
+          </span>
+      </div>
+      <div style="margin-bottom:15px;">
+        <span>
+          Agosto
+          <paper-checkbox is="core-input" name="ago_" id="ago_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+          <span id="ago_Label" class="inputLabel" style="display:none;">
+            <input id = "ago_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-08-">
+                Dia del Mes:
+                <input type="number" style="margin:6px" id = "ago-Day" value="15" min="1" max="31">                
+            Consumo Kwh:
+            <input id = "ago_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+            Consumo $$$:
+            <input id = "ago_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+          </span>
+        </span>
+      </div>
+      <div style="margin-bottom:15px;">
+        <span>
+          Julio
+          <paper-checkbox is="core-input" name="jul_" id="jul_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+          <span id="jul_Label" class="inputLabel" style="display:none;">
+            <input id = "jul_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-07-">
+                Dia del Mes:
+                <input type="number" style="margin:6px" id = "jul-Day" value="15" min="1" max="31">                
+            Consumo Kwh:
+            <input id = "jul_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+            Consumo $$$:
+            <input id = "jul_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+          </span>
+        </span>
+      </div>
+      <div style="margin-bottom:15px;">
+        <span>
+          Junio
+          <paper-checkbox is="core-input" name="jun_" id="jun_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+          <span id="jun_Label" class="inputLabel" style="display:none;">
+            <input id = "jun_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-06-">
+                Dia del Mes:
+                <input type="number" style="margin:6px" id = "jun-Day" value="15" min="1" max="30">                
+            Consumo Kwh:
+            <input id = "jun_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+            Consumo $$$:
+            <input id = "jun_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+          </span>
+        </span>
+      </div>
+      <div style="margin-bottom:15px;">
+        <span>
+          Mayo
+        <paper-checkbox is="core-input" name="may_" id="may_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+        <span id="may_Label" class="inputLabel" style="display:none;">
+          <input id = "may_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-05-">
+          Dia del Mes:
+          <input type="number" style="margin:6px" id = "may-Day" value="15" min="1" max="31">                
+
+          Consumo Kwh:
+          <input id = "may_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+          Consumo $$$:
+          <input id = "may_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+        </span>
+      </span>
+      </div>
+      <div style="margin-bottom:15px;">
+        <span>
+          Abril
+        <paper-checkbox is="core-input" name="abr_" id="abr_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+        <span id="abr_Label" class="inputLabel" style="display:none;">
+          <input id = "abr_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-04-">
+            Dia del Mes:
+            <input type="number" style="margin:6px" id = "abr-Day" value="15" min="1" max="30">                
+          Consumo Kwh:
+          <input id = "abr_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+          Consumo $$$:
+          <input id = "abr_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+        </span>
+      </span>
+      </div>
+      <div style="margin-bottom:15px;">
+        <span>
+          Marzo
+        <paper-checkbox is="core-input" name="mar_" id="mar_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+        <span id="mar_Label" class="inputLabel" style="display:none;">
+          <input id = "mar_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-03-">
+          Dia del Mes:
+          <input type="number" style="margin:6px" id = "mar-Day" value="15" min="1" max="31">                
+          Consumo Kwh:
+          <input id = "mar_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+          Consumo $$$:
+          <input id = "mar_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+        </span>
+      </span>
+      </div>
+      <div style="margin-bottom:15px;">
+        <span>
+          Febrero
+        <paper-checkbox is="core-input" name="feb_" id="feb_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+        <span id="feb_Label" class="inputLabel" style="display:none;">
+          <input id = "feb_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-02-">
+          Dia del Mes:
+          <input type="number" style="margin:6px" id = "feb-Day" value="15" min="1" max="29">                
+          Consumo Kwh:
+          <input id = "feb_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+          Consumo $$$:
+          <input id = "feb_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+        </span>
+      </span>
+      </div>
+      <div style="margin-bottom:15px;">
+        <span>
+          Enero
+        <paper-checkbox is="core-input" name="ene_" id="ene_" for style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showAntig(this);" value="off"></paper-checkbox>
+        <span id="ene_Label" class="inputLabel" style="display:none;">
+          <input id = "ene_D" type="text" style="text-align:center; max-width:40%; margin:6px;" hidden="true" value= "-01-">
+          Dia del Mes:
+          <input type="number" style="margin:6px" id = "ene-Day" value="15" min="1" max="31">                
+          Consumo Kwh:
+          <input id = "ene_K" type="text" style="text-align: center;width: 240px;margin:6px;">
+          Consumo $$$:
+          <input id = "ene_M" type="text" style="text-align: center;width: 240px;margin:6px;">
+        </span>
+      </span>
+      </div>
+
+      <button onclick="makeArr()" class="btn btn-default" style="padding:10px;">Guardar cambios</button>
+
+    </div>
+  </center>
+</div>
+
+
+
+<paper-toast id="toastEditAppliances" text="{% trans %}Oops, ¿te faltó llenar algún campo?{% endtrans %}" style="z-index:9999" class="warning" duration="6000" autoclosedisabled></paper-toast>
+<form id="form_edit_intakes" action="/admin/intakes/" method="post">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+<input class="focused required form-control" name="dates" id="dates" type="text" hidden>
+<input class="focused required form-control" name="kwh" id="kwh" type="text" hidden>
+<input class="focused required form-control" name="money" id="money" type="text" hidden>
+<input class="focused required form-control" name="homeid" id="homeid" type="text" hidden>
+<input class="focused required form-control" name="erase" id="erase" type="text" hidden>
+<input class="focused required form-control" name="cfe_error" id="cfe_error" type="text" value="domiciliated" hidden>
+</form>
+
+
+
+{% endblock %}
+
+
+
+{% block mediaJS %}
+
+<script>
+    var myDate = new Date();
+    var year = myDate.getFullYear();
+    var x = document.getElementById("year");
+    for(var i = year; i > 2000; i--){
+      var option = document.createElement("option");
+      option.text = i;
+      x.add(option);
+    }
+
+
+    var xy = document.getElementsByClassName('inputLabel');
+    var D = [];
+    var K = [];
+    var M = [];
+    
+    function showAntig(element){
+        var label_id = element.id + "Label";
+        if (element.checked){
+            document.getElementById(label_id).style.display = "block";
+        }else{
+            document.getElementById(label_id).style.display = "none";
+        }        
+    }
+    
+    function makeArr(){
+        D = [];
+        K = [];
+        M = [];
+
+        var e = document.getElementById("year");
+        var strUser = e.options[e.selectedIndex].value;
+
+
+        for (var i=0,j=xy.length; i<j; i++){
+            if (xy[i].style.display != 'none') {
+                
+                for (x = 0, y= xy[i].children.length; x<y; x++){
+                    
+                    if (xy[i].children[x].id.search('_D') != -1) {
+                       var month = xy[i].children[x].id.substring(0, xy[i].children[x].id.indexOf("_"));
+                       D.push(strUser + xy[i].children[x].value + document.getElementById( month + "-Day").value );
+                    }else if (xy[i].children[x].id.search('_K') != -1) {
+                        K.push(xy[i].children[x].value);
+                    }else if (xy[i].children[x].id.search('_M') != -1) {
+                        M.push(xy[i].children[x].value);
+                    }                
+                
+                }
+            
+            }
+        }
+        dataSend();
+    }
+    
+    function dataSend(){        
+        document.getElementById('dates').value = JSON.stringify(D.reverse());
+        document.getElementById('kwh').value = JSON.stringify(K.reverse());
+        document.getElementById('money').value = JSON.stringify(M.reverse());
+        document.getElementById('homeid').value = JSON.stringify(document.getElementById('_homeid').value) || -1;
+        document.getElementById('erase').value = JSON.stringify(document.getElementById('delete').value);
+        document.getElementById('form_edit_intakes').submit();
+
+    }    
+
+    function passDD(elem){
+        document.getElementById('cfe_error').value = JSON.stringify(elem.id);
+        document.getElementById('dropdownMenu1').innerHTML = elem.id;
+
+    }
+
+</script>
+
+{% endblock %}

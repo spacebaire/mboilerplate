@@ -1,0 +1,740 @@
+{% extends base_layout %}
+{% block title %}
+FAQ
+{% endblock %}
+
+	{% block mediaCSS %}
+			<link href="/default/css/landing-page.css" rel="stylesheet">
+			<link href="/default/css/lib/font-awesome.min.css" rel="stylesheet" type="text/css">
+			<link href='http://fonts.googleapis.com/css?family=Raleway|Open+Sans' rel='stylesheet' type='text/css'>
+
+			<style>
+			    #zenbox_tab{display: none!important;}
+
+				.form-group{
+				  margin-bottom:1px!important;
+				}
+				.custom-landing{
+				  border: 1px solid #D5D5D5;
+				  max-width: 300px;
+				  border-radius: 4px;
+				  font-family: open sans;
+				  font-weight: lighter;
+				  padding: 5px;
+				  font-size: 12px;
+				  width: 200px;
+
+				}
+				.custom-landing /deep/ ::-webkit-input-placeholder {
+				  color: #3b4b54;
+				}
+
+				.custom-landing /deep/ ::-moz-placeholder {
+				  color: #3b4b54;
+				}
+
+				.custom-landing /deep/ .label-text,
+				.custom-landing /deep/ .error {
+				  color: #3b4b54;
+				}
+
+				.custom-landing /deep/ .unfocused-underline {
+				  background-color: #d5d5d5;
+				}
+
+				.custom-landing[focused] /deep/ .floated-label .label-text {
+				  color: #3b4b54;
+				}
+
+				.custom-landing /deep/ .focused-underline {
+				  background-color: #3b4b54;
+				}
+
+				.custom-landing /deep/ .cursor {
+				  background-color: #3b4b54;
+				}
+
+				.custom-landing.invalid /deep/ .floated-label .label-text,
+				.custom-landing /deep/ .error {
+				  color: #f06292;
+				}
+
+				.custom-landing.invalid /deep/ .focused-underline,
+				.custom-landing.invalid /deep/ .cursor {
+				  background-color: #f06292;
+				}
+
+				.topnav, .topnavScrolled{
+						background: rgba(42, 45, 64, 0.9)!important;
+	  					border-bottom: none;
+	  					transition: all 0.7s ease-in;
+	  					-webkit-transition: all 0.7s ease-in;
+					  }
+				a.small-landing-ghost{
+					
+					font-family:open sans!important; 
+					font-weight:600!important; 
+					margin-top:6px;
+					font-size: 12px;
+					padding-left: 20px!important;
+					padding-right: 20px!important;
+					padding-top: 8px!important;
+					padding-bottom: 8px!important;
+					margin-left: 18px;
+					cursor:pointer; 
+					border-radius:40px!important;
+					color: white!important;
+					border: 1px solid #ff6623;
+				    text-transform: uppercase;
+					background: rgba(255, 102, 35, 0.5);
+				}
+				a.small-landing-ghost:hover{
+					text-decoration: none;
+					color: #fff;
+					background: rgba(255, 102, 35, 0.7)!important;
+					transition: all 0.2s ease-in;
+  					-webkit-transition: all 0.2s ease-in;
+				}
+
+				.intro-header {
+				    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+				    padding-bottom: 50px;
+				    text-align: center;
+				    color: #f8f8f8;
+				    background: url(/default/img/landing/1824.png) no-repeat center center;
+				    background-size: cover;
+				    margin-top:-50px;
+				}
+
+				.banner {
+				    padding: 100px 0;
+				    color: #f8f8f8;
+				    background: #2A2D40; /*url(../img/banner-bg.jpg) no-repeat center center;*/
+				    background-size: cover;
+				    height: auto;
+				}
+
+				.banner h2 {
+				    margin: 0;
+				    /*text-shadow: 2px 2px 3px rgba(0,0,0,0.6);*/
+				    /*font-size: 3em;*/
+				}
+
+				.banner ul {
+				    margin-bottom: 0;
+				}
+
+				.banner-social-buttons {
+				    float: right;
+				    margin-top: 0;
+				}
+
+				.banner-li{
+				    font-family: raleway;
+					font-weight: lighter;
+					font-size: 16px;
+				}
+
+				footer {
+				    padding: 50px 0;
+				    background-color: #f8f8f8;
+				}
+
+				p.copyright {
+				    margin: 15px 0 0;
+				}
+				
+				/* Default media css from landing template ----------- */
+				@media(max-width:767px) {
+					.intro-header {
+					    background: url(/default/img/landing/768.png) no-repeat center center;
+					      background-size: cover;
+					}
+				}
+
+				@media(max-width:1199px) {
+					.intro-header {
+					    background: url(/default/img/landing/1224.png) no-repeat center center;
+					      background-size: cover;
+					}
+				}
+
+
+				    @media only screen
+				    and (max-width: 767px){
+					    .intro-header{
+					    	background: url(/default/img/landing/768.png) no-repeat center center;
+					    	  background-size: cover;
+
+					    }
+
+				    }
+
+				    /* iPads (portrait and landscape) ----------- */
+				    @media only screen 
+				    and (min-device-width : 768px) 
+				    and (max-device-width : 1024px) {
+				      /* Styles */
+				     .intro-header{
+					    	background: url(/default/img/landing/1224.png) no-repeat center center;
+  							background-size: cover;
+					    }
+				    }
+
+				    /* iPads (landscape) ----------- */
+				    @media only screen 
+				    and (min-device-width : 768px) 
+				    and (max-device-width : 1024px) 
+				    and (orientation : landscape) {
+				      /* Styles */
+				      .intro-header{
+					    	background: url(/default/img/landing/1224.png) no-repeat center center;
+							  background-size: cover;
+					    }
+				    }
+
+				    /* iPads (portrait) ----------- */
+				    @media only screen 
+				    and (min-device-width : 768px) 
+				    and (max-device-width : 1024px) 
+				    and (orientation : portrait) {
+				      /* Styles */
+				      .intro-header{
+					    	background: url(/default/img/landing/1224.png) no-repeat center center;
+							  background-size: cover;
+					    }
+				    }
+
+				    /* Desktops and laptops ----------- */
+				    @media only screen 
+				    and (min-width : 1224px) {
+				      /* Styles */
+					     .intro-header{
+						    	background: url(/default/img/landing/1824.png) no-repeat center center;
+								  background-size: cover;
+						    }
+
+						 a.small-landing-ghost{
+						 	  padding-left: 50px!important;
+	 						  padding-right: 50px!important;
+						 }
+						a.action-button{
+						  padding-top: 20px!important;
+						  padding-bottom: 20px!important;
+						  padding-left: 100px!important;
+						  padding-right: 100px!important;
+						}
+				    }
+
+				    /* Large screens ----------- */
+				    @media only screen 
+				    and (min-width : 1824px) {
+				      /* Styles */
+				      .intro-header{
+					    	background: url(/default/img/landing/1824.png) no-repeat center center;
+							  background-size: cover;
+					    }
+					    a.small-landing-ghost{
+					 	  padding-left: 50px!important;
+ 						  padding-right: 50px!important;
+					 	}
+						a.action-button{
+						  padding-top: 20px!important;
+						  padding-bottom: 20px!important;
+						  padding-left: 100px!important;
+						  padding-right: 100px!important;
+						}
+
+				    }
+
+
+			</style>
+	{% endblock %}
+
+	{% block main_body %}		
+			<!-- Navigation -->
+			    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation" >
+			        <div class="container">
+			            <!-- Brand and toggle get grouped for better mobile display -->
+			            <div class="navbar-header">
+			                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			                    <span class="sr-only">Toggle navigation</span>
+			                    <span class="icon-bar"></span>
+			                    <span class="icon-bar"></span>
+			                    <span class="icon-bar"></span>
+			                </button>
+			                <a class="navbar-brand"href="{{uri_for("materialize-landing")}}"><img src="/{{ theme }}/img/invictus-naranja.png" height="40px" style="margin-top:-10px"></a>
+			            </div>
+			            <!-- Collect the nav links, forms, and other content for toggling -->
+			            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			                <ul class="nav navbar-nav navbar-right">
+			                    <li>
+			                        <a href="http://blog.invictus.mx/" style="font-family:open sans; font-size:12px; color:white;font-weight: lighter; text-transform:uppercase;">Blog</a>
+			                    </li>
+			                    <li>
+			                        <a data-toggle="modal" data-target="#login" class="small-landing-ghost">Ingresar</a>
+			                    </li>
+			                    <li>
+			                        <a data-toggle="modal" data-target="#register" class="small-landing-ghost">Crea tu cuenta</a>
+			                    </li>
+			                </ul>
+			            </div>
+			            <!-- /.navbar-collapse -->
+			        </div>
+			        <!-- /.container -->
+			    </nav>
+
+
+			    <!-- Header -->
+			    <a name="about"></a>
+			    <div class="intro-header" style="background:#f0f0f0!important">
+			        <div class="container">
+			            <div class="row">
+			                <div class="col-sm-10 col-md-10 col-lg-10 col-md-offset-1 col-sm-offset-1" style="margin-top:-14%;">
+			                    <div class="intro-message">
+			                        <div class="modal-content" style="background:rgba(255,255,255,0.92)">
+								      		<center>
+												<div class="row">
+														<div class="mycard" style="background:transparent;">
+															<div class="mycardcontent" style="text-align: justify;">
+																<center style="margin-bottom:80px;"><h1>Preguntas frecuentes</h1></center>
+
+																<div class="row">
+																	<paper-icon-button icon="chevron-left" style="color: #FF6522; float:left;padding:5px; " onclick="window.open('{{ uri_for("home") }}', '_top')"></paper-icon-button>
+																	<core-icon-button id="foldTop" icon="unfold-more" title="contraer todo" style="float:right;padding:5px; color: #fff; background: #FF6522;border-radius: 30px;" onclick="toggleAll(this)"></core-icon-button>
+																</div>
+																
+
+																	  <blockquote class="orange-quote" onclick="document.querySelector('#collapse1').toggle();">¿Cómo funciona la Plataforma?</blockquote>
+																	  <core-collapse id="collapse1" class="faq">
+																	    <div class="content">
+																	      <p class="flow-text">
+																	      	Invictus es una herramienta diseñada para ayudarte a analizar, monitorear y reducir tu consumo de energía eléctrica; apoyándose en tu recibo de luz y el historial de tu consumo. Nuestro equipo de expertos se fundamenta en tu ubicación geográfica dentro del país y en el comportamiento de tu consumo para poder brindarte consejos de alto valor para ti.
+																	      </p>
+																	    </div>
+																	  </core-collapse>
+																	  
+																	  <blockquote class="orange-quote" onclick="document.querySelector('#collapse2').toggle();">¿Porqué es gratis?</blockquote>
+																	  <core-collapse id="collapse2" class="faq">
+																	    <div class="content">
+																	      <p class="flow-text">
+																	      	Invictus es gratis (hoy y para siempre) porque tenemos la firme convicción que cada uno debe entender su consumo y su gasto de electricidad.
+																	      </p>
+																	    </div>
+																	  </core-collapse>
+
+																	  <blockquote class="orange-quote" onclick="document.querySelector('#collapse3').toggle();">¿De dónde obtenemos tus datos?</blockquote>
+																	  <core-collapse id="collapse3" class="faq">
+																	    <div class="content">
+																	      <p class="flow-text">
+																	      	Al darnos acceso a tu recibo de la CFE podemos obtener tu historial de consumo y gasto desde los servicios web de la CFE. Este proceso es totalmente legal, nunca tendrás problema alguno con la CFE y puedes revocarnos con total seguridad tu acceso en el momento que lo desees. 
+																	      </p>
+																	    </div>
+																	  </core-collapse>
+
+																	  <blockquote class="orange-quote" onclick="document.querySelector('#collapse4').toggle();">¿Qué vamos hacer de tus datos y porqué accesar a tu recibo?</blockquote>
+																	  <core-collapse id="collapse4" class="faq">
+																	    <div class="content">
+																	      <p class="flow-text">
+																	      	Tus datos son confidenciales y privados, eres la única persona que tiene derecho a compartirlos. Para nosotros, tus datos son importantes para generar mayor precisión en nuestras recomendaciones de ahorro para ti. Recuerda que entre más ahorres tú, más eficientes seremos todos.
+																	      </p>
+																	    </div>
+																	  </core-collapse>
+
+																	  <blockquote class="orange-quote" onclick="document.querySelector('#collapse5').toggle();">¿Porqué te conviene invitar amigos y vecinos?</blockquote>
+																	  <core-collapse id="collapse5" class="faq">
+																	    <div class="content">
+																	      <p class="flow-text">
+																	      	Más usuarios somos en la plataforma mejores comparaciones podremos lograr. Nuestro objetivo es compararte con casas similares que tienen el mismo perfil de consumo y que viven cerca de ti para que sepas detectar con mayor facilidad tus áreas de oportunidad. Asimismo, al invitar a más personas a usar Invictus estás incrementando la posibilidad de compartir mejores prácticas y promover la innovación colectiva.
+																	      </p>
+																	    </div>
+																	  </core-collapse>
+
+																	  <blockquote class="orange-quote" onclick="document.querySelector('#collapse6').toggle();">¿Porqué brindarnos información sobre tu hogar?</blockquote>
+																	  <core-collapse id="collapse6" class="faq">
+																	    <div class="content">
+																	      <p class="flow-text">
+																	      	Estando seguro que tu información es totalmente confidencial, entre más información nos proporcionas sobre tu hogar, tus aparatos y la manera de cómo los usas, mejor precisión podemos darte en cuanto al desglose de tu consumo y así brindarte de manera cada vez más personalizada las acciones que te harán ahorrar más.
+																	      </p>
+																	    </div>
+																	  </core-collapse>
+
+																	  <blockquote class="orange-quote" onclick="document.querySelector('#collapse7').toggle();">¿Qué supuestos utilizamos para detallar tu consumo cuando conocemos poco sobre tu hogar?</blockquote>
+																	  <core-collapse id="collapse7" class="faq">
+																	    <div class="content">
+																	      <p class="flow-text">
+																	      	Para ser precisos, utilizamos estadísticas de la <a href="http://www.conuee.gob.mx/wb/">CONUEE</a> que enriquecemos con variables de temperatura y una experiencia interna adquirida con +3 años de diagnóstico energético en hogares mexicanos. Asimismo, buscamos generar cada vez mayor inteligencia contextual sobre ti para poder ayudarte cada vez más y mejor.
+																	      </p>
+																	    </div>
+																	  </core-collapse>
+
+																	  <blockquote class="orange-quote" onclick="document.querySelector('#collapse8').toggle();">¿Qué pasa si mi tarifa no es residencial?</blockquote>
+																	  <core-collapse id="collapse8" class="faq">
+																	    <div class="content">
+																	      <p class="flow-text">
+																	      	Si tienes una tarifa HM u OM en tu hogar, puedes utilizar la plataforma de manera normal, la mayoría de las secciones aplican para ti. Sin embargo, continuamos trabajando para adecuar todo a las diferentes tarifas. 
+																	      </p>
+																	    </div>
+																	  </core-collapse>
+																	
+																
+
+																<div class="row">
+																	<paper-icon-button icon="chevron-left" style="color: #FF6522; float:left;padding:5px; " onclick="window.open('{{ uri_for("home") }}', '_top')"></paper-icon-button>
+																	<core-icon-button id="foldBottom" icon="unfold-more" title="contraer todo" style="float:right;padding:5px; color: #fff; background: #FF6522;border-radius: 30px;" onclick="toggleAll(this)"></core-icon-button>
+																</div>
+
+															</div>
+														</div>
+												</div>
+										</center>
+								    </div>
+
+			                    </div>
+			                </div>
+			            </div>
+
+			        </div>
+			        <!-- /.container -->
+
+			    </div>
+			    <!-- /.intro-header -->
+
+
+			    {% if messages|safe %}
+			            {% for message in messages %}
+			        <paper-toast id="toast" text="{{ message[0]|safe }}" style="z-index:9999" class="{{ message[1]|safe }}" duration="6000" autoclosedisabled></paper-toast>
+			        <div id="toast-additionals" class="toast-additionals"></div>
+			            {% endfor %}
+			        <script>
+			          setTimeout(function(){
+			            while(typeof document.querySelector('#toast') == "undefined"){}
+			            
+			            var toast = document.querySelector('#toast');
+			            var toast_additionals = document.getElementById('toast-additionals');
+			            var resendIndex = toast.text.search('resend')
+			            if ( resendIndex > 0 ){
+			              //this is the case when resend-activation-link is sent
+			              // 1: Add this text as html to toast additionals
+			              toast_additionals.innerHTML = '<a href="/'+toast.text.substr(resendIndex).replace(/ /g,'/')+'/"><p>Haz clic aquí para reenviarte el correo de activación.</p><p>Tip: El link anterior ya no funcionará.</p></a>';
+			              // 2: Trim this text from toast
+			              toast.text = toast.text.substr(0, resendIndex-1);             
+			            }
+			            toast.show();
+			            toast_additionals.style.display = 'block';
+			          
+			          },500)
+			        </script>
+			        {% endif %} 
+
+			    
+			    
+			        <div class="banner" style="margin-top:-50px; padding-bottom: 15px!important;">
+
+			        <div class="container">
+			            <hr style="border-top: 1px solid #565B7A;margin-top: -60px;">
+
+			            <div class="row" style="margin-bottom:0px;">
+			            	<div class="col-md-2 col-sm-6">
+			            		<div class="row" style="margin-bottom:5px;"><img src="/default/img/invictus-naranja.png" height="40" alt=""></div>
+			            		<div class="row"><a target="_blank" href="/tou" style="color:#565B7A;">Términos y condiciones</a></div>
+			            	</div>
+			            	<div class="col-md-2 col-md-offset-1 col-sm-6" style="margin-top:4px; margin-bottom:20px;">
+			            		<div class="row" style="margin-bottom:5px;color:white;">MENU</div>
+			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="http://blog.invictus.mx/blog/2014/12/20/equipoinvictus" style="color:#565B7A;">Nosotros</a></div>
+			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="http://blog.invictus.mx/fundacion/" style="color:#565B7A;">Fundación</a></div>
+			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="http://blog.invictus.mx/qubit/" style="color:#565B7A;">Qubit</a></div>
+			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="http://blog.invictus.mx" style="color:#565B7A;">Blog</a></div>
+			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="{{ uri_for("mat-contact")}}" style="color:#565B7A;">Contacto</a></div>
+			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" data-toggle="modal" data-target="#login" style="color:#565B7A; cursor:pointer;">Ingresar</a></div>
+			            	</div>
+			            	<div class="col-md-3 col-md-offset-4 col-sm-12">
+			            		<div class="row" style="color:white">SUSCRÍBETE A NUESTRO BLOG</div>
+			            		<div class="row" style="margin-bottom:0px;">
+			            			<!-- Begin MailChimp Signup Form -->
+										<div id="mc_embed_signup">
+										<form action="//invictus.us9.list-manage.com/subscribe/post?u=0e2779921253c5f087dbcbd19&amp;id=2b3a4b2c9e" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+										    <div id="mc_embed_signup_scroll">
+												<div class="mc-field-group">
+														<input type="email" value="" name="EMAIL" class="required email" placeholder="Email" id="mce-EMAIL" style="float: left; max-width: 50%;background: #1F212F;  border-radius: 4px 0px 0px 4px;padding-left: 12px;  border: 1px solid #1f212f;">
+														<input type="submit" value="Enviar" name="subscribe" id="mc-embedded-subscribe" class="button" style="float: left; max-width: 50%;background: #ff6623;border-radius: 0px 4px 4px 0px;padding: 5px;border: none;padding-left: 12px;padding-right: 13px;">
+												</div>
+												<div id="mce-responses" class="clear">
+													<div class="response" id="mce-error-response" style="display:none"></div>
+													<div class="response" id="mce-success-response" style="display:none"></div>
+												</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+											    <div style="position: absolute; left: -5000px;"><input type="text" name="b_0e2779921253c5f087dbcbd19_2b3a4b2c9e" tabindex="-1" value=""></div>
+											    <div class="clear"></div>
+										    </div>
+										</form>
+										</div>
+
+									<!--End mc_embed_signup-->
+			            		</div>
+			            		<div class="row" style="color:white">¿Eres proveedor? <a href="/contact" target="_blank" style="color:#ff6623">Contáctanos</a></div>
+			            		<div class="row">
+			            			<ul class="list-inline">
+			                        <li>
+			                            <a href="/contact/" title="Contáctanos" target="_blank">
+			                              <img alt="Contáctanos" title="Contáctanos" border="0" src="/default/img/landing/mail.png" height="20px" onmouseover="this.src='/default/img/landing/mail_hover.png'" onmouseout="this.src='/default/img/landing/mail.png'" style="display:block;margin:auto">
+			                            </a>
+			                        </li>
+			                        <li>
+			                            <a href="http://twitter.com/invictusmx" title="Comparte en Twitter" target="_blank">
+			                              <img alt="Comparte en Twitter" title="Comparte en Twitter" border="0" src="/default/img/landing/tw.png" height="20px" onmouseover="this.src='/default/img/landing/tw_hover.png'" onmouseout="this.src='/default/img/landing/tw.png'" style="display:block;margin:auto">
+			                            </a>
+			                        </li>
+			                        <li>
+			                            <a href="http://www.facebook.com/wwwinvictusmx" title="Comparte en Facebook" target="_blank">
+			                              <img alt="Comparte en Facebook" border="0" title="Invictus Facebook" src="/default/img/landing/fb.png" height="20px" onmouseover="this.src='/default/img/landing/fb_hover.png'" onmouseout="this.src='/default/img/landing/fb.png'" style="display:block;margin:auto">
+			                            </a>
+			                        </li>
+			                        <li>
+			                            <a href="https://www.linkedin.com/company/3577170?trk=tyah&trkInfo=tarId%3A1422386950602%2Ctas%3Ainvictus.mx%2Cidx%3A2-1-2" title="Ver en LinkedIn" target="_blank">
+			                              <img alt="Ver en LinkedIn" border="0" title="Ver en LinkedIn" src="/default/img/landing/in.png" height="20px" onmouseover="this.src='/default/img/landing/in_hover.png'" onmouseout="this.src='/default/img/landing/in.png'" style="display:block;margin:auto">
+			                            </a>
+			                        </li>
+			                    </ul>
+			            		</div>
+			            	</div>
+			            </div>
+
+			            <div class="row" style="">
+			                <div class="col-lg-12" style="text-align:center;">
+			                    
+			                    <p class="copyright text-muted small" style="margin-top:30px;margin-bottom:-15px;">Copyright &copy; Invictus 2015. Todos los derechos reservados</p>
+			                    <p class="copyright text-muted small" >Made from real <core-tooltip label="¿Qué tal si intentas el konami-code?" position="bottom"><love-heart style="cursor:pointer"></love-heart></core-tooltip></p>
+
+			                </div>
+			            </div>
+
+			        </div>
+			        <!-- /.container -->
+
+			    </div>
+			    <!-- /.banner -->
+
+
+
+			<paper-toast id="toastLogin" text="{% trans %}Oops, ¿te faltó llenar algún campo?{% endtrans %}" style="z-index:9999" class="warning" duration="6000" autoclosedisabled></paper-toast>
+
+			<!-- Modals -->
+			<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="background:transparent; box-shadow:none;">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <center><img src="/default/img/invictus-naranja.png" height="40px" style="margin-top:-10px"></center>
+			        <h4 class="modal-title" id="myModalLabel" style="text-align:center; font-family:open sans; font-weight:bold; color:#727272; font-size:24px;">Ingresa a tu cuenta.</h4>       
+			      </div>
+			      <div class="modal-body" style="text-align:center;">
+			        <!--            FAKE FORM USING POLYMER             -->
+			          <form id="l_form_fake">
+			            <fieldset>
+			              <div style="margin-top: 0px;margin-bottom: -10px;">
+			            <div class="form-group">
+			              <label class="controls">
+			                <paper-input-decorator class="custom-landing" label="{% trans %}Correo electrónico{% endtrans %}">
+			                  <input is="core-input" style="color: #3b4b54;" name="_username" id="_l_username" type="text" placeholder="{% trans %}Correo electrónico{% endtrans %}" onchange="passShadow(this)">
+			                </paper-input-decorator>
+			              </label>
+			            </div>
+			            <div class="form-group">
+			              <label class="controls">
+			                <paper-input-decorator class="custom-landing" label="{% trans %}Contraseña{% endtrans %}">
+			                  <input is="core-input" style="color: #3b4b54;" name="_password" id="_l_password" type="password" placeholder="{% trans %}Contraseña{% endtrans %}" onchange="passShadow(this)" onKeyPress="passShadow(this); enterpressEvent(event, 'form_login_user')">
+			                </paper-input-decorator>
+			              </label>
+			            </div>
+			            <div class="col-md-12" style="margin-bottom:30px;">
+			              <label class="checkbox" style="font-size: 12px; color:#5A5A5A;">
+			                <paper-checkbox is="core-input" name="_remember_me" id="_remember_me" for style="height: 14px;margin-right:4px;" onchange="passShadow(this)" value="on"></paper-checkbox>
+			                {% trans %}Recordarme{% endtrans %} <a href="{{ uri_for("password-reset") }}" style="padding: 15px;">{% trans %}¿La olvidaste?{% endtrans %}</a>
+			              </label>
+			            </div>
+			          </div>
+			          </fieldset>
+			          </form>
+
+			          <!--            TRUE FORM           -->
+			          <form id="form_login_user" action="{{ uri_for("materialize-login") }}" method="post">
+			            <fieldset>
+			              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+			              <input class="focused required form-control" name="username" id="l_username" type="text" placeholder="{% trans %}Username or Email{% endtrans %}" hidden>
+
+			              <input class="focused required form-control" name="password" id="l_password" type="password" placeholder="{% trans %}Password{% endtrans %}" hidden>
+
+			              <input type="checkbox" name="remember_me" id="remember_me" value="on" hidden>
+			              <!--            {{ macros.federated_login(provider_info, provider_uris, enable_federated_login) }}-->
+
+			            </fieldset>
+			          </form>
+
+			           <a class="orange-ghost" style="min-width:160px; padding-top:10px!important; padding-bottom:10px!important; padding-left:45px!important; padding-right:45px!important; cursor:pointer;"  onclick="sendForm('form_login_user')">{% trans %}Ingresar{% endtrans %}</a>  
+
+
+			          <h6 class="legal" style="margin-top:30px;">
+			            <a href="{{ uri_for("tou") }}" class="legal">{% trans %}Términos de uso{% endtrans %}</a> - 
+			            <a href="{{ uri_for("privacy") }}" class="legal">{% trans %}Aviso de privacidad{% endtrans %}</a> - 
+			            <a href="{{ uri_for("faq") }}" class="legal">{% trans %}Preguntas frecuentes{% endtrans %}</a> 
+			          </h6>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+
+			<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="background:transparent; box-shadow:none; max-height:95%; height:95%;">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <center><img src="/default/img/invictus-naranja.png" height="40px" style="margin-top:-10px"></center>
+			        {% if is_referral %}
+			          <h4 class="modal-title" id="myModalLabel" style="text-align:center; font-family:open sans; font-weight:bold; color:#727272; font-size:24px;margin-bottom:-15px;margin-top:-10px;">{{_username}} te recomienda crear tu cuenta.</h4>
+			        {% elif is_roomie %}
+			          <h4 class="modal-title" id="myModalLabel" style="text-align:center; font-family:open sans; font-weight:bold; color:#727272; font-size:24px;margin-bottom:-15px;margin-top:-10px;">¡Súmate al hogar de {{_username}}!</h4>
+			        {% else %}
+			          <h4 class="modal-title" id="myModalLabel" style="text-align:center; font-family:open sans; font-weight:bold; color:#727272; font-size:24px;margin-bottom:-15px;margin-top:-10px;">Crea tu cuenta, es gratis.</h4>
+			        {% endif %}
+			      </div>
+			      <div class="modal-body" style="text-align:center;">
+			        <!--            FAKE FORM USING POLYMER             -->
+			          <form id="form_fake">
+			          <fieldset><center>
+			          <!-- <div class="form-group">
+			                        <label class="controls">
+			                            <paper-input-decorator class="custom-landing" label="{% trans %}Nombre{% endtrans %}">
+			                                <input is="core-input" style="color: #3b4b54;" name="_name" id="_name" type="text" placeholder="{% trans %}Nombre{% endtrans %}" onchange="passShadow(this);" onkeyup="passUser(this)">
+			                            </paper-input-decorator>
+			                        </label>
+			                    </div> -->
+			          <!-- <div class="form-group">
+			                        <label class="controls">
+			                            <paper-input-decorator class="custom-landing" label="{% trans %}Elige un nombre de usuario{% endtrans %}">
+			                <input is="core-input" style="color: #3b4b54;" name="_username" id="_username" type="text" placeholder="{% trans %}Elige un nombre de usuario{% endtrans %}" onchange="passShadow(this)">
+			              </paper-input-decorator>
+			                        </label>
+			                    </div> -->
+			                    <div class="form-group">
+			                        <label class="controls">
+			              <paper-input-decorator class="custom-landing" label="{% trans %}Correo electrónico{% endtrans %}"> 
+			                <input is="core-input" style="color: #3b4b54;" name="_email" id="_email" type="email" placeholder="{% trans %}Correo electrónico{% endtrans %}" onchange="passShadow(this)">
+			              </paper-input-decorator>
+			                            <input type="hidden" name="country" value="">
+			                        </label>
+			                    </div>
+			                    <div class="form-group">
+			                        <label class="controls">
+			                            <paper-input-decorator class="custom-landing" label="{% trans %}Contraseña{% endtrans %}"> 
+			                <input is="core-input" style="color: #3b4b54;" name="_password" id="_password" type="password" placeholder="{% trans %}Contraseña{% endtrans %}" onchange="passShadow(this)">
+			              </paper-input-decorator>
+			                        </label>
+			                    </div>
+			                   <!--  <div class="form-group">
+			                        <label class="controls">
+			                            <paper-input-decorator class="custom-landing" label="{% trans %}Confirmar contraseña{% endtrans %}">
+			                <input is="core-input" style="color: #3b4b54;" name="_c_password" id="_c_password" type="password" placeholder="{% trans %}Confirmar contraseña{% endtrans %}" onchange="passShadow(this)" onKeyPress="passShadow(this); enterpressEvent(event, 'form_register')">
+			              </paper-input-decorator>
+			                        </label>
+			                    </div> -->
+			                    <div class="form-group">
+			                        <input is="core-input" type="hidden" name="country">
+			                        <input is="core-input" type="hidden" name="tz">   
+			                    </div>
+			          </center></fieldset>
+			          </form>   
+			              
+			              
+			              <!--            TRUE FORM           -->        
+			              <form id="form_register" action="{{ uri_for("materialize-register") }}" method="post">
+			                <fieldset>
+			                  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+			                  <input class="input-xlarge focused required form-control" id="username" name="username" placeholder="Enter your Username" type="text" value="" hidden>
+			                  <input class="input-xlarge focused required email form-control" id="email" name="email" placeholder="Enter your Email" type="email" value="" hidden>
+			                  <input class="input-xlarge focused required form-control" id="password" name="password" placeholder="Enter your Password" type="password" value="" hidden>
+			                  <input class="input-xlarge focused required form-control" id="c_password" name="c_password" placeholder="Confirm Password" type="password" value="" hidden>
+			                  <input class="input-xlarge focused required form-control" id="name" name="name" placeholder="Enter your Name" type="text" value="" hidden>
+			                  <input class="input-xlarge focused required form-control" id="lastname" name="lastname" placeholder="Enter your Lastname" type="text" value="" hidden>
+			                  <input class="input-xlarge focused required form-control" id="country" name="country" placeholder="Enter your Country" type="text" value="" hidden>
+			                  <input class="input-xlarge focused required form-control" id="tz" name="tz" placeholder="Enter your timezone" type="text" value="" hidden>
+			                  <!--{{ macros.federated_login(provider_info, provider_uris, enable_federated_login) }}-->                 
+			                  <div class="form-group">
+			                  <center><div id="captcha" style="margin-bottom:20px;">
+			                      {{captchahtml | safe}}
+			                    </div>
+			                  </div></center>
+			                </fieldset>               
+			              </form>
+			            
+			            <a class="orange-ghost" style="min-width:160px; margin-top:10px; padding-top:10px!important; padding-bottom:10px!important; padding-left:30px!important; padding-right:30px!important;cursor:pointer;" raised onclick="sendForm('form_register')" >{% trans %}Crear mi cuenta{% endtrans %}</a>            
+
+			            <h6 class="legal" style="margin-top:25px;">
+			              Al dar clic en crear mi cuenta aceptas nuestros:<br>
+			              <a href="{{ uri_for("tou") }}" class="legal">{% trans %}Términos de uso{% endtrans %}</a> - 
+			              <a href="{{ uri_for("privacy") }}" class="legal">{% trans %}Aviso de privacidad{% endtrans %}</a> - 
+			              <a href="{{ uri_for("faq") }}" class="legal">{% trans %}Preguntas frecuentes{% endtrans %}</a> 
+			            </h6>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+	{% endblock %} 
+
+
+	{% block mediaJS %}	
+		<script>
+			function sendForm(formID){
+			    if (formID == "form_login_user"){
+			      if (document.getElementById('l_username').value != '' && document.getElementById('l_password').value != '' )
+			        document.getElementById(formID).submit();
+			      else
+			        document.querySelector('#toastLogin').show();
+			    }else if (formID == "form_register"){
+			      if (document.getElementById('password').value == '' || document.getElementById('email').value == ''){
+			        document.querySelector('#toastLogin').text = "Oops, ¿te faltó llenar algún campo?";
+			        document.querySelector('#toastLogin').show();
+			      }else{
+			      	document.getElementById("name").value = cleanUpSpecialChars(document.getElementById('email').value.split('@')[0]).replace(/\d+/g, '').trim();
+			        document.getElementById("username").value = cleanUpSpecialChars(document.getElementById('email').value).replace(/\d+/g, '').trim();
+			        document.getElementById('c_password').value = document.getElementById('password').value;
+			        document.getElementById(formID).submit();
+			      }
+			    }
+			  }
+			  
+			function toggleAll(element){
+				var id;
+				if (element.icon == 'unfold-less'){
+					document.getElementById('foldBottom').icon = 'unfold-more';
+					document.getElementById('foldTop').icon = 'unfold-more';
+					for (var i = 1, j = document.querySelectorAll('.faq').length; i <= j; i++){
+						id = "#collapse" + i;
+						if (document.querySelector(id).opened){
+							document.querySelector(id).toggle();
+						}
+					}
+				}else{
+					document.getElementById('foldBottom').icon = 'unfold-less';
+					document.getElementById('foldTop').icon = 'unfold-less';
+					for (var i = 1, j = document.querySelectorAll('.faq').length; i <= j; i++){
+						id = "#collapse" + i;
+						if (!document.querySelector(id).opened){
+							document.querySelector(id).toggle();
+						}
+					}			
+				}
+			}
+		</script>
+	{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

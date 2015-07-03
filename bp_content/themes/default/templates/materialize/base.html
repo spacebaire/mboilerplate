@@ -1,0 +1,718 @@
+{% import "/materialize/macros.html" as macros %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="{{ locale_language_id }}"> <!--<![endif]-->
+
+
+{% block document_head %}
+	<head>
+	    {% block title %}<title>Invictus</title>{% endblock %}
+
+	    {% block metadata %}
+		    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+			<meta name="description" content="La herramienta para comparar tu consumo de luz y encontrar las mejores soluciones para ahorrar." />
+		    <meta name="keywords" content="invictus, comunidad, social, electricidad, mexico, hogares, consumo eléctrico, cfe, transparencia, red, smart, home"/>
+		    <meta property="og:site_name" content="Invictus.mx"/>
+		    <meta property="og:title" content="Invictus"/>
+		    <meta property="og:type" content="website"/>
+			<meta property="og:description" content="La herramienta para comparar tu consumo de luz y encontrar las mejores soluciones para ahorrar."/>
+		    <meta property="og:url" content="http://www.invictus.mx"/>
+			<meta property="og:image" content="http://mihogarinvictus.appspot.com/default/img/_metaupdate_.png"/>
+		    <meta name="twitter:card" content="summary_large_image">
+		    <meta name="twitter:site" content="@invictusmx">
+		    <meta name="twitter:creator" content="@invictusmx">
+		    <meta name="twitter:title" content="Invictus">
+			<meta name="twitter:description" content="La herramienta para comparar tu consumo de luz y encontrar las mejores soluciones para ahorrar.">
+		    <meta name="twitter:image" content="http://mihogarinvictus.appspot.com/default/img/_metaupdate_.png">
+		    <meta property="twitter:url" content="http://www.invictus.mx"/>
+			<meta name="bitly-verification" content="08b699436857"/>
+		    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">	
+	    {% endblock %}
+
+		{% block favicons %}
+		    <link rel="icon" href="/{{theme}}/materialize/images/favicon/fav.png" sizes="32x32">
+		    {% if is_mobile %}
+				<!-- For iPhone -->
+				<link rel="apple-touch-icon-precomposed" href="/{{theme}}/materialize/images/favicon/fav.png">
+				<!-- For Windows Phone -->
+				<meta name="msapplication-TileColor" content="#00bcd4">
+				<meta name="msapplication-TileImage" content="/{{theme}}/materialize/images/favicon/fav.png">
+		    {% endif %}
+		{% endblock %}
+
+	    <!-- All stylesheets   -->
+	    {% block stylesheets %}
+		    <link href="/{{theme}}/materialize/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
+		    <link href="/{{theme}}/materialize/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+		    <style type="text/css">
+	    		.toast-success{ color: #2EF97D!important;}
+	    		.toast-danger{ color: #EF1515!important;}
+	    		.toast-warning{ color: #fdd835!important;}
+	    		.toast-info{ color: #29b6f6!important;}
+	    	</style>
+		    {% block page_css %}{% endblock %}
+		    {% if user_id %}
+		    	<style type="text/css">
+		    		footer.page-footer{background-color: white;}
+		    		.email-name{font-size: 11px; text-decoration: underline;}
+		    	</style>
+				<style type="text/css" media="screen, projection">
+				  @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+				</style>
+			{% endif %}
+		{% endblock %}
+
+	    <!-- All google, mixpanel and analytics tags from config files. -->
+		{% block analytics %}{{ google_analytics_code }}{% endblock %}
+	    
+	    <!-- All JavaScript at the bottom, except these. -->
+		{% block priority_js %}
+			<script src="/boilerplate/webcomponents/bower_components/webcomponentsjs/webcomponents.min.js"></script>	
+		{% endblock %}
+
+		<!--  POLYMER   -->
+		{% block webcomponents %}
+			{% block page_components %}{% endblock %}
+		{% endblock %} 
+
+	</head>
+{% endblock %}
+
+{% block document_body %}
+	<body>
+	    {% block loader %}
+		    <!-- Start Page Loading -->
+		    <div id="loader-wrapper">
+		        <div id="loader"></div>        
+		        <div class="loader-section section-left"></div>
+		        <div class="loader-section section-right"></div>
+		    </div>
+		    <!-- End Page Loading -->
+	    {% endblock %}
+
+	    {% block header %}
+		    <!-- START HEADER -->
+		    <header id="header" class="page-topbar">
+		        <!-- start header nav-->
+		        <div class="navbar-fixed">
+		            <nav class="white">
+		                <div class="nav-wrapper">
+		                    <h1 class="logo-wrapper"><a href="{{ uri_for("materialize-home") }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/logo.png" alt="materialize logo" style="height: 45px;margin-top: 3px"></a> <span class="logo-text">invictus.mx</span></h1>
+		                    <ul class="right hide-on-med-and-down">
+		                        <!-- <li class="search-out">
+		                            <input type="text" class="search-out-text">
+		                        </li>
+		                        <li>    
+		                            <a href="javascript:void(0);" class="waves-effect waves-block waves-light show-search"><i class="mdi-action-search" style="color: #ff6623;"></i></a>                              
+		                        </li> -->
+		                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan" style="color: #ff6623;"></i></a>
+		                        </li>
+		                        <!--  <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light"><i class="mdi-social-notifications" style="color: #ff6623;"></i></a>
+		                        </li> -->
+		                        <!-- Dropdown Trigger -->                        
+		                        <!-- <li><a href="#" data-activates="chat-out" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat" style="color: #ff6623;"></i></a>
+		                        </li> -->
+		                        <li><a href="#" id="chat_alias" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat" style="color: #ff6623;"></i></a>
+		                        </li>
+		                    </ul>
+		                </div>
+		            </nav>
+		        </div>
+		        <!-- end header nav-->
+		    </header>
+		    <!-- END HEADER -->
+	    {% endblock %}
+
+
+	    {% block main %}
+		    <!-- START MAIN -->
+		    <div id="main">
+		    	{% block wrapper %}
+			        <!-- START WRAPPER -->
+			        <div class="wrapper">			        						    
+
+			            {% block sidebar_left %}
+				            <!-- START LEFT SIDEBAR NAV-->
+				            <aside id="left-sidebar-nav">
+				                <ul id="slide-out" class="side-nav fixed leftside-navigation">
+				                    <li class="user-details cyan darken-2" style="background: url(/{{theme}}/materialize/images/users_bg.png) no-repeat center center;">
+				                        <div class="row">
+				                            <div class="col col s4 m4 l4">
+												{% if has_picture %}
+													<img src="/img/" alt="" class="circle responsive-img valign profile-image" style="margin-top:6px;">
+												{% else %}
+				                                	<img src="/{{theme}}/materialize/images/ninja.png" alt="" class="circle responsive-img valign profile-image">
+												{% endif %}
+				                            </div>
+				                            <div class="col col s8 m8 l8">
+				                                <ul id="profile-dropdown" class="dropdown-content">
+				                                    <li><a href="{{ uri_for("materialize-settings-profile") }}"><i class="mdi-action-face-unlock"></i> Perfil</a>
+				                                    </li>
+				                                    <li><a href="{{ uri_for("materialize-referrals") }}"><i class="mdi-social-people"></i> Invitar </a>
+				                                    </li>
+				                                    <li class="divider"></li>
+				                                    <li><a href="{{ uri_for("materialize-logout") }}"><i class="mdi-hardware-keyboard-tab"></i> Salir</a>
+				                                    </li>
+				                                </ul>
+				                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn {{name_class}}" href="#" data-activates="profile-dropdown">{{name}} {{last_name_i}}<span style="margin-left: 8px;">✎</span></a>
+				                                <p class="user-roal" style="color: rgb(0, 151, 167)!important;">{{role}}</p>
+				                            </div>
+				                        </div>
+				                    </li>
+				                    <li class="bold"><a href="{{ uri_for("materialize-home") }}" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Inicio</a>
+				                    </li>
+				                   <!--  <li class="bold"><a href="{{ uri_for("materialize-inbox") }}" class="waves-effect waves-cyan"><i class="mdi-communication-email"></i> Bandeja <span class="new badge blue">4</span></a> -->
+				                    </li>
+				                    <li class="no-padding">
+				                        <ul class="collapsible collapsible-accordion">
+				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-assessment"></i> Análisis</a>
+				                                <div class="collapsible-body">
+				                                    <ul>
+				                                        <li><a href="{{ uri_for("materialize-analysis") }}">Resumen</a>
+				                                        </li>                                        
+				                                        <li><a href="{{ uri_for("materialize-fee") }}">Tarifa</a>
+				                                        </li>
+				                                        <li><a href="{{ uri_for("materialize-compare") }}">Comparaciones</a>
+				                                        </li>
+				                                        <li><a href="{{ uri_for("materialize-history") }}">Historial</a>
+				                                        </li>
+				                                        <li><a href="{{ uri_for("materialize-savings") }}">Ahorros</a>
+				                                        </li>
+				                                    </ul>
+				                                </div>
+				                            </li>
+				                        </ul>
+				                    </li>
+				                    {% if has_box %} 
+					                    <li class="bold"><a href="{{ uri_for("materialize-realtime") }}" class="waves-effect waves-cyan"><i class="mdi-action-alarm-add"></i> Tiempo real</a>
+					                    </li>
+					                {% endif %}
+					                {% if has_store %}
+				                    <li class="bold"><a href="{{ uri_for("materialize-vendor-home") }}" class="waves-effect waves-cyan"><i class="mdi-action-store"></i> Administrar tienda</a>
+				                    </li>
+				                    {% endif %}
+				                    <li class="li-hover"><div class="divider"></div></li>
+
+				                    <li class="no-padding">
+				                        <ul class="collapsible collapsible-accordion">
+				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-maps-local-library"></i> </i> Dudas</a>
+				                                <div class="collapsible-body">
+				                                    <ul>
+				                                        <li><a href="{{ uri_for("materialize-faq") }}">Preguntas frecuentes</a></li>
+				                                        <li><a href="{{ uri_for("materialize-contact") }}">Contáctanos</a></li>  
+				                                        <li><a href="{{ uri_for("materialize-tou") }}">Términos de uso</a></li> 
+				                                        <li><a href="{{ uri_for("materialize-privacy") }}">Aviso de privacidad</a></li>  
+				                                    </ul>
+				                                </div>
+				                            </li>
+				                        </ul>
+				                    </li>
+
+
+				                    
+				                </ul>
+				                <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only darken-2" style="background-color:#ff6623!important;"><i class="mdi-navigation-menu" ></i></a>
+				            </aside>
+				            <!-- END LEFT SIDEBAR NAV-->
+			            {% endblock %}
+						
+						{% block disclaimers %}
+					        {% if not cfe_connected or dac_limit == -1 %}
+						    	<style type="text/css">
+									.disclaimer{margin-bottom: 0px;width: 101%;height: auto;left: 0px;text-align: center;z-index: 9999;background: rgb(205, 55, 53);color: white;font-size: 14px;font-family: roboto-thin;letter-spacing: 1.5px; padding:10px;cursor: pointer;border-bottom: 1px solid rgb(240, 240, 240);}
+						    	</style>
+					        {% endif %}
+					        {% if cfe_rpu == -1 %}
+					            <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-cfe") }}', '_top')"> 
+					                 <span class="glyphicon-exclamation-sign glyphicon"></span>
+					                 <span>No has conectado tu recibo. Para ver tus consumos, </span> 
+					                 <span style="text-decoration: underline; font-family: roboto-regular;">conecta tu recibo aquí</span>.         
+					            </div>
+					        {% else %} 
+					            {% if cfe_connected and dac_limit != -1 %}
+					            	<!-- EVERYTHING OK, NO NEED FOR DISCLAIMER ! -->
+					            {% elif cfe_connected and dac_limit == -1 %} 
+					                <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-home") }}', '_top')"> 
+					                     <span class="glyphicon-exclamation-sign glyphicon"></span>
+					                     <span>Ya conectamos tu recibo. Falta obtener tu límite de alto consumo, </span> 
+					                     <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">configura tu zona aquí</span>.         
+					                </div>
+					            {% else %} 
+					                {% if cfe_error == 'bad_rpu' %}
+					                    <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-cfe") }}', '_top')"> 
+					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
+					                         <span>Hubo un error en tu número de recibo. </span> 
+					                         <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">Verifica la conexión aquí</span>.         
+					                    </div>
+					                {% elif cfe_error == 'bad_name' %}
+					                    <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-cfe") }}', '_top')"> 
+					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
+					                         <span>El nombre y número de tu recibo no coinciden. </span> 
+					                         <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">Verifica la conexión aquí</span>.         
+					                    </div>
+					                {% elif cfe_error == 'rpu_down' %}
+					                    <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-cfe") }}', '_top')"> 
+					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
+					                         <span>El número de recibo ha sido dado de baja. </span> 
+					                         <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">Verifica la conexión aquí</span>.         
+					                    </div>
+					                {% elif dac_limit == -1 %}
+					                    <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-home") }}', '_top')"> 
+					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
+					                         <span>Estamos conectando tu recibo. Falta obtener el límite de alto consumo, </span> 
+					                         <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">configura tu zona aquí</span>.         
+					                    </div>
+					                {% else %}
+					                    <div class="row disclaimer green lighten-2"> 
+					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
+					                         <span>Estamos conectando tu recibo. Recibirás un correo en menos de 24 hrs,</span>
+					                    </div>
+					                {% endif %}
+					            {% endif %}
+					        {% endif %}
+						{% endblock %}	
+			            <!-- //////////////////////////////////////////////////////////////////////////// -->
+
+			            {% block content %}
+			                <!-- START CONTENT -->
+						    <section id="content">
+
+						    	{% block breadcrums %}
+						    	{% endblock %}
+						        
+						        <!--start container-->
+						        <div class="container">
+						            {% block page_content %}
+						            {% endblock %}
+
+						            {% block page_floatings %}
+								        <!-- Floating Action Button -->
+							            <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+							                <a class="btn-floating btn-large red">
+							                  <i class="large mdi-editor-mode-edit"></i>
+							                </a>
+							                <ul>
+							                  <li><a href="#" id="zen_alias" class="btn-floating red"><i class="large mdi-communication-live-help"></i></a></li>
+							                  <li><a href="app-widget.html" class="btn-floating yellow darken-1"><i class="large mdi-device-now-widgets"></i></a></li>
+							                  <li><a href="app-calendar.html" class="btn-floating green"><i class="large mdi-editor-insert-invitation"></i></a></li>
+							                  <li><a href="app-email.html" class="btn-floating blue"><i class="large mdi-communication-email"></i></a></li>
+							                </ul>
+							            </div>
+							            <!-- Floating Action Button -->
+						            {% endblock %}
+
+						        </div>
+						        <!--end container-->
+						    </section>
+    						<!-- END CONTENT -->
+			            {% endblock %}
+
+			            <!-- //////////////////////////////////////////////////////////////////////////// -->
+
+			            {% block sidebar_right %}
+				            <!-- START RIGHT SIDEBAR NAV-->
+				            <aside id="right-sidebar-nav">
+				                <ul id="chat-out" class="side-nav rightside-navigation">
+				                    <li class="li-hover">
+				                    <a href="#" data-activates="chat-out" class="chat-close-collapse right"><i class="mdi-navigation-close"></i></a>
+				                    <div id="right-search" class="row">
+				                        <form class="col s12">
+				                            <div class="input-field">
+				                                <i class="mdi-action-search prefix"></i>
+				                                <input id="icon_prefix" type="text" class="validate">
+				                                <label for="icon_prefix">Search</label>
+				                            </div>
+				                        </form>
+				                    </div>
+				                    </li>
+				                    <li class="li-hover">
+				                        <ul class="chat-collapsible" data-collapsible="expandable">
+				                        <li>
+				                            <div class="collapsible-header teal white-text active"><i class="mdi-social-whatshot"></i>Recent Activity</div>
+				                            <div class="collapsible-body recent-activity">
+				                                <div class="recent-activity-list chat-out-list row">
+				                                    <div class="col s3 recent-activity-list-icon"><i class="mdi-action-add-shopping-cart"></i>
+				                                    </div>
+				                                    <div class="col s9 recent-activity-list-text">
+				                                        <a href="#">just now</a>
+				                                        <p>Jim Doe Purchased new equipments for zonal office.</p>
+				                                    </div>
+				                                </div>
+				                                <div class="recent-activity-list chat-out-list row">
+				                                    <div class="col s3 recent-activity-list-icon"><i class="mdi-device-airplanemode-on"></i>
+				                                    </div>
+				                                    <div class="col s9 recent-activity-list-text">
+				                                        <a href="#">Yesterday</a>
+				                                        <p>Your Next flight for USA will be on 15th August 2015.</p>
+				                                    </div>
+				                                </div>
+				                                <div class="recent-activity-list chat-out-list row">
+				                                    <div class="col s3 recent-activity-list-icon"><i class="mdi-action-settings-voice"></i>
+				                                    </div>
+				                                    <div class="col s9 recent-activity-list-text">
+				                                        <a href="#">5 Days Ago</a>
+				                                        <p>Natalya Parker Send you a voice mail for next conference.</p>
+				                                    </div>
+				                                </div>
+				                                <div class="recent-activity-list chat-out-list row">
+				                                    <div class="col s3 recent-activity-list-icon"><i class="mdi-action-store"></i>
+				                                    </div>
+				                                    <div class="col s9 recent-activity-list-text">
+				                                        <a href="#">Last Week</a>
+				                                        <p>Jessy Jay open a new store at S.G Road.</p>
+				                                    </div>
+				                                </div>
+				                                <div class="recent-activity-list chat-out-list row">
+				                                    <div class="col s3 recent-activity-list-icon"><i class="mdi-action-settings-voice"></i>
+				                                    </div>
+				                                    <div class="col s9 recent-activity-list-text">
+				                                        <a href="#">5 Days Ago</a>
+				                                        <p>Natalya Parker Send you a voice mail for next conference.</p>
+				                                    </div>
+				                                </div>
+				                            </div>
+				                        </li>
+				                        <li>
+				                            <div class="collapsible-header light-blue white-text active"><i class="mdi-editor-attach-money"></i>Sales Repoart</div>
+				                            <div class="collapsible-body sales-repoart">
+				                                <div class="sales-repoart-list  chat-out-list row">
+				                                    <div class="col s8">Target Salse</div>
+				                                    <div class="col s4"><span id="sales-line-1"></span>
+				                                    </div>
+				                                </div>
+				                                <div class="sales-repoart-list chat-out-list row">
+				                                    <div class="col s8">Payment Due</div>
+				                                    <div class="col s4"><span id="sales-bar-1"></span>
+				                                    </div>
+				                                </div>
+				                                <div class="sales-repoart-list chat-out-list row">
+				                                    <div class="col s8">Total Delivery</div>
+				                                    <div class="col s4"><span id="sales-line-2"></span>
+				                                    </div>
+				                                </div>
+				                                <div class="sales-repoart-list chat-out-list row">
+				                                    <div class="col s8">Total Progress</div>
+				                                    <div class="col s4"><span id="sales-bar-2"></span>
+				                                    </div>
+				                                </div>
+				                            </div>
+				                        </li>
+				                        <li>
+				                            <div class="collapsible-header red white-text"><i class="mdi-action-stars"></i>Favorite Associates</div>
+				                            <div class="collapsible-body favorite-associates">
+				                                <div class="favorite-associate-list chat-out-list row">
+				                                    <div class="col s4"><img src="/{{theme}}/materialize/images/avatar.jpg" alt="" class="circle responsive-img online-user valign profile-image">
+				                                    </div>
+				                                    <div class="col s8">
+				                                        <p>Eileen Sideways</p>
+				                                        <p class="place">Los Angeles, CA</p>
+				                                    </div>
+				                                </div>
+				                                <div class="favorite-associate-list chat-out-list row">
+				                                    <div class="col s4"><img src="/{{theme}}/materialize/images/avatar.jpg" alt="" class="circle responsive-img online-user valign profile-image">
+				                                    </div>
+				                                    <div class="col s8">
+				                                        <p>Zaham Sindil</p>
+				                                        <p class="place">San Francisco, CA</p>
+				                                    </div>
+				                                </div>
+				                                <div class="favorite-associate-list chat-out-list row">
+				                                    <div class="col s4"><img src="/{{theme}}/materialize/images/avatar.jpg" alt="" class="circle responsive-img offline-user valign profile-image">
+				                                    </div>
+				                                    <div class="col s8">
+				                                        <p>Renov Leongal</p>
+				                                        <p class="place">Cebu City, Philippines</p>
+				                                    </div>
+				                                </div>
+				                                <div class="favorite-associate-list chat-out-list row">
+				                                    <div class="col s4"><img src="/{{theme}}/materialize/images/avatar.jpg" alt="" class="circle responsive-img online-user valign profile-image">
+				                                    </div>
+				                                    <div class="col s8">
+				                                        <p>Weno Carasbong</p>
+				                                        <p>Tokyo, Japan</p>
+				                                    </div>
+				                                </div>
+				                                <div class="favorite-associate-list chat-out-list row">
+				                                    <div class="col s4"><img src="/{{theme}}/materialize/images/avatar.jpg" alt="" class="circle responsive-img offline-user valign profile-image">
+				                                    </div>
+				                                    <div class="col s8">
+				                                        <p>Nusja Nawancali</p>
+				                                        <p class="place">Bangkok, Thailand</p>
+				                                    </div>
+				                                </div>
+				                            </div>
+				                        </li>
+				                        </ul>
+				                    </li>
+				                </ul>
+				            </aside>
+				            <!-- END RIGHT SIDEBAR NAV-->
+			            {% endblock %}
+
+			        </div>
+			        <!-- END WRAPPER -->
+		    	{% endblock %}
+		    </div>
+		    <!-- END MAIN -->
+	    {% endblock %}
+
+		{% block footer %}
+			<!-- START FOOTER -->
+		    <footer class="page-footer">
+		        {% block page_footer %}{% endblock %}
+		        <div class="footer-copyright">
+		            <div class="container">
+		                Copyright © 2015 <a class="grey-text text-lighten-1" href="{{ uri_for("materialize-landing") }}" target="_blank">Invictus México</a> All rights reserved. 
+		                {% if not has_store %}<a class="orange-text text-lighten-4" href="{{ uri_for("materialize-vendor") }}" target="_blank">Da de alta tu tienda</a>{% endif %}
+		            </div>
+		        </div>
+		    </footer>
+		    <!-- END FOOTER -->
+		{% endblock %}
+
+		<!-- All Scripts start here -->
+		{% block scripts %}
+			<!-- jQuery Library -->
+		    <script type="text/javascript" src="/{{theme}}/materialize/js/jquery-1.11.2.min.js"></script>
+    		<script type="text/javascript" src="/boilerplate/js/libs/modernizr-2.7.1.min.js"></script>
+		    <!--materialize js-->
+		    <script type="text/javascript" src="/{{theme}}/materialize/js/materialize.min.js"></script>
+		    <!--prism-->
+		    <script type="text/javascript" src="/{{theme}}/materialize/js/prism.js"></script>
+		    <!--scrollbar-->
+		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+		    <!-- chartist -->
+		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/chartist-js/chartist.js"></script>   	  		    
+		    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins.js"></script>
+	        		    
+		    <!-- Toast Notification -->
+		    {% if messages|safe %}		    	
+			    {% for message in messages %}
+		    		<script type="text/javascript">
+		            	var resendIndex = 0 ;
+		            	var _text = "{{ message[0]|safe }}";
+		            	var _textAdditionals = "";
+						resendIndex = _text.search('resend');
+						if ( resendIndex > 0 ){
+							//this is the case when resend-activation-link is sent
+							// 1: Add this text as html to toast additionals
+							_textAdditionals = '<a href="/'+_text.substr(resendIndex).replace(/ /g,'/')+'/"><p>Haz clic aquí para reenviarte el correo de activación.</p><p>Tip: El link anterior ya no funcionará.</p></a>';
+							// 2: Trim this text from toast
+							_text = _text.substr(0, resendIndex-1);							
+						}
+						var _msg = '<span class="toast-{{ message[1]|safe }}">'+_text+'</span>';
+		            	Materialize.toast(_msg, 4500);
+		            	if (_textAdditionals != "") Materialize.toast(_textAdditionals, 10000);
+		            </script>
+			    {% endfor %}
+			{% endif %}	
+
+
+	        {% block raptor %}
+				<script src="https://hammerjs.github.io/dist/hammer.js"></script>
+				<script src="/{{ theme }}/js/lib/raptor.js"></script>
+				<script type="text/javascript">
+					$(window).load(function() {
+						$('#header').raptorize({
+							'enterOn' : 'konami-code'
+						});
+					});
+				</script>
+			{% endblock %}
+
+			
+	        {% block onload_methods %}
+			<script>
+	    		var is_Safari = false, not_Chrome = false;
+
+				(function(){
+					var BrowserDetect = {
+						init: function() {
+							this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
+							this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "an unknown version";
+							this.OS = this.searchString(this.dataOS) || "an unknown OS";
+							console.log("browser: " + this.browser + " v." + this.version + " running in " + this.OS);
+							if (this.browser != 'Chrome' && this.browser.indexOf('Safari') == -1 && this.browser.indexOf('iPhone') == -1 && this.browser != 'Firefox') {
+								alert("Lo sentimos, pero el sistema no ha sido diseñado para tu plataforma, descarga Google Chrome para poder navegar en Invictus.");
+							}
+							else if (this.browser.indexOf("Safari") != -1)
+								is_Safari = true;
+							else if (this.browser.indexOf("Chrome") == -1)
+								not_Chrome = true;
+						},
+						searchString: function(data) {
+							for (var i = 0; i < data.length; i++) {
+								var dataString = data[i].string;
+								var dataProp = data[i].prop;
+								this.versionSearchString = data[i].versionSearch || data[i].identity;
+								if (dataString) {
+									if (dataString.indexOf(data[i].subString) != -1) return data[i].identity;
+								} else if (dataProp) return data[i].identity;
+							}
+						},
+						searchVersion: function(dataString) {
+							var index = dataString.indexOf(this.versionSearchString);
+							if (index == -1) return;
+							return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+						},
+						dataBrowser: [{
+							string: navigator.userAgent,
+							subString: "Chrome",
+							identity: "Chrome"
+						}, {
+							string: navigator.userAgent,
+							subString: "OmniWeb",
+							versionSearch: "OmniWeb/",
+							identity: "OmniWeb"
+						}, {
+							string: navigator.vendor,
+							subString: "Apple",
+							identity: "Safari",
+							versionSearch: "Version"
+						}, {
+							prop: window.opera,
+							identity: "Opera",
+							versionSearch: "Version"
+						}, {
+							string: navigator.vendor,
+							subString: "iCab",
+							identity: "iCab"
+						}, {
+							string: navigator.vendor,
+							subString: "KDE",
+							identity: "Konqueror"
+						}, {
+							string: navigator.userAgent,
+							subString: "Firefox",
+							identity: "Firefox"
+						}, {
+							string: navigator.vendor,
+							subString: "Camino",
+							identity: "Camino"
+						}, { // for newer Netscapes (6+)
+							string: navigator.userAgent,
+							subString: "Netscape",
+							identity: "Netscape"
+						}, {
+							string: navigator.userAgent,
+							subString: "MSIE",
+							identity: "Explorer",
+							versionSearch: "MSIE"
+						}, {
+							string: navigator.userAgent,
+							subString: "Gecko",
+							identity: "Mozilla",
+							versionSearch: "rv"
+						}, { // for older Netscapes (4-)
+							string: navigator.userAgent,
+							subString: "Mozilla",
+							identity: "Netscape",
+							versionSearch: "Mozilla"
+						}],
+						dataOS: [{
+							string: navigator.platform,
+							subString: "Win",
+							identity: "Windows"
+						}, {
+							string: navigator.platform,
+							subString: "Mac",
+							identity: "Mac"
+						}, {
+							string: navigator.userAgent,
+							subString: "iPhone",
+							identity: "iPhone/iPod"
+						}, {
+							string: navigator.platform,
+							subString: "Linux",
+							identity: "Linux"
+						}]
+					};
+					BrowserDetect.init();	
+					console.log("running: {{app_name}}");		
+					console.log("cfe connect: {{cfe_connected}}");		
+					console.log("cfe error: {{cfe_error}}");		
+					console.log("dac limit: {{dac_limit}}");	
+				 })();
+			</script>
+			{% endblock %}
+
+
+			{% if user_id %}
+				<script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+				<script>
+					if (typeof(Zenbox) !== "undefined") {
+						Zenbox.init({
+						  dropboxID:   "20172435",
+						  url:         "https://invictusmx.zendesk.com",
+						  tabTooltip:  "Feedback",
+						  tabImageURL: "https://p4.zdassets.com/external/zenbox/images/tab_es_feedback_right.png",
+						  tabColor:    "#ff0000",
+						  tabPosition: "Right",
+						  hide_tab: true,
+						});
+
+					}
+					if (document.querySelector('#zen_alias'))
+						document.querySelector('#zen_alias').addEventListener('click', function() { window.Zenbox.show();});
+					if (document.querySelector('#chat_alias'))
+						document.querySelector('#chat_alias').addEventListener('click', function() { window.Zenbox.show();});
+				</script>
+				<script type="text/javascript">
+					function cleanUpSpecialChars(str){
+						str = str.replace(/[ÀÁÂÃÄÅ]/g,"A");
+						str = str.replace(/[àáâãäå]/g,"a");
+						str = str.replace(/[ÈÉÊË]/g,"E");
+						str = str.replace(/[éèëê]/g,"e");
+						str = str.replace(/[ÍÌÎÏ]/g,"I");
+						str = str.replace(/[íîïì]/g,"i");
+						str = str.replace(/[ÓÖÒÔ]/g,"O");
+						str = str.replace(/[óòôö]/g,"o");
+						str = str.replace(/[ÚÜÛÙ]/g,"U");
+						str = str.replace(/[úùûü]/g,"u");
+						str = str.replace(/[Ñ]/g,"N");
+						str = str.replace(/[ñ]/g,"n");
+						str = str.replace(/[Ç]/g,"C");
+						str = str.replace(/[ç]/g,"c");
+						return str.replace(/[^a-zA-Z0-9 ]/g, "");
+					}
+					function addCommas(val) {
+					  while (/(\d+)(\d{3})/.test(val.toString())) {
+					    var val = val.toString().replace(/(\d+)(\d{3})/, '$1' + ',' + '$2');
+					  }
+					  return val;
+					}
+					function toggleVis(id){
+						if (document.getElementById(id).style.display == 'none'){
+						    document.getElementById(id).style.display = 'block';
+    						document.getElementById(id).style.opacity = 1;
+						}else{
+						    document.getElementById(id).style.display = 'none';
+    						document.getElementById(id).style.opacity = 0;
+						}
+					}
+				</script>
+
+			{% endif %}
+
+			{% if locale_language_id != "en" %}
+				{% if locale_iso.language == "pt" and locale_iso.territory == "BR" %}
+					<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_iso.language }}_{{ locale_iso.territory }}.js"></script>
+				{% else %}
+					<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_language_id }}.js"></script>
+				{% endif %}
+			{% endif %}
+
+	        {% block page_scripts %}{% endblock %}
+			
+
+		{% endblock %}
+
+	</body>        
+{% endblock %}
+
+
+</html>

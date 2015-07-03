@@ -1,0 +1,51 @@
+{% extends 'admin_base.html' %}
+
+{% block header_title %}
+  {% trans %}Users Geolocation{% endtrans %}
+{% endblock %}
+
+{% block mediaCSS %}
+<style>
+  google-map {
+    height: 600px;
+  }
+</style>
+{% endblock %}
+
+{% block polymer %}
+<script src="/boilerplate/webcomponents/bower_components/webcomponentsjs/webcomponents.min.js"></script>    
+<link rel="import" href="/boilerplate/webcomponents/bower_components/google-map/google-map.html">
+{% endblock %}
+
+{% block content %}
+    <google-map latitude="37.77493" longitude="-122.41942" fitToMarkers>        
+        {% for latlng in latlngs %}
+                {% for attr1, attr2 in list_attrs %}
+                    <google-map-marker latitude="{{ getattr(latlng, attr1)|e }}" longitude="{{ getattr(latlng, attr2)|e }}"></google-map-marker>
+                {% endfor %}
+        {% endfor %}
+    </google-map>
+    <div id="chart_div" style="width: 900px; height: 500px; display: none"></div>
+{% endblock %}
+ 
+{% block mediaJS %}
+    <script src='https://www.google.com/jsapi'></script>
+    <script>
+        google.load('visualization', '1', {'packages': ['geochart']});
+        google.setOnLoadCallback(drawRegionsMap);
+        function drawRegionsMap() {
+            var data = google.visualization.arrayToDataTable([
+                ['Country', 'Registrations'],
+                {% for country, registrations in data %}
+                ['{{ country }}', {{ registrations }}],
+                {% endfor %}
+            ]);
+
+            var options = {};
+
+            var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
+ {% endblock %}
+ 

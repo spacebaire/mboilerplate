@@ -1,0 +1,145 @@
+{% extends 'admin_base.html' %}
+
+{% block header_title %}
+    {% trans %}Visit Logs List{% endtrans %}
+{% endblock %}
+
+{% block mediaCSS %}
+    <style>
+
+    body {
+      font: 10px sans-serif;
+    }
+
+    .bar rect {
+      fill: #777777;
+      shape-rendering: crispEdges;
+    }
+
+    .bar text {
+      fill: #fff;
+    }
+
+    .axis path, .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+{{ lib.render_form_navbar_search('Search Visits', uri_for('admin-logs-visits')) }}
+
+
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            {% if not q %}
+            <th >&nbsp;</th>
+            {% endif %}
+            <th class="span1">user</th>
+            {% for attr, timestamp in list_columns %}
+            <th>
+                {{ timestamp|safe }}
+            </th>
+            {% endfor %}
+            <th>
+                Total visits
+            </th>
+        </tr>
+    </thead>
+    {% for visit in visits %}
+    <tr>
+        {% if not q %}
+        <td>
+            <a class="icon" href="{{ uri_for('admin-logs-visits', q=visit.user.id()) }}"><i class="glyphicon-filter glyphicon"></i></a>
+        </td>
+        {% endif %}
+        <td>
+            <a class="icon" href="{{ uri_for('admin-user-edit', user_id=visit.user.id()) }}">{{ visit.user.id() }}</a>
+        </td>
+        {% for attr, timestamp in list_columns %}
+        <td>
+            {{ getattr(visit, attr)|e }}
+        </td>
+        {% endfor %}
+        <td>
+            {{ rec_visits[visit.user.id()] }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{{ lib.render_pager() }}
+<div class="row">
+    <center>
+        <h5>Histograma de visitas recurrentes (logins posteriores a la activación: {{ len_hist }})</h5>
+        <histogram style="text-align: center;"></histogram>
+    </center>
+</div>
+{% endblock %}
+
+{% block mediaJS %}
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var values = {{histogram}};
+
+// A formatter for counts.
+var formatCount = d3.format(",.0f");
+
+var margin = {top: 10, right: 30, bottom: 30, left: 30},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .domain([0, {{maxValue}}])
+    .range([0, width]);
+
+// Generate a histogram using twenty uniformly-spaced bins.
+var data = d3.layout.histogram()
+    .bins(x.ticks(50))
+    (values);
+
+var y = d3.scale.linear()
+    .domain([0, d3.max(data, function(d) { return d.y; })])
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var svg = d3.select("histogram").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var bar = svg.selectAll(".bar")
+    .data(data)
+  .enter().append("g")
+    .attr("class", "bar")
+    .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+bar.append("rect")
+    .attr("x", 1)
+    .attr("width", x(data[0].dx) - 1)
+    .attr("height", function(d) { return height - y(d.y); });
+
+bar.append("text")
+    .attr("dy", ".75em")
+    .attr("y", 6)
+    .attr("x", x(data[0].dx) / 2)
+    .attr("text-anchor", "middle")
+    .text(function(d) { return formatCount(d.y); });
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+
+</script>
+{% endblock %}
