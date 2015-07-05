@@ -108,25 +108,29 @@ config = {
 
     # ----> ADD MORE CONFIGURATION OPTIONS HERE <----
 
-    #bitly Login & API KEY
+    #bitly integration
     'bitly_login' : '',
     'bitly_apikey' : '',
 
-    #sendgrid Login & Passkey
+    #sendgrid integration
     'sendgrid_login' : '',
     'sendgrid_passkey' : '',
 
-    #slack webhook url
+    #slack webhook integration
     'slack_webhook_url' : '',
+    'slack_notify_user' : '',
+    'slack_notify_home_visit' : '',
+    'slack_notify_landing_visit' : '',
 
-    #cartodb
+    #cartodb integration
     'cartodb_user': "",
     'cartodb_apikey': "",
 
-
-    #zendesk
+    #zendesk integration
     'zendesk_code': "",
 
+    #mailchimp integration
+    'mailchimp_code': "",
 
 
 
