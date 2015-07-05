@@ -43,7 +43,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="glyphicon-chevron-down glyphicon"></span>
                 </button>
-                <a class="navbar-brand" href="{{ uri_for('admin-stats') }}">Invictus Admin</a>
+                <a class="navbar-brand" href="{{ uri_for('admin-stats') }}">MBoilerplate Admin</a>
             </div>
             <div>
 
@@ -51,14 +51,8 @@
                     <ul class="nav navbar-nav">
                         <li {% if path == uri_for('admin-users-geochart') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-geochart') }}">{% trans %}Georeference{% endtrans %}</a></li>
                         <li {% if path == uri_for('admin-users-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-list') }}">{% trans %}Users{% endtrans %}</a></li>
-                        <li {% if path == uri_for('admin-homes-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-homes-list') }}">{% trans %}Homes{% endtrans %}</a></li>                        
-                        <li {% if path == uri_for('admin-stores-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-stores-list') }}">{% trans %}Stores{% endtrans %}</a></li>                        
                         <li {% if path == uri_for('admin-logs-emails') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-emails') }}">{% trans %}Emails{% endtrans %}</a></li>
-                        <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">{% trans %}Visits{% endtrans %}</a></li>                        
-                        <li {% if path == uri_for('admin-qubits-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-qubits-list') }}">{% trans %}Qubits{% endtrans %}</a></li>
-                        <li {% if path == uri_for('admin-manual-intakes') %}class="active"{% endif %}><a href="{{ uri_for('admin-manual-intakes') }}">{% trans %}Manual Intakes{% endtrans %}</a></li>
-                        <li {% if path == uri_for('admin-estimator') %}class="active"{% endif %}><a href="{{ uri_for('admin-estimator') }}">{% trans %}Manual UMR{% endtrans %}</a></li>
-                        <li {% if path == uri_for('admin-box') %}class="active"{% endif %}><a href="{{ uri_for('admin-box') }}">{% trans %}Box Setup{% endtrans %}</a></li>
+                        <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">{% trans %}Visits{% endtrans %}</a></li>
                     </ul>
 
                     <ul class="nav navbar-nav pull-right">

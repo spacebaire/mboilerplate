@@ -1,6 +1,49 @@
 from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
+#--------------------------------------- USER MODEL PROPERTIES  -----------------------------------------------------------         
+class Rewards(ndb.Model):
+    amount = ndb.IntegerProperty()                                                                  #: number of points acquired 
+    earned = ndb.BooleanProperty()                                                                  #: to identify if earned or spent
+    category = ndb.StringProperty(choices = ['invite','donation','purchase','configuration'])       #: to identify main reason of rewards attribution
+    content = ndb.StringProperty()                                                                  #: used to track referred emails
+    timestamp = ndb.StringProperty()                                                                #: when was it assigned
+    status = ndb.StringProperty(choices = ['invited','joined','completed','inelegible'])            #: current status of reward
+
+class Notifications(ndb.Model):  
+    sms = ndb.BooleanProperty()
+    email = ndb.BooleanProperty()
+    endpoint = ndb.BooleanProperty()
+    twitter = ndb.StringProperty()
+
+class Friends(ndb.Model):
+    user_id = ndb.IntegerProperty(required = True)                                                  #: Manages id of original requester user
+    friend_id = ndb.IntegerProperty(required = True)                                                #: Manages id of friend user
+    status = ndb.StringProperty(required = True, choices = ['NotReplied','Accepted','Inelegible'])  #: Manages status of friend request
+
+class Address(ndb.Model):
+    ageb = ndb.StringProperty()                                                                     #: Mexico Only - INEGI zone key 
+    region = ndb.StringProperty()                                                                   #: Mexico Only - CFE related region
+    country = ndb.StringProperty()                                                                  #: User Country, initialized by boilerplate... 
+    state = ndb.StringProperty()                                                                    #: Administrative state region
+    municipality = ndb.StringProperty()                                                             #: Administrative municipality region   
+    zipcode = ndb.IntegerProperty()                                                                 #: Administrative zipcode region
+    neighborhood = ndb.StringProperty()                                                             #: Administrative neighborhood region
+    latlng = ndb.GeoPtProperty()                                                                    #: Geocoded lat,lng, from address fields
+    #street = ndb.StringProperty()                                                                  #unused
+    #streetnum = ndb.StringProperty()                                                               #unused
+    #geoaddress = ndb.StringProperty()                                                              #unused
+    tz = ndb.StringProperty()                                                                       #: User TimeZone, initialized by boilerplate...       
+    
+class AvatarPicture(ndb.Model):
+    user_id = ndb.IntegerProperty(required = True)                                                  #: user id linked to profile picture
+    picture = ndb.BlobProperty()                                                                    #: user picture personalization    
+
+class CoverPicture(ndb.Model):
+    user_id = ndb.IntegerProperty(required = True)                                                  #: user id linked to profile picture
+    picture = ndb.BlobProperty()                                                                    #: user picture personalization
+                                                                  #: user picture personalization
+#--------------------------------------- ENDOF  USER PROPERTIES -----------------------------------------------------          
 
 
 #--------------------------------------- U S E R    M O D E L -----------------------------------------------------          
@@ -69,49 +112,6 @@ class User(User):
                 result['unused'].append(v)
         return result
 #--------------------------------------- ENDOF   U S E R    M O D E L -----------------------------------------------------          
-#--------------------------------------- USER MODEL PROPERTIES  -----------------------------------------------------------         
-class Rewards(ndb.Model):
-    amount = ndb.IntegerProperty()                                                                  #: number of points acquired 
-    earned = ndb.BooleanProperty()                                                                  #: to identify if earned or spent
-    category = ndb.StringProperty(choices = ['invite','donation','purchase','configuration'])       #: to identify main reason of rewards attribution
-    content = ndb.StringProperty()                                                                  #: used to track referred emails
-    timestamp = ndb.StringProperty()                                                                #: when was it assigned
-    status = ndb.StringProperty(choices = ['invited','joined','completed','inelegible'])            #: current status of reward
-
-class Notifications(ndb.Model):  
-    sms = ndb.BooleanProperty()
-    email = ndb.BooleanProperty()
-    endpoint = ndb.BooleanProperty()
-    twitter = ndb.StringProperty()
-
-class Friends(ndb.Model):
-    user_id = ndb.IntegerProperty(required = True)                                                  #: Manages id of original requester user
-    friend_id = ndb.IntegerProperty(required = True)                                                #: Manages id of friend user
-    status = ndb.StringProperty(required = True, choices = ['NotReplied','Accepted','Inelegible'])  #: Manages status of friend request
-
-class Address(ndb.Model):
-    ageb = ndb.StringProperty()                                                                     #: Mexico Only - INEGI zone key 
-    region = ndb.StringProperty()                                                                   #: Mexico Only - CFE related region
-    country = ndb.StringProperty()                                                                  #: User Country, initialized by boilerplate... 
-    state = ndb.StringProperty()                                                                    #: Administrative state region
-    municipality = ndb.StringProperty()                                                             #: Administrative municipality region   
-    zipcode = ndb.IntegerProperty()                                                                 #: Administrative zipcode region
-    neighborhood = ndb.StringProperty()                                                             #: Administrative neighborhood region
-    latlng = ndb.GeoPtProperty()                                                                    #: Geocoded lat,lng, from address fields
-    #street = ndb.StringProperty()                                                                  #unused
-    #streetnum = ndb.StringProperty()                                                               #unused
-    #geoaddress = ndb.StringProperty()                                                              #unused
-    tz = ndb.StringProperty()                                                                       #: User TimeZone, initialized by boilerplate...       
-    
-class AvatarPicture(ndb.Model):
-    user_id = ndb.IntegerProperty(required = True)                                                  #: user id linked to profile picture
-    picture = ndb.BlobProperty()                                                                    #: user picture personalization    
-
-class CoverPicture(ndb.Model):
-    user_id = ndb.IntegerProperty(required = True)                                                  #: user id linked to profile picture
-    picture = ndb.BlobProperty()                                                                    #: user picture personalization
-                                                                  #: user picture personalization
-#--------------------------------------- ENDOF  USER PROPERTIES -----------------------------------------------------          
 
 class LogVisit(ndb.Model):
     user = ndb.KeyProperty(kind=User)

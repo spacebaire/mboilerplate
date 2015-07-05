@@ -53,84 +53,31 @@ handlers:
 - url: /(robots\.txt|humans\.txt|sitemap\.xml|crossdomain\.xml)
   script: main.app
 
-# @bp_includes
-
+# @bp_includes - styles
 - url: /boilerplate/css
   mime_type: text/css
   static_dir: bp_includes/static/css
 
+# @bp_includes - scripts
 - url: /boilerplate/js
   mime_type: text/javascript
   static_dir: bp_includes/static/js
 
+# @bp_includes - polymer components
 - url: /boilerplate/webcomponents
   static_dir: bp_includes/static/webcomponents
 
+# @bp_includes - images
 - url: /boilerplate/img/(.*\.(gif|png|jpg))
   static_files: bp_includes/static/img/\1
   upload: bp_includes/static/img/(.*\.(gif|png|jpg))
 
+# @bp_includes - fonts
 - url: /boilerplate/fonts/(.*\.(eot|svg|ttf|woff))
   static_files: bp_includes/static/fonts/\1
   upload: bp_includes/static/fonts/(.*\.(eot|svg|ttf|woff))
 
-# @bp_content
-
-- url: /(\w*)/css/(.*\.css)$
-  mime_type: text/css
-  static_files: bp_content/themes/\1/static/css/\2
-  upload: bp_content/themes/(\w*)/static/css/(.*\.css)$
-
-- url: /(\w*)/css/lib/(.*\.css)$
-  mime_type: text/css
-  static_files: bp_content/themes/\1/static/css/lib/\2
-  upload: bp_content/themes/(\w*)/static/css/lib/(.*\.css)$
-
-- url: /(\w*)/js/(.*\.js)$
-  mime_type: text/javascript
-  static_files: bp_content/themes/\1/static/js/\2
-  upload: bp_content/themes/(\w*)/static/js/(.*\.js)$
-
-- url: /(\w*)/js/lib/(.*\.(js|swf|ogg|mp3))$
-  mime_type: text/javascript
-  static_files: bp_content/themes/\1/static/js/lib/\2
-  upload: bp_content/themes/(\w*)/static/js/lib/(.*\.(js|swf|ogg|mp3))$
-
-- url: /(\w*)/img/(.*\.(gif|png|jpg|jpeg|svg))
-  static_files: bp_content/themes/\1/static/img/\2
-  upload: bp_content/themes/(\w*)/static/img/(.*\.(gif|png|jpg|jpeg))
-
-- url: /(\w*)/img/(\w*)/(.*\.(gif|png|jpg|jpeg|svg))
-  static_files: bp_content/themes/\1/static/img/\2/\3
-  upload: bp_content/themes/(\w*)/static/img/(\w*)/(.*\.(gif|png|jpg|jpeg))
-
-- url: /(\w*)/fonts/(.*\.eot)$
-  mime_type: application/vnd.ms-fontobject
-  static_files: bp_content/themes/\1/static/fonts/\2
-  upload: bp_content/themes/(\w*)/static/fonts/(.*\.eot)
-
-- url: /(\w*)/fonts/(.*\.otf)$
-  mime_type: font/opentype
-  static_files: bp_content/themes/\1/static/fonts/\2
-  upload: bp_content/themes/(\w*)/static/fonts/(.*\.otf)
-
-- url: /(\w*)/fonts/(.*\.ttf)$
-  mime_type: application/x-font-ttf
-  static_files: bp_content/themes/\1/static/fonts/\2
-  upload: bp_content/themes/(\w*)/static/fonts/(.*\.ttf)
-
-- url: /(\w*)/fonts/(.*\.woff)$
-  mime_type: application/x-font-woff
-  static_files: bp_content/themes/\1/static/fonts/\2
-  upload: bp_content/themes/(\w*)/static/fonts/(.*\.woff)
-
-- url: /(\w*)/fonts/(.*\.svg)$
-  mime_type: image/svg+xml
-  static_files: bp_content/themes/\1/static/fonts/\2
-  upload: bp_content/themes/(\w*)/static/fonts/(.*\.svg)
-
-# @bp_content - materialize
-
+# @bp_content - materialize styles
 - url: /(\w*)/materialize/css/(.*\.(css|map|scss))$
   static_files: bp_content/themes/\1/static/materialize/css/\2
   upload: bp_content/themes/(\w*)/static/materialize/css/(.*\.(css|map|scss))$
@@ -159,6 +106,7 @@ handlers:
   static_files: bp_content/themes/\1/static/materialize/sass/\2/\3/\4
   upload: bp_content/themes/(\w*)/static/materialize/sass/(\w*)/(\w*)/(.*\.(css|map|scss))$
 
+# @bp_content - materialize scripts
 - url: /(\w*)/materialize/js/(.*\.js)$
   static_files: bp_content/themes/\1/static/materialize/js/\2
   upload: bp_content/themes/(\w*)/static/materialize/js/(.*\.js)$
@@ -179,10 +127,7 @@ handlers:
   static_files: bp_content/themes/\1/static/materialize/js/\2/\3/\4/\5/\6/\7
   upload: bp_content/themes/(\w*)/static/materialize/js/(\w*)/(\w-*)/(\w*)/(\w*)/(\w*)/(.*\.(js|css|map|mp3|swf|scss|png|gif))$
 
-- url: /(\w*)/materialize/font/(\w*)/(.*\.(ttf|woff|woff2|eot|svg))$
-  static_files: bp_content/themes/\1/static/materialize/font/\2/\3
-  upload: bp_content/themes/(\w*)/static/materialize/font/(\w*)/(.*\.(ttf|woff|woff2|eot|svg))$
-
+# @bp_content - materialize images
 - url: /(\w*)/materialize/images/(.*\.(gif|png|jpg|jpeg|svg))
   static_files: bp_content/themes/\1/static/materialize/images/\2
   upload: bp_content/themes/(\w*)/static/materialize/images/(.*\.(gif|png|jpg|jpeg|svg))
@@ -191,7 +136,18 @@ handlers:
   static_files: bp_content/themes/\1/static/materialize/images/\2/\3
   upload: bp_content/themes/(\w*)/static/materialize/images/(\w*)/(.*\.(gif|png|jpg|jpeg|svg))
 
-# Taskqueue email sender
+# @bp_content - materialize fonts
+- url: /(\w*)/materialize/font/(\w*)/(.*\.(ttf|woff|woff2|eot|svg))$
+  static_files: bp_content/themes/\1/static/materialize/font/\2/\3
+  upload: bp_content/themes/(\w*)/static/materialize/font/(\w*)/(.*\.(ttf|woff|woff2|eot|svg))$
+
+# @bp_content - materialize audio
+- url: /(\w*)/materialize/audio/(.*\.(ogg|mp3))$
+  static_files: bp_content/themes/\1/static/materialize/audio/\2
+  upload: bp_content/themes/(\w*)/static/materialize/audio/(.*\.(ogg|mp3))$
+
+
+# @taskqueue email sender
 - url: /taskqueue-send-email.*
   script: main.app
   login: admin

@@ -1,1190 +1,641 @@
-{% extends base_layout %}
-{% block title %}
-	Invictus » Landing
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="{{ locale_language_id }}"> <!--<![endif]-->
+
+
+{% block document_head %}
+	<head>
+  		{% block title %}<title>GAE Materialize Boilerplate</title>{% endblock %}
+
+	    {% block metadata %}
+		    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+			<meta name="description" content="This an amazing, magical materialized boilerplate for the Google AppEngine." />
+		    <meta name="keywords" content="google, cloud, appengine, material, materialize, webcomponents, boilerplate, gae, gcp"/>
+		    <meta property="og:site_name" content="MBoilerplate.appspot.com"/>
+		    <meta property="og:title" content="MBoilerplate"/>
+		    <meta property="og:type" content="website"/>
+			<meta property="og:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine."/>
+		    <meta property="og:url" content="http://mboilerplate.appspot.com"/>
+			<meta property="og:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png"/>
+		    <meta name="twitter:card" content="summary_large_image">
+		    <meta name="twitter:site" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
+		    <meta name="twitter:creator" content="@chuycepeda">
+		    <meta name="twitter:title" content="MBoilerplate">
+			<meta name="twitter:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
+		    <meta name="twitter:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png">
+		    <meta property="twitter:url" content="http://mboilerplate.appspot.com"/>
+			<meta name="bitly-verification" content="08b699436857"/>
+		    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">	
+	    {% endblock %}
+
+		{% block favicons %}
+		    <link rel="icon" href="/{{theme}}/materialize/images/favicon/fav.png" sizes="32x32">
+		    {% if is_mobile %}
+				<!-- For iPhone -->
+				<link rel="apple-touch-icon-precomposed" href="/{{theme}}/materialize/images/favicon/fav.png">
+				<!-- For Windows Phone -->
+				<meta name="msapplication-TileColor" content="#00bcd4">
+				<meta name="msapplication-TileImage" content="/{{theme}}/materialize/images/favicon/fav.png">
+		    {% endif %}
+		{% endblock %}
+
+	  	<!-- CSS  -->
+	  	{% block stylesheets %}
+	  		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	  		<link href="/{{theme}}/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">		    
+		    <link href="/{{theme}}/materialize/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+		    <style type="text/css">
+	    		.toast-success{ color: #2EF97D!important;}
+	    		.toast-danger{ color: #EF1515!important;}
+	    		.toast-warning{ color: #fdd835!important;}
+	    		.toast-info{ color: #29b6f6!important;}
+	    		@-webkit-keyframes pulsate {
+				    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+				    50% {opacity: 1.0;}
+				    100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+				}
+
+				.icon-block {
+				  padding: 0 15px;
+				}
+				.icon-block .material-icons {
+				  font-size: inherit;
+				}
+				ul li{
+					font-family: roboto-thin!important;
+				}
+	    	</style>
+		    {% block page_css %}{% endblock %}
+		{% endblock %}
+		
+		<!-- All google, mixpanel and analytics tags from config files. -->
+		{% block analytics %}{{ google_analytics_code }}{% endblock %}
+	    
+	    <!-- All JavaScript at the bottom, except these. -->
+		{% block priority_js %}
+			<script type="text/javascript" src="/boilerplate/webcomponents/bower_components/webcomponentsjs/webcomponents.min.js"></script>	
+    		<script type="text/javascript" src="/boilerplate/js/libs/modernizr-2.7.1.min.js"></script>
+		{% endblock %}
+
+		<!--  POLYMER   -->
+		{% block webcomponents %}
+			{% block page_components %}{% endblock %}
+		{% endblock %} 
+
+	</head>
 {% endblock %}
 
-	{% block mediaCSS %}
-			<link href="/default/css/lib/font-awesome.min.css" rel="stylesheet" type="text/css">
-			<link href='http://fonts.googleapis.com/css?family=Raleway|Open+Sans' rel='stylesheet' type='text/css'>
-			<style>
-				body,
-				html {
-				    width: 100%;
-				    height: 100%;
-					background: #F8F8F8!important;
-				}
-
-				body,
-				h1,
-				h2,
-				h3,
-				h4,
-				h5,
-				h6 {
-				    font-family: 'Open Sans', sans-serif;
-				    font-weight: 700;
-				}
-
-				.glow{
-					-webkit-animation: glow 0.8s infinite linear alternate-reverse;   
-					-moz-animation: glow 0.8s infinite linear alternate-reverse;   
-					animation: glow 0.8s infinite linear alternate-reverse;
-				}
-				.topnavScrolled{
-					background: rgba(42, 45, 64, 0.9)!important;
-  					border-bottom: none;
-  					padding-bottom: 10px;
-  					transition: all 0.7s ease-in;
-  					-webkit-transition: all 0.7s ease-in;
-				}
-
-				.navbar-custom{
-					background: rgba(0, 0, 0, 0)!important;
-  					border-bottom: none;
-  					-webkit-transition: all 0.7s ease-in;
-				}
-
-				.topnav {
-				    font-size: 14px; 
-				}
-
-				.lead {
-				    font-size: 18px;
-				    font-family: open sans;
-				    color: #9D9C9F;
-				    letter-spacing: 0.5px;
-				}
-
-				.intro-header {
-				    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
-				    padding-bottom: 50px;
-				    text-align: center;
-				    color: #f8f8f8;
-				    background: url(/default/img/landing/1824.png) no-repeat center center;
-				    background-size: cover;
-				    margin-top:-50px;
-				}
-
-				.intro-message {
-				    position: relative;
-				    padding-top: 20%;
-				    padding-bottom: 20%;
-				}
-
-				.intro-message > h1 {
-				    margin: 0;
-				    /*text-shadow: 2px 2px 3px rgba(0,0,0,0.6);*/
-				    font-size: 5em;
-				}
-
-				.intro-divider {
-				    width: 400px;
-				    border-top: 1px solid #f8f8f8;
-				    border-bottom: 1px solid rgba(0,0,0,0.2);
-				}
-
-				.intro-message > h3 {
-				    /*text-shadow: 2px 2px 3px rgba(0,0,0,0.6);*/
-				}
-				
-				.network-name {
-				    text-transform: uppercase;
-				    font-size: 14px;
-				    font-weight: 400;
-				    letter-spacing: 2px;
-				}
-
-				.content-section-a {
-				    padding: 50px 0;
-				    background-color: #f8f8f8;
-				}
-
-				.content-section-b {
-				    padding: 50px 0;
-				    border-top: 1px solid #e7e7e7;
-				    border-bottom: 1px solid #e7e7e7;
-				}
-
-				.section-heading {
-				    margin-bottom: 30px;
-				    font-family: raleway;
-				    font-weight:600;
-				    font-size:36px;
-				    color: #0E1B22;
-				    letter-spacing: 0.5px;
-				}
-
-				.section-heading-spacer {
-				    float: left;
-				    width: 200px;
-				    border-top: 3px solid #e7e7e7;
-				}
-
-				.banner {
-				    padding: 100px 0;
-				    color: #f8f8f8;
-				    background: #2A2D40; /*url(../img/banner-bg.jpg) no-repeat center center;*/
-				    background-size: cover;
-				    height: auto;
-				}
-
-				.banner h2 {
-				    margin: 0;
-				    /*text-shadow: 2px 2px 3px rgba(0,0,0,0.6);*/
-				    /*font-size: 3em;*/
-				}
-
-				.banner ul {
-				    margin-bottom: 0;
-				}
-
-				.banner-social-buttons {
-				    float: right;
-				    margin-top: 0;
-				}
-
-				.banner-li{
-				    font-family: raleway;
-					font-weight: lighter;
-					font-size: 16px;
-				}
-
-				footer {
-				    padding: 50px 0;
-				    background-color: #f8f8f8;
-				}
-
-				p.copyright {
-				    margin: 15px 0 0;
-				}
-
-			    #zenbox_tab{display: none!important;}
-
-				.form-group{
-				  margin-bottom:1px!important;
-				}
-				.custom-landing{
-				  border: 1px solid #D5D5D5;
-				  max-width: 300px;
-				  border-radius: 4px;
-				  font-family: raleway;
-				  font-weight: lighter;
-				  padding: 5px;
-				  font-size: 12px;
-				  width: 200px;
-
-				}
-				.custom-landing /deep/ ::-webkit-input-placeholder {
-				  color: #3b4b54;
-				}
-
-				.custom-landing /deep/ ::-moz-placeholder {
-				  color: #3b4b54;
-				}
-
-				.custom-landing /deep/ .label-text,
-				.custom-landing /deep/ .error {
-				  color: #3b4b54;
-				}
-
-				.custom-landing /deep/ .unfocused-underline {
-				  background-color: #d5d5d5;
-				}
-
-				.custom-landing[focused] /deep/ .floated-label .label-text {
-				  color: #3b4b54;
-				}
-
-				.custom-landing /deep/ .focused-underline {
-				  background-color: #3b4b54;
-				}
-
-				.custom-landing /deep/ .cursor {
-				  background-color: #3b4b54;
-				}
-
-				.custom-landing.invalid /deep/ .floated-label .label-text,
-				.custom-landing /deep/ .error {
-				  color: #f06292;
-				}
-
-				.custom-landing.invalid /deep/ .focused-underline,
-				.custom-landing.invalid /deep/ .cursor {
-				  background-color: #f06292;
-				}
-
-				.big-landing-ghost{
-					  padding-top: 15px;
-					  padding-bottom: 15px;
-					  padding-left: 60px;
-					  padding-right: 60px;
-					  cursor: pointer;
-				      font-family:open sans!important; 
-					  font-weight:600!important; 
-					  font-size: 24px;
-					  border-radius: 80px!important;
-					  color: white;
-					  border: 1px solid #ff6623;
-					  text-transform: uppercase;
-					  background: rgba(255, 102, 35, 0.5);
-				}
-
-				.big-landing-ghost:hover{
-					border: 3px solid #ff6623; 
-					text-decoration: none;
-					color: #fff;
-					background: rgba(255, 102, 35, 0.7);
-					transition: all 0.2s ease-in;
-  					-webkit-transition: all 0.2s ease-in;
-				}
-
-				a.small-landing-ghost{
-					
-					font-family:open sans!important; 
-					font-weight:600!important; 
-					margin-top:6px;
-					font-size: 12px;
-					padding-left: 20px!important;
-					padding-right: 20px!important;
-					padding-top: 8px!important;
-					padding-bottom: 8px!important;
-					margin-left: 18px;
-					cursor:pointer; 
-					border-radius:40px!important;
-					color: white!important;
-					border: 1px solid #ff6623;
-				    text-transform: uppercase;
-					background: rgba(255, 102, 35, 0.5);
-				}
-				a.small-landing-ghost:hover{
-					text-decoration: none;
-					color: #fff;
-					background: rgba(255, 102, 35, 0.7)!important;
-					transition: all 0.2s ease-in;
-  					-webkit-transition: all 0.2s ease-in;
-				}
-				a#menu-blog:hover{
-					text-decoration: underline;
-					background: transparent!important;
-				}
-
-				.action-button{
-					background:transparent!important; 
-					padding-top: 13px!important;
-					padding-bottom: 13px!important;
-					padding-left: 59px!important;
-					padding-right: 59px!important;
-					cursor:pointer!important; 
-					font-family:open sans!important; 
-					font-weight:600!important; 
-					font-size:18px!important; 
-					border-radius:40px!important;
-					border: 1px solid white!important;
-					text-transform: uppercase;
-				}
-
-				.action-button:hover{
-					border: 3px solid white!important;
-					transition: all 0.2s ease-in;
-  					-webkit-transition: all 0.2s ease-in;
-				}
-
-				#explora_img{
-				    background: url(/default/img/landing/ipad_mobile.png) no-repeat center center;
-				    background-size: cover;
-				}
-				#conoce_img{
-				    background: url(/default/img/landing/iphone_mobile.png) no-repeat center center;
-				    background-size: cover;
-				}
-				#conoce_img_mobile{
-				    background: url(/default/img/landing/iphone_mobile.png) no-repeat center center;
-				    background-size: cover;
-				}
-				#descubre_img{
-				    background: url(/default/img/landing/macbook_mobile.png) no-repeat center center;
-				    background-size: cover;
-				}
-				#explora_action{
-				    background: url(/default/img/landing/cocina.png) no-repeat center center;
-				    background-size: cover;
-				    transition: all 0.2s ease-in;
-  					-webkit-transition: all 0.2s ease-in;
-				}
-				#conoce_action{
-				    background: url(/default/img/landing/casas.png) no-repeat center center;
-				    background-size: cover;
-				    transition: all 0.2s ease-in;
-  					-webkit-transition: all 0.2s ease-in;
-				}
-				#descubre_action{
-				    background: url(/default/img/landing/medidor.png) no-repeat center center;
-				    background-size: cover;
-				    transition: all 0.2s ease-in;
-  					-webkit-transition: all 0.2s ease-in;
-				}
-				#explora_action:hover{
-				    background: url(/default/img/landing/cocina_hover.png) no-repeat center center;
-				    background-size: cover;
-				}
-				#conoce_action:hover{
-				    background: url(/default/img/landing/casas_hover.png) no-repeat center center;
-				    background-size: cover;
-				}
-				#descubre_action:hover{
-				    background: url(/default/img/landing/medidor_hover.png) no-repeat center center;
-				    background-size: cover;
-				}
-				
-				/* Default media css from landing template ----------- */
-				@media(max-width:767px) {
-					.intro-header {
-					    background: url(/default/img/landing/768.png) no-repeat center center;
-					      background-size: cover;
-					}
-				    .intro-message {
-				        padding-bottom: 15%;
-				    }
-
-				    ul.intro-social-buttons > li {
-				        display: block;
-				        margin-bottom: 20px;
-				        padding: 0;
-				    }
-
-				    ul.intro-social-buttons > li:last-child {
-				        margin-bottom: 0;
-				    }
-
-				    .banner h2 {
-				        margin: 0;
-				        /*text-shadow: 2px 2px 3px rgba(0,0,0,0.6);*/
-				        /*font-size: 3em;*/
-				    }
-
-				    .intro-divider {
-				        width: 100%;
-				    }
-				}
-
-				@media(max-width:1199px) {
-					.intro-header {
-					    background: url(/default/img/landing/1224.png) no-repeat center center;
-					      background-size: cover;
-					}
-				    ul.banner-social-buttons {
-				        float: left;
-				        margin-top: 15px;
-				    }
-				}
-
-				 /* Smartphones (portrait and landscape) ----------- */
-				    @media only screen 
-				    and (min-device-width : 320px) 
-				    and (max-device-width : 480px) {
-				      /* Styles */
-				      
-				    }
-
-				    /* Smartphones (landscape) ----------- */
-				    @media only screen 
-				    and (min-width : 321px) {
-				      /* Styles */
-				      
-				    }
-
-				    /* Smartphones (portrait) ----------- */
-				    @media only screen 
-				    and (max-width : 320px) {
-				      /* Styles */
-				      
-				    }
-
-				    @media only screen
-				    and (max-width: 767px){
-					    .intro-header{
-					    	background: url(/default/img/landing/768.png) no-repeat center center;
-					    	  background-size: cover;
-
-					    }
-					  .big-landing-ghost{
-						font-size: 18px!important;
-						padding-left: 45px;
-						padding-right: 45px;
-					  }
-				      #tagline, .section-heading{
-				      	font-size:28px!important;
-				      }
-				      #subtagline, .lead, .action-button{
-				      	font-size:16px!important;
-				      }
-				      .section-heading{
-				      	padding-top:40px!important;
-				      }
-
-				      .img_action{
-				      	margin-bottom: -45px;
-				      }
-
-				      .topnav, .topnavScrolled{
-						background: rgba(42, 45, 64, 0.9)!important;
-	  					border-bottom: none;
-	  					padding-bottom: 10px;
-	  					transition: all 0.7s ease-in;
-	  					-webkit-transition: all 0.7s ease-in;
-					  }
-
-					  .section-final{
-					  	 margin-top: -50px;
-					  }
-
-					  .img_logo{
-					  	margin-top: -2px!important;
-					  	height: 40px!important;
-					  }
-
-					  .actions{
-					  	border: none!important;
-					  }
-
-				    }
-
-				    /* iPads (portrait and landscape) ----------- */
-				    @media only screen 
-				    and (min-device-width : 768px) 
-				    and (max-device-width : 1024px) {
-				      /* Styles */
-				     .intro-header{
-					    	background: url(/default/img/landing/1224.png) no-repeat center center;
-  							background-size: cover;
-					    }
-					 .topnav, .topnavScrolled{
-						background: rgba(42, 45, 64, 0.9)!important;
-	  					border-bottom: none;
-	  					padding-bottom: 10px;
-	  					transition: all 0.7s ease-in;
-	  					-webkit-transition: all 0.7s ease-in;
-					  }
-				    }
-
-				    /* iPads (landscape) ----------- */
-				    @media only screen 
-				    and (min-device-width : 768px) 
-				    and (max-device-width : 1024px) 
-				    and (orientation : landscape) {
-				      /* Styles */
-				      .intro-header{
-					    	background: url(/default/img/landing/1224.png) no-repeat center center;
-							  background-size: cover;
-					    }
-					 .topnav, .topnavScrolled{
-						background: rgba(42, 45, 64, 0.9)!important;
-	  					border-bottom: none;
-	  					padding-bottom: 10px;
-	  					transition: all 0.7s ease-in;
-	  					-webkit-transition: all 0.7s ease-in;
-					  }
-				    }
-
-				    /* iPads (portrait) ----------- */
-				    @media only screen 
-				    and (min-device-width : 768px) 
-				    and (max-device-width : 1024px) 
-				    and (orientation : portrait) {
-				      /* Styles */
-				      .intro-header{
-					    	background: url(/default/img/landing/1224.png) no-repeat center center;
-							  background-size: cover;
-					    }
-					 .topnav, .topnavScrolled{
-						background: rgba(42, 45, 64, 0.9)!important;
-	  					border-bottom: none;
-	  					padding-bottom: 10px;
-	  					transition: all 0.7s ease-in;
-	  					-webkit-transition: all 0.7s ease-in;
-					  }
-				    }
-
-				    /* Desktops and laptops ----------- */
-				    @media only screen 
-				    and (min-width : 1224px) {
-				      /* Styles */
-					     .intro-header{
-						    	background: url(/default/img/landing/1824.png) no-repeat center center;
-								  background-size: cover;
-						    }
-
-						 a.small-landing-ghost{
-						 	  padding-left: 50px!important;
-	 						  padding-right: 50px!important;
-						 }
-						 .big-landing-ghost {
-						  padding-top: 15px;
-						  padding-bottom: 15px;
-						  padding-left: 64px;
-						  padding-right: 64px;
-						}
-						a.action-button{
-						  padding-top: 20px!important;
-						  padding-bottom: 20px!important;
-						  padding-left: 100px!important;
-						  padding-right: 100px!important;
-						}
-				    }
-
-				    /* Large screens ----------- */
-				    @media only screen 
-				    and (min-width : 1824px) {
-				      /* Styles */
-				      .intro-header{
-					    	background: url(/default/img/landing/1824.png) no-repeat center center;
-							  background-size: cover;
-					    }
-					    a.small-landing-ghost{
-					 	  padding-left: 50px!important;
- 						  padding-right: 50px!important;
-					 	}
-					 	.big-landing-ghost {
-						  padding-top: 15px;
-						  padding-bottom: 15px;
-						  padding-left: 64px;
-						  padding-right: 64px;
-						}
-						a.action-button{
-						  padding-top: 20px!important;
-						  padding-bottom: 20px!important;
-						  padding-left: 100px!important;
-						  padding-right: 100px!important;
-						}
-
-				    }
-
-
-				paper-toast {
-					max-height: 40px!important;
-					top: 65px!important;
-					font-size: 15px!important;
-				}
-			</style>
-	{% endblock %}
-
-	{% block main_body %}
-			<!-- Navigation -->
-			    <nav class="navbar navbar-custom navbar-fixed-top topnav" role="navigation">
-			        <div class="container">
-			            <!-- Brand and toggle get grouped for better mobile display -->
-			            <div class="navbar-header">
-			                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" style="margin-top:15px; border: 1px solid #fff;">
-			                    <span class="icon-bar" style="background-color:#fff;"></span>
-			                    <span class="icon-bar" style="background-color:#fff;"></span>
-			                    <span class="icon-bar" style="background-color:#fff;"></span>
-			                </button>
-			                <a class="navbar-brand"href="{{ uri_for("materialize-landing") }}"><img class="img_logo" src="/{{ theme }}/img/invictus-naranja.png" style="margin-top:-10px; height:60px;"></a>
-			            </div>
-			            <!-- Collect the nav links, forms, and other content for toggling -->
-			            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="margin-top: 12px;text-transform: uppercase;">
-			                <ul class="nav navbar-nav navbar-right">
-			                    <li>
-			                        <a target="_blank" href="http://blog.invictus.mx/" style="font-size:12px; color:white;font-weight: lighter;" id="menu-blog">Blog</a>
-			                    </li>
-			                    <li>
-			                        <a data-toggle="modal" data-target="#login" class="small-landing-ghost">Ingresar</a>
-			                    </li>
-			                </ul>
-			            </div>
-			            <!-- /.navbar-collapse -->
-			        </div>
-			        <!-- /.container -->
-			    </nav>
-
-
-			    <!-- Header -->
-			    <a name="about"></a>
-			    <div class="row" style="background:#2A2D40; border-bottom:1px solid #ff6623; position:relative;margin-bottom:-70px;">
-				    <div class="intro-header" style="">
-				        <div class="container">
-
-				            <div class="row" style="position:relative;">
-				                <div class="col-lg-12">
-				                    <div class="intro-message">
-				                        <h1 id="tagline" style="font-family:raleway; font-weight:600; font-size:42px; color:white; letter-spacing:1.5px;margin-bottom:8px;">Entiende tu recibo. Paga menos luz.</h1>
-				    					<h1 id="subtagline" style="font-family:open sans; font-weight:400; font-size:20px; color:white; letter-spacing:1.25px; margin-bottom:80px;">La plataforma para comparar tu consumo y encontrar las mejores soluciones para ahorrar.</h1>
-				                        <ul class="list-inline intro-social-buttons">
-				                            <li>                                
-				   							 <a class="big-landing-ghost" data-toggle="modal" data-target="#register" style="font-weight:600">Crea tu cuenta</a>
-				                            </li>                           
-				                        </ul>
-				                    </div>
-				                </div>
-				                <a href="#services" class="desktop-only" style="   z-index: 999; color: white;   position: absolute;    left: 49%;    bottom: 60px;"><core-icon icon="expand-more" style="-webkit-transform: scale(0.9);   -moz-transform: scale(0.9);  transform: scale(0.9); -webkit-animation: jump 0.5s infinite linear alternate-reverse;   -moz-animation: pulsate 1.5s infinite linear alternate-reverse;   animation: jump 1.5s infinite linear alternate-reverse;" aria-label="expand-more" role="img"></core-icon></a>
-				            </div>
-
+{% block document_body %}
+	<body>
+
+		{% block navbar %}
+			<!-- START NAVBAR -->
+			<nav style="background-color: transparent;position: fixed;border-bottom: none; z-index: 9999999;" class="z-depth-0">
+				<div class="nav-wrapper" style="">
+				  <a href="{{uri_for("materialize-landing")}}" class="brand-logo"><img src="/{{theme}}/materialize/images/favicon/fav-white.png" style="height:75px; margin-top:-5px;"></a>
+				  <a href="#" data-activates="mobile-demo" class="button-collapse right"><i class="mdi-navigation-more-vert"></i></a>
+				  <ul id="nav-mobile" class="right hide-on-med-and-down">
+				    <li><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
+				    <li><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
+				    <li><a href="#download" class="menu-item">Want some love?</a></li>
+				  </ul>
+				  <ul class="side-nav" id="mobile-demo">
+				    <li><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
+				    <li><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
+				    <li><a href="#download" class="menu-item">Want some love?</a></li>
+				  </ul>
+				</div>
+			</nav>
+			<!-- END NAVBAR -->
+		{% endblock %}
+
+
+		{% block content %}
+			<!-- START CONTENT -->
+			{% block header_content %}
+				<div class="parallax-container z-depth-3">
+					<div class="section no-pad-bot">
+					  <div class="container">
+					    <br><br>
+					    <h1 class="header center light-blue-text text-lighten-2 " >GAE Materialize Boilerplate</h1>
+					    <div class="row center">
+					      <h5 class="header col s12 white-text light">A modern responsive front-end + back-end boilerplate based on material design</h5>
+					    </div>
+					    <div class="row center">
+					    </div>
+					    <br>
+					    <br>
+					  </div>
+					</div>
+					<div class="parallax"><img src="/{{theme}}/materialize/images/landing/black_mac.png" alt="Unsplashed background img 1" style="display: block; transform: translate3d(-50%, 351px, 0px);"></div>
+				</div>
+			{% endblock %}
+
+			{% block body_content %}
+				<div class="container">
+					<div class="section">
+
+					  <div class="row">
+					    <div class="col s12 m4">
+					      <div class="icon-block">
+					        <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
+					        <h5 class="center">Instant deploys</h5>
+
+					        <p class="light">Through the <a href="http://appengine.beecoss.com/">GAE Boilerplate</a> plus the <a href="http://materializecss.com/">MaterializeCSS</a>, GAE Materialize Boilerplate provides an exceptional experience for developers. Models, templates, and routes - ready enables for instantaneous deployment and rapid prototyping.</p>
+					      </div>
+					    </div>
+
+					    <div class="col s12 m4">
+					      <div class="icon-block">
+					        <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
+					        <h5 class="center">Human-centered</h5>
+
+					        <p class="light">More than a year now of <a href="https://www.google.com/design/spec/material-design/introduction.html">Material Design</a> and the newest Google Datastore, here you have a single underlying responsive system across all platforms and a standard user model for a more unified user experience.</p>
+					      </div>
+					    </div>
+
+					    <div class="col s12 m4">
+					      <div class="icon-block">
+					        <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
+					        <h5 class="center">Easy and low-cost</h5>
+
+					        <p class="light">Leveraging the use of <a href="https://cloud.google.com/appengine/docs">Google AppEngine</a> and its <a href="https://cloud.google.com/appengine/docs/quotas">Free Quotas</a>, this GAE Materialize Boilerplate provides all the ease of the <a href="https://cloud.google.com/docs/">Google Cloud Platform</a> at amazingly low costs and super easy scalability and traffic splitting. I didn't even bought a hosting nor a domain !</p>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+				</div>
+				<div class="parallax-container z-depth-3">
+				    <div class="section no-pad-bot" style="  margin-top: 12%;">
+				      <div class="container">
+				        <br><br>
+				        <div class="row center">
+				          <h5 class="header col s12 white-text light" style="line-height: 2;">Ever noticed goats scream like humans? <span id="speak" class="light-blue-text text-lighten-2" style="cursor:pointer;">Try it !</span></h5>
 				        </div>
-				        <!-- /.container -->
-					
+				      </div>
 				    </div>
-			    </div>
+				    <div class="parallax"><img src="/{{theme}}/materialize/images/landing/splash.jpg" alt="Unsplashed background img 2" style="display: block; transform: translate3d(-50%, 386px, 0px); -webkit-filter:brightness(50%)"></div>
+				</div>
+				<div class="container">
+					<div class="section">
 
-			    <!-- /.intro-header -->
+					  <div class="row">
+					   	<h3 class="col s12 light center header grey-text">+20 amazing technologies at your service</h3>
+					    <div class="col s12 m4">
+					      <div class="icon-block">
+					      	<h3 class="center"><i class="mdi-action-dns light-blue-text" style="font-size:45px;"></i></h3>
+					        <h5 class="center">Back-end</h5>
 
-			    <!-- Page Content -->
-			        <!-- /.container -->
-				    <div class="container">
-						<center class="col-lg-12 col-sm-12" style="margin-bottom: -160px;">
-		                    <img class="img-responsive" src="/default/img/landing/macs_update2.png" alt="">
-		                </center>
-		                </div>
+					        <p class="light">Because beauty isn't only at front-end, this GAE Materialize Boilerplate includes beautiful technologies at its back-end. Among the most interesting you'll find:</p>
+					        <ul>
+						        <li><a target="_blank" href="https://www.python.org/download/releases/2.7.5/">Python 2.7.5</a>, well you know Python <a href="/{{theme}}/materialize/images/programming.jpg" target="_blank">don't you?</a>,</li>
+						        <li><a target="_blank" href="http://developers.google.com/appengine/docs/python/ndb/">NDB 1.0.10</a>, the best no-sql database API for the GAE Python runtime,</li>
+						        <li><a target="_blank" href="http://jinja.pocoo.org/docs/">Jinja2 2.6</a>, a fully featured template engine for Python,</li>
+						        <li><a target="_blank" href="http://wtforms.simplecodes.com/">WTForms-1.0.2</a>, forms validation keeping user interaction secure and flexible,</li>
+						        <li><a target="_blank" href="http://babel.edgewall.org/">Babel-0.9.6</a>, renders the site in multiple languages, and</li>
+						        <li><a target="_blank" href="http://webapp-improved.appspot.com/">WebApp2 2.5.2</a>, lightweight Python web framework, best for the GAE Python runtime.</li>
+					        </ul>
+					      </div>
+					    </div>
 
-					    <a id="services" name="services"></a>
-					    <div class="content-section-a" style="margin-bottom:60px;">
+					    <div class="col s12 m4">
+					      <div class="icon-block">
+					      	<h3 class="center"><i class="mdi-av-web light-blue-text" style="font-size:45px;"></i></h3>
+					        <h5 class="center">Front-end</h5>
+							 <p class="light">With GAE Materialize Boilerplate everything will be shinny because it has been brought from the future, where the internet is pretty and organized. In this future you'll find:</p>
+					        <ul>
+						        <li><a target="_blank" href="http://html5boilerplate.com/">HTML5Boilerplate</a>, yes, the HTML that rocks !,</li>
+						        <li><a target="_blank" href="http://modernizr.com">Modernizr 2.6.1</a>, modernize says it all,</li>
+						        <li><a target="_blank" href="http://jquery.com">jQuery 2.1.1</a>, the JS for Safari =),</li>
+						        <li><a target="_blank" href="http://materializecss.com/)">MaterializeCSS</a>, beauty at its best,</li>
+						        <li><a target="_blank" href="https://www.polymer-project.org/1.0/">Polymer</a>, web components or the future, now,</li>
+						        <li><a target="_blank" href="https://highcharts.com">HighCharts</a>, <a target="_blank" href="http://d3js.org/">D3</a>, <a target="_blank" href="http://www.chartjs.org/">ChartJS</a>, <a target="_blank" href="https://gionkunz.github.io/chartist-js/">ChartistJS</a>, <a target="_blank" href="https://www.datatables.net/">Data Tables</a>, among other data visualization libraries.</li>
+					        </ul>
+					        
+					      </div>
+					    </div>
 
-					        <div class="maybe-container">
-					            <div class="row">
-					                <div class="col-lg-12 col-sm-12" style="text-align:center;margin-bottom:40px;">
-					                    <div class="clearfix"></div>
-					                    <h2 class="section-heading">Analiza, compara y reduce tu recibo de luz</h2>
-					                    <p class="lead">Te ayudamos a tomar mejores decisiones para ahorrar en tu recibo de luz.</p>
-					                </div>
-					                <div id="explora_img" class="img_action col-md-6 col-sm-12" style="text-align:center;min-height:300px;"></div>
-					                <div id="explora_action" class="col-md-6 col-sm-12" style="text-align:center;min-height:300px;">
-					                    <h2 class="section-heading" style="color:white; margin-top:40px;">¿Sabes cuánto consumen tus electródomesticos?</h2>
-					                    <p class="lead" style="color:white; letter-spacing:0px;margin-bottom:45px;">Analiza a detalle tu tarifa, consumo y gasto por categoría.</p>
-					                    <a class="white-ghost action-button" data-toggle="modal" data-target="#register">Explorar</a>
-					            	</div>
-					                <div id="conoce_img_mobile" class="img_action mobile-only col-md-6 col-sm-12" style="text-align:center;min-height:300px;margin-bottom:-60px;"></div>
-					                <div id="conoce_action" class="col-md-6 col-sm-12" style="text-align:center;min-height:300px;">
-					                	<h2 class="section-heading" style="color:white; margin-top:60px;">¿Conoces el gasto promedio en tu colonia?</h2>
-					                    <p class="lead" style="color:white; letter-spacing:0px;margin-bottom:45px;">Compara tu consumo de electricidad con amigos y vecinos.</p>
-					                    <a class="white-ghost action-button" data-toggle="modal" data-target="#register">Conocer</a>
-					                </div>
-					                <div id="conoce_img" class="desktop-only col-md-6 col-sm-12" style="text-align:center;min-height:300px;"></div>
-					                <div id="descubre_img" class="img_action col-md-6 col-sm-12" style="text-align:center;min-height:300px;"></div>
-					                <div id="descubre_action" class="col-md-6 col-sm-12" style="text-align:center;min-height:300px;">
-					                	<h2 class="section-heading" style="color:white; margin-top:40px;">¿Qué haces para reducir tu consumo?</h2>
-					                    <p class="lead" style="color:white; letter-spacing:0px;margin-bottom:45px;">Encuentra tus oportunidades y las mejores soluciones.</p>
-					                    <a class="white-ghost action-button" data-toggle="modal" data-target="#register">Descubrir</a>
-									</div>			                
-					        	</div>
-					            <hr style="border-top: 1px solid #565B7A;margin-top: 60px; max-width:30%;">
-					    	</div>
+					    <div class="col s12 m4">
+					      <div class="icon-block">
+					      	<h3 class="center"><i class="mdi-action-extension light-blue-text" style="font-size:45px;"></i></h3>
+					        <h5 class="center">Integrations</h5>
+							<p class="light">As if it wasn't enough, GAE Materialize Boilerplate has been prepared for you to easily integrate popular technologies. Among the most interesting you'll find:</p>
+					        <ul>
+						        <li><a target="_blank" href="https://bitly.com">Bit.ly</a> and <a href="https://goo.gl">Goo.gl</a>, for shortlink generators,</li>
+						        <li><a target="_blank" href="http://slack.com">Slack</a>, to receive chat notifications everytime you have a new user so that you can tell them how much you care,</li>
+						        <li><a target="_blank" href="http://zendesk.com">Zendesk</a>, to get feeedback like a zen,</li>
+						        <li><a target="_blank" href="http://sendgrid.com">Sendgrid</a>, ran out of 20,000 monthly emails quota?, no worries you'll be ready to use your second bucket,</li>
+						        <li><a target="_blank" href="http://cartodb.com">CartoDB</a>, geo-refence, postGIS + postgresql at its best.</li>
+					        </ul>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+				</div>
+				<div class="parallax-container z-depth-3">
+					<div class="section no-pad-bot" style="  margin-top: 12%;">
+					  <div class="container">
+					    <br><br>
+					    <div class="row center">
+					      <h5 class="header col s12 white-text light" style="line-height: 2;">You heard the goat, right? But what a about a seal ? <span id="speak-two" class="light-blue-text text-lighten-2" style="cursor:pointer;">No way !</span></h5>
+					    </div>
+					  </div>
+					</div>
+					<div class="parallax"><img src="/{{theme}}/materialize/images/landing/splash_seal.jpg" alt="Unsplashed background img seal" style="display: block; transform: translate3d(-50%, 386px, 0px); -webkit-filter:brightness(50%)"></div>
+				</div>
+				<div class="container">
+					<div class="section">
 
-				    	</div>
-			    		<!-- /.content-section-a -->
+					  <div class="row">
+					    <div class="col s12 center">
+					      <h3><i class="mdi-av-queue light-blue-text" style="font-size:45px;"></i></h3>
+					      <h4>Wait, there's even more ?</h4>
+					      <p class="left-align light">
+					      	<strong>Functions and features from the GAE Boilerplate: </strong>
+					      	<br>
+					      	(1) Authentication: login, logout, register (2) Login via your favorite social network (3) Reset Password (4) Update User Profile (5) Contact Form (6) Client side and server side form validation (7) Automatic detection of user language (8) Support for many Languages (9) Visitors Log (10) Notifications and Confirmation for users when they change their email or password (11) Responsive Design for viewing on PCs, tablets, and mobile phones (12) Mobile identification (13) Unit Testing (14) Error handling (15) Basic user management features available under /admin/ for GAE Administrators.
+					      </p>
+					      <p class="left-align light">
+					      	<strong>Security and passwords from the GAE Boilerplate: </strong>
+					     	<br>
+					      	(1) SSL is enabled site wide by adding <em>secure: always</em> to the section: <em>- url: /.*</em> in app.yaml (2) SSL either requires a free google app engine *.appspot.com domain or a <a target="_blank" href="https://developers.google.com/appengine/docs/ssl">custom domain and certificate</a> (3) Alternatively SSL can be enabled at a controller level via webapp2 schemes. Use the secure_scheme provided in routes.py (4) It is recommended to enable ssl site wide to help prevent <a target="_blank" href="http://en.wikipedia.org/wiki/Session_hijacking">session hijacking</a> (5) Passwords are hashed and encrypted with SHA512 and PyCrypto (6) Forms are secured through <a target="_blank" href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">cross-site request forgery</a> protection.
+					      </p>
+					      <p class="left-align light">
+					      	<strong>Additional perks: </strong>
+					      	<br>
+					      	(1) Dropbox-inspired referrals system for users to invite with their unique link (2) Rewards system for you to praise users' loyalty (3) Pre-loaded web components for easier chart generation (4) Beautiful email templates for a bunch of situations (5) Konami-code surprise for the fun of it (6) To be continued... 
+					      </p>
+					    </div>
+					  </div>
+					</div>
+				</div>
+				<div class="parallax-container z-depth-3">
+					<div class="section no-pad-bot" style="  margin-top: 12%;">
+					  <div class="container">
+					    <div class="row center">
+					      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+							<input type="hidden" name="cmd" value="_s-xclick">
+							<input type="hidden" name="hosted_button_id" value="85VURVHH53HVY">
+							<input type="image" src="/{{theme}}/materialize/images/landing/buymeabeer.jpg" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" class="responsive-img circle z-depth-5 tooltipped" style="max-height: 200px;  border: 7px solid rgb(3, 169, 244);z-index:1;" data-position="top" data-delay="50" data-tooltip="Donate with PayPal!">
+						  </form>
+					    </div>
+					  </div>
+					</div>
+					<div class="parallax"><img src="/{{theme}}/materialize/images/landing/thanks.jpg" alt="Unsplashed background img 3" style="display: block; transform: translate3d(-50%, 230px, 0px); -webkit-filter:brightness(50%)"></div>
+				</div>
+				<div class="container">
+					<div class="section" id="download">
 
-			    <div class="content-section-a" style="margin-bottom:60px;margin-top:-100px;">
+					  <div class="row">
+					    <div class="col s12 center">
+					      <h3><i class="mdi-file-file-download light-blue-text" style="font-size:45px;"></i></h3>
+					      <h4>The source is the source, of course, of course...</h4>
+					      <p class="center light">After all charm, it wouldn't be love if you couldn't own it. So go for it !</p>
+					      <div class="col s12 center">
+		                      <a href="{{uri_for("contact")}}" class="waves-effect waves-light light-blue white-text btn-large "><i class="mdi-action-bug-report left"></i>Report a bug</a>
+		                      <a href="" class="waves-effect waves-light light-blue white-text btn-large "><i class="mdi-file-file-download left"></i>Download</a>
+		                      <a href="{{uri_for("contact")}}" class="waves-effect waves-light light-blue white-text btn-large "><i class="mdi-communication-comment left"></i>Reach me out!</a>
+		                  </div>
+					    </div>
+					  </div>
+					</div>
+				</div>
+			{% endblock %}
 
-			        <div class="container">
-			            <div class="row">
-			                <div class="col-lg-12 col-sm-12" style="text-align:center;margin-bottom:40px;">
-			                    <!-- <hr class="section-heading-spacer" style="float:none;"> -->
-			                    <div class="clearfix"></div>
-			                    <h2 class="section-heading section-final">Comparte e invita para lograr más beneficios</h2>
-			                    <p class="lead">Invictus funciona mejor cuando todos lo usan. Entre más usuarios mejores soluciones.</p>
-			                </div>				                                
-			            </div>
-			            <div class="row" >
-			                <div class="col-lg-4 col-sm-12 actions" style="border-right:1px solid #B7C7CC;">
-			                   <center>
-			                     <img class="img-responsive" src="/default/img/landing/participa.png" alt="">
-			                     <h2 style="font-family:raleway; font-weight:600; font-size:24px;text-transform:uppercase">Participa</h2>
-			                     <p class="lead">Accede a compras grupales para obtener mejores precios.</p>
-			                   </center>
-			                </div>
-			                <div class="col-lg-4 col-sm-12 actions" style="border-right:1px solid #B7C7CC;">
-			                   <center>
-			                     <img class="img-responsive" src="/default/img/landing/evalua.png" alt="">
-			                     <h2 style="font-family:raleway; font-weight:600; font-size:24px;text-transform:uppercase">Evalúa</h2>
-			                     <p class="lead">Compara y selecciona ofertas y proveedores de calidad.</p>
-			                   </center>
-			                </div>
-			                <div class="col-lg-4 col-sm-12">
-			                   <center>
-			                     <img class="img-responsive" src="/default/img/landing/enterate.png" alt="">
-			                     <h2 style="font-family:raleway; font-weight:600; font-size:24px;text-transform:uppercase">Entérate</h2>
-			                     <p class="lead">Comparte las mejores prácticas para ahorrar.</p>
-			                   </center>
-			                </div>
-			            </div>	
-
-			            <div class="row" style="margin-top: 90px;margin-bottom: 40px;"> 
-			            	<div class="col-sm-12" style="text-align:center">
-			            		<a class="big-landing-ghost" style="background:transparent; color:#ff6623;" data-toggle="modal" data-target="#register">Crea tu cuenta</a>
-			            	</div>
-			            </div>
-
-
-			        </div>
-			        <!-- /.container -->
-
-			    </div>
-			    <!-- /.content-section-a -->
-
-			    <div class="banner" style="margin-top:-50px; padding-bottom: 15px!important;">
-
-			        <div class="container">
-
-			            <div class="row" style="margin-top:-40px;">
-			                <div class="col-lg-12 col-sm-12" style="text-align:center;">
-			                    <div class="clearfix"></div>
-			                    <h2 class="section-heading" style="color:white">Súmate; nuestros usuarios han ahorrado</h2>
-			                </div>				                                
-			            </div>
-						<div class="row">
-							<div class="col-md-4 col-md-offset-2 col-sm-12" style="border-right:1px solid #ff6623;text-align:right;">
-			                     <h2 class="section-heading glow" style="color:#ff6623;font-family:open sans; font-weight:bold font-size:48px;letter-spacing:1.5px;">${{sumsaving_bills}}</h2>
-			                     <p class="lead" style="color:white; font-family:open sans; font-weight:400; font-size:20px;">Pesos</p>
-			                </div>
-			                <div class="col-md-4 col-sm-12" style="border-left:1px solid #ff6623;text-align:left;">
-			                     <h2 class="section-heading glow" style="color:#ff6623;font-family:open sans; font-weight:bold font-size:48px;letter-spacing:1.5px;">{{sumsaving_kwhs}} kWh</h2>
-			                     <p class="lead" style="color:white; font-family:open sans; font-weight:400; font-size:20px;">Energía</p>
-			                </div>
-			            </div>	
-			            <div class="row" style="text-align:center">
-			                <center>
-			                	<img class="img-responsive" src="/default/img/landing/mapa2.gif" alt="">
-			                </center>
-			            </div>
-			            <div class="row" style="margin-top:-40px;">
-			                <div class="col-lg-12 col-sm-12" style="text-align:center;">
-			                    <div class="clearfix"></div>
-			                    <h2 class="section-heading" style="color:white; font-family: raleway; margin-top:150px; font-weight:100;margin-bottom:25px;">Electricidad y educación para todos</h2>	
-			                     <p class="lead" style="color:white; font-family:open sans; font-weight:400; font-size:14px;">{{qubit_amount}} Qubits</p>
-
-			                </div>	
-			                <div class="col-sm-4 col-sm-offset-4" style="margin-bottom:40px;">
-				                 	<img src="/default/img/landing/flag.png" height="40" style="float:left; margin-top:-10px;">
-				                 	<img src="/default/img/landing/flag_goal.png" height="40" style="float:right; margin-top:-10px;">
-
-				                 	<div class="progress" style="background-color:#1F212F; border-radius: 25px;">
-									  <div class="progress-bar progress-bar-success progress-bar-striped glow" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="  border-radius: 25px 0px 0px 25px; width: {{qubit_percent}}%; background-color:#ff6623;">
-									    <span class="sr-only">40% Complete (success)</span>
-									  </div>
-									</div>
-
-				            </div>
-			                <div class="col-lg-12 col-sm-12" style="text-align:center;margin-bottom:40px;">
-			            		<a class="big-landing-ghost" style="background:transparent; color:#ff6623; margin-top:40px;" href="http://blog.invictus.mx/fundacion/" target="_blank">Conoce cómo</a>
-							</div>
-
-
-			            </div>
-						
-			            <hr style="border-top: 1px solid #565B7A;margin-top: 60px;">
-
-			            <div class="row" style="margin-bottom:0px;">
-			            	<div class="col-md-2 col-sm-6">
-			            		<div class="row" style="margin-bottom:5px;"><img src="/default/img/invictus-naranja.png" height="40" alt=""></div>
-			            		<div class="row"><a target="_blank" href="{{uri_for("mat-tou")}}" style="color:#565B7A;">Términos y condiciones</a></div>
-			            	</div>
-			            	<div class="col-md-2 col-md-offset-1 col-sm-6" style="margin-top:4px; margin-bottom:20px;">
-			            		<div class="row" style="margin-bottom:5px;color:white;">MENU</div>
-			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="http://blog.invictus.mx/blog/2014/12/20/equipoinvictus" style="color:#565B7A;">Nosotros</a></div>
-			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="http://blog.invictus.mx/fundacion/" style="color:#565B7A;">Fundación</a></div>
-			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="http://blog.invictus.mx/qubit/" style="color:#565B7A;">Qubit</a></div>
-			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="http://blog.invictus.mx" style="color:#565B7A;">Blog</a></div>
-			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" href="{{ uri_for("mat-contact")}}" style="color:#565B7A;">Contacto</a></div>
-			            		<div class="row" style="margin-bottom:5px;"><a target="_blank" data-toggle="modal" data-target="#login" style="color:#565B7A; cursor:pointer;">Ingresar</a></div>
-			            	</div>
-			            	<div class="col-md-3 col-md-offset-4 col-sm-12">
-			            		<div class="row" style="color:white">SUSCRÍBETE A NUESTRO BLOG</div>
-			            		<div class="row" style="margin-bottom:0px;">
-			            			<!-- Begin MailChimp Signup Form -->
-										<div id="mc_embed_signup">
-										<form action="//invictus.us9.list-manage.com/subscribe/post?u=0e2779921253c5f087dbcbd19&amp;id=2b3a4b2c9e" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-										    <div id="mc_embed_signup_scroll">
-												<div class="mc-field-group">
-														<input type="email" value="" name="EMAIL" class="required email" placeholder="Email" id="mce-EMAIL" style="float: left; max-width: 50%;background: #1F212F;  border-radius: 4px 0px 0px 4px;padding-left: 12px;  border: 1px solid #1f212f;">
-														<input type="submit" value="Enviar" name="subscribe" id="mc-embedded-subscribe" class="button" style="float: left; max-width: 50%;background: #ff6623;border-radius: 0px 4px 4px 0px;padding: 5px;border: none;padding-left: 12px;padding-right: 13px;">
-												</div>
-												<div id="mce-responses" class="clear">
-													<div class="response" id="mce-error-response" style="display:none"></div>
-													<div class="response" id="mce-success-response" style="display:none"></div>
-												</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-											    <div style="position: absolute; left: -5000px;"><input type="text" name="b_0e2779921253c5f087dbcbd19_2b3a4b2c9e" tabindex="-1" value=""></div>
-											    <div class="clear"></div>
-										    </div>
-										</form>
-										</div>
-
-									<!--End mc_embed_signup-->
-			            		</div>
-			            		<div class="row" style="color:white">¿Eres proveedor? <a href="{{ uri_for("materialize-vendor") }}" target="_blank" style="color:#ff6623">Da de alta tu tienda.</a></div>
-			            		<div class="row">
-			            			<ul class="list-inline">
-			                        <li>
-			                            <a href="{{uri_for("mat-contact")}}" title="Contáctanos" target="_blank">
-			                              <img alt="Contáctanos" title="Contáctanos" border="0" src="/default/img/landing/mail.png" height="20px" onmouseover="this.src='/default/img/landing/mail_hover.png'" onmouseout="this.src='/default/img/landing/mail.png'" style="display:block;margin:auto">
-			                            </a>
-			                        </li>
-			                        <li>
-			                            <a href="http://twitter.com/invictusmx" title="Comparte en Twitter" target="_blank">
-			                              <img alt="Comparte en Twitter" title="Comparte en Twitter" border="0" src="/default/img/landing/tw.png" height="20px" onmouseover="this.src='/default/img/landing/tw_hover.png'" onmouseout="this.src='/default/img/landing/tw.png'" style="display:block;margin:auto">
-			                            </a>
-			                        </li>
-			                        <li>
-			                            <a href="http://www.facebook.com/wwwinvictusmx" title="Comparte en Facebook" target="_blank">
-			                              <img alt="Comparte en Facebook" border="0" title="Invictus Facebook" src="/default/img/landing/fb.png" height="20px" onmouseover="this.src='/default/img/landing/fb_hover.png'" onmouseout="this.src='/default/img/landing/fb.png'" style="display:block;margin:auto">
-			                            </a>
-			                        </li>
-			                        <li>
-			                            <a href="https://www.linkedin.com/company/3577170?trk=tyah&trkInfo=tarId%3A1422386950602%2Ctas%3Ainvictus.mx%2Cidx%3A2-1-2" title="Ver en LinkedIn" target="_blank">
-			                              <img alt="Ver en LinkedIn" border="0" title="Ver en LinkedIn" src="/default/img/landing/in.png" height="20px" onmouseover="this.src='/default/img/landing/in_hover.png'" onmouseout="this.src='/default/img/landing/in.png'" style="display:block;margin:auto">
-			                            </a>
-			                        </li>
-			                    </ul>
-			            		</div>
-			            	</div>
-			            </div>
-
-			            <div class="row" style="">
-			                <div class="col-lg-12" style="text-align:center;">
-			                    
-			                    <p class="copyright text-muted small" style="margin-top:30px;margin-bottom:-15px;">Copyright &copy; Invictus 2015. Todos los derechos reservados</p>
-			                    <p id="thunder" class="copyright text-muted small" >Made from real <core-tooltip label="¿Qué tal si intentas el konami-code?" position="bottom"><love-heart style="cursor:pointer"></love-heart></core-tooltip></p>
-
-			                </div>
-			            </div>
-
-			        </div>
-			        <!-- /.container -->
-
-			    </div>
-			    <!-- /.banner -->
-
-
-
-
-			<!-- Modals -->
-			<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="background:transparent; box-shadow:none;">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			        <center><img src="/default/img/invictus-naranja.png" height="40px" style="margin-top:-10px"></center>
-			        <h4 class="modal-title" id="myModalLabel" style="text-align:center; font-family:open sans; font-weight:6000; color:#727272; font-size:24px;">Ingresa a tu cuenta.</h4>       
-			      </div>
-			      <div class="modal-body" style="text-align:center;">
-			          <form id="l_form_fake">
-				            <fieldset>
-				              <div style="margin-top: 0px;margin-bottom: -10px;">
-				            <div class="form-group">
-				              <label class="controls">
-				                <paper-input-decorator class="custom-landing" label="{% trans %}Correo electrónico{% endtrans %}">
-				                  <input is="core-input" style="color: #3b4b54;" name="_username" id="_l_username" type="text" placeholder="{% trans %}Correo electrónico{% endtrans %}" onchange="passShadow(this)">
-				                </paper-input-decorator>
-				              </label>
-				            </div>
-				            <div class="form-group">
-				              <label class="controls">
-				                <paper-input-decorator class="custom-landing" label="{% trans %}Contraseña{% endtrans %}">
-				                  <input is="core-input" style="color: #3b4b54;" name="_password" id="_l_password" type="password" placeholder="{% trans %}Contraseña{% endtrans %}" onchange="passShadow(this)" onKeyPress="passShadow(this); enterpressEvent(event, 'form_login_user')">
-				                </paper-input-decorator>
-				              </label>
-				            </div>
-				            <div class="col-md-12" style="margin-bottom:30px;">
-				              <label class="checkbox" style="font-size: 12px; color:#5A5A5A;">
-				                <paper-checkbox is="core-input" name="_remember_me" id="_remember_me" for style="height: 14px;margin-right:4px;" onchange="passShadow(this)" value="on"></paper-checkbox>
-				                {% trans %}Recordarme{% endtrans %} <a href="{{ uri_for("password-reset") }}" style="padding: 15px;">{% trans %}¿La olvidaste?{% endtrans %}</a>
-				              </label>
-				            </div>
+			{% block modals_content %}
+				<div id="modal1" class="modal white light-blue-text center" style="display: none; opacity: 1; top: 0px;">
+			      <i class="mdi-navigation-close light-blue-text right modal-action modal-close" style="padding: 10px;"></i>
+			      <div class="modal-content">
+		        	<form >
+				        <div class="row">
+				          <div class="input-field col s12 center">
+				            <p class="center login-form-text">Please enter your credentials</p>
 				          </div>
-				          </fieldset>
-			          </form>
-
-			          <form id="form_login_user" action="{{ uri_for("materialize-login") }}" method="post">
-			            <fieldset>
-			              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-			              <input class="focused required form-control" name="username" id="l_username" type="text" placeholder="{% trans %}Username or Email{% endtrans %}" hidden>
-
-			              <input class="focused required form-control" name="password" id="l_password" type="password" placeholder="{% trans %}Password{% endtrans %}" hidden>
-
-			              <input type="checkbox" name="remember_me" id="remember_me" value="on" hidden>
-
-			            </fieldset>
-			          </form>
-
-			           <a class="orange-ghost" style="min-width:160px; padding-top:10px!important; padding-bottom:10px!important; padding-left:45px!important; padding-right:45px!important; cursor:pointer;"  onclick="sendForm('form_login_user')">{% trans %}Ingresar{% endtrans %}</a>  
-
-
-			          <h6 class="legal" style="margin-top:30px;">
-			            <a href="{{ uri_for("mat-tou") }}" class="legal">{% trans %}Términos de uso{% endtrans %}</a> - 
-			            <a href="{{ uri_for("mat-privacy") }}" class="legal">{% trans %}Aviso de privacidad{% endtrans %}</a> - 
-			            <a href="{{ uri_for("mat-faq") }}" class="legal">{% trans %}Preguntas frecuentes{% endtrans %}</a> 
-			          </h6>
+				        </div>
+				        <div class="row margin">
+				          <div class="input-field col s12">
+				            <i class="mdi-social-person-outline prefix"></i>
+				            <input id="email" type="text">
+				            <label for="email" class="center-align">Email</label>
+				          </div>
+				        </div>
+				        <div class="row margin">
+				          <div class="input-field col s12">
+				            <i class="mdi-action-lock-outline prefix"></i>
+				            <input id="password" type="password">
+				            <label for="password">Password</label>
+				          </div>
+				        </div>
+				        <div class="row">          
+				          <div class="input-field col s12 m12 l12  login-text">
+				              <input type="checkbox" id="remember-me" />
+				              <label for="remember-me">Remember me</label>
+				          </div>
+				        </div>
+				        <div class="row">
+				          <div class="input-field col s12">
+				            <a href="index.html" class="btn waves-effect waves-light col s12">Login</a>
+				          </div>
+				        </div>
+				        <div class="row right">
+				          <div class="input-field col s12">
+				              <p class="margin right-align medium-small"><a href="#">Forgot password ?</a></p>
+				          </div>          
+				        </div>
+				      </form>
 			      </div>
 			    </div>
-			  </div>
-			</div>
-
-			<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="background:transparent; box-shadow:none; max-height:95%; height:95%;">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			        <center><img src="/default/img/invictus-naranja.png" height="40px" style="margin-top:-10px"></center>
-			        {% if is_referral %}
-			          <h4 class="modal-title" id="myModalLabel" style="text-align:center; font-family:open sans; font-weight:600; color:#727272; font-size:24px;margin-bottom:-15px;margin-top:-10px;">{{_username}} te recomienda crear tu cuenta.</h4>
-			        {% elif is_roomie %}
-			          <h4 class="modal-title" id="myModalLabel" style="text-align:center; font-family:open sans; font-weight:600; color:#727272; font-size:24px;margin-bottom:-15px;margin-top:-10px;">¡Súmate al hogar de {{_username}}!</h4>
-			        {% else %}
-			          <h4 class="modal-title" id="myModalLabel" style="text-align:center; font-family:open sans; font-weight:600; color:#727272; font-size:24px;margin-bottom:-15px;margin-top:-10px;">Crea tu cuenta, es gratis.</h4>
-			        {% endif %}
-			      </div>
-			      <div class="modal-body" style="text-align:center;">
-			          <form id="form_fake">
-			          <fieldset><center>
-			          <div class="form-group">
-			                        <label class="controls">
-			                            <paper-input-decorator class="custom-landing" label="{% trans %}Nombre{% endtrans %}">
-			                                <input is="core-input" style="color: #3b4b54;" name="_name" id="_name" type="text" placeholder="{% trans %}Nombre{% endtrans %}" onchange="passShadow(this);" onkeyup="passUser(this)">
-			                            </paper-input-decorator>
-			                        </label>
-			                    </div>
-			                    <div class="form-group">
-			                        <label class="controls">
-			              <paper-input-decorator class="custom-landing" label="{% trans %}Correo electrónico{% endtrans %}"> 
-			                <input is="core-input" style="color: #3b4b54;" name="_email" id="_email" type="email" placeholder="{% trans %}Correo electrónico{% endtrans %}" onchange="passShadow(this)">
-			              </paper-input-decorator>
-			                            <input type="hidden" name="country" value="">
-			                        </label>
-			                    </div>
-			                    <div class="form-group">
-			                        <label class="controls">
-			                            <paper-input-decorator class="custom-landing" label="{% trans %}Contraseña{% endtrans %}"> 
-			                <input is="core-input" style="color: #3b4b54;" name="_password" id="_password" type="password" placeholder="{% trans %}Contraseña{% endtrans %}" onchange="passShadow(this)">
-			              </paper-input-decorator>
-			                        </label>
-			                    </div>
-			                    <div class="form-group">
-			                        <input is="core-input" type="hidden" name="country">
-			                        <input is="core-input" type="hidden" name="tz">   
-			                    </div>
-			          </center></fieldset>
-			          </form>   
-			              
-			              
-			              <form id="form_register" action="{{ uri_for("materialize-register") }}" method="post">
-			                <fieldset>
-			                  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-			                  <input class="input-xlarge focused required form-control" id="username" name="username" placeholder="Enter your Username" type="text" value="" hidden>
-			                  <input class="input-xlarge focused required email form-control" id="email" name="email" placeholder="Enter your Email" type="email" value="" hidden>
-			                  <input class="input-xlarge focused required form-control" id="password" name="password" placeholder="Enter your Password" type="password" value="" hidden>
-			                  <input class="input-xlarge focused required form-control" id="c_password" name="c_password" placeholder="Confirm Password" type="password" value="" hidden>
-			                  <input class="input-xlarge focused required form-control" id="name" name="name" placeholder="Enter your Name" type="text" value="" hidden>
-			                  <input class="input-xlarge focused required form-control" id="last_name" name="last_name" placeholder="Enter your Lastname" type="text" value="" hidden>
-			                  <input class="input-xlarge focused required form-control" id="country" name="country" placeholder="Enter your Country" type="text" value="" hidden>
-			                  <input class="input-xlarge focused required form-control" id="tz" name="tz" placeholder="Enter your timezone" type="text" value="" hidden>
-			                  <div class="form-group">
-			                  <center><div id="captcha" style="margin-bottom:20px;">
-			                      {{captchahtml | safe}}
-			                    </div>
-			                  </div></center>
-			                </fieldset>               
-			              </form>
-			            
-			            <a class="orange-ghost" style="min-width:160px; margin-top:10px; padding-top:10px!important; padding-bottom:10px!important; padding-left:30px!important; padding-right:30px!important;cursor:pointer;" raised onclick="sendForm('form_register')" >{% trans %}Crear mi cuenta{% endtrans %}</a>            
-
-			            <h6 class="legal" style="margin-top:25px;">
-			              Al dar clic en crear mi cuenta aceptas nuestros:<br>
-			              <a href="{{ uri_for("mat-tou") }}" class="legal">{% trans %}Términos de uso{% endtrans %}</a> - 
-			              <a href="{{ uri_for("mat-privacy") }}" class="legal">{% trans %}Aviso de privacidad{% endtrans %}</a> - 
-			              <a href="{{ uri_for("mat-faq") }}" class="legal">{% trans %}Preguntas frecuentes{% endtrans %}</a> 
-			            </h6>
+			    <div id="modal2" class="modal white light-blue-text center" style="display: none; opacity: 1; top: 0px;">
+			      <i class="mdi-navigation-close light-blue-text right modal-action modal-close" style="padding: 10px;"></i>
+			      <div class="modal-content">
+		        	<form>
+				        <div class="row">
+				          <div class="input-field col s12 center">
+				            <p class="center login-form-text">Join the community now !</p>
+				          </div>
+				        </div>
+				        <div class="row margin">
+				          <div class="input-field col s12">
+				            <i class="mdi-social-person-outline prefix"></i>
+				            <input id="name" type="text">
+				            <label for="name" class="center-align">Name</label>
+				          </div>
+				        </div>
+				        <div class="row margin">
+				          <div class="input-field col s12">
+				            <i class="mdi-communication-email prefix"></i>
+				            <input id="email" type="email">
+				            <label for="email" class="center-align">Email</label>
+				          </div>
+				        </div>
+				        <div class="row margin">
+				          <div class="input-field col s12">
+				            <i class="mdi-action-lock-outline prefix"></i>
+				            <input id="password" type="password">
+				            <label for="password">Password</label>
+				          </div>
+				        </div>
+				        <div class="row">
+				          <div class="input-field col s12">
+				            <a href="index.html" class="btn waves-effect waves-light col s12">Register Now</a>
+				          </div>
+				        </div>
+				      </form>
 			      </div>
 			    </div>
-			  </div>
-			</div>
-			<paper-toast id="toastLogin" text="{% trans %}Oops, ¿te faltó llenar algún campo?{% endtrans %}" style="z-index:9999" class="warning" duration="6000" autoclosedisabled></paper-toast>
-	{% endblock %} 
+			{% endblock %}
+			<!-- END CONTENT -->
+		{% endblock %}
 
-	{% block scripts %}
-		<script src="/boilerplate/js/plugins.js"></script>
-		{% if messages|safe %}
-		    {% for message in messages %}
-				<paper-toast id="toast" text="{{ message[0]|safe }}" style="z-index:9999" class="{{ message[1]|safe }}" duration="6000" autoclosedisabled></paper-toast>
-				<div id="toast-additionals" class="toast-additionals"></div>
-		    {% endfor %}
-		    <script>
-			     if (!is_Safari) 
-					setTimeout(function(){
-						while(!document.querySelector('#toast')){}
-						
-						var toast = document.querySelector('#toast');
-						var toast_additionals = document.getElementById('toast-additionals');
-						var resendIndex = 0 ;
-						resendIndex = toast.text.search('resend');
+		{% block footer %}
+			<!-- START FOOTER -->
+			<footer class="page-footer light-blue darken-1">
+				<a href="#"><i class="mdi-navigation-expand-less white-text right" style="padding: 10px;"></i></a>
+				<div class="container">
+				  <div class="row">
+				    <div class="col m7 s12">
+				      <h5 class="white-text">About</h5>
+				      <p class="grey-text text-lighten-4">This is something every developer, non-profit, startup and freelancer wishes to find. It makes deployments and prototyping quick and easy. But not only that, it looks astonishingly beautiful and it's really, really low-cost under the Google Cloud Platform ! Forget about huge dev teams, server maintenance, system uptime, scalability and extendibility, the cloud platform will do it for you.</p>
+				    </div>
+				    <div class="col offset-m2 m3 s12">
+				      <ul>
+				        <li><a class="white-text" href="{{uri_for("faq")}}">FAQ</a></li>
+				        <li><a class="white-text" href="{{uri_for("tou")}}">Terms</a></li>
+				        <li><a class="white-text" href="{{uri_for("privacy")}}">Privacy</a></li>
+				        <li><a class="white-text" href="{{uri_for("license")}}">License</a></li>
+				        <li><a class="white-text" href="{{uri_for("contact")}}">Contact</a></li>
+				      </ul>
+				    </div>
+				  </div>
+				</div>
+				<div class="footer-copyright " style="text-align:right;">
+				  <div class="container tooltipped" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">Made from real<i class="mdi-image-flash-on white-text" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i>
+				  </div>
+				</div>
+			</footer>
+			<!-- END FOOTER -->
+			<audio id="goat" src="/default/materialize/audio/screaming_goat.mp3" volume="0.8" style="display:none;"></audio>
+			<audio id="seal" src="/default/materialize/audio/screaming_seal.mp3" volume="0.8" style="display:none;"></audio>
+		{% endblock %}
+
+	  	<!-- All Scripts start here -->
+		{% block scripts %}
+			<!--  Scripts-->
+		  	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		  	<script src="/{{theme}}/materialize/js/materialize.js"></script>
+		  	<script src="/{{theme}}/materialize/js/plugins/jquery/jquery.color-2.1.0.js"></script>
+		  	<!-- Toast Notification -->
+		    {% if messages|safe %}		    	
+			    {% for message in messages %}
+		    		<script type="text/javascript">
+		            	var resendIndex = 0 ;
+		            	var _text = "{{ message[0]|safe }}";
+		            	var _textAdditionals = "";
+						resendIndex = _text.search('resend');
 						if ( resendIndex > 0 ){
 							//this is the case when resend-activation-link is sent
 							// 1: Add this text as html to toast additionals
-							toast_additionals.innerHTML = '<a href="/'+toast.text.substr(resendIndex).replace(/ /g,'/')+'/"><p>Haz clic aquí para reenviarte el correo de activación.</p><p>Tip: El link anterior ya no funcionará.</p></a>';
+							_textAdditionals = '<a href="/'+_text.substr(resendIndex).replace(/ /g,'/')+'/"><p>Haz clic aquí para reenviarte el correo de activación.</p><p>Tip: El link anterior ya no funcionará.</p></a>';
 							// 2: Trim this text from toast
-							toast.text = toast.text.substr(0, resendIndex-1);							
+							_text = _text.substr(0, resendIndex-1);							
 						}
-						toast.show();
-						toast_additionals.style.display = 'block';			
-					},500)
-				else
-					setTimeout(function(){
-						while(!document.querySelector('#toast')){}
-						var toast = document.querySelector('#toast');
-						var toast_additionals = document.getElementById('toast-additionals');
-						var resendIndex = 0 ;
-						resendIndex = toast.text.search('resend');
-						if ( resendIndex > 0 ){
-							//this is the case when resend-activation-link is sent
-							// 1: Add this text as html to toast additionals
-							toast_additionals.innerHTML = '<a href="/'+toast.text.substr(resendIndex).replace(/ /g,'/')+'/"><p>Haz clic aquí para reenviarte el correo de activación.</p><p>Tip: El link anterior ya no funcionará.</p></a>';
-							// 2: Trim this text from toast
-							toast.text = toast.text.substr(0, resendIndex-1);							
-						}
-						toast.show();
-						toast_additionals.style.display = 'block';			
-					},6000)
-			</script>
-		{% endif %}	
-	{% endblock %}
+						var _msg = '<span class="toast-{{ message[1]|safe }}">'+_text+'</span>';
+		            	Materialize.toast(_msg, 4500);
+		            	if (_textAdditionals != "") Materialize.toast(_textAdditionals, 10000);
+		            </script>
+			    {% endfor %}
+			{% endif %}	
 
-	{% block mediaJS %}
-		<script>
-			
+	        {% block raptor %}
+				<script src="https://hammerjs.github.io/dist/hammer.js"></script>
+				<script src="/{{ theme }}/materialize/js/plugins/raptor/raptor.js?v=5"></script>
+				<script type="text/javascript">
+					$(window).load(function() {
+						$('body').raptorize({
+							'enterOn' : 'konami-code'
+						});
+					});
+				</script>
+			{% endblock %}
+	        
+	        {% block onload_methods %}
+				<script type="text/javascript">
+	    			var is_Safari = false, not_Chrome = false;
+					$(function(){
+						$('a[href*=#]:not([href=#])').click(function() {
+						    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+						      var target = $(this.hash);
+						      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+						      if (target.length) {
+						        $('html,body').animate({
+						          scrollTop: target.offset().top
+						        }, 2000);
+						        return false;
+						      }
+						    }
+						});
+					    $('.button-collapse').sideNav({
+					      edge: 'right'
+					    });
+						$('.modal-trigger').leanModal();
+						$('.tooltipped').tooltip({delay: 50});
+					    $('.parallax').parallax();
+					    $("#speak").mouseenter(function(){
+							document.getElementById("goat").play();
+						});
+						$("#speak-two").mouseenter(function(){
+							document.getElementById("seal").play();
+						});
+						$("#speak").click(function(){
+							document.getElementById("goat").play();
+						});
+						$("#speak-two").click(function(){
+							document.getElementById("seal").play();
+						});
+						$(".menu-item").click(function(){
+							$('.button-collapse').sideNav('hide');
+						});
 
+						var body = document.body,html = document.documentElement;
+						var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+						var scroll_pos = 0;
+					    var animation_begin_pos = 500;
+					    var animation_end_pos = height;
+					    var original_color = new $.Color( 'rgba(0,0,0,0)' );
+					    var beginning_color = new $.Color( 'rgb(32, 88, 113)' );
+					    var ending_color = new $.Color( 'rgb(3, 155, 229)' );
+					    $(document).scroll(function() {
+					        scroll_pos = $(this).scrollTop(); 
+					        if(scroll_pos >= animation_begin_pos && scroll_pos <= animation_end_pos ) { 
+					            var percentScrolled = scroll_pos / ( animation_end_pos - animation_begin_pos );
+					            var newRed = beginning_color.red() + ( ( ending_color.red() - beginning_color.red() ) * percentScrolled );
+					            var newGreen = beginning_color.green() + ( ( ending_color.green() - beginning_color.green() ) * percentScrolled );
+					            var newBlue = beginning_color.blue() + ( ( ending_color.blue() - beginning_color.blue() ) * percentScrolled );
+					            var newColor = new $.Color( newRed, newGreen, newBlue );
+					            $('nav').animate({ backgroundColor: newColor }, 0);
+					        } else if ( scroll_pos > animation_end_pos ) {
+					            $('nav').animate({ backgroundColor: ending_color }, 0);
+					        } else if ( scroll_pos < animation_begin_pos && scroll_pos > 0) {
+					        } else { 
+					            $('nav').animate({ backgroundColor: original_color }, 0);
 
-			  function sendForm(formID){
-			    if (formID == "form_login_user"){
-			      if (document.getElementById('l_username').value != '' && document.getElementById('l_password').value != '' )
-			        document.getElementById(formID).submit();
-			      else
-			        document.querySelector('#toastLogin').show();
-			    }else if (formID == "form_register"){
-			      if (document.getElementById('password').value == '' || document.getElementById('email').value == '' || document.getElementById('name').value == ''){
-			        document.querySelector('#toastLogin').text = "Oops, ¿te faltó llenar algún campo?";
-			        document.querySelector('#toastLogin').show();
-			      }else{
-			        document.getElementById("username").value = cleanUpSpecialChars(document.getElementById('email').value).replace(/\d+/g, '').trim();
-			        document.getElementById('c_password').value = document.getElementById('password').value;
-			        document.getElementById("last_name").value = document.getElementById("name").value.split(" ")[1];
-			        document.getElementById("name").value = document.getElementById("name").value.split(" ")[0];
-			        document.getElementById(formID).submit();
-			      }
-			    }
-			  }
+					        }
+					    });
 
-			  function passUser(element){
-			    document.getElementById('username').value = cleanUpSpecialChars(element.value.toLowerCase().replace(/ /g, ""));
-			    document.getElementById('_username').value = cleanUpSpecialChars(element.value.toLowerCase().replace(/ /g, ""));
-			  }
+						var BrowserDetect = {
+							init: function() {
+								this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
+								this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "an unknown version";
+								this.OS = this.searchString(this.dataOS) || "an unknown OS";
+								console.log("browser: " + this.browser + " v." + this.version + " running in " + this.OS);
+								if (this.browser != 'Chrome' && this.browser.indexOf('Safari') == -1 && this.browser.indexOf('iPhone') == -1 && this.browser != 'Firefox') {
+									alert("Lo sentimos, pero el sistema no ha sido diseñado para tu plataforma, descarga Google Chrome para poder navegar en Invictus.");
+								}
+								else if (this.browser.indexOf("Safari") != -1)
+									is_Safari = true;
+								else if (this.browser.indexOf("Chrome") == -1)
+									not_Chrome = true;
+							},
+							searchString: function(data) {
+								for (var i = 0; i < data.length; i++) {
+									var dataString = data[i].string;
+									var dataProp = data[i].prop;
+									this.versionSearchString = data[i].versionSearch || data[i].identity;
+									if (dataString) {
+										if (dataString.indexOf(data[i].subString) != -1) return data[i].identity;
+									} else if (dataProp) return data[i].identity;
+								}
+							},
+							searchVersion: function(dataString) {
+								var index = dataString.indexOf(this.versionSearchString);
+								if (index == -1) return;
+								return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+							},
+							dataBrowser: [{
+								string: navigator.userAgent,
+								subString: "Chrome",
+								identity: "Chrome"
+							}, {
+								string: navigator.userAgent,
+								subString: "OmniWeb",
+								versionSearch: "OmniWeb/",
+								identity: "OmniWeb"
+							}, {
+								string: navigator.vendor,
+								subString: "Apple",
+								identity: "Safari",
+								versionSearch: "Version"
+							}, {
+								prop: window.opera,
+								identity: "Opera",
+								versionSearch: "Version"
+							}, {
+								string: navigator.vendor,
+								subString: "iCab",
+								identity: "iCab"
+							}, {
+								string: navigator.vendor,
+								subString: "KDE",
+								identity: "Konqueror"
+							}, {
+								string: navigator.userAgent,
+								subString: "Firefox",
+								identity: "Firefox"
+							}, {
+								string: navigator.vendor,
+								subString: "Camino",
+								identity: "Camino"
+							}, { // for newer Netscapes (6+)
+								string: navigator.userAgent,
+								subString: "Netscape",
+								identity: "Netscape"
+							}, {
+								string: navigator.userAgent,
+								subString: "MSIE",
+								identity: "Explorer",
+								versionSearch: "MSIE"
+							}, {
+								string: navigator.userAgent,
+								subString: "Gecko",
+								identity: "Mozilla",
+								versionSearch: "rv"
+							}, { // for older Netscapes (4-)
+								string: navigator.userAgent,
+								subString: "Mozilla",
+								identity: "Netscape",
+								versionSearch: "Mozilla"
+							}],
+							dataOS: [{
+								string: navigator.platform,
+								subString: "Win",
+								identity: "Windows"
+							}, {
+								string: navigator.platform,
+								subString: "Mac",
+								identity: "Mac"
+							}, {
+								string: navigator.userAgent,
+								subString: "iPhone",
+								identity: "iPhone/iPod"
+							}, {
+								string: navigator.platform,
+								subString: "Linux",
+								identity: "Linux"
+							}]
+						};
+						BrowserDetect.init();	
+						console.log("running: {{app_name}}");
+					}); 
+				</script>
+			{% endblock %}
 
-			  $().ready(function () {
-			    $("#form_login_user").validate({
-			      submitHandler: function (form) {
-			        form.submit();
-			      },
-			      rules: {
-			        l_username: 'required',
-			        l_password: 'required'
-			      },
-			      errorPlacement: function (error, element) {
-			        element.parent().parent().addClass("error");
-			        error.addClass("help-inline").appendTo(element.parent());
-			      }
-			    });
-			    $("#l_form_fake").validate({
-			      submitHandler: function (form) {
-			        //form.submit();
-			      },
-			      rules: {
-			        _l_username: 'required',
-			        _l_password: 'required'
-			      },
-			      errorPlacement: function (error, element) {
-			        element.parent().parent().addClass("error");
-			        error.addClass("help-inline").appendTo(element.parent());
-			      }
-			    });
+			{% block page_scripts %}{% endblock %}			
 
-			    $("#form_register").validate({
-			            submitHandler: function(form) {
-			                    form.submit();
-			            },
-			            rules: {
-			                email: 'required',
-			                username: 'required',
-			                password: 'required',
-			                c_password: {
-			                    required: true,
-			                    equalTo: '#password'
-			                }
-			            },
-			            errorPlacement: function(error, element) {
-			                element.parent().parent().addClass("error");
-			        error.addClass("help-inline").appendTo(element.parent());
-			            }
-			        });
+		{% endblock %}
 
-			      $("#_password").passStrength({
-			        shortPassText: '{% trans %}Tu contraseña es muy corta.{% endtrans %}',
-			                badPassText: '{% trans %}¿Agregamos un símbolo?{% endtrans %}',
-			                goodPassText: '{% trans %}Ésta podría funcionar.{% endtrans %}',
-			                strongPassText: '{% trans %}¡Es muy buena!{% endtrans %}'
-			      });
-			    
-			      $("#form_fake").validate({
-			              submitHandler: function(form) {
-			                      //form.submit();
-			              },
-			              rules: {
-			                  _email: 'required',
-			                  _username: 'required',
-			                  _password: 'required',
-			                  _c_password: {
-			                      required: true,
-			                      equalTo: '#_password'
-			                  }
-			              },
-			              errorPlacement: function(error, element) {
-			                  element.parent().parent().addClass("error");
-			          error.addClass("help-inline").appendTo(element.parent());
-			              }
-			          });	
-
-			       $(window).scroll(function() {
-				        if ($(this).scrollTop() > 100){  
-				            $('.navbar-fixed-top').removeClass("navbar-custom");
-				            $('.navbar-fixed-top').addClass("topnavScrolled");
-				        }
-				          else{
-				            $('.navbar-fixed-top').addClass("navbar-custom");
-				            $('.navbar-fixed-top').removeClass("topnavScrolled");
-				    	}
-				   });	
-
-				   if(($(window).width()) > 1280){
-				            $('.maybe-container').addClass("container");
-
-				   }	
-
-				   $('a[href*=#]:not([href=#])').click(function() {
-				    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-				      var target = $(this.hash);
-				      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-				      if (target.length) {
-				        $('html,body').animate({
-				          scrollTop: target.offset().top
-				        }, 1000);
-				        return false;
-				      }
-				    }
-				  });			
-			  });
-	</script> 
-	{% if is_mobile %}
-		<script type="text/javascript">
-			// raptor mobile
-			var mc = new Hammer.Manager(document.getElementById("thunder"));
-			mc.add( new Hammer.Tap({ event: 'one_tap', taps: 1 }) );
-			mc.on("one_tap", function(){ $('#thunder').raptorize({'enterOn' : 'thunder'});  });
-		</script>
-    {% endif %}
-	{% endblock %}
-
-
+	</body>        
+{% endblock %}
+</html>

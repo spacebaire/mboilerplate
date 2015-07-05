@@ -103,8 +103,8 @@ class BaseHandler(webapp2.RequestHandler):
               Dict to hold urls for login/logout
         """
         return {
-            'login_url': self.uri_for('login'),
-            'logout_url': self.uri_for('logout')
+            'login_url': self.uri_for('materialize-login'),
+            'logout_url': self.uri_for('materialize-logout')
         }
 
     @webapp2.cached_property
@@ -133,14 +133,14 @@ class BaseHandler(webapp2.RequestHandler):
                 user_info = self.user_model.get_by_id(long(self.user_id))
                 if not user_info.activated:
                     self.auth.unset_session()
-                    self.redirect_to('home')
+                    self.redirect_to('materialize-home')
                 else:
                     return str(user_info.username)
             except AttributeError, e:
                 # avoid AttributeError when the session was delete from the server
                 logging.error(e)
                 self.auth.unset_session()
-                self.redirect_to('home')
+                self.redirect_to('materialize-home')
         return None
 
     @webapp2.cached_property
@@ -150,14 +150,14 @@ class BaseHandler(webapp2.RequestHandler):
                 user_info = self.user_model.get_by_id(long(self.user_id))
                 if not user_info.activated:
                     self.auth.unset_session()
-                    self.redirect_to('home')
+                    self.redirect_to('materialize-home')
                 else:
                     return user_info.name
             except AttributeError, e:
                 # avoid AttributeError when the session was delete from the server
                 logging.error(e)
                 self.auth.unset_session()
-                self.redirect_to('home')
+                self.redirect_to('materialize-home')
         return None
 
     @webapp2.cached_property
@@ -170,7 +170,7 @@ class BaseHandler(webapp2.RequestHandler):
                 # avoid AttributeError when the session was delete from the server
                 logging.error(e)
                 self.auth.unset_session()
-                self.redirect_to('home')
+                self.redirect_to('materialize-home')
         return None
 
     @webapp2.cached_property

@@ -34,7 +34,7 @@ A Boilerplate is used to describe sections of code that can be reused over and o
 + Basic user management features available under /admin/users/ for Google Application Administrators
 
 #####Technologies used
-+ Python 2.7.5
++ [Python 2.7.5](https://www.python.org/download/releases/2.7.5/)
 + [NDB 1.0.10](http://developers.google.com/appengine/docs/python/ndb/) (The best datastore API for the Google App Engine Python runtime).
 + [Jinja2 2.6](http://jinja.pocoo.org/docs/) (A fully featured template engine for Python).
 + [WTForms-1.0.2](http://wtforms.simplecodes.com/) (Forms validation framework keeping user interaction secure and flexible with or without javascript).
@@ -52,9 +52,17 @@ A Boilerplate is used to describe sections of code that can be reused over and o
 #####Front-end Technologies
 + [HTML5Boilerplate](http://html5boilerplate.com/)
 + [Modernizr 2.6.1](http://modernizr.com)
-+ [jQuery 1.8.2](http://jquery.com)
++ [jQuery 2.1.1](http://jquery.com)
 + [MaterializeCSS](http://materializecss.com/)
 + [Polymer](https://www.polymer-project.org/1.0/)
+
+#####Interesting integrations
++ [Bit.ly](https://bitly.com)
++ [Goo.gl](http://goo.gl/)
++ [Slack](http://slack.com)
++ [Sendgrid](http://sendgrid.com)
++ [CartoDB](http://cartodb.com)
+
 
 #####Security
 **SSL**

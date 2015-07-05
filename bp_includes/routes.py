@@ -14,23 +14,24 @@ _routes = [
 
     # Landing
     RedirectRoute('/', handlers.MaterializeLandingRequestHandler, name='materialize-landing', strict_slash=True),   
-    RedirectRoute('/contact/', handlers.MaterializeLandingContactRequestHandler, name='mat-contact', strict_slash=True),
-    RedirectRoute('/faq/', handlers.MaterializeLandingFaqRequestHandler, name='mat-faq', strict_slash=True),
-    RedirectRoute('/tou/', handlers.MaterializeLandingTouRequestHandler, name='mat-tou', strict_slash=True),
-    RedirectRoute('/privacy/', handlers.MaterializeLandingPrivacyRequestHandler, name='mat-privacy', strict_slash=True),
+    RedirectRoute('/contact/', handlers.MaterializeLandingContactRequestHandler, name='contact', strict_slash=True),
+    RedirectRoute('/faq/', handlers.MaterializeLandingFaqRequestHandler, name='faq', strict_slash=True),
+    RedirectRoute('/tou/', handlers.MaterializeLandingTouRequestHandler, name='tou', strict_slash=True),
+    RedirectRoute('/privacy/', handlers.MaterializeLandingPrivacyRequestHandler, name='privacy', strict_slash=True),
+    RedirectRoute('/license/', handlers.MaterializeLandingLicenseRequestHandler, name='license', strict_slash=True),
     RedirectRoute('/register/', handlers.MaterializeRegisterRequestHandler, name='materialize-register', strict_slash=True),
+    RedirectRoute('/activation/<user_id>/<token>', handlers.MaterializeAccountActivationHandler, name='materialize-account-activation', strict_slash=True),
+    RedirectRoute('/resend/<user_id>/<token>', handlers.ResendActivationEmailHandler, name='resend-account-activation', strict_slash=True),
+    RedirectRoute('/register/referral/<user_id>/', handlers.MaterializeRegisterReferralHandler, name='materialize-register-referral', strict_slash=True),
+    RedirectRoute('/activation/<ref_user_id>/<token>/<user_id>', handlers.MaterializeAccountActivationReferralHandler, name='materialize-account-activation-referral', strict_slash=True),
+    #RedirectRoute('/resend/<ref_user_id>/<token>/<user_id>', handlers.ResendActivationEmailReferralHandler, name='resend-account-activation-referral', strict_slash=True),
     RedirectRoute('/login/', handlers.MaterializeLoginRequestHandler, name='materialize-login', strict_slash=True),
     RedirectRoute('/logout/', handlers.MaterializeLogoutRequestHandler, name='materialize-logout', strict_slash=True),
-    RedirectRoute('/activation/<user_id>/<token>', handlers.MaterializeAccountActivationHandler, name='materialize-account-activation', strict_slash=True),
     RedirectRoute('/social_login/<provider_name>', handlers.SocialLoginHandler, name='social-login', strict_slash=True),
     RedirectRoute('/social_login/<provider_name>/complete', handlers.CallbackSocialLoginHandler, name='social-login-complete', strict_slash=True),
     RedirectRoute('/social_login/<provider_name>/delete', handlers.DeleteSocialProviderHandler, name='delete-social-provider', strict_slash=True),
-    RedirectRoute('/resend/<user_id>/<token>', handlers.ResendActivationEmailHandler, name='resend-account-activation', strict_slash=True),
     RedirectRoute('/password-reset/', handlers.PasswordResetHandler, name='password-reset', strict_slash=True),
     RedirectRoute('/password-reset/<user_id>/<token>', handlers.PasswordResetCompleteHandler, name='password-reset-check', strict_slash=True),
-    RedirectRoute('/referral/<user_id>/', handlers.RegisterReferralHandler, name='referral', strict_slash=True),
-    RedirectRoute('/activation/<ref_user_id>/<token>/<user_id>', handlers.AccountActivationReferralHandler, name='account-activation-referral', strict_slash=True),
-    #RedirectRoute('/resend/<ref_user_id>/<token>/<user_id>', handlers.ResendActivationEmailReferralHandler, name='resend-account-activation-referral', strict_slash=True),
     
     # User
     RedirectRoute('/user/home/', handlers.MaterializeHomeRequestHandler, name='materialize-home', strict_slash=True),
@@ -71,7 +72,7 @@ _routes = [
     RedirectRoute('/img/upload/', handlers.AvatarUploadHandler, name='img-upload', strict_slash=True),
     RedirectRoute('/img/', handlers.AvatarDownloadHandler, name='img-download', strict_slash=True),
     RedirectRoute('/cover/upload/', handlers.CoverUploadHandler, name='cover-upload', strict_slash=True),
-    RedirectRoute('/cover/', handlers.CoverDownloadHandler, name='cover-download', strict_slash=True),
+    RedirectRoute('/cover/', handlers.CoverDownloadHandler, name='cover-download', strict_slash=True)
     
 ]
 

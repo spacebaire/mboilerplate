@@ -7,19 +7,10 @@
 {% block content %}
 <div class="row" style="  text-align: center;  border-top: 1px dashed rgb(216, 216, 216);padding-top: 20px;">
     <span class="col-sm-12 col-md-4 indicator flow-text" style="text-align:center; font-size:40px; color:#ff6623; border-right:1px solid #CFCFCF"><h6>Total Users</h6>{{sum_users}}</span>
-    <span class="col-sm-12 col-md-4 indicator flow-text" style="text-align:center; font-size:40px; color:#66B3F6; border-right:1px solid #CFCFCF"><h6>Total Homes</h6>{{sum_homes}}</span>
-    <span class="col-sm-12 col-md-4 indicator flow-text" style="text-align:center; font-size:40px; color:#3B9C2C; "><h6>Total Stores</h6>{{sum_stores}}</span>
-</div>
-<div class="row" style=" text-align: center;  border-top: 1px dashed rgb(216, 216, 216);padding-top: 20px;">
-    <h3 class="col-sm-12 indicator-title" style="color:#ffab40;margin-top:4px;">Aggregated Savings</h3>    
-    <span class="col-sm-12 col-md-6 indicator flow-text" style="font-size:40px; color:#ffab40; border-right:1px solid #CFCFCF">$ {{savings_sum_bills}}</span>
-    <span class="col-sm-12 col-md-6 indicator flow-text" style="font-size:40px; color:#ffab40;">{{savings_sum_kwhs}} kWh</span>
 </div>
 <div class="row">
     <div class="col-sm-12" id="container-card1" style="min-width: 310px; height: 240px; margin-bottom: 80px; margin-top: 80px;"></div>
     <input id="users" value='{{users}}' hidden>
-    <input id="homes" value='{{homes}}' hidden>
-    <input id="stores" value='{{stores}}' hidden>
 </div>
 {% endblock %}
 
@@ -28,32 +19,15 @@
 <script>
     $(document).ready(function(){
             users = JSON.parse(document.getElementById("users").value);
-            homes = JSON.parse(document.getElementById("homes").value);
-            stores = JSON.parse(document.getElementById("stores").value);
             users_dates = [];
             users_values = [];
             users_data = [];
-            homes_dates = [];
-            homes_values = [];
-            homes_data = [];
-            stores_dates = [];
-            stores_values = [];
-            stores_data = [];
             for (var i = 0, j = users.length; i<j;i++){
                 users_values.push(users[i][0]);
                 users_dates.push(Date.parse(users[i][1]));
                 users_data.push([Date.parse(users[i][1]), users[i][0]]);
             }
-            for (var i = 0, j = homes.length; i<j;i++){
-                homes_values.push(homes[i][0]);
-                homes_dates.push(Date.parse(homes[i][1]));
-                homes_data.push([Date.parse(homes[i][1]), homes[i][0]]);
-            }
-            for (var i = 0, j = stores.length; i<j;i++){
-                stores_values.push(stores[i][0]);
-                stores_dates.push(Date.parse(stores[i][1]));
-                stores_data.push([Date.parse(stores[i][1]), stores[i][0]]);
-            }
+            
 
             $('#container-card1').highcharts({
                 chart: {
@@ -123,20 +97,6 @@
                     lineWidth: 3,
                     color: '#FF6623',
                     data: users_data
-                },
-                {
-                    name: 'Homes',
-                    type: 'spline',
-                    lineWidth: 3,
-                    color: '#66B3F6',
-                    data: homes_data
-                },
-                {
-                    name: 'Stores',
-                    type: 'spline',
-                    lineWidth: 3,
-                    color: '#3B9C2C',
-                    data: stores_data
                 }]
             });
            

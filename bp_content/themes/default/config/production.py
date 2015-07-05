@@ -66,13 +66,17 @@ config = {
     #Very Important: set the site_url= your domain in the application settings in the facebook app settings page
     # callback url must be: http://[YOUR DOMAIN]/login/facebook/complete
     'fb_api_key': 'FACEBOOK_API_KEY',
-    'fb_secret': 'FACEBOOK_SECRET',
-    
-    # jinja2 base layout template
-    #'base_layout': 'master.html',
+    'fb_secret': 'FACEBOOK_SECRET',    
 
     # send error emails to developers
     'send_mail_developer': False,
+
+    #bitly Login & API KEY, get them from your bitly account under settings/advanced.
+    'bitly_login' : 'mboilerplate',
+    'bitly_apikey' : 'R_c7794de8fef148c6b950578064492e95',
+
+    #slack webhook url
+    'slack_webhook_url' : 'https://hooks.slack.com/services/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',
 
     # fellas' list
     'developers': (

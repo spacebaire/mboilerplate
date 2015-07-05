@@ -26,9 +26,8 @@
 			var audioSupported = true;
 			
 			//Raptor Vars
-			var raptorImageMarkup = '<img id="elRaptor" style="display: none" src="/default/img/rapthor.png" />';
-			// raptorImageMarkup = '<img id="elRaptor" style="display: none" src="/default/img/raptorigami.png" />';
-			var raptorAudioMarkup = '<audio id="elRaptorShriek" preload="auto"><source src="/default/js/lib/raptor-sound.mp3" /></audio>';	
+			var raptorImageMarkup = '<img id="elRaptor" style="display: none" src="/default/materialize/images/raptor.png" />';
+			var raptorAudioMarkup = '<audio id="elRaptorShriek" preload="auto"><source src="/default/materialize/audio/screaming_raptor.mp3" /></audio>';	
 			var locked = false;
 			
 			//Append Raptor and Style

@@ -10,23 +10,13 @@
 <div class="row">
     <div class="col s6 m4" style="margin-left: 15px;margin-bottom: 15px;">
         <button onclick="exportCSV()" class="btn btn-default" style="padding:10px;">Export Users in CSV</button>
-        <input id="home_id_val"type="text" style="padding:10px;" placeholder="Filter by HomeID" value="">
-        <button onclick="filter()" class="btn btn-default" > » </button>
     </div>   
 </div>
 <script>
-function filter(){
-    if (home_id_val.value.length > 1){
-        _url='/admin/users/?homeid=' + home_id_val.value
-        window.open(_url, '_top')
-    }
-}
 
 function exportCSV() {
-        var queryString = getUrlVars(), homeid='';
-        if ( queryString.homeid )
-            homeid = "?homeid=" + queryString.homeid
-        var url = "/admin/users/export/"+homeid;
+        var queryString = getUrlVars();
+        var url = "/admin/users/export/";
         
         $.ajax({
             url: url,

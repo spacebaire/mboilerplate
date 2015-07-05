@@ -108,7 +108,7 @@ def getUsers():
 class MainApi(remote.Service):
     """Main API v1."""
 
-    @endpoints.method(message_types.VoidMessage, HomesCollection,
+    @endpoints.method(message_types.VoidMessage, UsersCollection,
                       path='users', http_method='GET',
                       name='users.list')
     def users_list(self, unused_request):

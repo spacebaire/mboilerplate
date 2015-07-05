@@ -90,7 +90,7 @@ config = {
     'enable_federated_login': True,
 
     # jinja2 base layout template
-    'base_layout': 'base.html',
+    'base_layout': '/materialize/base.html',
 
     # send error emails to developers
     'send_mail_developer': False,
@@ -109,8 +109,25 @@ config = {
     # ----> ADD MORE CONFIGURATION OPTIONS HERE <----
 
     #bitly Login & API KEY
-    'bitly_login' : 'BITLY_USER_LOGIN',
-    'bitly_apikey' : 'BITLY_API_KEY',
+    'bitly_login' : '',
+    'bitly_apikey' : '',
+
+    #sendgrid Login & Passkey
+    'sendgrid_login' : '',
+    'sendgrid_passkey' : '',
+
+    #slack webhook url
+    'slack_webhook_url' : '',
+
+    #cartodb
+    'cartodb_user': "",
+    'cartodb_apikey': "",
+
+
+    #zendesk
+    'zendesk_code': "",
+
+
 
 
 } # end config

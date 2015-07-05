@@ -36,7 +36,10 @@ class AdminLogsVisitsHandler(BaseHandler):
                     temp[visit.user.id()] += 1
                 ids += 1
                 avg += temp[visit.user.id()]
-        avg /= ids
+        try:
+            avg /= ids
+        except:
+            pass
 
         PAGE_SIZE = 50
         if forward:
