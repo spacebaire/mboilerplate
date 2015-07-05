@@ -7,8 +7,8 @@
         <td style="width:24px;background-color: #FAFAFA;"></td>
         <td style="background-color: #FAFAFA;padding:15px 10px">
           <center>
-          <a href="http://mihogar.invictus.mx" target="_blank">
-            <img src="http://mihogarinvictus.appspot.com/default/img/invictus-naranja.png" height="40px">
+          <a href="http://mboilerplate.appspot.com" target="_blank">
+            <img src="http://mboilerplate.appspot.com/default/materialize/images/favicon/fav-gray.png" height="80px" style="margin-bottom: -45px;">
           </a>
           </center>
         </td>

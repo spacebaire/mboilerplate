@@ -1571,6 +1571,16 @@ class MaterializeLandingRequestHandler(RegisterBaseHandler):
         if not self.user:
             chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
             params['captchahtml'] = chtml
+            import random
+            r = random.choice('gbm')
+            if r == 'g':
+                message = _('Welcome! Did you knew GAE stands for Google AppEngine?')
+            elif r == 'b':
+                message = _('Welcome! Did you knew Boilerplate means not to reinvent the wheel?')
+            elif r == 'm':
+                message = _('Welcome! Did you knew Materialize is a Google web design idea?')
+
+            self.add_message(message, 'success')
             return self.render_template('materialize/landing.html', **params)
         else:
             user_info = self.user_model.get_by_id(long(self.user_id)) 
