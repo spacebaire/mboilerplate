@@ -770,7 +770,7 @@ class PasswordResetHandler(BaseHandler):
         params = {
             'captchahtml': chtml,
         }
-        return self.render_template('password_reset.html', **params)
+        return self.render_template('materialize/password_reset.html', **params)
 
     def post(self):
         # check captcha
@@ -794,11 +794,9 @@ class PasswordResetHandler(BaseHandler):
         email_or_username = str(self.request.POST.get('email_or_username')).lower().strip()
         if utils.is_email_valid(email_or_username):
             user = self.user_model.get_by_email(email_or_username)
-            _message = _("Si el correo que ingresaste")
         else:
             auth_id = "own:%s" % email_or_username
             user = self.user_model.get_by_auth_id(auth_id)
-            _message = _("Revisa tu correo con las instrucciones para cambiar tu password. Tip: Revisa tu spam.")
 
         if user is not None:
             user_id = user.get_id()
@@ -825,7 +823,12 @@ class PasswordResetHandler(BaseHandler):
                 'body': body,
                 'sender': self.app.config.get('contact_sender'),
             })
-        self.add_message(_message, 'warning')
+            _message = _(messages.password_reset)
+            self.add_message(_message, 'success')
+        else:
+            _message = _(messages.password_reset_invalid_email)
+            self.add_message(_message, 'warning')
+
         return self.redirect_to('login')
 
 class PasswordResetCompleteHandler(BaseHandler):
@@ -846,7 +849,7 @@ class PasswordResetCompleteHandler(BaseHandler):
             params = {
                 '_username':user.name
             }
-            return self.render_template('password_reset_complete.html', **params)
+            return self.render_template('materialize/password_reset_complete.html', **params)
 
     def post(self, user_id, token):
         verify = self.user_model.get_by_auth_token(int(user_id), token)
