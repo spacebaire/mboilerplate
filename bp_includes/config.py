@@ -21,7 +21,7 @@ config = {
                               'environment_args': {'extensions': ['jinja2.ext.i18n']}},
 
     # application name
-    'app_name': "Materialize Boilerplate",
+    'app_name': 'GAE Materialize Boilerplate',
 
     # the default language code for the application.
     # should match whatever language the site uses when i18n is disabled
@@ -36,8 +36,8 @@ config = {
     'locales': ['en_US', 'es_ES', 'it_IT', 'zh_CN', 'id_ID', 'fr_FR', 'de_DE', 'ru_RU', 'pt_BR', 'cs_CZ','vi_VN','nl_NL'],
 
     # contact page email settings
-    'contact_sender': "SENDER_EMAIL_HERE",
-    'contact_recipient': "RECIPIENT_EMAIL_HERE",
+    'contact_sender': '',
+    'contact_recipient': '',
 
     # Password AES Encryption Parameters
     # aes_key must be only 16 (*AES-128*), 24 (*AES-192*), or 32 (*AES-256*) bytes (characters) long.
@@ -46,43 +46,64 @@ config = {
 
     # get your own consumer key and consumer secret by registering at https://dev.twitter.com/apps
     # callback url must be: http://[YOUR DOMAIN]/login/twitter/complete
-    'twitter_consumer_key': 'TWITTER_CONSUMER_KEY',
-    'twitter_consumer_secret': 'TWITTER_CONSUMER_SECRET',
+    'twitter_consumer_key': '',
+    'twitter_consumer_secret': '',
 
     #Facebook Login
     # get your own consumer key and consumer secret by registering at https://developers.facebook.com/apps
     #Very Important: set the site_url= your domain in the application settings in the facebook app settings page
     # callback url must be: http://[YOUR DOMAIN]/login/facebook/complete
-    'fb_api_key': 'FACEBOOK_API_KEY',
-    'fb_secret': 'FACEBOOK_SECRET',
+    'fb_api_key': '',
+    'fb_secret': '',
 
     #Linkedin Login
     #Get you own api key and secret from https://www.linkedin.com/secure/developer
-    'linkedin_api': 'LINKEDIN_API',
-    'linkedin_secret': 'LINKEDIN_SECRET',
+    'linkedin_api': '',
+    'linkedin_secret': '',
 
     # Github login
     # Register apps here: https://github.com/settings/applications/new
     'github_server': 'github.com',
     'github_redirect_uri': 'http://www.example.com/social_login/github/complete',
-    'github_client_id': 'GITHUB_CLIENT_ID',
-    'github_client_secret': 'GITHUB_CLIENT_SECRET',
+    'github_client_id': '',
+    'github_client_secret': '',
 
     # get your own recaptcha keys by registering at http://www.google.com/recaptcha/
-    'captcha_public_key': "CAPTCHA_PUBLIC_KEY",
-    'captcha_private_key': "CAPTCHA_PRIVATE_KEY",
+    'captcha_public_key': '',
+    'captcha_private_key': '',
 
     # Use a complete Google Analytics code, no just the Tracking ID
     # In config/boilerplate.py there is an example to fill out this value
-    'google_analytics_code': "",
+    'google_analytics_code': '',
+
+    'meta_tags_code': """
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <meta name="description" content="This an amazing, magical materialized boilerplate for the Google AppEngine." />
+            <meta name="keywords" content="google, cloud, appengine, material, materialize, webcomponents, boilerplate, gae, gcp"/>
+            <meta property="og:site_name" content="MBoilerplate.appspot.com"/>
+            <meta property="og:title" content="MBoilerplate"/>
+            <meta property="og:type" content="website"/>
+            <meta property="og:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine."/>
+            <meta property="og:url" content="http://mboilerplate.appspot.com"/>
+            <meta property="og:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png"/>
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="twitter:site" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
+            <meta name="twitter:creator" content="@chuycepeda">
+            <meta name="twitter:title" content="MBoilerplate">
+            <meta name="twitter:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
+            <meta name="twitter:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png">
+            <meta property="twitter:url" content="http://mboilerplate.appspot.com"/>
+            <meta name="bitly-verification" content="08b699436857"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">""",
 
     # add status codes and templates used to catch and display errors
     # if a status code is not listed here it will use the default app engine
     # stacktrace error page or browser error page
     'error_templates': {
         403: 'errors/default_error.html',
-        404: 'errors/default_error.html',
-        500: 'errors/default_error.html',
+        404: 'materialize/errors/404.html',
+        500: 'materialize/errors/500.html',
     },
 
     # Enable Federated login (OpenID and OAuth)
@@ -108,6 +129,11 @@ config = {
 
     # ----> ADD MORE CONFIGURATION OPTIONS HERE <----
 
+    #branding stuff
+    'brand_logo': '/default/materialize/images/favicon/fav-white.png',
+    'brand_favicon': '/default/materialize/images/favicon/fav.png',
+    'brand_color' : 'light-blue',
+
     #bitly integration
     'bitly_login' : '',
     'bitly_apikey' : '',
@@ -123,14 +149,39 @@ config = {
     'slack_notify_landing_visit' : '',
 
     #cartodb integration
-    'cartodb_user': "",
-    'cartodb_apikey': "",
+    'cartodb_user': '',
+    'cartodb_apikey': '',
 
     #zendesk integration
-    'zendesk_code': "",
+    'zendesk_imports': '',
+    #EXAMPLE OF ZENDESK IMPORTS
+    # """<style type="text/css" media="screen, projection">
+    #               @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+    #             </style>"""
+    'zendesk_code': '',
+    #EXAMPLE OF ZENDESK CODE
+    # """<script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+    #             <script>
+    #                 if (typeof(Zenbox) !== "undefined") {
+    #                     Zenbox.init({
+    #                       dropboxID:   "20172435",
+    #                       url:         "https://invictusmx.zendesk.com",
+    #                       tabTooltip:  "Feedback",
+    #                       tabImageURL: "https://p4.zdassets.com/external/zenbox/images/tab_es_feedback_right.png",
+    #                       tabColor:    "#ff0000",
+    #                       tabPosition: "Right",
+    #                       hide_tab: true,
+    #                     });
+
+    #                 }
+    #                 if (document.querySelector('#zen_alias'))
+    #                     document.querySelector('#zen_alias').addEventListener('click', function() { window.Zenbox.show();});
+    #                 if (document.querySelector('#chat_alias'))
+    #                     document.querySelector('#chat_alias').addEventListener('click', function() { window.Zenbox.show();});
+    #             </script>"""
 
     #mailchimp integration
-    'mailchimp_code': "",
+    'mailchimp_code': '',
 
 
 

@@ -24,6 +24,11 @@ class BaseForm(Form):
         return FormTranslations()
 
 # ==== Mixins ====
+class PasswordMixin(BaseForm):
+    password = fields.TextField(_('Password'), [validators.Required(),
+                                                validators.Length(max=FIELD_MAXLENGTH, message=_(
+                                                    "Field cannot be longer than %(max)d characters."))])
+
 class PasswordConfirmMixin(BaseForm):
     password = fields.TextField(_('Password'), [validators.Required(),
                                                 validators.Length(max=FIELD_MAXLENGTH, message=_(
@@ -40,13 +45,8 @@ class UsernameMixin(BaseForm):
                                                 validators.regexp(utils.VALID_USERNAME_REGEXP, message=_(
                                                     "Username invalid. Use only letters and numbers."))])
 
-class UsernameEmailMixin(BaseForm):
-    username = fields.TextField(_('Username'), [validators.Required(),
-                                                validators.Length(max=FIELD_MAXLENGTH, message=_(
-                                                    "Field cannot be longer than %(max)d characters."))])
-
 class NameMixin(BaseForm):
-    name = fields.TextField(_('Name'), [
+    name = fields.TextField(_('Name'), [validators.Required(),
         validators.Length(max=FIELD_MAXLENGTH, message=_("Field cannot be longer than %(max)d characters."))])
     last_name = fields.TextField(_('Last Name'), [
         validators.Length(max=FIELD_MAXLENGTH, message=_("Field cannot be longer than %(max)d characters."))])    
@@ -58,7 +58,7 @@ class EmailMixin(BaseForm):
                                                     "Field must be between %(min)d and %(max)d characters long.")),
                                           validators.regexp(utils.EMAIL_REGEXP, message=_('Invalid email address.'))])
 
-class RegisterForm(PasswordConfirmMixin, UsernameMixin, NameMixin, EmailMixin):
+class RegisterForm(PasswordMixin, NameMixin, EmailMixin):
     pass
 
 class PasswordResetCompleteForm(PasswordConfirmMixin):
@@ -84,7 +84,7 @@ class EditEmailForm(BaseForm):
                                                     "Field cannot be longer than %(max)d characters."))])
     pass
 
-class LoginForm(UsernameEmailMixin):
+class LoginForm(EmailMixin):
     password = fields.TextField(_('Password'), [validators.Required(),
                                                 validators.Length(max=FIELD_MAXLENGTH, message=_(
                                                     "Field cannot be longer than %(max)d characters."))], id='l_password')

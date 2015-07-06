@@ -7,38 +7,21 @@
 
 {% block document_head %}
 	<head>
-  		{% block title %}<title>GAE Materialize Boilerplate</title>{% endblock %}
+  		{% block title %}<title>{{app_name}}</title>{% endblock %}
 
+		<!-- All meta tags from config files -->
 	    {% block metadata %}
-		    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-			<meta name="description" content="This an amazing, magical materialized boilerplate for the Google AppEngine." />
-		    <meta name="keywords" content="google, cloud, appengine, material, materialize, webcomponents, boilerplate, gae, gcp"/>
-		    <meta property="og:site_name" content="MBoilerplate.appspot.com"/>
-		    <meta property="og:title" content="MBoilerplate"/>
-		    <meta property="og:type" content="website"/>
-			<meta property="og:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine."/>
-		    <meta property="og:url" content="http://mboilerplate.appspot.com"/>
-			<meta property="og:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png"/>
-		    <meta name="twitter:card" content="summary_large_image">
-		    <meta name="twitter:site" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
-		    <meta name="twitter:creator" content="@chuycepeda">
-		    <meta name="twitter:title" content="MBoilerplate">
-			<meta name="twitter:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
-		    <meta name="twitter:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png">
-		    <meta property="twitter:url" content="http://mboilerplate.appspot.com"/>
-			<meta name="bitly-verification" content="08b699436857"/>
-		    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">	
+			{{ meta_tags_code }}
 	    {% endblock %}
 
 		{% block favicons %}
-		    <link rel="icon" href="/{{theme}}/materialize/images/favicon/fav.png" sizes="32x32">
+		    <link rel="icon" href="{{brand_favicon}}" sizes="32x32">
 		    {% if is_mobile %}
 				<!-- For iPhone -->
-				<link rel="apple-touch-icon-precomposed" href="/{{theme}}/materialize/images/favicon/fav.png">
+				<link rel="apple-touch-icon-precomposed" href="{{brand_favicon}}">
 				<!-- For Windows Phone -->
 				<meta name="msapplication-TileColor" content="#00bcd4">
-				<meta name="msapplication-TileImage" content="/{{theme}}/materialize/images/favicon/fav.png">
+				<meta name="msapplication-TileImage" content="{{brand_favicon}}">
 		    {% endif %}
 		{% endblock %}
 
@@ -48,10 +31,10 @@
 	  		<link href="/{{theme}}/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">		    
 		    <link href="/{{theme}}/materialize/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
 		    <style type="text/css">
-	    		.toast-success{ color: #2EF97D!important;}
-	    		.toast-danger{ color: #EF1515!important;}
-	    		.toast-warning{ color: #fdd835!important;}
-	    		.toast-info{ color: #29b6f6!important;}
+	    		.toast-success{ color: #2EF97D!important; line-height: 18px; }
+	    		.toast-danger{ color: #EF1515!important; line-height: 18px; }
+	    		.toast-warning{ color: #fdd835!important; line-height: 18px; }
+	    		.toast-info{ color: #29b6f6!important; line-height: 18px; }
 	    		@-webkit-keyframes pulsate {
 				    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
 				    50% {opacity: 1.0;}
@@ -67,12 +50,19 @@
 				ul li{
 					font-family: roboto-thin!important;
 				}
+				.g-recaptcha{
+					  margin-left: 23%;
+  					  -webkit-transform: scale(0.8);
+  					  transform: scale(0.8);
+				}
 	    	</style>
 		    {% block page_css %}{% endblock %}
 		{% endblock %}
 		
 		<!-- All google, mixpanel and analytics tags from config files. -->
-		{% block analytics %}{{ google_analytics_code }}{% endblock %}
+		{% block analytics %}
+			{{ google_analytics_code }}
+		{% endblock %}
 	    
 	    <!-- All JavaScript at the bottom, except these. -->
 		{% block priority_js %}
@@ -95,305 +85,308 @@
 			<!-- START NAVBAR -->
 			<nav style="background-color: transparent;position: fixed;border-bottom: none; z-index: 9999999;" class="z-depth-0">
 				<div class="nav-wrapper" style="">
-				  <a href="{{uri_for("materialize-landing")}}" class="brand-logo"><img src="/{{theme}}/materialize/images/favicon/fav-white.png" style="height:75px; margin-top:-5px;"></a>
+				  <a href="{{uri_for("landing")}}" class="brand-logo"><img src="{{brand_logo}}" style="height:75px; margin-top:-5px;"></a>
 				  <a href="#" data-activates="mobile-demo" class="button-collapse right"><i class="mdi-navigation-more-vert"></i></a>
 				  <ul id="nav-mobile" class="right hide-on-med-and-down">
-				    <li><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
-				    <li><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
-				    <li><a href="#download" class="menu-item">Want some love?</a></li>
+				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
+				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
+				    <li id="nav-download"><a href="#download" class="menu-item">Want some love?</a></li>
 				  </ul>
 				  <ul class="side-nav" id="mobile-demo">
-				    <li><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
-				    <li><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
-				    <li><a href="#download" class="menu-item">Want some love?</a></li>
+				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
+				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
+				    <li id="nav-download"><a href="#download" class="menu-item">Want some love?</a></li>
 				  </ul>
 				</div>
 			</nav>
 			<!-- END NAVBAR -->
 		{% endblock %}
 
-
-		{% block content %}
-			<!-- START CONTENT -->
-			{% block header_content %}
-				<div class="parallax-container z-depth-3">
-					<div class="section no-pad-bot">
-					  <div class="container">
-					    <br><br>
-					    <h1 class="header center light-blue-text text-lighten-2 " >GAE Materialize Boilerplate</h1>
-					    <div class="row center">
-					      <h5 class="header col s12 white-text light">A modern responsive front-end + back-end GAE boilerplate based on material design</h5>
-					    </div>
-					    <div class="row center">
-					    </div>
-					    <br>
-					    <br>
-					  </div>
-					</div>
-					<div class="parallax"><img src="/{{theme}}/materialize/images/landing/black_mac.png" alt="Unsplashed background img 1" style="display: block; transform: translate3d(-50%, 351px, 0px);"></div>
+		{% block header_content %}
+			<div class="parallax-container z-depth-3">
+				<div class="section no-pad-bot">
+				  <div class="container">
+				    <br><br>
+				    <h1 class="header center {{brand_color}}-text text-lighten-2 " >{{app_name}}</h1>
+				    <div class="row center">
+				      <h5 class="header col s12 white-text light">A modern responsive front-end + back-end GAE boilerplate based on material design</h5>
+				    </div>
+				    <div class="row center">
+				    </div>
+				    <br>
+				    <br>
+				  </div>
 				</div>
-			{% endblock %}
+				<div class="parallax"><img src="/{{theme}}/materialize/images/landing/black_mac.png" alt="Unsplashed background img 1" style="display: block; transform: translate3d(-50%, 351px, 0px);"></div>
+			</div>
+		{% endblock %}
 
-			{% block body_content %}
-				<div class="container">
-					<div class="section">
+		{% block body_content %}
+			<div class="container">
+				<div class="section">
 
-					  <div class="row">
-					    <div class="col s12 m4">
-					      <div class="icon-block">
-					        <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-					        <h5 class="center">Instant deploys</h5>
+				  <div class="row">
+				    <div class="col s12 m4">
+				      <div class="icon-block">
+				        <h2 class="center {{brand_color}}-text"><i class="material-icons">flash_on</i></h2>
+				        <h5 class="center">Instant deploys</h5>
 
-					        <p class="light">Through the <a target="_blank" href="http://appengine.beecoss.com/">GAE Boilerplate</a> plus the <a target="_blank" href="http://materializecss.com/">MaterializeCSS</a>, GAE Materialize Boilerplate provides an exceptional experience for developers. Models, templates, and routes - ready enables for instantaneous deployment and rapid prototyping.</p>
-					      </div>
-					    </div>
-
-					    <div class="col s12 m4">
-					      <div class="icon-block">
-					        <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-					        <h5 class="center">Human-centered</h5>
-
-					        <p class="light">More than a year now of <a target="_blank" href="https://www.google.com/design/spec/material-design/introduction.html">Material Design</a> and the newest <a target="_blank" href="https://cloud.google.com/datastore/">Google Datastore</a>, here you have a single underlying responsive system across all platforms and a standard user model for a more unified user experience.</p>
-					      </div>
-					    </div>
-
-					    <div class="col s12 m4">
-					      <div class="icon-block">
-					        <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-					        <h5 class="center">Easy and low-cost</h5>
-
-					        <p class="light">Leveraging the use of <a target="_blank" href="https://cloud.google.com/appengine/docs">Google AppEngine</a> and its <a target="_blank" href="https://cloud.google.com/appengine/docs/quotas">Free Quotas</a>, this GAE Materialize Boilerplate provides all the ease of the <a target="_blank" href="https://cloud.google.com/docs/">Google Cloud Platform</a> at amazingly low costs and super easy scalability and traffic splitting. I didn't even bought a hosting nor a domain !</p>
-					      </div>
-					    </div>
-					  </div>
-					</div>
-				</div>
-				<div class="parallax-container z-depth-3">
-				    <div class="section no-pad-bot" style="  margin-top: 12%;">
-				      <div class="container">
-				        <br><br>
-				        <div class="row center">
-				          <h5 class="header col s12 white-text light" style="line-height: 2;">Ever noticed goats scream like humans? <span id="speak" class="light-blue-text text-lighten-2" style="cursor:pointer;">Try it !</span></h5>
-				        </div>
+				        <p class="light">Through the <a target="_blank" href="http://appengine.beecoss.com/">GAE Boilerplate</a> plus the <a target="_blank" href="http://materializecss.com/">MaterializeCSS</a>, GAE Materialize Boilerplate provides an exceptional experience for developers. Models, templates, and routes - ready enables for instantaneous deployment and rapid prototyping.</p>
 				      </div>
 				    </div>
-				    <div class="parallax"><img src="/{{theme}}/materialize/images/landing/splash.jpg" alt="Unsplashed background img 2" style="display: block; transform: translate3d(-50%, 386px, 0px); -webkit-filter:brightness(50%)"></div>
+
+				    <div class="col s12 m4">
+				      <div class="icon-block">
+				        <h2 class="center {{brand_color}}-text"><i class="material-icons">group</i></h2>
+				        <h5 class="center">Human-centered</h5>
+
+				        <p class="light">More than a year now of <a target="_blank" href="https://www.google.com/design/spec/material-design/introduction.html">Material Design</a> and the newest <a target="_blank" href="https://cloud.google.com/datastore/">Google Datastore</a>, here you have a single underlying responsive system across all platforms and a standard user model for a more unified user experience.</p>
+				      </div>
+				    </div>
+
+				    <div class="col s12 m4">
+				      <div class="icon-block">
+				        <h2 class="center {{brand_color}}-text"><i class="material-icons">settings</i></h2>
+				        <h5 class="center">Easy and low-cost</h5>
+
+				        <p class="light">Leveraging the use of <a target="_blank" href="https://cloud.google.com/appengine/docs">Google AppEngine</a> and its <a target="_blank" href="https://cloud.google.com/appengine/docs/quotas">Free Quotas</a>, this GAE Materialize Boilerplate provides all the ease of the <a target="_blank" href="https://cloud.google.com/docs/">Google Cloud Platform</a> at amazingly low costs and super easy scalability and traffic splitting. I didn't even bought a hosting nor a domain !</p>
+				      </div>
+				    </div>
+				  </div>
 				</div>
-				<div class="container">
-					<div class="section">
-
-					  <div class="row">
-					   	<h3 class="col s12 light center header grey-text">+20 amazing technologies at your service</h3>
-					    <div class="col s12 m4">
-					      <div class="icon-block">
-					      	<h3 class="center"><i class="mdi-action-dns light-blue-text" style="font-size:45px;"></i></h3>
-					        <h5 class="center">Back-end</h5>
-
-					        <p class="light">Because beauty isn't only at front-end, this GAE Materialize Boilerplate includes beautiful technologies at its back-end. Among the most interesting you'll find:</p>
-					        <ul>
-						        <li><a target="_blank" href="https://www.python.org/download/releases/2.7.5/">Python 2.7.5</a>, well you know Python <a href="/{{theme}}/materialize/images/programming.jpg" target="_blank">don't you?</a>,</li>
-						        <li><a target="_blank" href="http://developers.google.com/appengine/docs/python/ndb/">NDB 1.0.10</a>, the best no-sql database API for the GAE Python runtime,</li>
-						        <li><a target="_blank" href="http://jinja.pocoo.org/docs/">Jinja2 2.6</a>, a fully featured template engine for Python,</li>
-						        <li><a target="_blank" href="http://wtforms.simplecodes.com/">WTForms-1.0.2</a>, forms validation keeping user interaction secure and flexible,</li>
-						        <li><a target="_blank" href="http://babel.edgewall.org/">Babel-0.9.6</a>, renders the site in multiple languages, and</li>
-						        <li><a target="_blank" href="http://webapp-improved.appspot.com/">WebApp2 2.5.2</a>, lightweight Python web framework, best for the GAE Python runtime.</li>
-					        </ul>
-					      </div>
-					    </div>
-
-					    <div class="col s12 m4">
-					      <div class="icon-block">
-					      	<h3 class="center"><i class="mdi-av-web light-blue-text" style="font-size:45px;"></i></h3>
-					        <h5 class="center">Front-end</h5>
-							 <p class="light">With GAE Materialize Boilerplate everything will be shinny because it has been brought from the future, where the internet is pretty and organized. In this future you'll find:</p>
-					        <ul>
-						        <li><a target="_blank" href="http://html5boilerplate.com/">HTML5Boilerplate</a>, yes, the HTML that rocks !,</li>
-						        <li><a target="_blank" href="http://modernizr.com">Modernizr 2.6.1</a>, modernize says it all,</li>
-						        <li><a target="_blank" href="http://jquery.com">jQuery 2.1.1</a>, the JS for Safari =),</li>
-						        <li><a target="_blank" href="http://materializecss.com/)">MaterializeCSS</a>, beauty at its best,</li>
-						        <li><a target="_blank" href="https://www.polymer-project.org/1.0/">Polymer</a>, web components or the future, now,</li>
-						        <li><a target="_blank" href="https://highcharts.com">HighCharts</a>, <a target="_blank" href="http://d3js.org/">D3</a>, <a target="_blank" href="http://www.chartjs.org/">ChartJS</a>, <a target="_blank" href="https://gionkunz.github.io/chartist-js/">ChartistJS</a>, <a target="_blank" href="https://www.datatables.net/">Data Tables</a>, among other data visualization libraries.</li>
-					        </ul>
-					        
-					      </div>
-					    </div>
-
-					    <div class="col s12 m4">
-					      <div class="icon-block">
-					      	<h3 class="center"><i class="mdi-action-extension light-blue-text" style="font-size:45px;"></i></h3>
-					        <h5 class="center">Integrations</h5>
-							<p class="light">As if it wasn't enough, GAE Materialize Boilerplate has been prepared for you to easily integrate popular technologies. Among the most interesting you'll find:</p>
-					        <ul>
-						        <li><a target="_blank" href="https://bitly.com">Bit.ly</a> and <a href="https://goo.gl">Goo.gl</a>, for shortlink generators,</li>
-						        <li><a target="_blank" href="http://slack.com">Slack</a>, to receive chat notifications everytime you have a new user so that you can tell them how much you care,</li>
-						        <li><a target="_blank" href="http://zendesk.com">Zendesk</a>, to get feedback like a zen,</li>
-						        <li><a target="_blank" href="http://sendgrid.com">Sendgrid</a>, ran out of 20,000 monthly emails quota?, no worries you'll be ready to use your second bucket,</li>
-						        <li><a target="_blank" href="http://mailchimp.com">Mailchimp</a>, to get email subscribers to your blog posts,</li>
-						        <li><a target="_blank" href="http://cartodb.com">CartoDB</a>, geo-refence, postGIS + postgresql at its best.</li>
-					        </ul>
-					      </div>
-					    </div>
-					  </div>
-					</div>
-				</div>
-				<div class="parallax-container z-depth-3">
-					<div class="section no-pad-bot" style="  margin-top: 12%;">
-					  <div class="container">
-					    <br><br>
-					    <div class="row center">
-					      <h5 class="header col s12 white-text light" style="line-height: 2;">You heard the goat, right? But what a about a seal ? <span id="speak-two" class="light-blue-text text-lighten-2" style="cursor:pointer;">No way !</span></h5>
-					    </div>
-					  </div>
-					</div>
-					<div class="parallax"><img src="/{{theme}}/materialize/images/landing/splash_seal.jpg" alt="Unsplashed background img seal" style="display: block; transform: translate3d(-50%, 386px, 0px); -webkit-filter:brightness(50%)"></div>
-				</div>
-				<div class="container">
-					<div class="section">
-
-					  <div class="row">
-					    <div class="col s12 center">
-					      <h3><i class="mdi-av-queue light-blue-text" style="font-size:45px;"></i></h3>
-					      <h4>Wait, there's even more ?</h4>
-					      <p class="left-align light">
-					      	<strong>Functions and features from the GAE Boilerplate: </strong>
-					      	<br>
-					      	(1) Authentication: login, logout, register (2) Login via your favorite social network (3) Reset Password (4) Update User Profile (5) Contact Form (6) Client side and server side form validation (7) Automatic detection of user language (8) Support for many Languages (9) Visitors Log (10) Notifications and Confirmation for users when they change their email or password (11) Responsive Design for viewing on PCs, tablets, and mobile phones (12) Mobile identification (13) Unit Testing (14) Error handling (15) Basic user management features available under /admin/ for GAE Administrators.
-					      </p>
-					      <p class="left-align light">
-					      	<strong>Security and passwords from the GAE Boilerplate: </strong>
-					     	<br>
-					      	(1) SSL is enabled site wide by adding <em>secure: always</em> to the section: <em>- url: /.*</em> in app.yaml (2) SSL either requires a free google app engine *.appspot.com domain or a <a target="_blank" href="https://developers.google.com/appengine/docs/ssl">custom domain and certificate</a> (3) Alternatively SSL can be enabled at a controller level via webapp2 schemes. Use the secure_scheme provided in routes.py (4) It is recommended to enable ssl site wide to help prevent <a target="_blank" href="http://en.wikipedia.org/wiki/Session_hijacking">session hijacking</a> (5) Passwords are hashed and encrypted with SHA512 and PyCrypto (6) Forms are secured through <a target="_blank" href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">cross-site request forgery</a> protection.
-					      </p>
-					      <p class="left-align light">
-					      	<strong>Additional perks: </strong>
-					      	<br>
-					      	(1) Dropbox-inspired referrals system for users to invite with their unique link (2) Rewards system for you to praise users' loyalty (3) Pre-loaded web components for easier chart generation (4) Beautiful email templates for a bunch of situations (5) Pretty server-client messaging through toast, dismissible, swipeable notifications (6) Konami-code surprise for the fun of it (7) To be continued... 
-					      </p>
-					    </div>
-					  </div>
-					</div>
-				</div>
-				<div class="parallax-container z-depth-3">
-					<div class="section no-pad-bot" style="  margin-top: 12%;">
-					  <div class="container">
-					    <div class="row center">
-					      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-							<input type="hidden" name="cmd" value="_s-xclick">
-							<input type="hidden" name="hosted_button_id" value="85VURVHH53HVY">
-							<input type="image" src="/{{theme}}/materialize/images/landing/buymeabeer.jpg" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" class="responsive-img circle z-depth-5 tooltipped" style="max-height: 200px;  border: 7px solid rgb(3, 169, 244);z-index:1;" data-position="top" data-delay="50" data-tooltip="Donate with PayPal!">
-						  </form>
-					    </div>
-					  </div>
-					</div>
-					<div class="parallax"><img src="/{{theme}}/materialize/images/landing/thanks.jpg" alt="Unsplashed background img 3" style="display: block; transform: translate3d(-50%, 230px, 0px); -webkit-filter:brightness(50%)"></div>
-				</div>
-				<div class="container">
-					<div class="section" id="download">
-
-					  <div class="row">
-					    <div class="col s12 center">
-					      <h3><i class="mdi-file-file-download light-blue-text" style="font-size:45px;"></i></h3>
-					      <h4>The source is the source, of course, of course...</h4>
-					      <p class="center light">After all charm, it wouldn't be love if you couldn't own it. So go for it !</p>
-					      <div class="col s12 center">
-		                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light light-blue white-text btn-large "><i class="mdi-action-bug-report left"></i>Report a bug</a>
-		                      <a style="margin-bottom:30px;" href="" class="waves-effect waves-light light-blue white-text btn-large "><i class="mdi-file-file-download left"></i>Download</a>
-		                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light light-blue white-text btn-large "><i class="mdi-communication-comment left"></i>Reach me out!</a>
-		                  </div>
-					    </div>
-					  </div>
-					</div>
-				</div>
-			{% endblock %}
-
-			{% block modals_content %}
-				<div id="modal1" class="modal white light-blue-text center" style="display: none; opacity: 1; top: 0px;">
-			      <i class="mdi-navigation-close light-blue-text right modal-action modal-close" style="padding: 10px;"></i>
-			      <div class="modal-content">
-		        	<form >
-				        <div class="row">
-				          <div class="input-field col s12 center">
-				            <p class="center login-form-text">Please enter your credentials</p>
-				          </div>
-				        </div>
-				        <div class="row margin">
-				          <div class="input-field col s12">
-				            <i class="mdi-social-person-outline prefix"></i>
-				            <input id="email" type="text">
-				            <label for="email" class="center-align">Email</label>
-				          </div>
-				        </div>
-				        <div class="row margin">
-				          <div class="input-field col s12">
-				            <i class="mdi-action-lock-outline prefix"></i>
-				            <input id="password" type="password">
-				            <label for="password">Password</label>
-				          </div>
-				        </div>
-				        <div class="row">          
-				          <div class="input-field col s12 m12 l12  login-text">
-				              <input type="checkbox" id="remember-me" />
-				              <label for="remember-me">Remember me</label>
-				          </div>
-				        </div>
-				        <div class="row">
-				          <div class="input-field col s12">
-				            <a href="index.html" class="btn waves-effect waves-light col s12">Login</a>
-				          </div>
-				        </div>
-				        <div class="row right">
-				          <div class="input-field col s12">
-				              <p class="margin right-align medium-small"><a href="#">Forgot password ?</a></p>
-				          </div>          
-				        </div>
-				      </form>
+			</div>
+			<div class="parallax-container z-depth-3">
+			    <div class="section no-pad-bot" style="  margin-top: 12%;">
+			      <div class="container">
+			        <br><br>
+			        <div class="row center">
+			          <h5 class="header col s12 white-text light" style="line-height: 2;">Ever noticed goats scream like humans? <span id="speak" class="{{brand_color}}-text text-lighten-2" style="cursor:pointer;">Try it !</span></h5>
+			        </div>
 			      </div>
 			    </div>
-			    <div id="modal2" class="modal white light-blue-text center" style="display: none; opacity: 1; top: 0px;">
-			      <i class="mdi-navigation-close light-blue-text right modal-action modal-close" style="padding: 10px;"></i>
-			      <div class="modal-content">
-		        	<form>
-				        <div class="row">
-				          <div class="input-field col s12 center">
-				            <p class="center login-form-text">Join the community now !</p>
-				          </div>
-				        </div>
-				        <div class="row margin">
-				          <div class="input-field col s12">
-				            <i class="mdi-social-person-outline prefix"></i>
-				            <input id="name" type="text">
-				            <label for="name" class="center-align">Name</label>
-				          </div>
-				        </div>
-				        <div class="row margin">
-				          <div class="input-field col s12">
-				            <i class="mdi-communication-email prefix"></i>
-				            <input id="email" type="email">
-				            <label for="email" class="center-align">Email</label>
-				          </div>
-				        </div>
-				        <div class="row margin">
-				          <div class="input-field col s12">
-				            <i class="mdi-action-lock-outline prefix"></i>
-				            <input id="password" type="password">
-				            <label for="password">Password</label>
-				          </div>
-				        </div>
-				        <div class="row">
-				          <div class="input-field col s12">
-				            <a href="index.html" class="btn waves-effect waves-light col s12">Register Now</a>
-				          </div>
-				        </div>
-				      </form>
-			      </div>
-			    </div>
-			{% endblock %}
-			<!-- END CONTENT -->
+			    <div class="parallax"><img src="/{{theme}}/materialize/images/landing/splash.jpg" alt="Unsplashed background img 2" style="display: block; transform: translate3d(-50%, 386px, 0px); -webkit-filter:brightness(50%)"></div>
+			</div>
+			<div class="container">
+				<div class="section">
+
+				  <div class="row">
+				   	<h3 class="col s12 light center header grey-text">+20 amazing technologies at your service</h3>
+				    <div class="col s12 m4">
+				      <div class="icon-block">
+				      	<h3 class="center"><i class="mdi-action-dns {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				        <h5 class="center">Back-end</h5>
+
+				        <p class="light">Because beauty isn't only at front-end, this GAE Materialize Boilerplate includes beautiful technologies at its back-end. Among the most interesting you'll find:</p>
+				        <ul>
+					        <li><a target="_blank" href="https://www.python.org/download/releases/2.7.5/">Python 2.7.5</a>, well you know Python <a href="/{{theme}}/materialize/images/programming.jpg" target="_blank">don't you?</a>,</li>
+					        <li><a target="_blank" href="http://developers.google.com/appengine/docs/python/ndb/">NDB 1.0.10</a>, the best no-sql database API for the GAE Python runtime,</li>
+					        <li><a target="_blank" href="http://jinja.pocoo.org/docs/">Jinja2 2.6</a>, a fully featured template engine for Python,</li>
+					        <li><a target="_blank" href="http://wtforms.simplecodes.com/">WTForms-1.0.2</a>, forms validation keeping user interaction secure and flexible,</li>
+					        <li><a target="_blank" href="http://babel.edgewall.org/">Babel-0.9.6</a>, renders the site in multiple languages, and</li>
+					        <li><a target="_blank" href="http://webapp-improved.appspot.com/">WebApp2 2.5.2</a>, lightweight Python web framework, best for the GAE Python runtime.</li>
+				        </ul>
+				      </div>
+				    </div>
+
+				    <div class="col s12 m4">
+				      <div class="icon-block">
+				      	<h3 class="center"><i class="mdi-av-web {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				        <h5 class="center">Front-end</h5>
+						 <p class="light">With GAE Materialize Boilerplate everything will be shinny because it has been brought from the future, where the internet is pretty and organized. In this future you'll find:</p>
+				        <ul>
+					        <li><a target="_blank" href="http://html5boilerplate.com/">HTML5Boilerplate</a>, yes, the HTML that rocks !,</li>
+					        <li><a target="_blank" href="http://modernizr.com">Modernizr 2.6.1</a>, modernize says it all,</li>
+					        <li><a target="_blank" href="http://jquery.com">jQuery 2.1.1</a>, the JS for Safari =),</li>
+					        <li><a target="_blank" href="http://materializecss.com/)">MaterializeCSS</a>, beauty at its best,</li>
+					        <li><a target="_blank" href="https://www.polymer-project.org/1.0/">Polymer</a>, web components or the future, now,</li>
+					        <li><a target="_blank" href="https://highcharts.com">HighCharts</a>, <a target="_blank" href="http://d3js.org/">D3</a>, <a target="_blank" href="http://www.chartjs.org/">ChartJS</a>, <a target="_blank" href="https://gionkunz.github.io/chartist-js/">ChartistJS</a>, <a target="_blank" href="https://www.datatables.net/">Data Tables</a>, among other data visualization libraries.</li>
+				        </ul>
+				        
+				      </div>
+				    </div>
+
+				    <div class="col s12 m4">
+				      <div class="icon-block">
+				      	<h3 class="center"><i class="mdi-action-extension {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				        <h5 class="center">Integrations</h5>
+						<p class="light">As if it wasn't enough, GAE Materialize Boilerplate has been prepared for you to easily integrate popular technologies. Among the most interesting you'll find:</p>
+				        <ul>
+					        <li><a target="_blank" href="https://bitly.com">Bit.ly</a> and <a href="https://goo.gl">Goo.gl</a>, for shortlink generators,</li>
+					        <li><a target="_blank" href="http://slack.com">Slack</a>, to receive chat notifications everytime you have a new user so that you can tell them how much you care,</li>
+					        <li><a target="_blank" href="http://zendesk.com">Zendesk</a>, to get feedback like a zen,</li>
+					        <li><a target="_blank" href="http://sendgrid.com">Sendgrid</a>, ran out of 20,000 monthly emails quota?, no worries you'll be ready to use your second bucket,</li>
+					        <li><a target="_blank" href="http://mailchimp.com">Mailchimp</a>, to get email subscribers to your blog posts,</li>
+					        <li><a target="_blank" href="http://cartodb.com">CartoDB</a>, geo-refence, postGIS + postgresql at its best.</li>
+				        </ul>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			<div class="parallax-container z-depth-3">
+				<div class="section no-pad-bot" style="  margin-top: 12%;">
+				  <div class="container">
+				    <br><br>
+				    <div class="row center">
+				      <h5 class="header col s12 white-text light" style="line-height: 2;">You heard the goat, right? But what a about a seal ? <span id="speak-two" class="{{brand_color}}-text text-lighten-2" style="cursor:pointer;">No way !</span></h5>
+				    </div>
+				  </div>
+				</div>
+				<div class="parallax"><img src="/{{theme}}/materialize/images/landing/splash_seal.jpg" alt="Unsplashed background img seal" style="display: block; transform: translate3d(-50%, 386px, 0px); -webkit-filter:brightness(50%)"></div>
+			</div>
+			<div class="container">
+				<div class="section">
+
+				  <div class="row">
+				    <div class="col s12 center">
+				      <h3><i class="mdi-av-queue {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				      <h4>Wait, there's even more ?</h4>
+				      <p class="left-align light">
+				      	<strong>Functions and features from the GAE Boilerplate: </strong>
+				      	<br>
+				      	(1) Authentication: login, logout, register (2) Login via your favorite social network (3) Reset Password (4) Update User Profile (5) Contact Form (6) Client side and server side form validation (7) Automatic detection of user language (8) Support for many Languages (9) Visitors Log (10) Notifications and Confirmation for users when they change their email or password (11) Responsive Design for viewing on PCs, tablets, and mobile phones (12) Mobile identification (13) Unit Testing (14) Error handling (15) Basic user management features available under /admin/ for GAE Administrators.
+				      </p>
+				      <p class="left-align light">
+				      	<strong>Security and passwords from the GAE Boilerplate: </strong>
+				     	<br>
+				      	(1) SSL is enabled site wide by adding <em>secure: always</em> to the section: <em>- url: /.*</em> in app.yaml (2) SSL either requires a free google app engine *.appspot.com domain or a <a target="_blank" href="https://developers.google.com/appengine/docs/ssl">custom domain and certificate</a> (3) Alternatively SSL can be enabled at a controller level via webapp2 schemes. Use the secure_scheme provided in routes.py (4) It is recommended to enable ssl site wide to help prevent <a target="_blank" href="http://en.wikipedia.org/wiki/Session_hijacking">session hijacking</a> (5) Passwords are hashed and encrypted with SHA512 and PyCrypto (6) Forms are secured through <a target="_blank" href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">cross-site request forgery</a> protection.
+				      </p>
+				      <p class="left-align light">
+				      	<strong>Additional perks: </strong>
+				      	<br>
+				      	(1) Dropbox-inspired referrals system for users to invite with their unique link (2) Rewards system for you to praise users' loyalty (3) Pre-loaded web components for easier chart generation (4) Beautiful email templates for a bunch of situations (5) Pretty server-client messaging through toast, dismissible, swipeable notifications (6) API Key - based Handlers for complete REST API (7) Enabled <a target="_blank" href="https://cloud.google.com/appengine/docs/python/endpoints/">Endpoints</a> for Google-based API as mobile backend for running cloud endpoint clients such as Android and iOS apps (8) Handlers for dispatching files using Google's NDB Blob Properties and Google Images API (9) Konami-code surprise for the fun of it (10) To be continued... 
+				      </p>
+				    </div>
+				  </div>
+				</div>
+			</div>
+		{% endblock %}
+
+		{% block modals_content %}
+			<div id="modal1" class="modal white {{brand_color}}-text center" style="display: none; opacity: 1; top: 0px;">
+		      <i class="mdi-navigation-close {{brand_color}}-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	        	<form id="form_login_user" action="/login/" method="post">
+		            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+			        <div class="row">
+			          <div class="input-field col s12 center">
+			            <p class="center login-form-text">Please enter your credentials</p>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-social-person-outline prefix"></i>
+			            <input id="login_email" name="email" type="email" class="validate">
+			            <label for="email" class="center-align">Email</label>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-action-lock-outline prefix"></i>
+			            <input id="login_password" name="password" type="password">
+			            <label for="password">Password</label>
+			          </div>
+			        </div>
+			        <div class="row">          
+			          <div class="input-field col s12 m12 l12  login-text">
+			              <input id="login_remember-me" name="remember_me" type="checkbox" />
+			              <label for="remember-me">Remember me</label>
+			          </div>
+			        </div>
+			        <div class="row">
+			          <div class="input-field col s12">
+			            <a class="btn waves-effect waves-light col s12" style="cursor:pointer;" onclick="sendForm('form_login_user')">Login</a>
+			          </div>
+			        </div>
+			        <div class="row right">
+			          <div class="input-field col s12">
+			              <p class="margin right-align medium-small"><a href="{{ uri_for("password-reset") }}">Forgot password ?</a></p>
+			          </div>          
+			        </div>
+			      </form>
+		      </div>
+		    </div>
+		    <div id="modal2" class="modal white {{brand_color}}-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close {{brand_color}}-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	        	<form id="form_register_user" action="/register/" method="post">
+		            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+			        <div class="row">
+			          <div class="input-field col s12 center">
+			            <p class="center login-form-text">Join the community now !</p>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-social-person-outline prefix"></i>
+			            <input id="register_name" name="name" type="text">
+			            <label for="name" class="center-align">Name</label>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-communication-email prefix"></i>
+			            <input id="register_email" name="email" type="email" class="validate">
+			            <label for="email" class="center-align">Email</label>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-action-lock-outline prefix"></i>
+			            <input id="register_password" name="password" type="password">
+			            <label for="password">Password</label>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			        	{{captchahtml | safe}}
+			          </div>
+			        </div>
+			        <div class="row">
+			          <div class="input-field col s12">
+			            <a class="btn waves-effect waves-light col s12" style="cursor:pointer;" onclick="sendForm('form_register_user')">Register Now</a>
+			          </div>
+			        </div>
+			      </form>
+		      </div>
+		    </div>
 		{% endblock %}
 
 		{% block footer %}
+			<!-- PAYPAL -->
+			<div class="parallax-container z-depth-3">
+				<div class="section no-pad-bot" style="  margin-top: 12%;">
+				  <div class="container">
+				    <div class="row center">
+				      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+						<input type="hidden" name="cmd" value="_s-xclick">
+						<input type="hidden" name="hosted_button_id" value="85VURVHH53HVY">
+						<input type="image" src="/{{theme}}/materialize/images/landing/buymeabeer.jpg" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" class="responsive-img circle z-depth-5 tooltipped" style="max-height: 200px;  border: 7px solid rgb(3, 169, 244);z-index:1;" data-position="top" data-delay="50" data-tooltip="Donate with PayPal!">
+					  </form>
+				    </div>
+				  </div>
+				</div>
+				<div class="parallax"><img src="/{{theme}}/materialize/images/landing/thanks.jpg" alt="Unsplashed background img 3" style="display: block; transform: translate3d(-50%, 230px, 0px); -webkit-filter:brightness(50%)"></div>
+			</div>
+			<div class="container">
+				<div class="section" id="download">
+
+				  <div class="row">
+				    <div class="col s12 center">
+				      <h3><i class="mdi-file-file-download {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				      <h4>The source is the source, of course, of course...</h4>
+				      <p class="center light">After all charm, it wouldn't be love if you couldn't own it. So go for it !</p>
+				      <div class="col s12 center">
+	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light {{brand_color}} white-text btn-large "><i class="mdi-action-bug-report left"></i>Report a bug</a>
+	                      <a style="margin-bottom:30px;" href="" class="waves-effect waves-light {{brand_color}} white-text btn-large "><i class="mdi-file-file-download left"></i>Download</a>
+	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light {{brand_color}} white-text btn-large "><i class="mdi-communication-comment left"></i>Reach me out!</a>
+	                  </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
 			<!-- START FOOTER -->
-			<footer class="page-footer light-blue darken-1">
+			<footer class="page-footer {{brand_color}} darken-1">
 				<a href="#"><i class="mdi-navigation-expand-less white-text right" style="padding: 10px;"></i></a>
 				<div class="container">
 				  <div class="row">
@@ -439,7 +432,7 @@
 						if ( resendIndex > 0 ){
 							//this is the case when resend-activation-link is sent
 							// 1: Add this text as html to toast additionals
-							_textAdditionals = '<a href="/'+_text.substr(resendIndex).replace(/ /g,'/')+'/"><p>Haz clic aquí para reenviarte el correo de activación.</p><p>Tip: El link anterior ya no funcionará.</p></a>';
+							_textAdditionals = '<a class="toast-warning" href="/'+_text.substr(resendIndex).replace(/ /g,'/')+'/">Clic here if you need us to resend activation link. Previous link will be forgotten.</a>';
 							// 2: Trim this text from toast
 							_text = _text.substr(0, resendIndex-1);							
 						}
@@ -630,11 +623,47 @@
 						BrowserDetect.init();	
 						console.log("running: {{app_name}}");
 					}); 
+
+					function sendForm(formID){
+			    		if (formID == "form_login_user"){
+			    			if (document.getElementById('login_email').value != "" && document.getElementById('login_password') != ""){
+			    				document.getElementById(formID).submit();
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
+			    			}
+			    		}else if (formID == "form_login"){
+			    			if (document.getElementById('email').value != "" && document.getElementById('password') != ""){
+			    				document.getElementById(formID).submit();
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
+			    			}
+			    		}else if (formID == "form_register_user"){
+			    			if (document.getElementById('register_name').value != "" && document.getElementById('register_email').value != "" && document.getElementById('register_password') != ""){
+			    				document.getElementById(formID).submit();
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
+			    			}
+			    		}else if (formID == "form_register"){
+			    			if (document.getElementById('r_name').value != "" && document.getElementById('r_email').value != "" && document.getElementById('r_password') != ""){
+			    				document.getElementById(formID).submit();
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
+			    			}
+			    		}
+
+					}
 				</script>
 			{% endblock %}
 
-			{% block page_scripts %}{% endblock %}			
+			{% if locale_language_id != "en" %}
+				{% if locale_iso.language == "pt" and locale_iso.territory == "BR" %}
+					<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_iso.language }}_{{ locale_iso.territory }}.js"></script>
+				{% else %}
+					<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_language_id }}.js"></script>
+				{% endif %}
+			{% endif %}
 
+			{% block page_scripts %}{% endblock %}			
 		{% endblock %}
 
 	</body>        

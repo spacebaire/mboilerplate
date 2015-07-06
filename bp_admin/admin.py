@@ -5,4 +5,4 @@ from google.appengine.api import users
 
 class AdminLogoutHandler(BaseHandler):
     def get(self):
-        self.redirect(users.create_logout_url(dest_url=self.uri_for('materialize-landing')))
+        self.redirect(users.create_logout_url(dest_url=self.uri_for('landing')))

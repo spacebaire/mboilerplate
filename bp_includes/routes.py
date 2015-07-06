@@ -13,20 +13,20 @@ _routes = [
     
 
     # Landing
-    RedirectRoute('/', handlers.MaterializeLandingRequestHandler, name='materialize-landing', strict_slash=True),   
+    RedirectRoute('/', handlers.MaterializeLandingRequestHandler, name='landing', strict_slash=True),   
     RedirectRoute('/contact/', handlers.MaterializeLandingContactRequestHandler, name='contact', strict_slash=True),
     RedirectRoute('/faq/', handlers.MaterializeLandingFaqRequestHandler, name='faq', strict_slash=True),
     RedirectRoute('/tou/', handlers.MaterializeLandingTouRequestHandler, name='tou', strict_slash=True),
     RedirectRoute('/privacy/', handlers.MaterializeLandingPrivacyRequestHandler, name='privacy', strict_slash=True),
     RedirectRoute('/license/', handlers.MaterializeLandingLicenseRequestHandler, name='license', strict_slash=True),
-    RedirectRoute('/register/', handlers.MaterializeRegisterRequestHandler, name='materialize-register', strict_slash=True),
-    RedirectRoute('/activation/<user_id>/<token>', handlers.MaterializeAccountActivationHandler, name='materialize-account-activation', strict_slash=True),
+    RedirectRoute('/register/', handlers.MaterializeRegisterRequestHandler, name='register', strict_slash=True),
+    RedirectRoute('/activation/<user_id>/<token>', handlers.MaterializeAccountActivationHandler, name='account-activation', strict_slash=True),
     RedirectRoute('/resend/<user_id>/<token>', handlers.ResendActivationEmailHandler, name='resend-account-activation', strict_slash=True),
-    RedirectRoute('/register/referral/<user_id>/', handlers.MaterializeRegisterReferralHandler, name='materialize-register-referral', strict_slash=True),
-    RedirectRoute('/activation/<ref_user_id>/<token>/<user_id>', handlers.MaterializeAccountActivationReferralHandler, name='materialize-account-activation-referral', strict_slash=True),
+    RedirectRoute('/register/referral/<user_id>/', handlers.MaterializeRegisterReferralHandler, name='register-referral', strict_slash=True),
+    RedirectRoute('/activation/<ref_user_id>/<token>/<user_id>', handlers.MaterializeAccountActivationReferralHandler, name='account-activation-referral', strict_slash=True),
     #RedirectRoute('/resend/<ref_user_id>/<token>/<user_id>', handlers.ResendActivationEmailReferralHandler, name='resend-account-activation-referral', strict_slash=True),
-    RedirectRoute('/login/', handlers.MaterializeLoginRequestHandler, name='materialize-login', strict_slash=True),
-    RedirectRoute('/logout/', handlers.MaterializeLogoutRequestHandler, name='materialize-logout', strict_slash=True),
+    RedirectRoute('/login/', handlers.MaterializeLoginRequestHandler, name='login', strict_slash=True),
+    RedirectRoute('/logout/', handlers.MaterializeLogoutRequestHandler, name='logout', strict_slash=True),
     RedirectRoute('/social_login/<provider_name>', handlers.SocialLoginHandler, name='social-login', strict_slash=True),
     RedirectRoute('/social_login/<provider_name>/complete', handlers.CallbackSocialLoginHandler, name='social-login-complete', strict_slash=True),
     RedirectRoute('/social_login/<provider_name>/delete', handlers.DeleteSocialProviderHandler, name='delete-social-provider', strict_slash=True),
@@ -48,6 +48,8 @@ _routes = [
     RedirectRoute('/user/tou/', handlers.MaterializeTouRequestHandler, name='materialize-tou', strict_slash=True),
     RedirectRoute('/user/privacy/', handlers.MaterializePrivacyRequestHandler, name='materialize-privacy', strict_slash=True),
     RedirectRoute('/user/contact/', handlers.MaterializeContactRequestHandler, name='materialize-contact', strict_slash=True),
+    RedirectRoute('/user/license/', handlers.MaterializeLicenseRequestHandler, name='materialize-license', strict_slash=True),
+    RedirectRoute('/user/tutorials/', handlers.MaterializeTutorialsRequestHandler, name='materialize-tutorials', strict_slash=True),
     RedirectRoute('/user/change-email/<user_id>/<encoded_email>/<token>', handlers.MaterializeEmailChangedCompleteHandler, name='materialize-email-changed-check', strict_slash=True),
     
     # Statics

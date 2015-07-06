@@ -15,4 +15,4 @@ class AdminCleanupTokensHandler(BaseHandler):
             keys = expiredTokens.fetch(100, keys_only=True)
             ndb.delete_multi(keys)
 
-        self.response.write('looking for tokens <= %s<br>%s tokens deleted <br> <a href=%s>home</a>' % (pastdate,tokensToDelete, self.uri_for('materialize-landing')))
+        self.response.write('looking for tokens <= %s<br>%s tokens deleted <br> <a href=%s>home</a>' % (pastdate,tokensToDelete, self.uri_for('landing')))

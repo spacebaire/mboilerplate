@@ -98,10 +98,9 @@ class AdminUserListHandler(BaseHandler):
         self.view.q = q
 
         params = {
-            "list_columns": [('username', 'Username'),
+            "list_columns": [('username', 'Username | Email'),
                              ('name', 'Name'),
-                             ('last_name', 'Last Name'),
-                             ('email', 'Email'),
+                             ('last_name', 'Lastname'),
                              ('role', 'Role'),
                              ('last_login', 'Last Login'),
                              ('link_referral', 'Referrals Link'),

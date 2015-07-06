@@ -1,7 +1,7 @@
 {% extends "/materialize/base.html" %}
 
 <!-- ADD PAGE HEAD ELEMENTS -->
-{% block title %}<title>Configuración » Perfil</title>{% endblock %}
+{% block title %}<title>MBoilerplate » Profile</title>{% endblock %}
    
 {% block page_css %}
 	<style shim-shadowdom>
@@ -41,20 +41,13 @@
       <div class="container">
         <div class="row">
           <div class="col s12 m12 l12">
-            <h5 class="breadcrumbs-title">Perfil</h5>
-            <ol class="breadcrumb">
-                <li><a href="{{ uri_for("materialize-home") }}">Inicio</a></li>
-                <li><a href="{{ uri_for("materialize-settings-profile") }}">Configuración</a></li>
-                <li class="active">Perfil</li>
-            </ol>
+            <h5 class="breadcrumbs-title grey-text text-lighten-1">Profile</h5>
           </div>
         </div>
-        <paper-tabs id="scrollableTabs" selected="0" scrollable style="margin-left: -20px;background-color: #2A2D41;width: 110%;">
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Perfil</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Hogar</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-cfe") }}', '_top')">Recibo</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Invitados</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-roomies") }}', '_top')">Familia</paper-tab>
+        <paper-tabs id="scrollableTabs" selected="0" scrollable style="margin-left: -20px;background-color: #2A2D41;width: 110%;   margin-top: 5px;">
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Address</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
       </paper-tabs>
       </div>
     </div>
@@ -69,7 +62,7 @@
 				<form id="user_picture_form" action="/img/upload/" enctype="multipart/form-data" method="post" style="margin-top:15px">
 		                <div class="form-group">
 		                    <label class="controls">
-		                    <span class="col s12" style="color: #ff6623;font-size: 1.1em;font-family: roboto-light;margin-bottom: 10px;">Haz clic para actualizar la imagen.</span>
+		                    <span class="col s12" style="color: #ff6623;font-size: 1.1em;font-family: roboto-light;margin-bottom: 10px;">Click on image to update.</span>
 		                        {% if has_picture %}
 		                        	<img id="blah" src="/img/" alt="your image" class="circle responsive-img valign" style="max-height:150px;"/>
 		                        {% else %}
@@ -93,47 +86,47 @@
 	                    <div class="row">
 	                      <div class="input-field col s6">
 	                        <input id="name" name="name" type="text" value="{{name}}">
-	                        <label for="name">Nombre</label>
+	                        <label for="name">Name</label>
 	                      </div>
 	                    
 	                      <div class="input-field col s6">
 	                        <input id="last_name" name="last_name" type="text" value="{{last_name}}">
-	                        <label for="last_name">Apellido</label>
+	                        <label for="last_name">Lastname</label>
 	                      </div>
 	                    </div>
 	                    <div class="row">
 	                      <div class="input-field col s6 m4">
 	                        <input id="phone" name="phone" type="tel" value="{{phone}}">
-	                        <label for="phone">Teléfono</label>
+	                        <label for="phone">Phone</label>
 	                      </div>
 	                      <div class="input-field col s6 m4">
 	                        <select id="gender" name="gender">
 	                          {% if gender == '' or gender == 'male' %}
-	                          	<option value="male" selected>Masculino</option>
-	                          	<option value="female">Femenino</option>
+	                          	<option value="male" selected>Male</option>
+	                          	<option value="female">Female</option>
 	                          {% else %}
-	                          	<option value="male">Masculino</option>
-	                          	<option value="female" selected>Femenino</option>
+	                          	<option value="male">Male</option>
+	                          	<option value="female" selected>Female</option>
 	                          {% endif %}
 	                        </select>
-	                        <label>Sexo</label>
+	                        <label>Gender</label>
 	                      </div>                        
 	                      <div class="input-field col s6 m4">
 	                        <input id="birth" name="birth" type="date" class="datepicker" value="{{birth}}">
-	                        <label for="birth">Fecha de nacimiento</label>
+	                        <label for="birth">Birthday</label>
 	                      </div>
 	                    </div>
 	                    <div class="row">
 	                        <div class="input-field col s12 center">
-	                          <button class="btn cyan waves-effect waves-light center" id="submit_profile_form" >Guardar cambios
+	                          <button class="btn waves-effect waves-light center" id="submit_profile_form" >Save changes
 	                            <i class="mdi-content-send right"></i>
 	                          </button>
-	                          <a class="btn-flat dropdown-button waves-effect grey lighten-2 accent-2 white-text center" href="#!" data-activates="dropdown2">Otras opciones<i class="mdi-navigation-arrow-drop-down right"></i></a><ul id="dropdown2" class="dropdown-content" style="width: 217px; position: absolute; top: 36px; left: 397.796875px; opacity: 1; display: none;">
-	                            <li><a href="{{ uri_for("materialize-settings-password") }}" class="-text" style="  font-size: 1em; color: rgb(118, 118, 118);display: block;padding: 10px;">Cambiar contraseña</a>
+	                          <a class="btn-flat dropdown-button waves-effect grey lighten-2 accent-2 white-text center" href="#!" data-activates="dropdown2">Other options<i class="mdi-navigation-arrow-drop-down right"></i></a><ul id="dropdown2" class="dropdown-content" style="width: 217px; position: absolute; top: 36px; left: 397.796875px; opacity: 1; display: none;">
+	                            <li><a href="{{ uri_for("materialize-settings-password") }}" class="-text" style="  font-size: 1em; color: rgb(118, 118, 118);display: block;padding: 10px;">Change password</a>
 	                            </li>
-	                            <li><a href="{{ uri_for("materialize-settings-email") }}" class="-text" style="  font-size: 1em; color: rgb(118, 118, 118);display: block;padding: 10px;">Cambiar email</a>
+	                            <li><a href="{{ uri_for("materialize-settings-email") }}" class="-text" style="  font-size: 1em; color: rgb(118, 118, 118);display: block;padding: 10px;">Change email</a>
 	                            </li>
-	                            <li><a href="{{ uri_for("materialize-settings-delete") }}" class="-text" style="  font-size: 1em; color: rgb(210, 210, 210);display: block;padding: 10px;">Eliminar cuenta</a>
+	                            <li><a href="{{ uri_for("materialize-settings-delete") }}" class="-text" style="  font-size: 1em; color: rgb(210, 210, 210);display: block;padding: 10px;">Delete account</a>
 	                            </li>
 	                          </ul>
 	                          
@@ -147,6 +140,9 @@
 	    </div>
 	    </div>
    	</div>
+{% endblock %}
+
+{% block disclaimers %}
 {% endblock %}
 
 {% block sidebar_right %}

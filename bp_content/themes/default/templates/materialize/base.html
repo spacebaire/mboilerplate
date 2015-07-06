@@ -8,60 +8,59 @@
 
 {% block document_head %}
 	<head>
-	    {% block title %}<title>Invictus</title>{% endblock %}
+	    {% block title %}<title>MBoilerplate</title>{% endblock %}
 
+	    <!-- All meta tags from config files -->
 	    {% block metadata %}
-		    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-			<meta name="description" content="La herramienta para comparar tu consumo de luz y encontrar las mejores soluciones para ahorrar." />
-		    <meta name="keywords" content="invictus, comunidad, social, electricidad, mexico, hogares, consumo eléctrico, cfe, transparencia, red, smart, home"/>
-		    <meta property="og:site_name" content="Invictus.mx"/>
-		    <meta property="og:title" content="Invictus"/>
-		    <meta property="og:type" content="website"/>
-			<meta property="og:description" content="La herramienta para comparar tu consumo de luz y encontrar las mejores soluciones para ahorrar."/>
-		    <meta property="og:url" content="http://www.invictus.mx"/>
-			<meta property="og:image" content="http://mihogarinvictus.appspot.com/default/img/_metaupdate_.png"/>
-		    <meta name="twitter:card" content="summary_large_image">
-		    <meta name="twitter:site" content="@invictusmx">
-		    <meta name="twitter:creator" content="@invictusmx">
-		    <meta name="twitter:title" content="Invictus">
-			<meta name="twitter:description" content="La herramienta para comparar tu consumo de luz y encontrar las mejores soluciones para ahorrar.">
-		    <meta name="twitter:image" content="http://mihogarinvictus.appspot.com/default/img/_metaupdate_.png">
-		    <meta property="twitter:url" content="http://www.invictus.mx"/>
-			<meta name="bitly-verification" content="08b699436857"/>
-		    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">	
+			{{ meta_tags_code }}
 	    {% endblock %}
 
 		{% block favicons %}
-		    <link rel="icon" href="/{{theme}}/materialize/images/favicon/fav.png" sizes="32x32">
+		    <link rel="icon" href="{{brand_favicon}}">
 		    {% if is_mobile %}
 				<!-- For iPhone -->
-				<link rel="apple-touch-icon-precomposed" href="/{{theme}}/materialize/images/favicon/fav.png">
+				<link rel="apple-touch-icon-precomposed" href="{{brand_favicon}}">
 				<!-- For Windows Phone -->
 				<meta name="msapplication-TileColor" content="#00bcd4">
-				<meta name="msapplication-TileImage" content="/{{theme}}/materialize/images/favicon/fav.png">
+				<meta name="msapplication-TileImage" content="{{brand_favicon}}">
 		    {% endif %}
 		{% endblock %}
 
 	    <!-- All stylesheets   -->
 	    {% block stylesheets %}
-		    <link href="/{{theme}}/materialize/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
+		    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	  		<link href="/{{theme}}/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">		    
 		    <link href="/{{theme}}/materialize/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+		    <link href="/default/materialize/css/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
 		    <style type="text/css">
-	    		.toast-success{ color: #2EF97D!important;}
-	    		.toast-danger{ color: #EF1515!important;}
-	    		.toast-warning{ color: #fdd835!important;}
-	    		.toast-info{ color: #29b6f6!important;}
+	    		.toast-success{ color: #2EF97D!important; line-height: 18px; }
+	    		.toast-danger{ color: #EF1515!important; line-height: 18px; }
+	    		.toast-warning{ color: #fdd835!important; line-height: 18px; }
+	    		.toast-info{ color: #29b6f6!important; line-height: 18px; }
+	    		@-webkit-keyframes pulsate {
+				    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+				    50% {opacity: 1.0;}
+				    100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+				}
+
+				.icon-block {
+				  padding: 0 15px;
+				}
+				.icon-block .material-icons {
+				  font-size: inherit;
+				}
+				ul li{
+					font-family: roboto-thin!important;
+				}
+				.g-recaptcha{
+					  margin-left: 23%;
+  					  -webkit-transform: scale(0.8);
+  					  transform: scale(0.8);
+				}
 	    	</style>
 		    {% block page_css %}{% endblock %}
 		    {% if user_id %}
-		    	<style type="text/css">
-		    		footer.page-footer{background-color: white;}
-		    		.email-name{font-size: 11px; text-decoration: underline;}
-		    	</style>
-				<style type="text/css" media="screen, projection">
-				  @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
-				</style>
+				{{ zendesk_imports }}
 			{% endif %}
 		{% endblock %}
 
@@ -71,6 +70,7 @@
 	    <!-- All JavaScript at the bottom, except these. -->
 		{% block priority_js %}
 			<script src="/boilerplate/webcomponents/bower_components/webcomponentsjs/webcomponents.min.js"></script>	
+    		<script type="text/javascript" src="/boilerplate/js/libs/modernizr-2.7.1.min.js"></script>
 		{% endblock %}
 
 		<!--  POLYMER   -->
@@ -100,22 +100,11 @@
 		        <div class="navbar-fixed">
 		            <nav class="white">
 		                <div class="nav-wrapper">
-		                    <h1 class="logo-wrapper"><a href="{{ uri_for("materialize-home") }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/logo.png" alt="materialize logo" style="height: 45px;margin-top: 3px"></a> <span class="logo-text">invictus.mx</span></h1>
+		                    <h1 class="logo-wrapper"><a href="{{ uri_for("materialize-home") }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-gray.png" alt="materialize logo" style="height: 45px;margin-top: 3px"></a></h1>
 		                    <ul class="right hide-on-med-and-down">
-		                        <!-- <li class="search-out">
-		                            <input type="text" class="search-out-text">
+		                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan" style="color: #8A8A8A;"></i></a>
 		                        </li>
-		                        <li>    
-		                            <a href="javascript:void(0);" class="waves-effect waves-block waves-light show-search"><i class="mdi-action-search" style="color: #ff6623;"></i></a>                              
-		                        </li> -->
-		                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan" style="color: #ff6623;"></i></a>
-		                        </li>
-		                        <!--  <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light"><i class="mdi-social-notifications" style="color: #ff6623;"></i></a>
-		                        </li> -->
-		                        <!-- Dropdown Trigger -->                        
-		                        <!-- <li><a href="#" data-activates="chat-out" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat" style="color: #ff6623;"></i></a>
-		                        </li> -->
-		                        <li><a href="#" id="chat_alias" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat" style="color: #ff6623;"></i></a>
+		                        <li><a href="#" id="chat_alias" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat" style="color: #8A8A8A;"></i></a>
 		                        </li>
 		                    </ul>
 		                </div>
@@ -149,12 +138,12 @@
 				                            </div>
 				                            <div class="col col s8 m8 l8">
 				                                <ul id="profile-dropdown" class="dropdown-content">
-				                                    <li><a href="{{ uri_for("materialize-settings-profile") }}"><i class="mdi-action-face-unlock"></i> Perfil</a>
+				                                    <li><a href="{{ uri_for("materialize-settings-profile") }}"><i class="mdi-action-face-unlock"></i> Profile</a>
 				                                    </li>
-				                                    <li><a href="{{ uri_for("materialize-referrals") }}"><i class="mdi-social-people"></i> Invitar </a>
+				                                    <li><a href="{{ uri_for("materialize-referrals") }}"><i class="mdi-social-people"></i> Invite </a>
 				                                    </li>
 				                                    <li class="divider"></li>
-				                                    <li><a href="{{ uri_for("materialize-logout") }}"><i class="mdi-hardware-keyboard-tab"></i> Salir</a>
+				                                    <li><a href="{{ uri_for("logout") }}"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
 				                                    </li>
 				                                </ul>
 				                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn {{name_class}}" href="#" data-activates="profile-dropdown">{{name}} {{last_name_i}}<span style="margin-left: 8px;">✎</span></a>
@@ -162,49 +151,41 @@
 				                            </div>
 				                        </div>
 				                    </li>
-				                    <li class="bold"><a href="{{ uri_for("materialize-home") }}" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Inicio</a>
+				                    <li class="bold"><a href="{{ uri_for("materialize-home") }}" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
 				                    </li>
 				                   <!--  <li class="bold"><a href="{{ uri_for("materialize-inbox") }}" class="waves-effect waves-cyan"><i class="mdi-communication-email"></i> Bandeja <span class="new badge blue">4</span></a> -->
 				                    </li>
 				                    <li class="no-padding">
 				                        <ul class="collapsible collapsible-accordion">
-				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-assessment"></i> Análisis</a>
+				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-assessment"></i> Sections</a>
 				                                <div class="collapsible-body">
 				                                    <ul>
-				                                        <li><a href="{{ uri_for("materialize-analysis") }}">Resumen</a>
+				                                        <li><a href="{{ uri_for("materialize-home") }}">Polymer</a>
 				                                        </li>                                        
-				                                        <li><a href="{{ uri_for("materialize-fee") }}">Tarifa</a>
+				                                        <li><a href="{{ uri_for("materialize-home") }}">Charts</a>
 				                                        </li>
-				                                        <li><a href="{{ uri_for("materialize-compare") }}">Comparaciones</a>
+				                                        <li><a href="{{ uri_for("materialize-home") }}">CartoDB</a>
 				                                        </li>
-				                                        <li><a href="{{ uri_for("materialize-history") }}">Historial</a>
-				                                        </li>
-				                                        <li><a href="{{ uri_for("materialize-savings") }}">Ahorros</a>
+				                                        <li><a href="{{ uri_for("materialize-home") }}">Colors</a>
 				                                        </li>
 				                                    </ul>
 				                                </div>
 				                            </li>
 				                        </ul>
 				                    </li>
-				                    {% if has_box %} 
-					                    <li class="bold"><a href="{{ uri_for("materialize-realtime") }}" class="waves-effect waves-cyan"><i class="mdi-action-alarm-add"></i> Tiempo real</a>
-					                    </li>
-					                {% endif %}
-					                {% if has_store %}
-				                    <li class="bold"><a href="{{ uri_for("materialize-vendor-home") }}" class="waves-effect waves-cyan"><i class="mdi-action-store"></i> Administrar tienda</a>
-				                    </li>
-				                    {% endif %}
 				                    <li class="li-hover"><div class="divider"></div></li>
 
 				                    <li class="no-padding">
 				                        <ul class="collapsible collapsible-accordion">
-				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-maps-local-library"></i> </i> Dudas</a>
+				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-maps-local-library"></i> </i> Getting started</a>
 				                                <div class="collapsible-body">
 				                                    <ul>
-				                                        <li><a href="{{ uri_for("materialize-faq") }}">Preguntas frecuentes</a></li>
-				                                        <li><a href="{{ uri_for("materialize-contact") }}">Contáctanos</a></li>  
-				                                        <li><a href="{{ uri_for("materialize-tou") }}">Términos de uso</a></li> 
-				                                        <li><a href="{{ uri_for("materialize-privacy") }}">Aviso de privacidad</a></li>  
+				                                        <li><a href="{{ uri_for("materialize-tutorials") }}">Tutorials</a></li>  
+				                                        <li><a href="{{ uri_for("materialize-contact") }}">Contact</a></li>  
+				                                        <li><a href="{{ uri_for("materialize-faq") }}">FAQ</a></li>
+				                                        <li><a href="{{ uri_for("materialize-tou") }}">Terms</a></li> 
+				                                        <li><a href="{{ uri_for("materialize-privacy") }}">Privacy</a></li>  
+				                                        <li><a href="{{ uri_for("materialize-license") }}">License</a></li>  
 				                                    </ul>
 				                                </div>
 				                            </li>
@@ -220,58 +201,23 @@
 			            {% endblock %}
 						
 						{% block disclaimers %}
-					        {% if not cfe_connected or dac_limit == -1 %}
+					        {% if disclaim %}
 						    	<style type="text/css">
 									.disclaimer{margin-bottom: 0px;width: 101%;height: auto;left: 0px;text-align: center;z-index: 9999;background: rgb(205, 55, 53);color: white;font-size: 14px;font-family: roboto-thin;letter-spacing: 1.5px; padding:10px;cursor: pointer;border-bottom: 1px solid rgb(240, 240, 240);}
 						    	</style>
-					        {% endif %}
-					        {% if cfe_rpu == -1 %}
-					            <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-cfe") }}', '_top')"> 
-					                 <span class="glyphicon-exclamation-sign glyphicon"></span>
-					                 <span>No has conectado tu recibo. Para ver tus consumos, </span> 
-					                 <span style="text-decoration: underline; font-family: roboto-regular;">conecta tu recibo aquí</span>.         
-					            </div>
-					        {% else %} 
-					            {% if cfe_connected and dac_limit != -1 %}
-					            	<!-- EVERYTHING OK, NO NEED FOR DISCLAIMER ! -->
-					            {% elif cfe_connected and dac_limit == -1 %} 
-					                <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-home") }}', '_top')"> 
-					                     <span class="glyphicon-exclamation-sign glyphicon"></span>
-					                     <span>Ya conectamos tu recibo. Falta obtener tu límite de alto consumo, </span> 
-					                     <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">configura tu zona aquí</span>.         
-					                </div>
-					            {% else %} 
-					                {% if cfe_error == 'bad_rpu' %}
-					                    <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-cfe") }}', '_top')"> 
-					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
-					                         <span>Hubo un error en tu número de recibo. </span> 
-					                         <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">Verifica la conexión aquí</span>.         
-					                    </div>
-					                {% elif cfe_error == 'bad_name' %}
-					                    <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-cfe") }}', '_top')"> 
-					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
-					                         <span>El nombre y número de tu recibo no coinciden. </span> 
-					                         <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">Verifica la conexión aquí</span>.         
-					                    </div>
-					                {% elif cfe_error == 'rpu_down' %}
-					                    <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-cfe") }}', '_top')"> 
-					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
-					                         <span>El número de recibo ha sido dado de baja. </span> 
-					                         <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">Verifica la conexión aquí</span>.         
-					                    </div>
-					                {% elif dac_limit == -1 %}
-					                    <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-setup-home") }}', '_top')"> 
-					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
-					                         <span>Estamos conectando tu recibo. Falta obtener el límite de alto consumo, </span> 
-					                         <span style="text-decoration: underline; font-family: roboto-regular; cursor:pointer;">configura tu zona aquí</span>.         
-					                    </div>
-					                {% else %}
-					                    <div class="row disclaimer green lighten-2"> 
-					                         <span class="glyphicon-exclamation-sign glyphicon"></span>
-					                         <span>Estamos conectando tu recibo. Recibirás un correo en menos de 24 hrs,</span>
-					                    </div>
-					                {% endif %}
-					            {% endif %}
+						        {% if disclaim_type == 1 %}
+						            <div class="row disclaimer" onclick="window.open('{{ uri_for("materialize-home") }}', '_top')"> 
+						                 <span class="glyphicon-exclamation-sign glyphicon"></span>
+						                 <span>This is a warning disclaimer, </span> 
+						                 <span style="text-decoration: underline; font-family: roboto-regular;">it's actually actionable</span>!       
+						            </div>
+						        {% else %} 					           
+				                    <div class="row disclaimer green lighten-2" onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')"> 
+				                         <span class="glyphicon-exclamation-sign glyphicon"></span>
+				                         <span>Hey what about uploading a picture and cover? </span> 
+						                 <span style="text-decoration: underline; font-family: roboto-regular;">just click here</span>.  
+				                    </div>
+						        {% endif %}
 					        {% endif %}
 						{% endblock %}	
 			            <!-- //////////////////////////////////////////////////////////////////////////// -->
@@ -296,9 +242,9 @@
 							                </a>
 							                <ul>
 							                  <li><a href="#" id="zen_alias" class="btn-floating red"><i class="large mdi-communication-live-help"></i></a></li>
-							                  <li><a href="app-widget.html" class="btn-floating yellow darken-1"><i class="large mdi-device-now-widgets"></i></a></li>
-							                  <li><a href="app-calendar.html" class="btn-floating green"><i class="large mdi-editor-insert-invitation"></i></a></li>
-							                  <li><a href="app-email.html" class="btn-floating blue"><i class="large mdi-communication-email"></i></a></li>
+							                  <li><a href="#" class="btn-floating yellow darken-1"><i class="large mdi-device-now-widgets"></i></a></li>
+							                  <li><a href="#" class="btn-floating green"><i class="large mdi-editor-insert-invitation"></i></a></li>
+							                  <li><a href="#" class="btn-floating blue"><i class="large mdi-communication-email"></i></a></li>
 							                </ul>
 							            </div>
 							            <!-- Floating Action Button -->
@@ -459,14 +405,14 @@
 		    <!-- END MAIN -->
 	    {% endblock %}
 
+
 		{% block footer %}
 			<!-- START FOOTER -->
-		    <footer class="page-footer">
+		    <footer class="page-footer ">
 		        {% block page_footer %}{% endblock %}
-		        <div class="footer-copyright">
+		        <div class="footer-copyright white grey-text text-lighten-2">
 		            <div class="container">
-		                Copyright © 2015 <a class="grey-text text-lighten-1" href="{{ uri_for("materialize-landing") }}" target="_blank">Invictus México</a> All rights reserved. 
-		                {% if not has_store %}<a class="orange-text text-lighten-4" href="{{ uri_for("materialize-vendor") }}" target="_blank">Da de alta tu tienda</a>{% endif %}
+		                <div class="container" style="text-align:right;" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">Made from real<i class="mdi-image-flash-on yellow-text text-lighten-1" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i>
 		            </div>
 		        </div>
 		    </footer>
@@ -477,19 +423,13 @@
 		{% block scripts %}
 			<!-- jQuery Library -->
 		    <script type="text/javascript" src="/{{theme}}/materialize/js/jquery-1.11.2.min.js"></script>
-    		<script type="text/javascript" src="/boilerplate/js/libs/modernizr-2.7.1.min.js"></script>
 		    <!--materialize js-->
 		    <script type="text/javascript" src="/{{theme}}/materialize/js/materialize.min.js"></script>
-		    <!--prism-->
-		    <script type="text/javascript" src="/{{theme}}/materialize/js/prism.js"></script>
 		    <!--scrollbar-->
 		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-		    <!-- chartist -->
-		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/chartist-js/chartist.js"></script>   	  		    
 		    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
 		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins.js"></script>
-	        		    
-		    <!-- Toast Notification -->
+	        <!-- Toast Notification -->
 		    {% if messages|safe %}		    	
 			    {% for message in messages %}
 		    		<script type="text/javascript">
@@ -500,7 +440,7 @@
 						if ( resendIndex > 0 ){
 							//this is the case when resend-activation-link is sent
 							// 1: Add this text as html to toast additionals
-							_textAdditionals = '<a href="/'+_text.substr(resendIndex).replace(/ /g,'/')+'/"><p>Haz clic aquí para reenviarte el correo de activación.</p><p>Tip: El link anterior ya no funcionará.</p></a>';
+							_textAdditionals = '<a class="toast-warning" href="/'+_text.substr(resendIndex).replace(/ /g,'/')+'/">Clic here if you need us to resend activation link. Previous link will be forgotten.</a>';
 							// 2: Trim this text from toast
 							_text = _text.substr(0, resendIndex-1);							
 						}
@@ -511,13 +451,12 @@
 			    {% endfor %}
 			{% endif %}	
 
-
 	        {% block raptor %}
 				<script src="https://hammerjs.github.io/dist/hammer.js"></script>
-				<script src="/{{ theme }}/js/lib/raptor.js"></script>
+				<script src="/{{ theme }}/materialize/js/plugins/raptor/raptor.js?v=5"></script>
 				<script type="text/javascript">
 					$(window).load(function() {
-						$('#header').raptorize({
+						$('body').raptorize({
 							'enterOn' : 'konami-code'
 						});
 					});
@@ -632,35 +571,14 @@
 						}]
 					};
 					BrowserDetect.init();	
-					console.log("running: {{app_name}}");		
-					console.log("cfe connect: {{cfe_connected}}");		
-					console.log("cfe error: {{cfe_error}}");		
-					console.log("dac limit: {{dac_limit}}");	
+					console.log("running: {{app_name}}");	
 				 })();
 			</script>
 			{% endblock %}
 
 
 			{% if user_id %}
-				<script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
-				<script>
-					if (typeof(Zenbox) !== "undefined") {
-						Zenbox.init({
-						  dropboxID:   "20172435",
-						  url:         "https://invictusmx.zendesk.com",
-						  tabTooltip:  "Feedback",
-						  tabImageURL: "https://p4.zdassets.com/external/zenbox/images/tab_es_feedback_right.png",
-						  tabColor:    "#ff0000",
-						  tabPosition: "Right",
-						  hide_tab: true,
-						});
-
-					}
-					if (document.querySelector('#zen_alias'))
-						document.querySelector('#zen_alias').addEventListener('click', function() { window.Zenbox.show();});
-					if (document.querySelector('#chat_alias'))
-						document.querySelector('#chat_alias').addEventListener('click', function() { window.Zenbox.show();});
-				</script>
+				{{ zendesk_code }}
 				<script type="text/javascript">
 					function cleanUpSpecialChars(str){
 						str = str.replace(/[ÀÁÂÃÄÅ]/g,"A");

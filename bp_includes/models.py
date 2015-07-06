@@ -55,12 +55,13 @@ class User(User):
     created = ndb.DateTimeProperty(auto_now_add=True)                                                   #: Creation date.
     updated = ndb.DateTimeProperty(auto_now=True)                                                       #: Modification date.    
     last_login = ndb.StringProperty()                                                                   #: Last user login.    
-    username = ndb.StringProperty()                                                                     #: User defined unique name, also used as key_name.
+    username = ndb.StringProperty()                                                                     #: User defined unique name, also used as key_name. >>Replaced as an email duplicate to avoid same emails several accounts
     name = ndb.StringProperty()                                                                         #: User Name    
     last_name = ndb.StringProperty()                                                                    #: User Last Name    
     email = ndb.StringProperty()                                                                        #: User email
     phone = ndb.StringProperty()                                                                        #: User phone
     twitter_handle = ndb.StringProperty()                                                               #: User twitter handle for notification purposes
+    address = ndb.StructuredProperty(Address)                                                           #: User georeference
     password = ndb.StringProperty()                                                                     #: Hashed password. Only set for own authentication.    
     birth = ndb.DateProperty()                                                                          #: User birthday.
     gender = ndb.StringProperty(choices = ['male','female'])                                            #: User sex    

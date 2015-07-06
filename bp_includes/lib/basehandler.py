@@ -103,8 +103,8 @@ class BaseHandler(webapp2.RequestHandler):
               Dict to hold urls for login/logout
         """
         return {
-            'login_url': self.uri_for('materialize-login'),
-            'logout_url': self.uri_for('materialize-logout')
+            'login_url': self.uri_for('login'),
+            'logout_url': self.uri_for('logout')
         }
 
     @webapp2.cached_property
@@ -295,8 +295,14 @@ class BaseHandler(webapp2.RequestHandler):
         # set or overwrite special vars for jinja templates
         kwargs.update({
             'google_analytics_code': self.app.config.get('google_analytics_code'),
+            'meta_tags_code': self.app.config.get('meta_tags_code'),
+            'zendesk_code': self.app.config.get('zendesk_code'),
+            'zendesk_imports': self.app.config.get('zendesk_imports'),
             'app_name': self.app.config.get('app_name'),
             'theme': self.get_theme,
+            'brand_logo': self.app.config.get('brand_logo'),
+            'brand_favicon': self.app.config.get('brand_favicon'),
+            'brand_color': self.app.config.get('brand_color'),
             'user_id': self.user_id,
             'username': self.username,
             'name': self.name,
