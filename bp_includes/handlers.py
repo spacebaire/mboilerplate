@@ -770,7 +770,7 @@ class PasswordResetHandler(BaseHandler):
         params = {
             'captchahtml': chtml,
         }
-        return self.render_template('materialize/password_reset.html', **params)
+        return self.render_template('materialize/landing/password_reset.html', **params)
 
     def post(self):
         # check captcha
@@ -849,7 +849,7 @@ class PasswordResetCompleteHandler(BaseHandler):
             params = {
                 '_username':user.name
             }
-            return self.render_template('materialize/password_reset_complete.html', **params)
+            return self.render_template('materialize/landing/password_reset_complete.html', **params)
 
     def post(self, user_id, token):
         verify = self.user_model.get_by_auth_token(int(user_id), token)
@@ -911,7 +911,7 @@ class MaterializeRegisterReferralHandler(BaseHandler):
                 '_email': user.email,
                 'is_referral' : True
             }
-            return self.render_template('materialize/register.html', **params)
+            return self.render_template('materialize/landing/register.html', **params)
         else:
             return self.redirect_to('landing')
 
@@ -1100,7 +1100,7 @@ class MaterializeRegisterRequestHandler(BaseHandler):
         params = {
             'captchahtml': chtml,
         }
-        return self.render_template('materialize/register.html', **params)
+        return self.render_template('materialize/landing/register.html', **params)
 
     def post(self):
         """ Get fields from POST dict """
@@ -1234,7 +1234,7 @@ class MaterializeLoginRequestHandler(BaseHandler):
         }
         continue_url = self.request.get('continue').encode('ascii', 'ignore')
         params['continue_url'] = continue_url
-        return self.render_template('materialize/login.html', **params)
+        return self.render_template('materialize/landing/login.html', **params)
 
     def post(self):
         """
@@ -1622,7 +1622,7 @@ class MaterializeLandingRequestHandler(BaseHandler):
                 message = _('Welcome! Did you knew Materialize is a Google web design idea?')
 
             self.add_message(message, 'success')
-            return self.render_template('materialize/landing.html', **params)
+            return self.render_template('materialize/landing/base.html', **params)
         else:
             user_info = self.user_model.get_by_id(long(self.user_id)) 
             return self.redirect_to('materialize-home')     
@@ -1644,7 +1644,7 @@ class MaterializeLandingFaqRequestHandler(BaseHandler):
         else:
             chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
         params['captchahtml'] = chtml
-        return self.render_template('materialize/faq.html', **params)
+        return self.render_template('materialize/landing/faq.html', **params)
 
 class MaterializeLandingTouRequestHandler(BaseHandler):
     """
@@ -1663,7 +1663,7 @@ class MaterializeLandingTouRequestHandler(BaseHandler):
         else:
             chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
         params['captchahtml'] = chtml
-        return self.render_template('materialize/tou.html', **params)
+        return self.render_template('materialize/landing/tou.html', **params)
 
 class MaterializeLandingPrivacyRequestHandler(BaseHandler):
     """
@@ -1682,7 +1682,7 @@ class MaterializeLandingPrivacyRequestHandler(BaseHandler):
         else:
             chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
         params['captchahtml'] = chtml
-        return self.render_template('materialize/privacy.html', **params)
+        return self.render_template('materialize/landing/privacy.html', **params)
 
 class MaterializeLandingLicenseRequestHandler(BaseHandler):
     """
@@ -1701,7 +1701,7 @@ class MaterializeLandingLicenseRequestHandler(BaseHandler):
         else:
             chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
         params['captchahtml'] = chtml
-        return self.render_template('materialize/license.html', **params)
+        return self.render_template('materialize/landing/license.html', **params)
 
 class MaterializeLandingContactRequestHandler(BaseHandler):
     """
@@ -1728,7 +1728,7 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
                 self.form.email.data = user_info.email
         params['exception'] = self.request.get('exception')
 
-        return self.render_template('materialize/contact.html', **params)
+        return self.render_template('materialize/landing/contact.html', **params)
 
     def post(self):
         """ validate contact form """
@@ -1841,7 +1841,7 @@ class MaterializeHomeRequestHandler(BaseHandler):
         params, user_info = disclaim(self)
         ####------------------------------------------------------------------####
         
-        return self.render_template('materialize/users/home.html', **params)
+        return self.render_template('materialize/users/sections/home.html', **params)
 
 class MaterializeInboxRequestHandler(BaseHandler):
     """
@@ -3117,26 +3117,27 @@ class AvatarUploadHandler(BaseHandler):
         """ Handles upload"""
 
         params = {}
-        if not self.user:
-            return self.render_template('home.html', **params)
-        if not self.form.validate():
+        if self.user:
+            if not self.form.validate():
+                message = _(messages.saving_error)
+                self.add_message(message, 'danger')
+                return self.redirect_to('edit-profile')
+            picture = self.request.get('picture')
+            user_info = self.user_model.get_by_id(long(self.user_id))
+            if user_info != None:
+                # Transform the image
+                avatar = images.resize(picture, width=200, height=200, crop_to_fit=True, quality=100)
+                user_info.picture = avatar
+                user_info.put()
+                message = _(messages.saving_success)
+                self.add_message(message, 'success')
+                self.redirect_to('edit-profile')
+
             message = _(messages.saving_error)
             self.add_message(message, 'danger')
             return self.redirect_to('edit-profile')
-        picture = self.request.get('picture')
-        user_info = self.user_model.get_by_id(long(self.user_id))
-        if user_info != None:
-            # Transform the image
-            avatar = images.resize(picture, width=200, height=200, crop_to_fit=True, quality=100)
-            user_info.picture = avatar
-            user_info.put()
-            message = _(messages.saving_success)
-            self.add_message(message, 'success')
-            self.redirect_to('edit-profile')
-
-        message = _(messages.saving_error)
-        self.add_message(message, 'danger')
-        return self.redirect_to('edit-profile')
+        else:
+            self.abort(403)
         
 
     @webapp2.cached_property
@@ -3153,29 +3154,29 @@ class AvatarDownloadHandler(BaseHandler):
         """ Handles download"""
 
         params = {}
-        if not self.user:
-            return self.render_template('home.html', **params)
-
-        if self.request.get('id') != '':
-            logging.info('loading image from id: %s' % self.request.get('id'))
-            user_info = self.user_model.get_by_id(long(self.request.get('id')))
-            if user_info != None:
-                if user_info.picture:
-                    self.response.headers['Content-Type'] = 'image/png'
-                    self.response.out.write(user_info.picture)
-                else:
-                    self.response.headers['Content-Type'] = 'text/plain'
-                    self.response.out.write('No image')
-        else: 
-            logging.info('loading user\'s image')
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            if user_info != None:
-                if user_info.picture:
-                    self.response.headers['Content-Type'] = 'image/png'
-                    self.response.out.write(user_info.picture)
-                else:
-                    self.response.headers['Content-Type'] = 'text/plain'
-                    self.response.out.write('No image')
+        if self.user:
+            if self.request.get('id') != '':
+                logging.info('loading image from id: %s' % self.request.get('id'))
+                user_info = self.user_model.get_by_id(long(self.request.get('id')))
+                if user_info != None:
+                    if user_info.picture:
+                        self.response.headers['Content-Type'] = 'image/png'
+                        self.response.out.write(user_info.picture)
+                    else:
+                        self.response.headers['Content-Type'] = 'text/plain'
+                        self.response.out.write('No image')
+            else: 
+                logging.info('loading user\'s image')
+                user_info = self.user_model.get_by_id(long(self.user_id))
+                if user_info != None:
+                    if user_info.picture:
+                        self.response.headers['Content-Type'] = 'image/png'
+                        self.response.out.write(user_info.picture)
+                    else:
+                        self.response.headers['Content-Type'] = 'text/plain'
+                        self.response.out.write('No image')
+        else:
+            self.abort(403)
 
 class CoverUploadHandler(BaseHandler):
     """
@@ -3414,7 +3415,7 @@ class WelcomeHandler(BaseHandler):
 
 
 
-""" API handlers
+""" REST API preparation handlers
 
     These handlers obey to interactions with key-holder developers
 

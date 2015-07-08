@@ -14,7 +14,7 @@
 #
 
 __author__ = 'Chuy Cepeda (@chuycepeda)'
-__website__ = 'gae.opencityapps.mx'
+__website__ = 'mboilerplate.appspot.com'
 
 import os
 import sys

@@ -274,6 +274,20 @@ class BaseHandler(webapp2.RequestHandler):
         """
         self.base_layout = layout
 
+    @webapp2.cached_property
+    def get_landing_layout(self):
+        """
+        Get the current landing layout template for jinja2 templating. Uses the variable landing_layout set in config
+        or if there is a landing_layout defined, use the landing_layout.
+        """
+        return self.landing_layout if hasattr(self, 'landing_layout') else self.app.config.get('landing_layout')
+
+    def set_landing_layout(self, layout):
+        """
+        Set the landing_layout variable, thereby overwriting the default layout template name in config.py.
+        """
+        self.landing_layout = layout
+
     def render_template(self, filename, **kwargs):
         locales = self.app.config.get('locales') or []
         locale_iso = None
@@ -319,7 +333,8 @@ class BaseHandler(webapp2.RequestHandler):
             'provider_uris': self.provider_uris,
             'provider_info': self.provider_info,
             'enable_federated_login': self.app.config.get('enable_federated_login'),
-            'base_layout': self.get_base_layout
+            'base_layout': self.get_base_layout,
+            'landing_layout': self.get_landing_layout
         })
         kwargs.update(self.auth_config)
         if hasattr(self, 'form'):

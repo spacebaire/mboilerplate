@@ -126,6 +126,7 @@
 				<div class="section">
 
 				  <div class="row">
+				   	<h3 class="col s12 light center header grey-text">What you see is what you get !</h3>
 				    <div class="col s12 m4">
 				      <div class="icon-block">
 				        <h2 class="center {{brand_color}}-text"><i class="material-icons">flash_on</i></h2>
@@ -197,7 +198,7 @@
 					        <li><a target="_blank" href="http://html5boilerplate.com/">HTML5Boilerplate</a>, yes, the HTML that rocks !,</li>
 					        <li><a target="_blank" href="http://modernizr.com">Modernizr 2.6.1</a>, modernize says it all,</li>
 					        <li><a target="_blank" href="http://jquery.com">jQuery 2.1.1</a>, the JS for Safari =),</li>
-					        <li><a target="_blank" href="http://materializecss.com/)">MaterializeCSS</a>, beauty at its best,</li>
+					        <li><a target="_blank" href="http://materializecss.com/)">MaterializeCSS 0.96.1</a>, beauty at its best,</li>
 					        <li><a target="_blank" href="https://www.polymer-project.org/1.0/">Polymer</a>, web components or the future, now,</li>
 					        <li><a target="_blank" href="https://highcharts.com">HighCharts</a>, <a target="_blank" href="http://d3js.org/">D3</a>, <a target="_blank" href="http://www.chartjs.org/">ChartJS</a>, <a target="_blank" href="https://gionkunz.github.io/chartist-js/">ChartistJS</a>, <a target="_blank" href="https://www.datatables.net/">Data Tables</a>, among other data visualization libraries.</li>
 				        </ul>
@@ -375,7 +376,7 @@
 				    <div class="col s12 center">
 				      <h3><i class="mdi-file-file-download {{brand_color}}-text" style="font-size:45px;"></i></h3>
 				      <h4>The source is the source, of course, of course...</h4>
-				      <p class="center light">After all charm, it wouldn't be love if you couldn't own it. So go for it !</p>
+				      <p class="center light">After all charm, it wouldn't be love if you couldn't own it. So go for it ! Also if you want to see a step-by-step follow through from Google Cloud SDK installation to having your own version of what you're seeing here, don't hesitate and <a href="#modal2" class="modal-trigger">register</a> to find it out. Additionally, if you want some help just reach me out and I can do it for you but charges apply for laziness.</p>
 				      <div class="col s12 center">
 	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light {{brand_color}} white-text btn-large "><i class="mdi-action-bug-report left"></i>Report a bug</a>
 	                      <a style="margin-bottom:30px;" href="" class="waves-effect waves-light {{brand_color}} white-text btn-large "><i class="mdi-file-file-download left"></i>Download</a>
@@ -399,14 +400,14 @@
 				        <li><a class="white-text" href="{{uri_for("faq")}}">FAQ</a></li>
 				        <li><a class="white-text" href="{{uri_for("tou")}}">Terms</a></li>
 				        <li><a class="white-text" href="{{uri_for("privacy")}}">Privacy</a></li>
-				        <li><a class="white-text" href="{{uri_for("license")}}">License</a></li>
 				        <li><a class="white-text" href="{{uri_for("contact")}}">Contact</a></li>
 				      </ul>
 				    </div>
 				  </div>
 				</div>
 				<div class="footer-copyright " style="text-align:right;">
-				  <div class="container tooltipped" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">Made from real<i class="mdi-image-flash-on white-text" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i>
+				  <div class="container tooltipped" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">
+				  	<a class="white-text" href="{{uri_for("license")}}">MIT License - </a>© 2015 GAE Materialize Boilerplate, All rights reserved. Made from real<i class="mdi-image-flash-on white-text" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i>
 				  </div>
 				</div>
 			</footer>
@@ -524,9 +525,9 @@
 								this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
 								this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "an unknown version";
 								this.OS = this.searchString(this.dataOS) || "an unknown OS";
-								console.log("browser: " + this.browser + " v." + this.version + " running in " + this.OS);
+								console.log("Detected " + this.browser + " v." + this.version + " running {{app_name}} in a " + this.OS);
 								if (this.browser != 'Chrome' && this.browser.indexOf('Safari') == -1 && this.browser.indexOf('iPhone') == -1 && this.browser != 'Firefox') {
-									alert("Lo sentimos, pero el sistema no ha sido diseñado para tu plataforma, descarga Google Chrome para poder navegar en Invictus.");
+									alert("Sorry, this is a system for the future, use Google Chrome.");
 								}
 								else if (this.browser.indexOf("Safari") != -1)
 									is_Safari = true;
@@ -621,7 +622,6 @@
 							}]
 						};
 						BrowserDetect.init();	
-						console.log("running: {{app_name}}");
 					}); 
 
 					function sendForm(formID){

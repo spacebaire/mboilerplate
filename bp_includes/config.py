@@ -27,6 +27,11 @@ config = {
     # should match whatever language the site uses when i18n is disabled
     'app_lang': 'en',
 
+
+    # jinja2 base layout template
+    'base_layout': '/materialize/users/base.html',
+    'landing_layout': '/materialize/landing/base.html',
+
     # Locale code = <language>_<territory> (ie 'en_US')
     # to pick locale codes see http://cldr.unicode.org/index/cldr-spec/picking-the-right-language-code
     # also see http://www.sil.org/iso639-3/codes.asp
@@ -102,16 +107,13 @@ config = {
     # stacktrace error page or browser error page
     'error_templates': {
         403: 'errors/default_error.html',
-        404: 'materialize/errors/404.html',
-        500: 'materialize/errors/500.html',
+        404: 'errors/404.html',
+        500: 'errors/500.html',
     },
 
     # Enable Federated login (OpenID and OAuth)
     # Google App Engine Settings must be set to Authentication Options: Federated Login
     'enable_federated_login': True,
-
-    # jinja2 base layout template
-    'base_layout': '/materialize/base.html',
 
     # send error emails to developers
     'send_mail_developer': False,
