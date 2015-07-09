@@ -77,20 +77,13 @@
       <div class="container">
         <div class="row">
           <div class="col s12 m12 l12">
-            <h5 class="breadcrumbs-title">Invitados</h5>
-            <ol class="breadcrumb">
-                <li><a href="{{ uri_for("materialize-home") }}">Inicio</a></li>
-                <li><a href="{{ uri_for("materialize-settings-profile") }}">Configuración</a></li>
-                <li class="active">Invitados</li>
-            </ol>
+            <h5 class="breadcrumbs-title">Referrals</h5>
           </div>
         </div>
-        <paper-tabs id="scrollableTabs" selected="3" scrollable style="margin-left: -20px;background-color: #2A2D41;width: 110%;">
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Perfil</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Hogar</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-cfe") }}', '_top')">Recibo</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Invitados</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-roomies") }}', '_top')">Familia</paper-tab>
+        <paper-tabs id="scrollableTabs" selected="2" scrollable style="margin-left: -20px;background-color: #03A9F4;width: 110%;   margin-top: 5px;">
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Address</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
       </paper-tabs>
       </div>
     </div>
@@ -159,7 +152,7 @@
               {% else %}
               <div class="row">
                 <p class="col s12 flow-text" style="margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46);">Haz invitado a {{total}} contactos.</p>
-                <button onclick="window.open('{{ uri_for("materialize-referrals") }}', '_top')" class="btn cyan waves-effect waves-light center" style="margin-left: 12px;" id="connect-btn" name="action">Invitar ahora
+                <button onclick="window.open('{{ uri_for("materialize-referrals") }}', '_top')" class="waves-effect waves-light light-blue white-text btn center" style="margin-left: 12px;" id="connect-btn" name="action">Invitar ahora
                       <i class="mdi-content-send right"></i>
                 </button>    
               </div>

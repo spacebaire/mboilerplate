@@ -48,9 +48,6 @@
 				.icon-block .material-icons {
 				  font-size: inherit;
 				}
-				ul li{
-					font-family: roboto-thin!important;
-				}
 				.g-recaptcha{
 					  margin-left: 23%;
   					  -webkit-transform: scale(0.8);
@@ -99,11 +96,11 @@
 		        <div class="navbar-fixed">
 		            <nav class="white">
 		                <div class="nav-wrapper">
-		                    <h1 class="logo-wrapper"><a href="{{ uri_for("materialize-home") }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-gray.png" alt="materialize logo" style="height: 45px;margin-top: 3px"></a></h1>
+		                    <h1 class="logo-wrapper"><a href="{{ uri_for("materialize-home") }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-light-blue.png" alt="materialize logo" style="height: 45px;margin-top: 3px"></a></h1>
 		                    <ul class="right hide-on-med-and-down">
-		                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan" style="color: #8A8A8A;"></i></a>
+		                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan" style="color: #03A9F4;"></i></a>
 		                        </li>
-		                        <li><a href="#" id="chat_alias" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat" style="color: #8A8A8A;"></i></a>
+		                        <li><a href="#" id="chat_alias" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat" style="color: #03A9F4;"></i></a>
 		                        </li>
 		                    </ul>
 		                </div>
@@ -126,13 +123,13 @@
 				            <!-- START LEFT SIDEBAR NAV-->
 				            <aside id="left-sidebar-nav">
 				                <ul id="slide-out" class="side-nav fixed leftside-navigation">
-				                    <li class="user-details cyan darken-2" style="background: url(/{{theme}}/materialize/images/users_bg.png) no-repeat center center;">
+				                    <li class="user-details light-blue darken-4">
 				                        <div class="row">
 				                            <div class="col col s4 m4 l4">
 												{% if has_picture %}
 													<img src="/img/" alt="" class="circle responsive-img valign profile-image" style="margin-top:6px;">
 												{% else %}
-				                                	<img src="/{{theme}}/materialize/images/ninja.png" alt="" class="circle responsive-img valign profile-image">
+				                                	<img src="/{{theme}}/materialize/images/avatar.jpg" class="circle responsive-img valign profile-image" style="margin-top:6px;">
 												{% endif %}
 				                            </div>
 				                            <div class="col col s8 m8 l8">
@@ -146,7 +143,7 @@
 				                                    </li>
 				                                </ul>
 				                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn {{name_class}}" href="#" data-activates="profile-dropdown">{{name}} {{last_name_i}}<span style="margin-left: 8px;">✎</span></a>
-				                                <p class="user-roal" style="color: rgb(0, 151, 167)!important;">{{role}}</p>
+				                                <p class="user-roal">{{role}}</p>
 				                            </div>
 				                        </div>
 				                    </li>

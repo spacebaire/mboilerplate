@@ -104,7 +104,7 @@
 			                    <label for="emails">Escribe cada correo separado por un <strong>ENTER</strong>.</label>
 			                </div>
 		                </form>
-		                <button onclick="sendForm('form_referrals')" class="btn cyan waves-effect waves-light right" style="margin-top: 20px; margin-bottom:20px;" id="connect-btn" name="action">Invitar ahora
+		                <button onclick="sendForm('form_referrals')" class="waves-effect waves-light light-blue white-text btn center" style="margin-top: 20px; margin-bottom:20px;" id="connect-btn" name="action">Invitar ahora
 		                      <i class="mdi-content-send right"></i>
 		                </button> 
 					</div>
@@ -190,7 +190,7 @@
 <!-- ADD PAGE SCRIPT ELEMENTS-->
 {% block page_scripts %}
 	<script src="/{{theme}}/materialize/js/plugins/multiple-emails/multiple-emails.js"></script>
-	<script src="/default/js/lib/ZeroClipboard.js"></script>
+	<script src="/{{theme}}/materialize/js/plugins/zero-clipboard/ZeroClipboard.js"></script>
 	<script type="text/javascript">
 		  var contact_count = 0;
 		  var first_time = true;

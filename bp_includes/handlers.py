@@ -2134,44 +2134,17 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
             message = _(messages.saving_error)
             self.add_message(message, 'danger')
             return self.get()
-        username = self.form.username.data.lower()
         name = self.form.name.data.strip()
         last_name = self.form.last_name.data.strip()
         gender = self.form.gender.data
         phone = self.form.phone.data
         birth = self.form.birth.data
-        country = self.form.country.data
-        tz = self.form.tz.data
 
         try:
             user_info = self.user_model.get_by_id(long(self.user_id))
 
             try:
                 message = ''
-                # update username if it has changed and it isn't already taken
-                if username != user_info.username:
-                    user_info.unique_properties = ['username', 'email']
-                    uniques = [
-                        'User.username:%s' % username,
-                        'User.auth_id:own:%s' % username,
-                    ]
-                    # Create the unique username and auth_id.
-                    success, existing = Unique.create_multi(uniques)
-                    if success:
-                        # free old uniques
-                        Unique.delete_multi(
-                            ['User.username:%s' % user_info.username, 'User.auth_id:own:%s' % user_info.username])
-                        # The unique values were created, so we can save the user.
-                        user_info.username = username
-                        user_info.auth_ids[0] = 'own:%s' % username
-                        message += _(messages.edit_username_success).format(username)
-
-                    else:
-                        message += _(messages.username_exists).format(
-                            username)
-                        # At least one of the values is not unique.
-                        self.add_message(message, 'danger')
-                        return self.get()
                 user_info.name = name
                 user_info.last_name = last_name
                 if (len(birth) > 9):
@@ -2179,8 +2152,6 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
                 if 'male' in gender:
                     user_info.gender = gender
                 user_info.phone = phone
-                user_info.country = country
-                user_info.tz = tz
                 user_info.put()
                 message += " " + _(messages.saving_success)
                 self.add_message(message, 'success')
@@ -2201,8 +2172,6 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
     @webapp2.cached_property
     def form(self):
         f = forms.SettingsProfileForm(self)
-        f.country.choices = self.countries_tuple
-        f.tz.choices = self.tz
         return f
 
 class MaterializeSettingsEmailRequestHandler(BaseHandler):

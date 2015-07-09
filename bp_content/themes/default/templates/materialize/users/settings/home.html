@@ -89,23 +89,14 @@
       <div class="container">
         <div class="row">
           <div class="col s12 m12 l12">
-            <h5 class="breadcrumbs-title">{% if setup %}{% block disclaimers %}{% endblock %}Último paso, obtén el límite de alto consumo (DAC) en tu zona.{% else %}Hogar{% endif %}</h5>
-            <ol class="breadcrumb">
-                <li><a href="{{ uri_for("materialize-home") }}">Inicio</a></li>
-                <li><a href="{{ uri_for("materialize-settings-profile") }}">Configuración</a></li>
-                <li class="active">Hogar</li>
-            </ol>
+            <h5 class="breadcrumbs-title">Address</h5>            
           </div>
         </div>
-        {% if not setup %}
-        <paper-tabs id="scrollableTabs" selected="1" scrollable style="margin-left: -20px;background-color: #2A2D41;width: 110%;">
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Perfil</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Hogar</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-cfe") }}', '_top')">Recibo</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Invitados</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-roomies") }}', '_top')">Familia</paper-tab>
-        </paper-tabs>
-        {% endif %}
+        <paper-tabs id="scrollableTabs" selected="1" scrollable style="margin-left: -20px;background-color: #03A9F4;width: 110%;   margin-top: 5px;">
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Address</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
+      </paper-tabs>
       </div>
     </div>
     <!--breadcrumbs end-->
@@ -243,7 +234,7 @@
                   </div> 
       </div>
       <div class="row">
-      <button onclick="sendForm('form_edit_home')" class="btn cyan waves-effect waves-light right">Guardar cambios
+      <button onclick="sendForm('form_edit_home')" class="waves-effect waves-light light-blue white-text btn right">Guardar cambios
           <i class="mdi-content-send right"></i>
       </button>
       </div>

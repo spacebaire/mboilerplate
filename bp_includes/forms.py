@@ -122,7 +122,7 @@ class AddressForm(BaseForm):
     tz = fields.SelectField(_('Timezone'), choices=[])
     pass
 
-class SettingsProfileForm(UsernameMixin, NameMixin):
+class SettingsProfileForm(NameMixin):
     phone = fields.TextField(_('Phone'))
     gender = fields.TextField(_('Gender'))
     birth = fields.TextField(_('Birth'))
