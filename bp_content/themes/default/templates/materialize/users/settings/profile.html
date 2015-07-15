@@ -12,15 +12,15 @@
 	    }
 
 	    paper-tabs[noink][nobar] paper-tab.core-selected {
-	      color: #ff6623;      
+	      color: #fff;      
 	    }
 
 	    paper-tabs::shadow #selectionBar {
-	      background-color: rgba(255, 102, 35, 1);
+	      background-color: rgba(255, 255, 255, 1);
 	    }
 
 	    paper-tabs paper-tab::shadow #ink {
-	      color: rgba(255, 102, 35, 1);
+	      color: rgba(255, 255, 255, 1);
 	    }
 
 	    paper-tab {
@@ -48,6 +48,7 @@
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Address</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-account") }}', '_top')">Account</paper-tab>
       </paper-tabs>
       </div>
     </div>
@@ -57,28 +58,26 @@
 {% block page_content %}
 	<div class="section">
 		<div class="container">
-		<div class="row">
+		<div class="row light-blue-text text-darken-4">
 			<div class="col s12 m3 center" style="margin-top:8px;">
-				<form id="user_picture_form" action="/img/upload/" enctype="multipart/form-data" method="post" style="margin-top:15px">
-		                <div class="form-group">
-		                    <label class="controls">
-		                    <span class="col s12" style="color: #03A9F4;font-size: 1.1em;font-family: roboto-light;margin-bottom: 10px;">Click on image to update.</span>
-		                        {% if has_picture %}
-		                        	<img id="blah" src="/img/" alt="your image" class="circle responsive-img valign" style="max-height:150px;"/>
-		                        {% else %}
-		                        	<img id="blah" src="/{{theme}}/materialize/images/avatar.jpg" alt="your image" class="circle responsive-img valign" style="max-height:150px;"/>
-		                        {% endif %}
-		                        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-		                        <input class="btn btn-success" type='file' id="picture" name="picture" style="display:none;"/>
-		                    </label>
-		                </div>                      
-		        </form> 
+	               <form class="col s12" id="form_edit_profile" action="{{ url|safe }}" enctype="multipart/form-data" method="post">
+	                <div class="form-group">
+	                    <label class="controls">
+	                    <span class="col s12" style="font-size: 1.1em;font-family: roboto-light;margin-bottom: 10px;">Click on image to update.</span>
+	                        {% if has_picture %}
+	                        	<img id="blah" src="/media/serve/profile/{{user_id}}/" alt="your image" class="circle responsive-img valign z-depth-1" style="max-height:150px; cursor:pointer;border: 1px solid rgb(3, 169, 244);"/>
+	                        {% else %}
+	                        	<img id="blah" src="" alt="your image" class="circle responsive-img valign valign z-depth-1" style="max-height:150px; cursor:pointer;display:none;"/>
+	                        	<div id="initial" class="circle red lighten-1" style="width: 110px;   height: 110px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; position: relative; cursor:pointer;"><span style="position: absolute;top: 25px;left: 42px;font-size: 40px;">{{ name_i }}</span></div>
+	                        {% endif %}
+	                        <input class="btn btn-success" type='file' id="picture" name="picture" style="display:none;"/>
+	                    </label>
+	                </div>                      
 			</div>
 
             <div class="col s12 m9">
 	            <div class="">
 	                <div class="row">
-	                  <form class="col s12" id="form_edit_profile" action="{{ url|safe }}" method="post">
 	                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 	                    <div class="row">
 	                      <div class="input-field col s6">
@@ -115,18 +114,9 @@
 	                    </div>
 	                    <div class="row">
 	                        <div class="input-field col s12 center">
-	                          <button class="waves-effect waves-light light-blue white-text btn center" id="submit_profile_form" >Save changes
+	                          <button class="waves-effect waves-light light-blue white-text btn right" id="submit_profile_form" >Save changes
 	                            <i class="mdi-content-send right"></i>
-	                          </button>
-	                          <a class="btn-flat dropdown-button waves-effect grey lighten-2 accent-2 white-text center" href="#!" data-activates="dropdown2">Other options<i class="mdi-navigation-arrow-drop-down right"></i></a><ul id="dropdown2" class="dropdown-content" style="width: 217px; position: absolute; top: 36px; left: 397.796875px; opacity: 1; display: none;">
-	                            <li><a href="{{ uri_for("materialize-settings-password") }}" class="-text" style="  font-size: 1em; color: rgb(118, 118, 118);display: block;padding: 10px;">Change password</a>
-	                            </li>
-	                            <li><a href="{{ uri_for("materialize-settings-email") }}" class="-text" style="  font-size: 1em; color: rgb(118, 118, 118);display: block;padding: 10px;">Change email</a>
-	                            </li>
-	                            <li><a href="{{ uri_for("materialize-settings-delete") }}" class="-text" style="  font-size: 1em; color: rgb(210, 210, 210);display: block;padding: 10px;">Delete account</a>
-	                            </li>
-	                          </ul>
-	                          
+	                          </button>	                          
 	                        </div>
 	                    </div>
 	                  </form>
@@ -167,12 +157,12 @@
 	            
 	            reader.onload = function (e) {
 	                $('#blah').attr('src', e.target.result);
-	                $('#picture').hide();
+	                $('#initial').hide();
 	                $('#blah').show();
 	            }
 	            
 	            reader.readAsDataURL(input.files[0]);
-	            $( '#user_picture_form' ).submit();
+	            // $( '#user_picture_form' ).submit();
 	        }
 	    }
 	    

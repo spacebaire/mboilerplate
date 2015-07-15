@@ -1,0 +1,33 @@
+{% extends 'admin_base.html' %}
+
+{% block header_title %}
+    {% trans %}Admin Blog Edit{% endtrans %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col s12">
+			<form action="{{upload_url}}" method="POST" enctype="multipart/form-data">
+				<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+				<input type="hidden" name="post_id" value="{{ post_id }}">
+				Upload File: <input type="file" name="file"><br> 
+				<input type="submit" name="submit" value="Submit"> 
+				<input type="textarea" placeholder="title" id="title" name="title" value="{{title}}">
+				<input type="textarea" placeholder="subtitle" id="subtitle" name="subtitle" value="{{subtitle}}">
+				<input type="textarea" placeholder="author" id="author" name="author" value="{{author}}">
+				<input type="textarea" placeholder="brief" id="brief" name="brief" value="{{brief}}">
+				<input type="textarea" placeholder="content" id="content" name="content" value="{{content}}">
+				<input type="text" placeholder="category" id="category" name="category" value="{{category}}">
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block mediaJS %}
+{% endblock %}
+
+<!-- 
+Blogging on the appengine could be amazing, you have several choices but this template renders <h1>HTML</h2> and is really, really, <em>easy!</em>. You can get any image from the <img class="img-responsive" src="http://bajopalabra.mx/wp-content/uploads/2015/07/Internet-1.jpeg">. Additionally you can even embed youtubes !: <br><br><br><iframe width="420" height="315" src="https://www.youtube.com/embed/rtNs2IfxGjc" frameborder="0" allowfullscreen></iframe><h2> So, don't hesitate, try it!</h2> -->

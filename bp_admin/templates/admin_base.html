@@ -12,7 +12,20 @@
 
     <!-- Mobile viewport optimized: h5bp.com/viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="/{{ theme }}/img/fav.png">
+    <!-- All meta tags from config files -->
+    {% block metadata %}
+        {{ meta_tags_code }}
+    {% endblock %}
+    {% block favicons %}
+        <link rel="icon" href="{{brand_favicon}}" sizes="32x32">
+        {% if is_mobile %}
+            <!-- For iPhone -->
+            <link rel="apple-touch-icon-precomposed" href="{{brand_favicon}}">
+            <!-- For Windows Phone -->
+            <meta name="msapplication-TileColor" content="#00bcd4">
+            <meta name="msapplication-TileImage" content="{{brand_favicon}}">
+        {% endif %}
+    {% endblock %}
     <script src="/boilerplate/webcomponents/bower_components/webcomponentsjs/webcomponents.js"></script>
     <link href="/boilerplate/webcomponents/bower_components/paper-toast/paper-toast.html" rel="import">
     <link href="/boilerplate/webcomponents/bower_components/paper-button/paper-button.html" rel="import">
@@ -20,7 +33,7 @@
     <link rel="stylesheet" href="/boilerplate/css/boilerplate.min.css">
     <link rel="stylesheet" href="/boilerplate/css/bootstrap.min.css">
     {% block mediaCSS %}{% endblock %}
-
+    
     {{ google_analytics_code }}
     <!-- All JavaScript at the bottom, except this Modernizr build.
        Modernizr enables HTML5 elements & feature detects for optimal performance. -->
@@ -49,13 +62,14 @@
 
                 <div class="navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li {% if path == uri_for('admin-users-geochart') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-geochart') }}">{% trans %}Georeference{% endtrans %}</a></li>
+                        <li {% if path == uri_for('admin-users-geochart') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-geochart') }}">{% trans %}Map{% endtrans %}</a></li>
                         <li {% if path == uri_for('admin-users-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-list') }}">{% trans %}Users{% endtrans %}</a></li>
-                        <li {% if path == uri_for('admin-logs-emails') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-emails') }}">{% trans %}Emails{% endtrans %}</a></li>
-                        <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">{% trans %}Visits{% endtrans %}</a></li>
+                        <li {% if path == uri_for('admin-blog') %}class="active"{% endif %}><a href="{{ uri_for('admin-blog') }}">{% trans %}Blog{% endtrans %}</a></li>
                     </ul>
 
                     <ul class="nav navbar-nav pull-right">
+                        <li {% if path == uri_for('admin-logs-emails') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-emails') }}">{% trans %}Emails{% endtrans %}</a></li>
+                        <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">{% trans %}Visits{% endtrans %}</a></li>
                         <li><a href="/" target="_blank">{% trans %}Visit Site{% endtrans %}</a></li>
 
                         <li><a href="{{ uri_for('admin-logout') }}">{% trans %}Logout{% endtrans %}</a></li>

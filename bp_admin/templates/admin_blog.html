@@ -1,0 +1,18 @@
+{% extends 'admin_base.html' %}
+
+{% block header_title %}
+    {% trans %}Admin Blog{% endtrans %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col s12">
+			You've a total of {{total}} blog posts. To create a new blog <a href="/admin/blog/1/">click here.</a>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block mediaJS %}
+{% endblock %}

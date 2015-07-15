@@ -1,5 +1,5 @@
 from webapp2_extras.appengine.auth.models import User
-from google.appengine.ext import ndb
+from google.appengine.ext import ndb, blobstore
 
 #--------------------------------------- USER MODEL PROPERTIES  -----------------------------------------------------------         
 class Rewards(ndb.Model):
@@ -16,11 +16,6 @@ class Notifications(ndb.Model):
     endpoint = ndb.BooleanProperty()
     twitter = ndb.StringProperty()
 
-class Friends(ndb.Model):
-    user_id = ndb.IntegerProperty(required = True)                                                  #: Manages id of original requester user
-    friend_id = ndb.IntegerProperty(required = True)                                                #: Manages id of friend user
-    status = ndb.StringProperty(required = True, choices = ['NotReplied','Accepted','Inelegible'])  #: Manages status of friend request
-
 class Address(ndb.Model):
     ageb = ndb.StringProperty()                                                                     #: Mexico Only - INEGI zone key 
     region = ndb.StringProperty()                                                                   #: Mexico Only - CFE related region
@@ -30,21 +25,23 @@ class Address(ndb.Model):
     zipcode = ndb.IntegerProperty()                                                                 #: Administrative zipcode region
     neighborhood = ndb.StringProperty()                                                             #: Administrative neighborhood region
     latlng = ndb.GeoPtProperty()                                                                    #: Geocoded lat,lng, from address fields
-    #street = ndb.StringProperty()                                                                  #unused
-    #streetnum = ndb.StringProperty()                                                               #unused
-    #geoaddress = ndb.StringProperty()                                                              #unused
+    #street = ndb.StringProperty()                                                                  #: Unused
+    #streetnum = ndb.StringProperty()                                                               #: Unused
     tz = ndb.StringProperty()                                                                       #: User TimeZone, initialized by boilerplate...       
     
-class AvatarPicture(ndb.Model):
-    user_id = ndb.IntegerProperty(required = True)                                                  #: user id linked to profile picture
-    picture = ndb.BlobProperty()                                                                    #: user picture personalization    
+class Media(ndb.Model):
+    blob_key = ndb.BlobKeyProperty()                                                                #: Refer to https://cloud.google.com/appengine/docs/python/blobstore/
 
-class CoverPicture(ndb.Model):
-    user_id = ndb.IntegerProperty(required = True)                                                  #: user id linked to profile picture
-    picture = ndb.BlobProperty()                                                                    #: user picture personalization
-                                                                  #: user picture personalization
-#--------------------------------------- ENDOF  USER PROPERTIES -----------------------------------------------------          
-
+class BlogPost(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add=True)                                               #: Creation date.
+    updated = ndb.DateTimeProperty(auto_now=True)                                                   #: Modification date.    
+    blob_key = ndb.BlobKeyProperty(required = True)                                                 #: Refer to https://cloud.google.com/appengine/docs/python/blobstore/
+    title = ndb.StringProperty(required = True)
+    subtitle = ndb.StringProperty()
+    author = ndb.StringProperty()
+    brief = ndb.StringProperty(required = True)
+    content = ndb.StringProperty(required = True)
+    category = ndb.StringProperty(repeated = True)
 
 #--------------------------------------- U S E R    M O D E L -----------------------------------------------------          
 class User(User):
@@ -52,24 +49,25 @@ class User(User):
     Universal user model. Can be used with App Engine's default users API,
     own auth or third party authentication methods (OpenID, OAuth etc).
     """
-    created = ndb.DateTimeProperty(auto_now_add=True)                                                   #: Creation date.
-    updated = ndb.DateTimeProperty(auto_now=True)                                                       #: Modification date.    
-    last_login = ndb.StringProperty()                                                                   #: Last user login.    
-    username = ndb.StringProperty()                                                                     #: User defined unique name, also used as key_name. >>Replaced as an email duplicate to avoid same emails several accounts
-    name = ndb.StringProperty()                                                                         #: User Name    
-    last_name = ndb.StringProperty()                                                                    #: User Last Name    
-    email = ndb.StringProperty()                                                                        #: User email
-    phone = ndb.StringProperty()                                                                        #: User phone
-    twitter_handle = ndb.StringProperty()                                                               #: User twitter handle for notification purposes
-    address = ndb.StructuredProperty(Address)                                                           #: User georeference
-    password = ndb.StringProperty()                                                                     #: Hashed password. Only set for own authentication.    
-    birth = ndb.DateProperty()                                                                          #: User birthday.
-    gender = ndb.StringProperty(choices = ['male','female'])                                            #: User sex    
-    activated = ndb.BooleanProperty(default=False)                                                      #: Account activation verifies email    
-    link_referral = ndb.StringProperty()                                                                #: Once verified, this link is used for referral sign ups (uses bit.ly)    
-    rewards = ndb.StructuredProperty(Rewards, repeated = True)                                          #: Rewards allocation property, includes referral email tracking.    
-    role = ndb.StringProperty(choices = ['NotReplied','Member','Admin'], default = 'Admin')             #: Role at its home    
-    notifications = ndb.StructuredProperty(Notifications)                                               #: Setup of notifications
+    created = ndb.DateTimeProperty(auto_now_add=True)                                              #: Creation date.
+    updated = ndb.DateTimeProperty(auto_now=True)                                                  #: Modification date.    
+    last_login = ndb.StringProperty()                                                              #: Last user login.    
+    username = ndb.StringProperty()                                                                #: User defined unique name, also used as key_name. >>Replaced as an email duplicate to avoid same emails several accounts
+    name = ndb.StringProperty()                                                                    #: User Name    
+    last_name = ndb.StringProperty()                                                               #: User Last Name    
+    email = ndb.StringProperty()                                                                   #: User email
+    phone = ndb.StringProperty()                                                                   #: User phone
+    twitter_handle = ndb.StringProperty()                                                          #: User twitter handle for notification purposes
+    address = ndb.StructuredProperty(Address)                                                      #: User georeference
+    password = ndb.StringProperty()                                                                #: Hashed password. Only set for own authentication.    
+    birth = ndb.DateProperty()                                                                     #: User birthday.
+    gender = ndb.StringProperty(choices = ['male','female'])                                       #: User sex    
+    activated = ndb.BooleanProperty(default=False)                                                 #: Account activation verifies email    
+    link_referral = ndb.StringProperty()                                                           #: Once verified, this link is used for referral sign ups (uses bit.ly)    
+    rewards = ndb.StructuredProperty(Rewards, repeated = True)                                     #: Rewards allocation property, includes referral email tracking.    
+    role = ndb.StringProperty(choices = ['NA','Member','Admin'], default = 'Admin')                #: Role in account
+    notifications = ndb.StructuredProperty(Notifications)                                          #: Setup of notifications
+    picture = ndb.BlobProperty()                                                                   #: User profile picture as an element in datastore of type blob
 	
     @classmethod
     def get_by_email(cls, email):
@@ -113,6 +111,7 @@ class User(User):
                 result['unused'].append(v)
         return result
 #--------------------------------------- ENDOF   U S E R    M O D E L -----------------------------------------------------          
+
 
 class LogVisit(ndb.Model):
     user = ndb.KeyProperty(kind=User)

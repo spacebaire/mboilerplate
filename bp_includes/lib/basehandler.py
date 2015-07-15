@@ -25,7 +25,7 @@ class ViewClass:
             self.view.var1 = "hello"
             self.view.array = [1, 2, 3]
             self.view.dict = dict(a="abc", b="bcd")
-        Can be accessed in the template by just using the variables liek {{var1}} or {{dict.b}}
+        Can be accessed in the template by just using the variables like {{var1}} or {{dict.b}}
     """
     pass
 

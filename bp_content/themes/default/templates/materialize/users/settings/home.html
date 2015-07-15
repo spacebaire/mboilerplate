@@ -1,7 +1,7 @@
 {% extends base_layout %}
 
 <!-- ADD PAGE HEAD ELEMENTS -->
-{% block title %}<title>Configuración » Hogar</title>{% endblock %}
+{% block title %}<title>MBoilerplate » Address</title>{% endblock %}
    
 {% block page_css %}
   <style shim-shadowdom>
@@ -12,15 +12,15 @@
         }
 
         paper-tabs[noink][nobar] paper-tab.core-selected {
-          color: #ff6623;      
+          color: #fff;      
         }
 
         paper-tabs::shadow #selectionBar {
-          background-color: rgba(255, 102, 35, 1);
+          background-color: rgba(255, 255, 255, 1);
         }
 
         paper-tabs paper-tab::shadow #ink {
-          color: rgba(255, 102, 35, 1);
+          color: rgba(255, 255, 255, 1);
         }
 
         paper-tab {
@@ -96,6 +96,7 @@
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Address</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-account") }}', '_top')">Account</paper-tab>
       </paper-tabs>
       </div>
     </div>

@@ -126,17 +126,10 @@ class SettingsProfileForm(NameMixin):
     phone = fields.TextField(_('Phone'))
     gender = fields.TextField(_('Gender'))
     birth = fields.TextField(_('Birth'))
+    picture = fields.FileField(_('Picture'))
     pass
 
 class ReferralsForm(BaseForm):
     emails = fields.TextField(_('Emails'), [validators.Required()])
-    pass
-
-class UploadAvatarForm(BaseForm):
-    picture = fields.FileField(_('Picture'))
-    pass
-
-class UploadCoverForm(BaseForm):
-    cover = fields.FileField(_('Cover'), [validators.Required()])
     pass
 

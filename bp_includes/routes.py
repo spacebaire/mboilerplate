@@ -14,6 +14,8 @@ _routes = [
 
     # Landing
     RedirectRoute('/', handlers.MaterializeLandingRequestHandler, name='landing', strict_slash=True),   
+    RedirectRoute('/blog/', handlers.MaterializeLandingBlogRequestHandler, name='blog', strict_slash=True),
+    RedirectRoute('/blog/<post_id>/', handlers.MaterializeLandingBlogPostRequestHandler, name='blog-post', strict_slash=True),
     RedirectRoute('/contact/', handlers.MaterializeLandingContactRequestHandler, name='contact', strict_slash=True),
     RedirectRoute('/faq/', handlers.MaterializeLandingFaqRequestHandler, name='faq', strict_slash=True),
     RedirectRoute('/tou/', handlers.MaterializeLandingTouRequestHandler, name='tou', strict_slash=True),
@@ -35,15 +37,14 @@ _routes = [
     
     # User
     RedirectRoute('/user/home/', handlers.MaterializeHomeRequestHandler, name='materialize-home', strict_slash=True),
-    RedirectRoute('/user/inbox/', handlers.MaterializeInboxRequestHandler, name='materialize-inbox', strict_slash=True),
     RedirectRoute('/user/referrals/', handlers.MaterializeReferralsRequestHandler, name='materialize-referrals', strict_slash=True),
-    RedirectRoute('/user/setup/home/', handlers.MaterializeSetupHomeRequestHandler, name='materialize-setup-home', strict_slash=True),
     RedirectRoute('/user/settings/profile/', handlers.MaterializeSettingsProfileRequestHandler, name='materialize-settings-profile', strict_slash=True),
     RedirectRoute('/user/settings/home/', handlers.MaterializeSettingsHomeRequestHandler, name='materialize-settings-home', strict_slash=True),
     RedirectRoute('/user/settings/email/', handlers.MaterializeSettingsEmailRequestHandler, name='materialize-settings-email', strict_slash=True),
     RedirectRoute('/user/settings/password/', handlers.MaterializeSettingsPasswordRequestHandler, name='materialize-settings-password', strict_slash=True),
     RedirectRoute('/user/settings/delete/', handlers.MaterializeSettingsDeleteRequestHandler, name='materialize-settings-delete', strict_slash=True),
     RedirectRoute('/user/settings/referrals/', handlers.MaterializeSettingsReferralsRequestHandler, name='materialize-settings-referrals', strict_slash=True),
+    RedirectRoute('/user/settings/account/', handlers.MaterializeSettingsAccountRequestHandler, name='materialize-settings-account', strict_slash=True),
     RedirectRoute('/user/faq/', handlers.MaterializeFaqRequestHandler, name='materialize-faq', strict_slash=True),
     RedirectRoute('/user/tou/', handlers.MaterializeTouRequestHandler, name='materialize-tou', strict_slash=True),
     RedirectRoute('/user/privacy/', handlers.MaterializePrivacyRequestHandler, name='materialize-privacy', strict_slash=True),
@@ -70,11 +71,12 @@ _routes = [
     RedirectRoute('/mbapi/out/', handlers.APIOutgoingHandler, name='mbapi-out', strict_slash=True),
     RedirectRoute('/mbapi/test/', handlers.APITestingHandler, name='mbapi-test', strict_slash=True),
 
-    # Blob handlers
-    RedirectRoute('/img/upload/', handlers.AvatarUploadHandler, name='img-upload', strict_slash=True),
-    RedirectRoute('/img/', handlers.AvatarDownloadHandler, name='img-download', strict_slash=True),
-    RedirectRoute('/cover/upload/', handlers.CoverUploadHandler, name='cover-upload', strict_slash=True),
-    RedirectRoute('/cover/', handlers.CoverDownloadHandler, name='cover-download', strict_slash=True)
+    # Blob handlers for small media
+    RedirectRoute('/media/serve/<kind>/<media_id>/', handlers.MediaDownloadHandler, name='media-serve', strict_slash=True),
+    # Blob handlers for large media
+    RedirectRoute('/blobstore/form/', handlers.BlobFormHandler, name='blob-form', strict_slash=True),
+    RedirectRoute('/blobstore/upload/', handlers.BlobUploadHandler, name='blob-upload', strict_slash=True),
+    RedirectRoute('/blobstore/serve/<photo_key>', handlers.BlobDownloadHandler, name='blob-serve', strict_slash=True),
     
 ]
 

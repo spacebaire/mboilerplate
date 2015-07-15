@@ -1,7 +1,7 @@
 {% extends base_layout %}
 
 <!-- ADD PAGE HEAD ELEMENTS -->
-{% block title %}<title>Configuración » Invitados</title>{% endblock %}
+{% block title %}<title>MBoilerplate » Referrals</title>{% endblock %}
    
 {% block page_css %}
   <style shim-shadowdom>
@@ -12,16 +12,17 @@
     }
 
     paper-tabs[noink][nobar] paper-tab.core-selected {
-      color: #ff6623;      
+      color: #fff;      
     }
 
     paper-tabs::shadow #selectionBar {
-      background-color: rgba(255, 102, 35, 1);
+      background-color: rgba(255, 255, 255, 1);
     }
 
     paper-tabs paper-tab::shadow #ink {
-      color: rgba(255, 102, 35, 1);
+      color: rgba(255, 255, 255, 1);
     }
+
 
     paper-tab {
       cursor:pointer;
@@ -84,6 +85,7 @@
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Address</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-account") }}', '_top')">Account</paper-tab>
       </paper-tabs>
       </div>
     </div>
@@ -137,7 +139,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <button onclick="sendForm('form_referrals')" class="btn cyan waves-effect waves-light right" style="margin-top:20px" id="connect-btn" name="action">Invitar de nuevo
+                    <button onclick="sendForm('form_referrals')" class="waves-effect waves-light light-blue white-text btn right" style="margin-top:20px" id="connect-btn" name="action">Invitar de nuevo
                       <i class="mdi-content-send right"></i>
                     </button>
                     <p class="left" style="margin-top: 20px;">¿No ves algún invitado? <a href="/materialize/referrals/">Clic aquí para invitarlo.</a></p>  

@@ -1,6 +1,7 @@
 from webapp2_extras.routes import RedirectRoute
 import users
 import admin
+import blog
 import logsemails
 import logsvisits
 import crontasks
@@ -9,6 +10,9 @@ import crontasks
 _routes = [
     RedirectRoute('/admin/', users.AdminStatsHandler, name='admin-stats', strict_slash=True),
     RedirectRoute('/admin/geo/', users.AdminUserGeoChartHandler, name='admin-users-geochart', strict_slash=True),
+    RedirectRoute('/admin/blog/', blog.AdminBlogHandler, name='admin-blog', strict_slash=True),
+    RedirectRoute('/admin/blog/<post_id>/', blog.AdminBlogEditHandler, name='admin-blog-edit', strict_slash=True),
+    RedirectRoute('/admin/blog/upload/<post_id>/', blog.AdminBlogUploadHandler, name='admin-blog-upload', strict_slash=True),
     RedirectRoute('/admin/users/', users.AdminUserListHandler, name='admin-users-list', strict_slash=True),
     RedirectRoute('/admin/users/export/', users.AdminExportUsers, name='admin-export-users', strict_slash=True),
     RedirectRoute('/admin/users/<user_id>/', users.AdminUserEditHandler, name='admin-user-edit', strict_slash=True, handler_method='edit'),

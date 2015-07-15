@@ -46,6 +46,18 @@ class AdminUserGeoChartHandler(BaseHandler):
         }
         return self.render_template('admin_users_geochart.html', **params)
 
+class AdminBlogHandler(BaseHandler):
+    def get(self):
+        params = {}
+        
+        return self.render_template('admin_blog.html', **params)
+
+class AdminBlogEditHandler(BaseHandler):
+    def get(self, post_id):
+        params = {}
+        
+        return self.render_template('admin_blog_edit.html', **params)
+
 class EditProfileForm(forms.SettingsProfileForm):
     activated = fields.BooleanField('Activated')
 

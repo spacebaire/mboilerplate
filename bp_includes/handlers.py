@@ -4,38 +4,47 @@
 
     Routes are setup in routes.py and added in main.py
 """
-# standard library imports
+# python imports
 import logging
 import json
 import requests
 from datetime import date, timedelta
 import time
 
-# third party imports
+# appengine imports
 import webapp2
 from webapp2_extras import security
 from webapp2_extras.auth import InvalidAuthIdError, InvalidPasswordError
 from webapp2_extras.i18n import gettext as _
 from webapp2_extras.appengine.auth.models import Unique
-from google.appengine.ext import ndb
-from google.appengine.api import taskqueue
-from google.appengine.api import users
-from google.appengine.api import images
+from google.appengine.ext import ndb, blobstore
+from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.api import taskqueue, users, images
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.runtime import apiproxy_errors
-from github import github
-from linkedin import linkedin
 
 # local imports
-import models
-import forms as forms
-import messages
-from lib import utils, captcha, twitter, bitly, myhtmlparser
+import models, messages, forms
+from github import github
+from linkedin import linkedin
+from lib import utils, captcha, twitter, facebook, bitly, myhtmlparser
 from lib.cartodb import CartoDBAPIKey, CartoDBException
 from lib.basehandler import BaseHandler
-from lib.decorators import user_required
-from lib.decorators import taskqueue_method
-from lib import facebook
+from lib.decorators import user_required, taskqueue_method
+
+
+
+def captchaBase(self):
+    if self.app.config.get('captcha_public_key') == "" or \
+                    self.app.config.get('captcha_private_key') == "":
+        chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
+                '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
+                'for API keys</a> in order to use reCAPTCHA.</div>' \
+                '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
+                '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
+    else:
+        chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
+    return chtml
 
 
 
@@ -44,6 +53,7 @@ from lib import facebook
     These handlers include all classes concerning the login and logout interactions with users.
 
 """
+
 class LoginRequiredHandler(BaseHandler):
     def get(self):
         continue_url = self.request.get_all('continue')
@@ -60,17 +70,8 @@ class LoginRequiredHandler(BaseHandler):
 
     #         if self.user:
     #             self.redirect_to('home')
-    #         if self.app.config.get('captcha_public_key') == "" or \
-    #                         self.app.config.get('captcha_private_key') == "":
-    #             chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-    #                     '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-    #                     'for API keys</a> in order to use reCAPTCHA.</div>' \
-    #                     '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-    #                     '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-    #         else:
-    #             chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
     #         params = {
-    #             'captchahtml': chtml,
+    #             'captchahtml': captchaBase(self),
     #         }
     #         continue_url = self.request.get('continue').encode('ascii', 'ignore')
     #         params['continue_url'] = continue_url
@@ -756,19 +757,8 @@ class PasswordResetHandler(BaseHandler):
     def get(self):
         if self.user:
             self.auth.unset_session()
-
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-
         params = {
-            'captchahtml': chtml,
+            'captchahtml': captchaBase(self),
         }
         return self.render_template('materialize/landing/password_reset.html', **params)
 
@@ -894,19 +884,9 @@ class MaterializeRegisterReferralHandler(BaseHandler):
             self.redirect_to('materialize-home')
         user = self.user_model.get_by_id(long(user_id))
 
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-
         if user is not None:
             params = {
-                'captchahtml': chtml,
+                'captchahtml': captchaBase(self),
                 '_username': user.name,
                 '_email': user.email,
                 'is_referral' : True
@@ -945,6 +925,14 @@ class MaterializeRegisterReferralHandler(BaseHandler):
         email = self.form.email.data.lower()
         username = email
         password = self.form.password.data.strip()
+
+
+        aUser = self.user_model.get_by_email(email)
+        if aUser is not None:
+            message = _("Sorry, email %s is already in use." % email)
+            self.add_message(message, 'danger')
+            return self.redirect_to('landing')
+
 
         # Password to SHA512
         password = utils.hashing(password, self.app.config.get('salt'))
@@ -1087,18 +1075,8 @@ class MaterializeRegisterRequestHandler(BaseHandler):
         if self.user:
             self.redirect_to('materialize-home')
 
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-
         params = {
-            'captchahtml': chtml,
+            'captchahtml': captchaBase(self),
         }
         return self.render_template('materialize/landing/register.html', **params)
 
@@ -1132,6 +1110,13 @@ class MaterializeRegisterRequestHandler(BaseHandler):
         email = self.form.email.data.lower()
         username = email
         password = self.form.password.data.strip()
+
+
+        aUser = self.user_model.get_by_email(email)
+        if aUser is not None:
+            message = _("Sorry, email %s is already in use." % email)
+            self.add_message(message, 'danger')
+            return self.redirect_to('landing')
 
         # Password to SHA512
         password = utils.hashing(password, self.app.config.get('salt'))
@@ -1219,18 +1204,8 @@ class MaterializeLoginRequestHandler(BaseHandler):
         if self.user:
             self.redirect_to('materialize-home')
 
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-
         params = {
-            'captchahtml': chtml,
+            'captchahtml': captchaBase(self),
         }
         continue_url = self.request.get('continue').encode('ascii', 'ignore')
         params['continue_url'] = continue_url
@@ -1575,22 +1550,19 @@ def disclaim(_self, **kwargs):
     _params['last_name'] = user_info.last_name
     _params['last_name_i'] = user_info.last_name[0] + "." if len(user_info.last_name) >= 1 else ""
     _params['name'] = user_info.name
+    _params['name_i'] = user_info.name[0].upper()
     _params['role'] = 'Administrator' if user_info.role == 'Admin' else 'Member'
     _params['phone'] = user_info.phone if user_info.phone != None else ""
     _params['gender'] = user_info.gender if user_info.gender != None else ""
     _params['birth'] = user_info.birth.strftime("%Y-%m-%d") if user_info.birth != None else ""
-    pictures = models.AvatarPicture.query()        
-    pictures = pictures.filter(models.AvatarPicture.user_id == long(user_info.key.id()))
-    _params['has_picture'] = True if pictures.count() > 0 else False
-    covers = models.CoverPicture.query()        
-    covers = covers.filter(models.CoverPicture.user_id == long(user_info.key.id()))
-    _params['has_cover'] = True if covers.count() > 0 else False
-    if not _params['has_picture'] or not _params['has_cover']:
+    _params['has_picture'] = True if user_info.picture is not None else False
+    if not _params['has_picture']:
         _params['disclaim'] = True
     _params['link_referral'] = user_info.link_referral
     _params['date'] = date.today().strftime("%Y-%m-%d")
 
     return _params, user_info
+
 
 # LANDING
 class MaterializeLandingRequestHandler(BaseHandler):
@@ -1602,16 +1574,7 @@ class MaterializeLandingRequestHandler(BaseHandler):
         """ Returns a simple HTML form for landing """
         params = {}
         if not self.user:
-            if self.app.config.get('captcha_public_key') == "" or \
-                            self.app.config.get('captcha_private_key') == "":
-                chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                        '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                        'for API keys</a> in order to use reCAPTCHA.</div>' \
-                        '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                        '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-            else:
-                chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-            params['captchahtml'] = chtml
+            params['captchahtml'] = captchaBase(self)
             import random
             r = random.choice('gbm')
             if r == 'g':
@@ -1627,6 +1590,43 @@ class MaterializeLandingRequestHandler(BaseHandler):
             user_info = self.user_model.get_by_id(long(self.user_id)) 
             return self.redirect_to('materialize-home')     
 
+class MaterializeLandingBlogRequestHandler(BaseHandler):
+    """
+        Handler for materialized privacy policy
+    """
+    def get(self):
+        """ returns simple html for a get request """
+        params = {}        
+        params['captchahtml'] = captchaBase(self)
+        posts = models.BlogPost.query()
+        params['total'] = posts.count()
+        params['posts'] = []
+        for post in posts:
+            categories = ""
+            for category in post.category:
+                categories += str(category) + ", "
+            params['posts'].append((post.key.id(), post.updated.strftime("%Y-%m-%d"), post.title, post.subtitle, post.blob_key, post.author, post.brief, categories[0:-2]))
+        return self.render_template('materialize/landing/blog.html', **params)
+
+class MaterializeLandingBlogPostRequestHandler(BaseHandler):
+    """
+        Handler for materialized privacy policy
+    """
+    def get(self, post_id):
+        """ returns simple html for a get request """
+        params = {}
+        params['captchahtml'] = captchaBase(self)
+        blog = models.BlogPost.get_by_id(long(post_id))
+        if blog is not None:
+            params['title'] = blog.title
+            params['subtitle'] = blog.subtitle
+            params['blob_key'] = blog.blob_key
+            params['author'] = blog.author
+            params['content'] = blog.content
+            return self.render_template('materialize/landing/blogpost.html', **params)
+        else:
+            return self.error(404)
+
 class MaterializeLandingFaqRequestHandler(BaseHandler):
     """
         Handler for materialized frequented asked questions
@@ -1634,16 +1634,7 @@ class MaterializeLandingFaqRequestHandler(BaseHandler):
     def get(self):
         """ returns simple html for a get request """
         params = {}
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-        params['captchahtml'] = chtml
+        params['captchahtml'] = captchaBase(self)
         return self.render_template('materialize/landing/faq.html', **params)
 
 class MaterializeLandingTouRequestHandler(BaseHandler):
@@ -1653,16 +1644,7 @@ class MaterializeLandingTouRequestHandler(BaseHandler):
     def get(self):
         """ returns simple html for a get request """
         params = {}
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-        params['captchahtml'] = chtml
+        params['captchahtml'] = captchaBase(self)
         return self.render_template('materialize/landing/tou.html', **params)
 
 class MaterializeLandingPrivacyRequestHandler(BaseHandler):
@@ -1672,16 +1654,7 @@ class MaterializeLandingPrivacyRequestHandler(BaseHandler):
     def get(self):
         """ returns simple html for a get request """
         params = {}
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-        params['captchahtml'] = chtml
+        params['captchahtml'] = captchaBase(self)
         return self.render_template('materialize/landing/privacy.html', **params)
 
 class MaterializeLandingLicenseRequestHandler(BaseHandler):
@@ -1691,16 +1664,7 @@ class MaterializeLandingLicenseRequestHandler(BaseHandler):
     def get(self):
         """ returns simple html for a get request """
         params = {}
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-        params['captchahtml'] = chtml
+        params['captchahtml'] = captchaBase(self)
         return self.render_template('materialize/landing/license.html', **params)
 
 class MaterializeLandingContactRequestHandler(BaseHandler):
@@ -1710,16 +1674,7 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
     def get(self):
         """ returns simple html for a get request """
         params = {}
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-        params['captchahtml'] = chtml
+        params['captchahtml'] = captchaBase(self)
         if self.user:
             user_info = self.user_model.get_by_id(long(self.user_id))
             if user_info.name or user_info.last_name:
@@ -1842,24 +1797,6 @@ class MaterializeHomeRequestHandler(BaseHandler):
         ####------------------------------------------------------------------####
         
         return self.render_template('materialize/users/sections/home.html', **params)
-
-class MaterializeInboxRequestHandler(BaseHandler):
-    """
-        Handler for materialized inbox
-    """
-    @user_required
-    def get(self):
-        """ returns simple html for a get request """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
-
-
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-        return self.render_template('materialize/users/sections/inbox.html', **params)
 
 class MaterializeFaqRequestHandler(BaseHandler):
     """
@@ -2134,11 +2071,12 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
             message = _(messages.saving_error)
             self.add_message(message, 'danger')
             return self.get()
-        name = self.form.name.data.strip()
-        last_name = self.form.last_name.data.strip()
-        gender = self.form.gender.data
-        phone = self.form.phone.data
-        birth = self.form.birth.data
+        name = self.request.get('name')
+        last_name = self.request.get('last_name')
+        gender = self.request.get('gender')
+        phone = self.request.get('phone')
+        birth = self.request.get('birth')
+        picture = self.request.get('picture') if len(self.request.get('picture'))>1 else None
 
         try:
             user_info = self.user_model.get_by_id(long(self.user_id))
@@ -2152,6 +2090,8 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
                 if 'male' in gender:
                     user_info.gender = gender
                 user_info.phone = phone
+                if picture is not None:
+                    user_info.picture = images.resize(picture, width=180, height=180, crop_to_fit=True, quality=100)
                 user_info.put()
                 message += " " + _(messages.saving_success)
                 self.add_message(message, 'success')
@@ -2173,312 +2113,6 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
     def form(self):
         f = forms.SettingsProfileForm(self)
         return f
-
-class MaterializeSettingsEmailRequestHandler(BaseHandler):
-    """
-        Handler for materialized settings email
-    """
-    @user_required
-    def get(self):
-        """ returns simple html for a get request """
-        params, user_info = disclaim(self)
-        return self.render_template('materialize/users/settings/email.html', **params)
-
-    def post(self):
-        """ Get fields from POST dict """
-
-        if not self.form.validate():
-            _message = _(messages.saving_error)
-            self.add_message(_message, 'danger')
-            return self.get()
-        new_email = self.form.new_email.data.strip()
-        password = self.form.password.data.strip()
-
-        try:
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            auth_id = "own:%s" % user_info.username
-            # Password to SHA512
-            password = utils.hashing(password, self.app.config.get('salt'))
-
-            try:
-                # authenticate user by its password
-                user = self.user_model.get_by_auth_password(auth_id, password)
-
-                # if the user change his/her email address
-                if new_email != user.email:
-
-                    # check whether the new email has been used by another user
-                    aUser = self.user_model.get_by_email(new_email)
-                    if aUser is not None:
-                        message = _("Lo sentimos, el email %s ya ha sido registrado." % new_email)
-                        self.add_message(message, 'danger')
-                        return self.get()
-
-                    # send email
-                    subject = _(messages.email_emailchanged_subject)
-                    user_token = self.user_model.create_auth_token(self.user_id)
-                    confirmation_url = self.uri_for("materialize-email-changed-check",
-                                                    user_id=user_info.get_id(),
-                                                    encoded_email=utils.encode(new_email),
-                                                    token=user_token,
-                                                    _full=True)
-                    if user.name != '':
-                        _username = user.name
-                    else:
-                        _username = user.email
-                    # load email's template
-                    template_val = {
-                        "app_name": self.app.config.get('app_name'),
-                        "username": _username,
-                        "new_email": new_email,
-                        "confirmation_url": confirmation_url,
-                        "support_url": self.uri_for("contact", _full=True),
-                        "faq_url": self.uri_for("faq", _full=True)
-                    }
-
-                    old_body_path = "emails/email_changed_notification_old.txt"
-                    old_body = self.jinja2.render_template(old_body_path, **template_val)
-
-                    new_body_path = "emails/email_changed_notification_new.txt"
-                    new_body = self.jinja2.render_template(new_body_path, **template_val)
-
-                    email_url = self.uri_for('taskqueue-send-email')
-                    taskqueue.add(url=email_url, params={
-                        'to': user.email,
-                        'subject': subject,
-                        'body': old_body,
-                    })
-                    taskqueue.add(url=email_url, params={
-                        'to': new_email,
-                        'subject': subject,
-                        'body': new_body,
-                    })
-
-                    # display successful message
-                    msg = _(messages.emailchanged_success)
-                    self.add_message(msg, 'success')
-                    return self.get()
-
-                else:
-                    self.add_message(_(messages.emailchanged_error), "warning")
-                    return self.get()
-
-
-            except (InvalidAuthIdError, InvalidPasswordError), e:
-                # Returns error message to self.response.write in
-                # the BaseHandler.dispatcher
-                message = _(messages.password_wrong)
-                self.add_message(message, 'danger')
-                return self.get()
-
-        except (AttributeError, TypeError), e:
-            login_error_message = _(messages.expired_session)
-            self.add_message(login_error_message, 'danger')
-            self.redirect_to('login')
-
-    @webapp2.cached_property
-    def form(self):
-        return forms.EditEmailForm(self)
-
-class MaterializeEmailChangedCompleteHandler(BaseHandler):
-    """
-    Handler for completed email change
-    Will be called when the user click confirmation link from email
-    """
-
-    @user_required
-    def get(self, user_id, encoded_email, token):
-        verify = self.user_model.get_by_auth_token(int(user_id), token)
-        email = utils.decode(encoded_email)
-        if verify[0] is None:
-            message = _(messages.used_activation_link)
-            self.add_message(message, 'warning')
-            self.redirect_to('home')
-
-        else:
-            # save new email
-            user = verify[0]
-            user.email = email
-            user.put()
-            # delete token
-            self.user_model.delete_auth_token(int(user_id), token)
-            # add successful message and redirect
-            message = _(messages.emailchanged_confirm)
-            self.add_message(message, 'success')
-            self.redirect_to('materialize-settings-email')
-
-class MaterializeSettingsPasswordRequestHandler(BaseHandler):
-    """
-        Handler for materialized settings password
-    """
-    @user_required
-    def get(self):
-        """ returns simple html for a get request """
-        params, user_info = disclaim(self)
-        return self.render_template('materialize/users/settings/password.html', **params)
-
-    def post(self):
-        """ Get fields from POST dict """
-
-        if not self.form.validate():
-            self.add_message(_(messages.passwords_mismatch), 'danger')
-            return self.get()
-
-        current_password = self.form.current_password.data.strip()
-        password = self.form.password.data.strip()
-
-        try:
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            auth_id = "own:%s" % user_info.username
-
-            # Password to SHA512
-            current_password = utils.hashing(current_password, self.app.config.get('salt'))
-            try:
-                user = self.user_model.get_by_auth_password(auth_id, current_password)
-                # Password to SHA512
-                password = utils.hashing(password, self.app.config.get('salt'))
-                user.password = security.generate_password_hash(password, length=12)
-                user.put()
-
-                # send email
-                subject = messages.email_passwordchanged_subject
-                if user.name != '':
-                    _username = user.name
-                else:
-                    _username = user.email
-                # load email's template
-                template_val = {
-                    "app_name": self.app.config.get('app_name'),
-                    "username": _username,
-                    "email": user.email,
-                    "reset_password_url": self.uri_for("password-reset", _full=True),
-                    "support_url": self.uri_for("contact", _full=True),
-                    "faq_url": self.uri_for("faq", _full=True)
-                }
-                email_body_path = "emails/password_changed.txt"
-                email_body = self.jinja2.render_template(email_body_path, **template_val)
-                email_url = self.uri_for('taskqueue-send-email')
-                taskqueue.add(url=email_url, params={
-                    'to': user.email,
-                    'subject': subject,
-                    'body': email_body,
-                    'sender': self.app.config.get('contact_sender'),
-                })
-
-                #Login User
-                self.auth.get_user_by_password(user.auth_ids[0], password)
-                self.add_message(_(messages.passwordchange_success), 'success')
-                return self.get()
-            except (InvalidAuthIdError, InvalidPasswordError), e:
-                # Returns error message to self.response.write in
-                # the BaseHandler.dispatcher
-                message = _(messages.password_wrong)
-                self.add_message(message, 'danger')
-                return self.get()
-        except (AttributeError, TypeError), e:
-            login_error_message = _(messages.expired_session)
-            self.add_message(login_error_message, 'danger')
-            self.redirect_to('login')
-
-    @webapp2.cached_property
-    def form(self):
-        return forms.EditPasswordForm(self)
-
-class MaterializeSettingsDeleteRequestHandler(BaseHandler):
-    """
-        Handler for materialized settings delete account
-    """
-    @user_required
-    def get(self):
-        """ returns simple html for a get request """
-        params, user_info = disclaim(self)
-
-        if self.app.config.get('captcha_public_key') == "" or \
-                        self.app.config.get('captcha_private_key') == "":
-            chtml = '<div class="alert alert-danger"><strong>Error</strong>: You have to ' \
-                    '<a href="http://www.google.com/recaptcha/" target="_blank">sign up ' \
-                    'for API keys</a> in order to use reCAPTCHA.</div>' \
-                    '<input type="hidden" name="recaptcha_challenge_field" value="manual_challenge" />' \
-                    '<input type="hidden" name="recaptcha_response_field" value="manual_challenge" />'
-        else:
-            chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
-
-        params['captchahtml'] = chtml
-        return self.render_template('materialize/users/settings/delete.html', **params)
-
-    def post(self, **kwargs):
-        # check captcha
-        response = self.request.POST.get('g-recaptcha-response')
-        remote_ip = self.request.remote_addr
-
-        cResponse = captcha.submit(
-            response,
-            self.app.config.get('captcha_private_key'),
-            remote_ip)
-
-        if cResponse.is_valid:
-            # captcha was valid... carry on..nothing to see here
-            pass
-        else:
-            _message = _(messages.captcha_error)
-            self.add_message(_message, 'danger')
-            return self.get()
-
-        if not self.form.validate():
-            message = _(messages.password_wrong)
-            self.add_message(message, 'danger')
-            return self.get()
-
-        password = self.form.password.data.strip()
-
-        try:
-
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            auth_id = "own:%s" % user_info.username
-            password = utils.hashing(password, self.app.config.get('salt'))
-
-            try:
-                # authenticate user by its password
-                user = self.user_model.get_by_auth_password(auth_id, password)
-                if user:
-                    # Delete Social Login
-                    # for social in models_boilerplate.SocialUser.get_by_user(user_info.key):
-                    #     social.key.delete()
-
-                    user_info.key.delete()
-
-                    ndb.Key("Unique", "User.username:%s" % user.username).delete_async()
-                    ndb.Key("Unique", "User.auth_id:own:%s" % user.username).delete_async()
-                    ndb.Key("Unique", "User.email:%s" % user.email).delete_async()
-
-                    #TODO: Delete UserToken objects, Delete Home if Admin
-
-                    self.auth.unset_session()
-
-                    # display successful message
-                    msg = _(messages.account_delete_success)
-                    self.add_message(msg, 'success')
-                    return self.redirect_to('home')
-                else:
-                    message = _(messages.password_wrong)
-                    self.add_message(message, 'danger')
-                    return self.self.get()
-
-            except (InvalidAuthIdError, InvalidPasswordError), e:
-                # Returns error message to self.response.write in
-                # the BaseHandler.dispatcher
-                message = _(messages.password_wrong)
-                self.add_message(message, 'danger')
-                return self.self.get()
-
-        except (AttributeError, TypeError), e:
-            login_error_message = _(messages.expired_session)
-            self.add_message(login_error_message, 'danger')
-            self.redirect_to('login')
-
-    @webapp2.cached_property
-    def form(self):
-        return forms.DeleteAccountForm(self)
 
 class MaterializeSettingsHomeRequestHandler(BaseHandler):
     """
@@ -2813,252 +2447,107 @@ class MaterializeSettingsReferralsRequestHandler(BaseHandler):
         f = forms.ReferralsForm(self)
         return f
 
-class MaterializeSetupHomeRequestHandler(BaseHandler):
-    """
-        Handler for materialized setup home
-    """
-
+class MaterializeSettingsAccountRequestHandler(BaseHandler):
     @user_required
     def get(self):
-        """ Returns a simple HTML form for edit profile """
+        """ returns simple html for a get request """
+        params, user_info = disclaim(self)
+        params['captchahtml'] = captchaBase(self)
+        for auth_id in user_info.auth_ids:
+            logging.info("auth id: %s" % auth_id)
+        return self.render_template('materialize/users/settings/account.html', **params)
 
-        params = {}
-        params['setup'] = True
-        if self.user:
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            params['role'] = 'Administrador' if user_info.role == 'Admin' else 'Miembro'
-            params['has_picture'] = False
-            if user_info.picture != None:
-                params['has_picture'] = True            
-            
-            if self.request.get('comes_from_rpu'):
-                params['comes_from_rpu'] = True
-            else:
-                params['comes_from_rpu'] = False
-            
-            if self.request.get('comes_from_home'):
-                params['comes_from_home'] = True
-            else:
-                params['comes_from_home'] = False
-            
-            if user_info.home_id == -1:
-                params['kind'] = 'house'
-                params['num_hab'] = 'one'
-                params['size'] = 'small'
-                params['zipcode'] = ''
-                params['neighborhood'] = ''
-                params['latlng'] = 'null'
-                params['cfe_connected'] = False
-                params['cfe_error'] = 'none'
-                params['dac_limit'] = -1
-                params['cfe_rpu'] = -1
-                params['has_box'] = False
-                params['panels'] = 0
-                params['capacity'] = 250
-            else:
-                user_home = models.Home.get_by_id(long(user_info.home_id))
-                params['cfe_connected'] = user_home.cfe.connected
-                params['cfe_error'] = user_home.cfe.error
-                params['dac_limit'] = user_home.cfe.dac_limit
-                params['cfe_rpu'] = mycfe.fixedRPU(user_home.cfe.rpu)
-                params['has_box'] = False
-                if user_home.box != None:
-                    if user_home.box.serial != '':
-                        params['has_box'] = True
-                if user_home.attributes == None:
-                    params['kind'] = 'house'
-                    params['num_hab'] = 'one'
-                    params['size'] = 'small'
-                    params['zipcode'] = ''
-                    params['neighborhood'] = ''
-                    params['latlng'] = 'null'
-                elif user_home.attributes.essentials != None:
-                    params['kind'] = user_home.attributes.essentials.kind
-                    params['num_hab'] = user_home.attributes.essentials.num_hab
-                    params['size'] = user_home.attributes.essentials.size
-                    params['zipcode'] = str(user_home.address.zipcode)
-                    while len(params['zipcode']) < 5:
-                        params['zipcode'] = '0' + params['zipcode']
-                    params['neighborhood'] = user_home.address.neighborhood
-                    params['latlng'] = user_home.address.latlng
-                else:
-                    params['kind'] = 'house'
-                    params['num_hab'] = 'one'
-                    params['size'] = 'small'
-                    params['zipcode'] = ''
-                    params['neighborhood'] = ''
-                    params['latlng'] = 'null'
-                if user_home.solar != None:
-                    params['panels'] = user_home.solar.panels
-                    params['capacity'] = user_home.solar.capacity
-                    if (user_home.solar.since):
-                        params['since'] = user_home.solar.since.strftime("%Y-%m-%d")
-                else:
-                    params['panels'] = 0
-                    params['capacity'] = 250
-
-        return self.render_template('materialize/users/settings/home.html', **params)
-
+class MaterializeSettingsEmailRequestHandler(BaseHandler):
+    """
+        Handler for materialized settings email
+    """
+    @user_required
     def post(self):
         """ Get fields from POST dict """
 
         if not self.form.validate():
-            message = _(messages.saving_error)
-            message += "Tip: Asegura que el marcador en el mapa se encuentre en tu zona."
-            self.add_message(message, 'danger')
-            return self.get()
-        kind = self.form.kind.data
-        if 'undefined' in kind:
-            kind = 'house'
-        num_hab = self.form.num_hab.data
-        if 'undefined' in num_hab:
-            num_hab = 'one'
-        size = self.form.size.data        
-        if 'undefined' in size:
-            size = 'medium'
-        zipcode = int(self.form.zipcode.data)
-        ageb = self.form.ageb.data
-        dacl = self.form.dacl.data
-        latlng = self.form.latlng.data
-        neighborhood = self.form.neighborhood.data
-        municipality = self.form.municipality.data
-        state = self.form.state.data
-        region = self.form.region.data
-        fee = self.form.fee.data
-        flag = self.form.flag.data
-        panels = self.form.panels.data
-        capacity = self.form.capacity.data
-        since = self.form.since.data
+            _message = _(messages.saving_error)
+            self.add_message(_message, 'danger')
+            return self.redirect_to('materialize-settings-account')
+        new_email = self.form.new_email.data.strip()
+        password = self.form.password.data.strip()
+
         try:
             user_info = self.user_model.get_by_id(long(self.user_id))
-            user_home = None
+            auth_id = "own:%s" % user_info.username
+            # Password to SHA512
+            password = utils.hashing(password, self.app.config.get('salt'))
+
             try:
-                
-                if user_info.home_id == -1:
-                    #create home
-                    logging.info("Creating a new home...")
-                    home = models.Home()
-                    logging.info("User key to create home: %s" % user_info.key.id())
-                    home.habitant.append(user_info.key.id())
-                    home.cfe = models.CFE()
-                    
-                    #init
-                    home.attributes = models.HomeAttributes()
-                    home.attributes.essentials = models.Essentials()
-                    home.address = models.Address()
-                    home.solar = models.FV()
+                # authenticate user by its password
+                user = self.user_model.get_by_auth_password(auth_id, password)
 
-                    #assign home essentials                    
-                    home.attributes.essentials.kind = kind
-                    home.attributes.essentials.num_hab = num_hab
-                    home.attributes.essentials.size = size
+                # if the user change his/her email address
+                if new_email != user.email:
 
-                    #assign home address                    
-                    home.address.zipcode = int(zipcode)
-                    home.address.ageb = ageb
-                    home.address.neighborhood = neighborhood
-                    home.address.municipality = municipality
-                    home.address.state = state
-                    home.address.region = region
-                    home.address.latlng = ndb.GeoPt(latlng)
-                    
-                    #assign dac limit
-                    home.cfe.dac_limit = int(dacl)
-                    home.cfe.base_fee = fee  
+                    # check whether the new email has been used by another user
+                    aUser = self.user_model.get_by_email(new_email)
+                    if aUser is not None:
+                        message = _("Sorry, email %s is already in use." % new_email)
+                        self.add_message(message, 'danger')
+                        return self.redirect_to('materialize-settings-account')
 
-                    #assign solar installation
-                    home.solar.panels = panels
-                    home.solar.capacity = capacity
-                    if (len(since) > 9):
-                        home.solar.since = date(int(since[:4]), int(since[5:7]), int(since[8:]))
-
-                    #allocate in datastore
-                    home.put()
-                    user_info.home_id = home.key.id()
-                    user_info.put()
-                    logging.info("Home created with ID: %s" % user_info.home_id)
-                else:
-                    #update user home
-                    user_home = models.Home.get_by_id(long(user_info.home_id))
-                    logging.info("Updating home: %s" % user_home.key.id())
-
-                    #init
-                    if user_home.attributes == None:
-                        user_home.attributes = models.HomeAttributes()
-                    user_home.attributes.essentials = models.Essentials()
-                    user_home.address = models.Address()
-                    
-                    #assign home essentials
-                    user_home.attributes.essentials.kind = kind
-                    user_home.attributes.essentials.num_hab = num_hab
-                    user_home.attributes.essentials.size = size
-                    logging.info("...essentials assigned...")
-
-                    #assign home address
-                    user_home.address.zipcode = int(zipcode)
-                    user_home.address.ageb = ageb
-                    user_home.address.neighborhood = neighborhood
-                    user_home.address.municipality = municipality
-                    user_home.address.state = state
-                    user_home.address.region = region
-                    user_home.address.latlng = ndb.GeoPt(latlng)
-                    logging.info("...address assigned...")
-
-                    #assign dac limit
-                    user_home.cfe.dac_limit = int(dacl)
-                    user_home.cfe.base_fee = fee  
-                    logging.info("...dac limit & base fee assigned...")  
-
-                    #assign solar installation
-                    if user_home.solar != None:
-                        user_home.solar.panels = panels
-                        user_home.solar.capacity = capacity
-                        if (len(since) > 9):
-                            user_home.solar.since = date(int(since[:4]), int(since[5:7]), int(since[8:]))
+                    # send email
+                    subject = _(messages.email_emailchanged_subject)
+                    user_token = self.user_model.create_auth_token(self.user_id)
+                    confirmation_url = self.uri_for("materialize-email-changed-check",
+                                                    user_id=user_info.get_id(),
+                                                    encoded_email=utils.encode(new_email),
+                                                    token=user_token,
+                                                    _full=True)
+                    if user.name != '':
+                        _username = user.name
                     else:
-                        user_home.solar = models.FV()
-                        user_home.solar.panels = panels
-                        user_home.solar.capacity = capacity
-                        if (len(since) > 9):
-                            user_home.solar.since = date(int(since[:4]), int(since[5:7]), int(since[8:]))
-
-                    
-                    #allocate in datastore
-                    user_home.put()
-                    logging.info("Home updated with ID: %s" % user_home.key.id())
-
-                user_home = models.Home.get_by_id(long(user_info.home_id))
-                #: Email rodrigo if user from out of region or base_fee is different from fee while not being DAC
-                if flag == 1 or (user_home.cfe.fee != user_home.cfe.base_fee and '1' in user_home.cfe.fee):
-                    subject = "Usuario fuera de regiones tarifarias."
+                        _username = user.email
+                    # load email's template
                     template_val = {
-                        "username": user_info.username,
-                        "email": user_info.email,
+                        "app_name": self.app.config.get('app_name'),
+                        "username": _username,
+                        "new_email": new_email,
+                        "confirmation_url": confirmation_url,
                         "support_url": self.uri_for("contact", _full=True),
+                        "faq_url": self.uri_for("faq", _full=True)
                     }
-                    body_path = "emails/user_out_of_region.txt"
-                    body = self.jinja2.render_template(body_path, **template_val)
-                    email = "rodrigo.dibildox@invictus.mx"
-                    email_url = self.uri_for('taskqueue-send-email')                    
+
+                    old_body_path = "emails/email_changed_notification_old.txt"
+                    old_body = self.jinja2.render_template(old_body_path, **template_val)
+
+                    new_body_path = "emails/email_changed_notification_new.txt"
+                    new_body = self.jinja2.render_template(new_body_path, **template_val)
+
+                    email_url = self.uri_for('taskqueue-send-email')
                     taskqueue.add(url=email_url, params={
-                        'to': str(email),
+                        'to': user.email,
                         'subject': subject,
-                        'body': body,
+                        'body': old_body,
+                    })
+                    taskqueue.add(url=email_url, params={
+                        'to': new_email,
+                        'subject': subject,
+                        'body': new_body,
                     })
 
-                message = ''                
-                message += " " + _(messages.saving_success)
-                self.add_message(message, 'success')
-                if (user_home.cfe.connected):
-                    return self.redirect_to('materialize-home')
-                else:
-                    return self.redirect_to('materialize-settings-profile')
+                    # display successful message
+                    msg = _(messages.emailchanged_success)
+                    self.add_message(msg, 'success')
+                    return self.redirect_to('materialize-settings-account')
 
-            except (AttributeError, KeyError, ValueError), e:
-                logging.error('Error updating home profile: ' + e)
-                message = _(messages.saving_error)
+                else:
+                    self.add_message(_(messages.emailchanged_error), "warning")
+                    return self.redirect_to('materialize-settings-account')
+
+
+            except (InvalidAuthIdError, InvalidPasswordError), e:
+                # Returns error message to self.response.write in
+                # the BaseHandler.dispatcher
+                message = _(messages.password_wrong)
                 self.add_message(message, 'danger')
-                return self.get()
+                return self.redirect_to('materialize-settings-account')
 
         except (AttributeError, TypeError), e:
             login_error_message = _(messages.expired_session)
@@ -3067,238 +2556,233 @@ class MaterializeSetupHomeRequestHandler(BaseHandler):
 
     @webapp2.cached_property
     def form(self):
-        f = forms.EditHomeForm(self)
-        return f
+        return forms.EditEmailForm(self)
 
+class MaterializeEmailChangedCompleteHandler(BaseHandler):
+    """
+    Handler for completed email change
+    Will be called when the user click confirmation link from email
+    """
+
+    @user_required
+    def get(self, user_id, encoded_email, token):
+        verify = self.user_model.get_by_auth_token(int(user_id), token)
+        email = utils.decode(encoded_email)
+        if verify[0] is None:
+            message = _(messages.used_activation_link)
+            self.add_message(message, 'warning')
+            self.redirect_to('materialize-home')
+
+        else:
+            # save new email
+            user = verify[0]
+            x = ndb.Key("Unique", "User.username:%s" % user.email).get()
+            y = ndb.Key("Unique", "User.auth_id:own:%s" % user.email).get()
+            z = ndb.Key("Unique", "User.email:%s" % user.email).get()
+            ndb.Key("Unique", "User.username:%s" % user.email).delete_async()
+            ndb.Key("Unique", "User.auth_id:own:%s" % user.email).delete_async()
+            ndb.Key("Unique", "User.email:%s" % user.email).delete_async()
+
+            for i in range(0,len(user.auth_ids)):
+                if user.auth_ids[i] == "own:%s" % user.email:
+                    user.auth_ids[i] = "own:%s" % email
+                    break
+            user.email = email
+            user.username = email
+            user.put()
+
+            x.key = ndb.Key("Unique", "User.username:%s" % user.email)
+            y.key = ndb.Key("Unique", "User.auth_id:own:%s" % user.email)
+            z.key = ndb.Key("Unique", "User.email:%s" % user.email)
+            x.put()
+            y.put()
+            z.put()
+
+
+            # delete token
+            self.user_model.delete_auth_token(int(user_id), token)
+            # add successful message and redirect
+            message = _(messages.emailchanged_confirm)
+            self.add_message(message, 'success')
+            self.redirect_to('materialize-home')
+
+class MaterializeSettingsPasswordRequestHandler(BaseHandler):
+    """
+        Handler for materialized settings password
+    """
+    @user_required
+    def post(self):
+        """ Get fields from POST dict """
+
+        if not self.form.validate():
+            self.add_message(_(messages.passwords_mismatch), 'danger')
+            return self.redirect_to('materialize-settings-account')
+
+        current_password = self.form.current_password.data.strip()
+        password = self.form.password.data.strip()
+
+        try:
+            user_info = self.user_model.get_by_id(long(self.user_id))
+            auth_id = "own:%s" % user_info.username
+
+            # Password to SHA512
+            current_password = utils.hashing(current_password, self.app.config.get('salt'))
+            try:
+                user = self.user_model.get_by_auth_password(auth_id, current_password)
+                # Password to SHA512
+                password = utils.hashing(password, self.app.config.get('salt'))
+                user.password = security.generate_password_hash(password, length=12)
+                user.put()
+
+                # send email
+                subject = messages.email_passwordchanged_subject
+                if user.name != '':
+                    _username = user.name
+                else:
+                    _username = user.email
+                # load email's template
+                template_val = {
+                    "app_name": self.app.config.get('app_name'),
+                    "username": _username,
+                    "email": user.email,
+                    "reset_password_url": self.uri_for("password-reset", _full=True),
+                    "support_url": self.uri_for("contact", _full=True),
+                    "faq_url": self.uri_for("faq", _full=True)
+                }
+                email_body_path = "emails/password_changed.txt"
+                email_body = self.jinja2.render_template(email_body_path, **template_val)
+                email_url = self.uri_for('taskqueue-send-email')
+                taskqueue.add(url=email_url, params={
+                    'to': user.email,
+                    'subject': subject,
+                    'body': email_body,
+                    'sender': self.app.config.get('contact_sender'),
+                })
+
+                #Login User
+                self.auth.get_user_by_password(user.auth_ids[0], password)
+                self.add_message(_(messages.passwordchange_success), 'success')
+                return self.redirect_to('materialize-settings-account')
+            except (InvalidAuthIdError, InvalidPasswordError), e:
+                # Returns error message to self.response.write in
+                # the BaseHandler.dispatcher
+                message = _(messages.password_wrong)
+                self.add_message(message, 'danger')
+                return self.redirect_to('materialize-settings-account')
+        except (AttributeError, TypeError), e:
+            login_error_message = _(messages.expired_session)
+            self.add_message(login_error_message, 'danger')
+            self.redirect_to('login')
+
+    @webapp2.cached_property
+    def form(self):
+        return forms.EditPasswordForm(self)
+
+class MaterializeSettingsDeleteRequestHandler(BaseHandler):
+    """
+        Handler for materialized settings delete account
+    """
+    @user_required
+    def post(self, **kwargs):
+        # check captcha
+        response = self.request.POST.get('g-recaptcha-response')
+        remote_ip = self.request.remote_addr
+
+        cResponse = captcha.submit(
+            response,
+            self.app.config.get('captcha_private_key'),
+            remote_ip)
+
+        if cResponse.is_valid:
+            # captcha was valid... carry on..nothing to see here
+            pass
+        else:
+            _message = _(messages.captcha_error)
+            self.add_message(_message, 'danger')
+            return self.redirect_to('materialize-settings-account')
+
+        if not self.form.validate():
+            message = _(messages.password_wrong)
+            self.add_message(message, 'danger')
+            return self.redirect_to('materialize-settings-account')
+
+        password = self.form.password.data.strip()
+
+        try:
+
+            user_info = self.user_model.get_by_id(long(self.user_id))
+            auth_id = "own:%s" % user_info.username
+            password = utils.hashing(password, self.app.config.get('salt'))
+
+            try:
+                # authenticate user by its password
+                user = self.user_model.get_by_auth_password(auth_id, password)
+                if user:
+                    # Delete Social Login
+                    # for social in models_boilerplate.SocialUser.get_by_user(user_info.key):
+                    #     social.key.delete()
+
+                    user_info.key.delete()
+
+                    ndb.Key("Unique", "User.username:%s" % user.username).delete_async()
+                    ndb.Key("Unique", "User.auth_id:own:%s" % user.username).delete_async()
+                    ndb.Key("Unique", "User.email:%s" % user.email).delete_async()
+
+                    #TODO: Delete UserToken objects, Delete Home if Admin
+
+                    self.auth.unset_session()
+
+                    # display successful message
+                    msg = _(messages.account_delete_success)
+                    self.add_message(msg, 'success')
+                    return self.redirect_to('materialize-home')
+                else:
+                    message = _(messages.password_wrong)
+                    self.add_message(message, 'danger')
+                    return self.redirect_to('materialize-settings-account')
+
+            except (InvalidAuthIdError, InvalidPasswordError), e:
+                # Returns error message to self.response.write in
+                # the BaseHandler.dispatcher
+                message = _(messages.password_wrong)
+                self.add_message(message, 'danger')
+                return self.redirect_to('materialize-settings-account')
+
+        except (AttributeError, TypeError), e:
+            login_error_message = _(messages.expired_session)
+            self.add_message(login_error_message, 'danger')
+            self.redirect_to('landing')
+
+    @webapp2.cached_property
+    def form(self):
+        return forms.DeleteAccountForm(self)
 
 
 """ MEDIA handlers
 
-    These handlers are used to upload and serve media as picture and pdf files.
+    These handlers are used to upload and serve small media files from datastore
 
 """
-class AvatarUploadHandler(BaseHandler):
-    """
-    Handler for Edit User's Avatar
-    """
-    @user_required
-    def post(self):
-        """ Handles upload"""
-
-        params = {}
-        if self.user:
-            if not self.form.validate():
-                message = _(messages.saving_error)
-                self.add_message(message, 'danger')
-                return self.redirect_to('edit-profile')
-            picture = self.request.get('picture')
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            if user_info != None:
-                # Transform the image
-                avatar = images.resize(picture, width=200, height=200, crop_to_fit=True, quality=100)
-                user_info.picture = avatar
-                user_info.put()
-                message = _(messages.saving_success)
-                self.add_message(message, 'success')
-                self.redirect_to('edit-profile')
-
-            message = _(messages.saving_error)
-            self.add_message(message, 'danger')
-            return self.redirect_to('edit-profile')
-        else:
-            self.abort(403)
-        
-
-    @webapp2.cached_property
-    def form(self):
-        f = forms.AvatarForm(self)
-        return f
-
-class AvatarDownloadHandler(BaseHandler):
-    """
-    Handler for Serve User's Avatar
-    """
-    @user_required
-    def get(self):
-        """ Handles download"""
-
-        params = {}
-        if self.user:
-            if self.request.get('id') != '':
-                logging.info('loading image from id: %s' % self.request.get('id'))
-                user_info = self.user_model.get_by_id(long(self.request.get('id')))
-                if user_info != None:
-                    if user_info.picture:
-                        self.response.headers['Content-Type'] = 'image/png'
-                        self.response.out.write(user_info.picture)
-                    else:
-                        self.response.headers['Content-Type'] = 'text/plain'
-                        self.response.out.write('No image')
-            else: 
-                logging.info('loading user\'s image')
-                user_info = self.user_model.get_by_id(long(self.user_id))
-                if user_info != None:
-                    if user_info.picture:
-                        self.response.headers['Content-Type'] = 'image/png'
-                        self.response.out.write(user_info.picture)
-                    else:
-                        self.response.headers['Content-Type'] = 'text/plain'
-                        self.response.out.write('No image')
-        else:
-            self.abort(403)
-
-class CoverUploadHandler(BaseHandler):
-    """
-    Handler for Edit Users' Cover
-    """
-    @user_required
-    def post(self):
-        """ Handles upload"""
-
-        at_profile = False if not self.request.get('at_profile') else True
-        params = {}
-        if not self.user:
-             return self.redirect_to('login')
-        if not self.form.validate():
-            message = _(messages.saving_error)
-            self.add_message(message, 'danger')
-            return self.redirect_to('materialize-vendor-setup-store') if not at_profile else self.redirect_to('materialize-vendor-settings-profile')
-        picture = self.request.get('picture')
-        try:
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            if user_info != None:
-                if user_info.store_id != -1:
-                    user_store = models.Store.get_by_id(long(user_info.store_id))
-                else:
-                    user_store = models.Store()
-                    user_store.admin_email = user_info.email
-
-                # Transform the image
-                user_store.cover = images.resize(picture, width=1180, height=420, crop_to_fit=True, quality=100)
-                user_store.put()
-                user_info.store_id = user_store.key.id()
-                user_info.put()
-
-                message = _(messages.saving_success)
-                self.add_message(message, 'success')
-                return self.redirect_to('materialize-vendor-setup-store') if not at_profile else self.redirect_to('materialize-vendor-settings-profile')
-        except:
-            pass
-
-        message = _(messages.saving_error)
-        self.add_message(message, 'danger')
-        return self.redirect_to('materialize-vendor-setup-store') if not at_profile else self.redirect_to('materialize-vendor-settings-profile')
-        
-
-    @webapp2.cached_property
-    def form(self):
-        f = forms.AvatarForm(self)
-        return f
-
-class CoverDownloadHandler(BaseHandler):
-    """
-    Handler for Serve Users' Cover
-    """
-    @user_required
-    def get(self):
-        """ Handles download"""
-
-        params = {}
-        if not self.user:
-             return self.redirect_to('login')
-
-        if self.request.get('id') != '':
-            logging.info('loading image from id: %s' % self.request.get('id'))
-            user_store = models.Store.get_by_id(long(self.request.get('id')))
-            if user_store != None:
-                if user_store.cover != None:
-                    self.response.headers['Content-Type'] = 'image/png'
-                    self.response.out.write(user_store.cover)
-
-            self.response.headers['Content-Type'] = 'text/plain'
-            self.response.out.write('No image')
-        else: 
-            logging.info('loading user\'s image')
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            if user_info != None:
-                if user_info.store_id != -1:
-                    user_store = models.Store.get_by_id(long(user_info.store_id))
-                    if user_store.cover != None:
-                        self.response.headers['Content-Type'] = 'image/png'
-                        self.response.out.write(user_store.cover)
-
-            self.response.headers['Content-Type'] = 'text/plain'
-            self.response.out.write('No image')
-
-class ImgUploadHandler(BaseHandler):
-    """
-    Handler for Edit Vendor's Logo
-    """
-    @user_required
-    def post(self, panel_id):
-        """ Handles upload"""
-
-        if not self.user:
-             return self.redirect_to('login')
-        if not self.form.validate():
-            message = _(messages.saving_error)
-            self.add_message(message, 'danger')
-            return self.redirect_to('materialize-vendor-setup-panels', step=1)
-        picture = self.request.get('picture')
-        panel_id= panel_id if panel_id != 'new' else 'new'
-        logging.info("panel_id : %s" % panel_id)
-        user_panel = None
-        try:
-            logging.info("got into try")
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            if user_info != None:
-                if user_info.store_id != -1:
-                    if panel_id != 'new':
-                        user_panel = models.Panels.get_by_id(long(panel_id))
-                    if user_panel is None:
-                        user_panel = models.Panels()
-                        user_panel.store_id = user_info.store_id
-
-                    # Transform the image
-                    user_panel.picture = images.resize(picture, width=400, height=380, crop_to_fit=True, quality=100)
-                    user_panel.put()
-                    _panel_id = user_panel.key.id()
-
-                    message = _(messages.saving_success)
-                    self.add_message(message, 'success')
-                    return self.redirect_to('materialize-vendor-setup-panels', step=1, id=_panel_id)
-        except Exception as e:
-            message = _(messages.saving_error)
-            self.add_message(message, 'danger')
-            logging.info("error in form: %s" % e)
-            return self.redirect_to('materialize-vendor-setup-panels', step=1)
-         
-
-    @webapp2.cached_property
-    def form(self):
-        f = forms.AvatarForm(self)
-        return f
-
-class ImgDownloadHandler(BaseHandler):
+class MediaDownloadHandler(BaseHandler):
     """
     Handler for Serve Vendor's Logo
     """
     @user_required
-    def get(self):
+    def get(self, kind, media_id):
         """ Handles download"""
 
         params = {}
         if not self.user:
              return self.redirect_to('login')
 
-        if self.request.get('id') != '':
-            logging.info('loading image from id: %s' % self.request.get('id'))
-            user_panel = models.Panels.get_by_id(long(self.request.get('id')))
-            if user_panel != None:
-                if user_panel.picture != None:
+        if kind == 'profile':
+            user_info = self.user_model.get_by_id(long(media_id))        
+            if user_info != None:
+                if user_info.picture != None:
                     self.response.headers['Content-Type'] = 'image/png'
-                    self.response.out.write(user_panel.picture)
-        
+                    self.response.out.write(user_info.picture)
+
+
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('No image')
 
@@ -3417,12 +2901,12 @@ class APIIncomingHandler(BaseHandler):
                         
 
         if api_key == KEY and api_secret == SECRET:
-            logging.info("Attempt to receive incoming message from Simpplo with key: %s." % api_key)
+            logging.info("Attempt to receive incoming message with key: %s." % api_key)
 
             # DO SOMETHING WITH RECEIVED PAYLOAD
 
         else:
-            logging.info("Attempt to receive incoming message from Simpplo without appropriate key: %s." % api_key)
+            logging.info("Attempt to receive incoming message without appropriate key: %s." % api_key)
             self.abort(403)
 
 class APIOutgoingHandler(BaseHandler):
@@ -3455,13 +2939,13 @@ class APIOutgoingHandler(BaseHandler):
                         
 
         if api_key == KEY:
-            logging.info("Attempt to send outgoing message to Simpplo with appropriate key: %s." % api_key)
+            logging.info("Attempt to send outgoing message with appropriate key: %s." % api_key)
             
             # DO SOMETHING WITH RECEIVED PAYLOAD
             #urlfetch.fetch(_URL, payload='', method='POST') 
 
         else:
-            logging.info("Attempt to send outgoing message to Simpplo without appropriate key: %s." % api_key)
+            logging.info("Attempt to send outgoing message without appropriate key: %s." % api_key)
             self.abort(403)
        
 class APITestingHandler(BaseHandler):
@@ -3474,7 +2958,7 @@ class APITestingHandler(BaseHandler):
         import urllib
 
         try:
-            _url = self.uri_for('invictusapi-simpplo-out', _full=True)
+            _url = self.uri_for('mbapi-out', _full=True)
             urlfetch.fetch(_url, payload='{"api_key": "mwkMqTWFnK0LzJHyfkeBGoS2hr2KG7WhHqSGX0SbDJ4","channel": "CHANNELHERE","container": "CONTENTSHERE"}', method="POST")
         except:
             pass
@@ -3539,3 +3023,36 @@ class CrossDomainHandler(BaseHandler):
             return text.replace("{{ %s }}" % key, params[key])
 
         self.response.write(reduce(set_variables, params, open("bp_content/themes/%s/templates/seo/crossdomain.xml" % self.get_theme).read()))
+
+
+
+""" BLOBSTORE handlers
+
+    These handlers operate files larger than the 1Mb, upload and serve.
+
+"""
+class BlobFormHandler(BaseHandler, blobstore_handlers.BlobstoreUploadHandler):
+    @user_required
+    def get(self):
+        upload_url = blobstore.create_upload_url('/blobstore/upload/')
+        self.response.out.write('<html><body>')
+        self.response.out.write('<form action="%s" method="POST" enctype="multipart/form-data">' % upload_url)
+        self.response.out.write('''Upload File: <input type="file" name="file"><br> <input type="submit"
+            name="submit" value="Submit"> <input type="hidden" name="_csrf_token" value="%s"> </form></body></html>''' % self.session.get('_csrf_token'))
+
+class BlobUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
+    def post(self):
+        try:
+            upload = self.get_uploads()[0]
+            user_photo = models.Media(blob_key=upload.key())
+            user_photo.put()
+            self.redirect('/blobstore/serve/%s' % upload.key())
+        except:
+            self.error(404)
+
+class BlobDownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
+    def get(self, photo_key):
+        if not blobstore.get(photo_key):
+            self.error(404)
+        else:
+            self.send_blob(photo_key)
