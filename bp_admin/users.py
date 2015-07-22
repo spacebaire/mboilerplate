@@ -4,7 +4,7 @@ from google.appengine.datastore.datastore_query import Cursor
 from google.appengine.ext import ndb
 from collections import OrderedDict, Counter
 from wtforms import fields  
-from bp_includes import forms, models, handlers
+from bp_includes import forms, models, handlers, messages
 from bp_includes.lib.basehandler import BaseHandler
 from datetime import datetime, date, time, timedelta
 import logging
@@ -13,7 +13,6 @@ import logging
 class AdminStatsHandler(BaseHandler):
     def get(self):
         params = {}
-        #do the Users dance
         users = self.user_model.query()
         users = users.order(self.user_model.created)
         _users = []
@@ -25,6 +24,18 @@ class AdminStatsHandler(BaseHandler):
        
         params['users'] = json.dumps(_users)
         params['sum_users'] = counter
+
+        blogs = models.BlogPost.query()
+        blogs = blogs.order(models.BlogPost.created)
+        _blogs = []
+        counter = 0
+        for blog in blogs:
+            counter += 1
+            _created = blog.created - timedelta(hours = 6)
+            _blogs.append([counter,_created.strftime("%a, %d %b %Y %H:%M:%S %z")])
+       
+        params['blogs'] = json.dumps(_blogs)
+        params['sum_blogs'] = counter
         return self.render_template('admin_stats.html', **params)
 
 class AdminUserGeoChartHandler(BaseHandler):
@@ -45,18 +56,6 @@ class AdminUserGeoChartHandler(BaseHandler):
             "latlngs": latlngs,
         }
         return self.render_template('admin_users_geochart.html', **params)
-
-class AdminBlogHandler(BaseHandler):
-    def get(self):
-        params = {}
-        
-        return self.render_template('admin_blog.html', **params)
-
-class AdminBlogEditHandler(BaseHandler):
-    def get(self, post_id):
-        params = {}
-        
-        return self.render_template('admin_blog_edit.html', **params)
 
 class EditProfileForm(forms.SettingsProfileForm):
     activated = fields.BooleanField('Activated')
@@ -112,12 +111,13 @@ class AdminUserListHandler(BaseHandler):
         params = {
             "list_columns": [('username', 'Username | Email'),
                              ('name', 'Name'),
-                             ('last_name', 'Lastname'),
-                             ('role', 'Role'),
-                             ('last_login', 'Last Login'),
-                             ('link_referral', 'Referrals Link'),
-                             ('key', 'ID'),
-                             ('rewards','Rewards')],
+                             ('last_name', 'Last'),
+                             ('link_referral', 'Unique Link'),
+                             ('key', 'Key'),
+                             ('rewards','Rewards'),
+                             ('created', 'Created'),
+                             ('last_login', 'Last Login')
+                             ],
             "users": users,
             "count": count
         }
@@ -136,13 +136,38 @@ class AdminUserEditHandler(BaseHandler):
     def edit(self, user_id):
         if self.request.POST:
             user = self.get_or_404(user_id)
-            if self.form.validate():
-                self.form.populate_obj(user)
-                user.put()
-                self.add_message("Changes saved!", 'success')
+            if not self.form.validate():
+                self.add_message(messages.saving_error, 'danger')
+                return self.get()
+            name = self.request.get('name')
+            last_name = self.request.get('last_name')
+            gender = self.request.get('gender')
+            phone = self.request.get('phone')
+            birth = self.request.get('birth')
+            picture = self.request.get('picture') if len(self.request.get('picture'))>1 else None
+            activated = True if 'on' in self.request.get('activated') else False
+
+            try:
+                user_info = self.user_model.get_by_id(long(self.user_id))
+                user_info.name = name
+                user_info.activated = activated
+                user_info.last_name = last_name
+                if (len(birth) > 9):
+                    user_info.birth = date(int(birth[:4]), int(birth[5:7]), int(birth[8:]))
+                if 'male' in gender:
+                    user_info.gender = gender
+                user_info.phone = phone
+                if picture is not None:
+                    user_info.picture = images.resize(picture, width=180, height=180, crop_to_fit=True, quality=100)
+                user_info.put()
+                self.add_message(messages.saving_success, 'success')
                 return self.redirect_to("admin-user-edit", user_id=user_id)
-            else:
-                self.add_message("Could not save changes!", 'danger')
+                
+
+            except (AttributeError, KeyError, ValueError), e:
+                logging.error('Error updating profile: %s ' % e)
+                self.add_message(messages.saving_error, 'danger')
+                return self.redirect_to("admin-user-edit", user_id=user_id)
         else:
             user = self.get_or_404(user_id)
             self.form.process(obj=user)

@@ -12,14 +12,58 @@ import logging
 
 
 class AdminBlogHandler(BaseHandler):
-    def get(self):
-        params = {}
-        posts = models.BlogPost.query()
-        params['total'] = posts.count()
-        params['posts'] = []
-        for post in posts:
-            params['posts'].append((post.key.id(), post.updated, post.title, post.subtitle, post.blob_key, post.author, post.brief, post.category))
+   def get(self):
+        p = self.request.get('p')
+        q = self.request.get('q')
+        c = self.request.get('c')
+        forward = True if p not in ['prev'] else False
+        cursor = Cursor(urlsafe=c)
 
+        if q:
+            qry = models.BlogPost.query(ndb.OR(models.BlogPost.title == q.lower(),
+                                            models.BlogPost.author == q.lower(),
+                                            models.BlogPost.category.IN(q.lower().split(','))))
+            count = qry.count()
+            blogs = qry
+        else:
+            qry = models.BlogPost.query()
+            count = qry.count()
+            PAGE_SIZE = 50
+            if forward:
+                blogs, next_cursor, more = qry.order(-models.BlogPost.updated).fetch_page(PAGE_SIZE, start_cursor=cursor)
+                if next_cursor and more:
+                    self.view.next_cursor = next_cursor
+                if c:
+                    self.view.prev_cursor = cursor.reversed()
+            else:
+                blogs, next_cursor, more = qry.order(models.BlogPost.updated).fetch_page(PAGE_SIZE, start_cursor=cursor)
+                blogs = list(reversed(blogs))
+                if next_cursor and more:
+                    self.view.prev_cursor = next_cursor
+                self.view.next_cursor = cursor.reversed()
+
+        def pager_url(p, cursor):
+            params = OrderedDict()
+            if q:
+                params['q'] = q
+            if p in ['prev']:
+                params['p'] = p
+            if cursor:
+                params['c'] = cursor.urlsafe()
+            return self.uri_for('admin-blog', **params)
+
+        self.view.pager_url = pager_url
+        self.view.q = q
+
+        params = {
+            "list_columns": [('title', 'Title'),
+                             ('author', 'Author'),
+                             ('created', 'Created'),
+                             ('updated', 'Updated'),
+                             ('category', 'Categories')],
+            "blogs": blogs,
+            "count": count
+        }
         return self.render_template('admin_blog.html', **params)
 
 class AdminBlogEditHandler(BaseHandler, blobstore_handlers.BlobstoreUploadHandler):

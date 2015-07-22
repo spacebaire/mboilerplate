@@ -84,7 +84,7 @@ class AdminLogsVisitsHandler(BaseHandler):
         params = {
             "list_columns": [('timestamp', 'Timestamp'),
                              ('ip', 'IP'),
-                             ('uastring', 'uastring')
+                             ('uastring', 'Browser')
             ],
             "visits": _visits,
             "count": qry.count(),
