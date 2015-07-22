@@ -5,7 +5,7 @@ from google.appengine.ext import ndb, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 from collections import OrderedDict, Counter
 from wtforms import fields  
-from bp_includes import forms, models, handlers
+from bp_includes import forms, models, handlers, messages
 from bp_includes.lib.basehandler import BaseHandler
 from datetime import datetime, date, time, timedelta
 import logging
@@ -66,7 +66,7 @@ class AdminBlogHandler(BaseHandler):
         }
         return self.render_template('admin_blog.html', **params)
 
-class AdminBlogEditHandler(BaseHandler, blobstore_handlers.BlobstoreUploadHandler):
+class AdminBlogEditHandler(BaseHandler):
     def get(self, post_id):
         params = {}
         params['blob_key'] = ''
@@ -76,7 +76,7 @@ class AdminBlogEditHandler(BaseHandler, blobstore_handlers.BlobstoreUploadHandle
         params['brief'] = ''
         params['content'] = ''
         params['category'] = ''
-        params['post_id'] = post_id if len(post_id) > 0 else 1
+        params['post_id'] = post_id if len(str(post_id)) > 0 else 1
         if post_id != 1:
             blog = models.BlogPost.get_by_id(long(post_id))
             if blog is not None:
@@ -87,42 +87,64 @@ class AdminBlogEditHandler(BaseHandler, blobstore_handlers.BlobstoreUploadHandle
                 params['brief'] = blog.brief
                 params['content'] = blog.content
                 params['category'] = blog.category
-        params['upload_url'] = blobstore.create_upload_url('/admin/blog/upload/%s/' % post_id)        
         return self.render_template('admin_blog_edit.html', **params)
+
+    def post(self, post_id):
+        if post_id == '1':
+            blog = models.BlogPost()
+            blog.title = self.request.get('title')
+            blog.subtitle = self.request.get('subtitle')
+            blog.author = self.request.get('author')
+            blog.brief = self.request.get('brief')
+            blog.content = self.request.get('content')
+            blog.category = self.request.get('category').split(',')
+            blog.put()            
+        else:
+            blog = models.BlogPost.get_by_id(long(post_id))
+            if blog is not None:
+                blog.title = self.request.get('title')
+                blog.subtitle = self.request.get('subtitle')
+                blog.author = self.request.get('author')
+                blog.brief = self.request.get('brief')
+                blog.content = self.request.get('content')
+                blog.category = self.request.get('category').split(',')
+                blog.put()
+
+        #re-post to blobstore, documented at: https://code.google.com/p/googleappengine/issues/detail?id=2749#makechanges
+        from google.appengine.api import urlfetch
+        from poster.encode import multipart_encode, MultipartParam
+        payload = {}
+        file_data = self.request.POST['file']
+        payload['file'] = MultipartParam('file', filename=file_data.filename,
+                                              filetype=file_data.type,
+                                              fileobj=file_data.file)
+        data,headers= multipart_encode(payload)
+        upload_url = blobstore.create_upload_url('/admin/blog/upload/%s/' % blog.key.id())        
+        t = urlfetch.fetch(url=upload_url, payload="".join(data), method=urlfetch.POST, headers=headers)
+
+        #output toast message
+        if t.content == 'success':
+            self.add_message(messages.saving_success, 'success')
+            return self.redirect_to('admin-blog')
+        else:
+            self.add_message(messages.saving_error, 'danger')
+            return self.get(post_id = blog.key.id())
 
 class AdminBlogUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self, post_id):
         try:
+            blog = models.BlogPost.get_by_id(long(post_id))
+            try:
+                blobstore.delete(blog.blob_key)
+            except:
+                pass
             upload = self.get_uploads()[0]
-            logging.info("New blog post because id: %s" % post_id)
-            if post_id == '1':
-                logging.info("New blog post")
-                logging.info("Uploaded blob")
-                new_blog = models.BlogPost()
-                new_blog.blob_key = upload.key()                                              
-                new_blog.title = self.request.get('title')
-                new_blog.subtitle = self.request.get('subtitle')
-                new_blog.author = self.request.get('author')
-                new_blog.brief = self.request.get('brief')
-                new_blog.content = self.request.get('content')
-                new_blog.category = self.request.get('category').split(',')
-                logging.info("Values ready to put")
-                new_blog.put()
-            else:
-                blog = models.BlogPost.get_by_id(long(post_id))
-                if blog is not None:
-                    if upload is not None:
-                        blog.blob_key = upload.key()                                               
-                        blog.title = self.request.get('title')
-                        blog.subtitle = self.request.get('subtitle')
-                        blog.author = self.request.get('author')
-                        blog.brief = self.request.get('brief')
-                        blog.content = self.request.get('content')
-                        blog.category = self.request.get('category').split(',')
-                        blog.put()
-
-            self.redirect_to('admin-blog')
+            blog.blob_key = upload.key()                                               
+            blog.put()
+            self.response.headers['Content-Type'] = 'text/plain'
+            self.response.out.write('success')
         except Exception as e:
             logging.error('something went wrong: %s' % e)
-            self.error(404)
+            self.response.headers['Content-Type'] = 'text/plain'
+            self.response.out.write('error')
 

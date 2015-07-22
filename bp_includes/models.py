@@ -35,7 +35,7 @@ class Media(ndb.Model):
 class BlogPost(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)                                               #: Creation date.
     updated = ndb.DateTimeProperty(auto_now=True)                                                   #: Modification date.    
-    blob_key = ndb.BlobKeyProperty(required = True, indexed = False)                                #: Refer to https://cloud.google.com/appengine/docs/python/blobstore/
+    blob_key = ndb.BlobKeyProperty()                                                                #: Refer to https://cloud.google.com/appengine/docs/python/blobstore/
     title = ndb.StringProperty(required = True)
     subtitle = ndb.StringProperty(indexed = False)
     author = ndb.StringProperty()
