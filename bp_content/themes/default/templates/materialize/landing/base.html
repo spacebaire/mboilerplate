@@ -88,15 +88,23 @@
 				  <a href="{{uri_for("landing")}}" class="brand-logo"><img src="{{brand_logo}}" style="height:75px; margin-top:-5px;"></a>
 				  <a href="#" data-activates="mobile-demo" class="button-collapse right"><i class="mdi-navigation-more-vert"></i></a>
 				  <ul id="nav-mobile" class="right hide-on-med-and-down">
-				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
+				    {% if not user_id %}
 				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
 				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
+				    {% else %}
+				    <li id="nav-home"><a href="{{uri_for("materialize-home")}}" class="modal-trigger menu-item">Home</a></li>
+				    {% endif %}
+				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
 				    <li id="nav-download"><a href="#download" class="menu-item">Want some love?</a></li>
 				  </ul>
 				  <ul class="side-nav" id="mobile-demo">
-				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
+				    {% if not user_id %}
 				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
 				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
+				    {% else %}
+				    <li id="nav-home"><a href="{{uri_for("materialize-home")}}" class="modal-trigger menu-item">Home</a></li>
+				    {% endif %}
+				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
 				    <li id="nav-download"><a href="#download" class="menu-item">Want some love?</a></li>
 				  </ul>
 				</div>
