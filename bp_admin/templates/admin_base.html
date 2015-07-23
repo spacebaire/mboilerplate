@@ -162,9 +162,23 @@
                                     <li {% if path == uri_for('admin') %}class="active"{% endif %}><a href="{{ uri_for('admin') }}">{% trans %}Overview{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-users-geochart') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-geochart') }}">{% trans %}Geofence{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-users-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-list') }}">{% trans %}Users list{% endtrans %}</a></li>
-                                    <li {% if path == uri_for('admin-blog') %}class="active"{% endif %}><a href="{{ uri_for('admin-blog') }}">{% trans %}Blog posts{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-logs-emails') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-emails') }}">{% trans %}Emails sent{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">{% trans %}Visits log{% endtrans %}</a></li>
+                                    <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
+                                    <li {% if path == uri_for('admin-blog') %}class="active"{% endif %}><a href="{{ uri_for('admin-blog') }}">{% trans %}Blog posts{% endtrans %}</a></li>
+                                    <li class="no-padding">
+                                        <ul class="collapsible collapsible-accordion">
+                                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan">Tools</a>
+                                                <div class="collapsible-body">
+                                                    <ul>
+                                                        <li><a href="{{ uri_for("admin-tools-css") }}">Grid and colors</a></li>  
+                                                        <li><a href="{{ uri_for("admin-tools-icons") }}">Icons</a></li>  
+                                                        <li><a href="{{ uri_for("admin-tools-media") }}">Media</a></li>  
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
                                     <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
                                     <li><a href="/" target="_blank">{% trans %}Visit Site{% endtrans %}</a></li>
                                     <li><a href="{{ uri_for('admin-logout') }}">{% trans %}Logout{% endtrans %}</a></li>

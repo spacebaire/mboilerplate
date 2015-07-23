@@ -94,7 +94,7 @@
         </div>
         <paper-tabs id="scrollableTabs" selected="1" scrollable style="margin-left: -20px;background-color: #03A9F4;width: 110%;   margin-top: 5px;">
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-home") }}', '_top')">Address</paper-tab>
+          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-address") }}', '_top')">Address</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-account") }}', '_top')">Account</paper-tab>
       </paper-tabs>
@@ -106,10 +106,7 @@
 {% block page_content %}
   <div class="section">
     <div class="container">
-      <div class="row">
-            <a class="desktop-only-sabias yellow-ghost flow-text modal-trigger" style="display:none;" id="sabiasqueT" href="#modal1">Sabías que...</a>
-            <button id="sabiasque" onclick="sabiasqueT.click()" class="btn orange lighten-3 waves-effect waves-light right" style="opacity:0;  margin-top: 25px;">Sabías que...
-            </button>        
+      <div class="row">      
                     <div id="_zipcode_" class="row" style="margin-bottom:0px;position:relative;">
                           <paper-input-decorator class="custom" label="Tu código postal" style="max-width: 200px;font-family: roboto-medium;float:left; font-size:14px;" layout="" vertical="">
                             <input is="core-input" name="_zipcode" id="_zipcode" type="text" placeholder="Tu código postal" onkeyup="setQ(this); passShadow(this);" value="{{zipcode}}" aria-label="Tu código postal">
@@ -181,58 +178,6 @@
                         <p class="" style="font-size: 11px; display:none;" id="map-tip">Si no vives en el polígono marcado, arrastra el marcador hasta tu hogar o el polígono más cercano.</p>
                       </div>
                     </div>
-                  <div class="row" style="margin-bottom:0px;">
-                      <div class="col s12 m12">
-                        <section>                    
-                          <h5 style="text-align:left; color:rgb(165, 165, 165);">Vivo en:</h5>                          
-                          <paper-radio-group selected="{{kind}}" class="custom-radio" id="_kind" onchange="passShadow(this);">
-                            <paper-radio-button name="house" style="float:left;"label="Casa"></paper-radio-button>
-                            <paper-radio-button name="apartment" style="float:left;"label="Departamento"></paper-radio-button>
-                          </paper-radio-group>                          
-                        </section>
-                      </div>
-                      <div class="col s12 m12">
-                        <section>
-                          <h5 style="text-align:left; color:rgb(165, 165, 165); padding-top: 10px;">Habitamos:</h5>                          
-                          <paper-radio-group selected="{{num_hab}}" class="custom-radio" id="_num_hab" onchange="passShadow(this);">
-                            <paper-radio-button name="one" style="float:left;"label="1 a 2 personas"></paper-radio-button>
-                            <paper-radio-button name="three" style="float:left;"label="3 a 4 personas"></paper-radio-button>
-                            <paper-radio-button name="five" style="float:left;"label="Más de 5 personas"></paper-radio-button>
-                          </paper-radio-group>
-                        </section>                        
-                      </div>
-                      <div class="col s12 m12">
-                        <section>                    
-                          <h5 style="text-align:left; color:rgb(165, 165, 165); padding-top: 10px;">En un espacio:</h5>
-                          <paper-radio-group selected="{{size}}" class="custom-radio" id="_size" onchange="passShadow(this);">
-                            <paper-radio-button name="small" style="float:left;"label="Chico"></paper-radio-button><span class="flow-text" style="margin-left:-15px; font-size:12px; float:left; margin-top:-3px;">(&lt;200m<sup>2</sup>)</span>
-                            <paper-radio-button name="medium" style="float:left;"label="Mediano"></paper-radio-button><span class="flow-text" style="margin-left:-15px; font-size:12px; float:left; margin-top:-3px;">(&lt;400m<sup>2</sup>)</span>
-                            <paper-radio-button name="large" style="float:left;"label="Grande"></paper-radio-button><span class="flow-text" style="margin-left:-15px; font-size:12px; float:left; margin-top:-3px;">(&gt;400m<sup>2</sup>)</span>
-                          </paper-radio-group>                          
-                        </section>
-                      </div>
-                      <div class="col s12 m12">
-                        <section>
-                          <h5 style="text-align:left; color:rgb(165, 165, 165); padding-top: 10px;">Tengo paneles solares:
-                          {% if panels > 0 %}
-                            <paper-checkbox id="s_panelsLabel" style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showPanels(this);" checked></paper-checkbox></h5>                     
-                            <div id="solar_panels" style="display:block; float:left;">                    
-                          {% else %}
-                            <paper-checkbox id="s_panelsLabel" style="height: 14px;padding-left: 5px;" class="custom-checkbox" onchange="showPanels(this);"></paper-checkbox></h5>                     
-                            <div id="solar_panels" style="display:none; float:left;">
-                          {% endif %}                    
-                          <div><span class="inputLabel" style="float:left; margin-top: 3px;font-weight: 200;">Cantidad de paneles: <span id="num_panels">{{panels}}</span></span></div>
-                          <paper-slider value="{{panels}}" pin max="40" id="_panels" onchange="passShadow(this);"></paper-slider>    
-
-                          <div><span class="inputLabel" style="float:left; margin-top: 3px;font-weight: 200;">Cada uno con capacidad: <span id="cap_panels">{{capacity}}</span> Watts</span></div>
-                          <paper-slider value="{{capacity}}" pin step="10" min="150" max="350" id="_capacity" onchange="passShadow(this);"></paper-slider>
-
-                          <div><span id="capacityLabel" class="inputLabel" style="float:left; margin-top: 16px;font-weight: 200;">Instalados desde:</span></div>
-                          <input class="datepicker" name="_since" id="_since" type="date" onchange="passShadow(this)" value="{{since}}" style="color: #1a237e;font-family: roboto-light;padding: 5px;font-size: 12px;width: 225px;border-bottom: 1px solid rgb(255, 102, 35); margin-bottom: 10px;">
-                          </div>
-                        </section> 
-                    </div>     
-                  </div> 
       </div>
       <div class="row">
       <button onclick="sendForm('form_edit_home')" class="waves-effect waves-light light-blue white-text btn right">Guardar cambios
@@ -245,29 +190,16 @@
 
   <form id="form_edit_home" action="{{ url|safe }}" method="post">
     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-    <input type="text" name="kind" id="kind" value="{{kind}}" hidden>
-    <input type="text" name="num_hab" id="num_hab" value="{{num_hab}}" hidden>
-    <input type="text" name="size" id="size" value="{{size}}" hidden>
     <input type="text" name="zipcode" id="zipcode" value="{{zipcode}}" hidden>
     <input type="text" name="ageb" id="ageb" value="{{ageb}}" hidden>
-    <input type="number" name="dacl" id="dacl" value="{{dacl}}" hidden>
     <input type="text" name="latlng" id="latlng" value="{{latlng}}" hidden>
     <input type="text" name="neighborhood" id="neighborhood" value="{{neighborhood}}" hidden>
     <input type="text" name="municipality" id="municipality" value="{{municipality}}" hidden>
     <input type="text" name="state" id="state" value="{{state}}" hidden>
     <input type="text" name="region" id="region" value="{{region}}" hidden>
-    <input type="text" name="fee" id="fee" value="{{fee}}" hidden>
-    <input type="text" name="flag" id="flag" value="{{flag}}" hidden>
-    <input type="number" name="panels" id="panels" value="{{panels}}" hidden>
-    <input type="number" name="capacity" id="capacity" value="{{capacity}}" hidden>
-    <input type="text" name="since" id="since" value="{{since}}" hidden>
   </form>
 
-  <!-- Modal Structure -->
-  <div id="modal1" class="modal">
-    <h4 style="padding:30px;">La zona donde vives</h4><br>
-    <p id="ageb_info" class="center" style="margin-bottom:35px;"></p>
-  </div>
+  
   <paper-toast id="toastEditHome" text="{% trans %}Por favor ingresa tu código postal y elige una colonia.{% endtrans %}" style="z-index:9999" class="warning" duration="6000" autoclosedisabled></paper-toast>
   <!-- Jinja2 Pre-processing -->
   <input id="coords" value="{{latlng}}" hidden>
@@ -310,35 +242,13 @@
     }, timeout)     
   }
 
-
-  var numPanels = document.querySelector('#_panels');
-  numPanels.addEventListener('core-change', function() {
-    document.querySelector('#num_panels').textContent = numPanels.value;
-  });
-
-  var capPanels = document.querySelector('#_capacity');
-  capPanels.addEventListener('core-change', function() {
-    document.querySelector('#cap_panels').textContent = capPanels.value;
-  });
-
-  if(is_Safari && !Modernizr.touch && !Modernizr.inputtypes.date){
-      $('.datepicker').datepicker({
-          format: 'yyyy-mm-dd'
-      }).on('changeDate', function(ev) {
-        document.getElementById('since').value = document.getElementById('_since').value; 
-      });
-  }
   var zipcode,ageb,latlng,neighborhood,municipality,state;
   var sql = new cartodb.SQL({ user: 'mexico' })
-  var cp,col,edo,mun, latlng, ageb, dacl, region, fee, flag;
+  var cp,col,edo,mun, latlng, ageb, region;
   google.maps.event.addDomListener(window, 'load', initMap);
   var map, mapOptions, mapCenter = [25.68686156049293,-100.31496082543947], geocoder, marker, _html;
   
   var coords = document.getElementById("coords").value.split(",");
-
-  $(document).ready(function(){
-    $('.modal-trigger').leanModal();
-  });
 
   function sendForm(formID){
     if (cp > 4 && col != ''){
@@ -350,32 +260,8 @@
         
   }
 
-  function showPanels(elem){
-    if(is_Safari){
-      elem = document.getElementById(elem.id);
-      if (!elem.checked){
-         document.getElementById('solar_panels').style.display = 'none';
-         document.getElementById('_panels').value = 0;
-         document.getElementById('panels').value = 0;
-      }else{
-         document.getElementById('solar_panels').style.display = 'block';
-      }
-    }
-    else{
-      if (!elem.checked){
-         document.getElementById('solar_panels').style.display = 'none';
-         document.getElementById('_panels').value = 0;
-         document.getElementById('panels').value = 0;
-      }else{
-         document.getElementById('solar_panels').style.display = 'block';
-      }
-    }
-  }
 
   function setValues(){
-      document.getElementById("kind").value = document.getElementById("_kind").selected;
-      document.getElementById("num_hab").value = document.getElementById("_num_hab").selected;
-      document.getElementById("size").value = document.getElementById("_size").selected;
       var cps = cp.toString();
       while (cps.length < 5){
         cps = '0' + cps;
@@ -386,24 +272,8 @@
       document.getElementById("municipality").value = mun;
       document.getElementById("latlng").value = latlng;
       document.getElementById("ageb").value = ageb;
-      document.getElementById("dacl").value = dacl;      
       document.getElementById("region").value = region;      
-      document.getElementById("fee").value = fee;  
-      document.getElementById("flag").value = flag;  
-
-      console.log(document.getElementById("kind").value);
-      console.log(document.getElementById("num_hab").value);
-      console.log(document.getElementById("size").value);
-      console.log(document.getElementById("zipcode").value);
-      console.log(document.getElementById("neighborhood").value);
-      console.log(document.getElementById("state").value);
-      console.log(document.getElementById("municipality").value);
-      console.log(document.getElementById("latlng").value);
-      console.log(document.getElementById("ageb").value);
-      console.log(document.getElementById("dacl").value);      
-      console.log(document.getElementById("region").value);      
-      console.log(document.getElementById("fee").value);  
-      console.log(document.getElementById("flag").value); 
+      
   }
 
   function initMap(){
@@ -486,13 +356,7 @@
           col=data.rows[0].d_asenta;
         mun=data.rows[0].d_municipio;
         edo=data.rows[0].d_estado;
-        fee=data.rows[0].d_tarifa;
         region=data.rows[0].d_region;
-        if (data.rows[0].d_flag)
-          flag = 1;
-        else
-          flag = 0;
-        dacl=dacls[fee];
 
         if (coords.length > 1){
           loadAgeb(coords[0],coords[1]);
@@ -514,7 +378,6 @@
       document.getElementById("map-tip").style.display = "none";
       document.getElementById("map").style.opacity = 0.5;
       map.setOptions({draggable:false, zoomControl:false});
-      document.getElementById("sabiasque").style.opacity = 0;
     }
   }
 
@@ -552,13 +415,7 @@
     var n = "select d_codigo,d_tarifa,d_region,d_flag from nacional_codigos_postales where d_asenta = '" + col + "' and d_estado = '" + edo + "' and d_municipio = '" + mun + "'";
     sql.execute(n).done(function(data) {
         cp = data.rows[0].d_codigo;
-        fee=data.rows[0].d_tarifa;
         region=data.rows[0].d_region;
-        if (data.rows[0].d_flag)
-          flag = 1;
-        else
-          flag = 0;
-        dacl=dacls[fee];
         updateMapCenter();  
     });
     
@@ -576,7 +433,6 @@
         document.getElementById("map-tip").style.display = "none";
         document.getElementById("map").style.opacity = 0.5;
         map.setOptions({draggable:false, zoomControl:false});
-        document.getElementById("sabiasque").style.opacity = 0;
 
         var dc = document.getElementById("selectColonia2");
         dc.innerHTML = 'Colonia<b class="caret"></b>';
@@ -610,7 +466,6 @@
      document.getElementById("map-tip").style.display = "none";
      document.getElementById("map").style.opacity = 0.5;
      map.setOptions({draggable:false, zoomControl:false});
-     document.getElementById("sabiasque").style.opacity = 0;
 
 
      sql.execute(n).done(function(data) {
@@ -663,40 +518,6 @@
       }]
     }).addTo(map);
     
-    var pob, viv, hab, luz, ref, tel;
-    sql.execute(_query.replace(".005",".000001")).done(function(data) {
-      for (var i = 0; i<data.total_rows;i++){
-        pob = data.rows[i].pob1;
-        console.log(data.rows[i]);
-        ageb = data.rows[i].cvegeo;
-      } 
-
-      sql.execute(_query.replace(".005",".000001").replace(/pob/g,"eco")).done(function(data) {
-          var temp = 0;
-          for (var i = 0; i<data.total_rows;i++){
-            //console.log(data.rows[i]);
-          } 
-
-          sql.execute(_query.replace(".005",".000001").replace(/pob/g,"viv")).done(function(data) {
-            for (var i = 0; i<data.total_rows;i++){
-              viv = data.rows[i].viv0;
-              hab = data.rows[i].viv2_r;
-              luz = data.rows[i].viv14;
-              ref = data.rows[i].viv26;
-              tel = data.rows[i].viv32;
-              //console.log(data.rows[i]);
-            }
-            viv = Math.round(viv*(hab/100));
-            ref = Math.round(ref/viv*100);
-            tel = Math.ceil(tel/viv*100);
-            _html =  'Según el INEGI, se caracteriza por tener un total de <span style="color: #ff2633;">' + addCommas(pob) + '</span> habitantes, distribuidos en <span style="color: #ff2633;">' + addCommas(viv) + '</span> hogares. De esos hogares, <span style="color: #ff2633;">' + addCommas(luz) + '</span> cuentan con luz eléctrica y características similares a tu hogar. Por ejemplo, <span style="color: #ff2633;">' + addCommas(tel) + '%</span> cuentan con televisor y <span style="color: #ff2633;">' + addCommas(ref) + '%</span> cuentan con refrigerador.';
-            document.getElementById("ageb_info").innerHTML = _html;
-            document.getElementById("sabiasque").style.opacity = 1;
-          }).error(function(errors) {});  
-
-      }).error(function(errors) {});
-
-    }).error(function(errors) {});
   }
 
   function zipcodeToggle(element){
@@ -747,13 +568,5 @@
   edos['Yucatan']= 'yuc';
   edos['Zacatecas']= 'zac';
 
-  var dacls = Array();
-  dacls['1'] = 3000;
-  dacls['1A'] = 3600;
-  dacls['1B'] = 4800;
-  dacls['1C'] = 10200;
-  dacls['1D'] = 12000;
-  dacls['1E'] = 24000;
-  dacls['1F'] = 24600;
 </script>
 {% endblock %}

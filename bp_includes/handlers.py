@@ -1953,61 +1953,10 @@ class MaterializeSettingsAddressRequestHandler(BaseHandler):
     def get(self):
         """ returns simple html for a get request """
         params, user_info = disclaim(self)
-        if user_info.home_id == -1:
-            params['kind'] = 'house'
-            params['num_hab'] = 'one'
-            params['size'] = 'small'
-            params['zipcode'] = ''
-            params['neighborhood'] = False
-            params['latlng'] = 'null'
-            params['cfe_connected'] = False
-            params['cfe_error'] = 'none'
-            params['dac_limit'] = -1
-            params['cfe_rpu'] = -1
-            params['has_box'] = False
-            params['panels'] = 0
-            params['capacity'] = 250
-        else:
-            user_home = models.Home.get_by_id(long(user_info.home_id))
-            params['cfe_connected'] = user_home.cfe.connected
-            params['cfe_error'] = user_home.cfe.error
-            params['dac_limit'] = user_home.cfe.dac_limit
-            params['cfe_rpu'] = mycfe.fixedRPU(user_home.cfe.rpu)
-            params['has_box'] = False
-            if user_home.box != None:
-                if user_home.box.serial != '':
-                    params['has_box'] = True
-            if user_home.attributes == None:
-                params['kind'] = 'house'
-                params['num_hab'] = 'one'
-                params['size'] = 'small'
-                params['zipcode'] = ''
-                params['neighborhood'] = False
-                params['latlng'] = 'null'
-            elif user_home.attributes.essentials != None:
-                params['kind'] = user_home.attributes.essentials.kind
-                params['num_hab'] = user_home.attributes.essentials.num_hab
-                params['size'] = user_home.attributes.essentials.size
-                params['zipcode'] = str(user_home.address.zipcode)
-                while len(params['zipcode']) < 5:
-                    params['zipcode'] = '0' + params['zipcode']
-                params['neighborhood'] = user_home.address.neighborhood
-                params['latlng'] = user_home.address.latlng
-            else:
-                params['kind'] = 'house'
-                params['num_hab'] = 'one'
-                params['size'] = 'small'
-                params['zipcode'] = ''
-                params['neighborhood'] = False
-                params['latlng'] = 'null'
-            if user_home.solar != None:
-                params['panels'] = user_home.solar.panels
-                params['capacity'] = user_home.solar.capacity
-                if (user_home.solar.since):
-                    params['since'] = user_home.solar.since.strftime("%Y-%m-%d")
-            else:
-                params['panels'] = 0
-                params['capacity'] = 250
+        params['zipcode'] = ''
+        params['neighborhood'] = False
+        params['latlng'] = 'null'
+            
         return self.render_template('materialize/users/settings/address.html', **params)
 
     def post(self):
@@ -2018,138 +1967,26 @@ class MaterializeSettingsAddressRequestHandler(BaseHandler):
             message += "Tip: Asegura que el marcador en el mapa se encuentre en tu zona."
             self.add_message(message, 'danger')
             return self.get()
-        kind = self.form.kind.data
-        num_hab = self.form.num_hab.data
-        size = self.form.size.data
         zipcode = int(self.form.zipcode.data)
         ageb = self.form.ageb.data
-        dacl = self.form.dacl.data
         latlng = self.form.latlng.data
         neighborhood = self.form.neighborhood.data
         municipality = self.form.municipality.data
         state = self.form.state.data
         region = self.form.region.data
-        fee = self.form.fee.data
-        flag = self.form.flag.data
-        panels = self.form.panels.data
-        capacity = self.form.capacity.data
-        since = self.form.since.data
 
         try:
             user_info = self.user_model.get_by_id(long(self.user_id))
-            user_home = None
             try:
                 
-                if user_info.home_id == -1:
-                    #create home
-                    logging.info("Creating a new home...")
-                    home = models.Home()
-                    logging.info("User key to create home: %s" % user_info.key.id())
-                    home.habitant.append(user_info.key.id())
-                    home.cfe = models.CFE()
-                    
-                    #init
-                    home.attributes = models.HomeAttributes()
-                    home.attributes.essentials = models.Essentials()
-                    home.address = models.Address()
-                    home.solar = models.FV()
-
-                    #assign home essentials                    
-                    home.attributes.essentials.kind = kind
-                    home.attributes.essentials.num_hab = num_hab
-                    home.attributes.essentials.size = size
-
-                    #assign home address                    
-                    home.address.zipcode = int(zipcode)
-                    home.address.ageb = ageb
-                    home.address.neighborhood = neighborhood
-                    home.address.municipality = municipality
-                    home.address.state = state
-                    home.address.region = region
-                    home.address.latlng = ndb.GeoPt(latlng)
-                    
-                    #assign dac limit
-                    home.cfe.dac_limit = int(dacl)
-                    home.cfe.base_fee = fee  
-
-                    #assign solar installation
-                    home.solar.panels = panels
-                    home.solar.capacity = capacity
-                    if (len(since) > 9):
-                        home.solar.since = date(int(since[:4]), int(since[5:7]), int(since[8:]))  
-
-                    #allocate in datastore
-                    home.put()
-                    user_info.home_id = home.key.id()
-                    user_info.put()
-                    logging.info("Home created with ID: %s" % user_info.home_id)
-                else:
-                    #update user home
-                    user_home = models.Home.get_by_id(long(user_info.home_id))
-                    logging.info("Updating home: %s" % user_home.key.id())
-
-                    #init
-                    if user_home.attributes == None:
-                        user_home.attributes = models.HomeAttributes()
-                    user_home.attributes.essentials = models.Essentials()
-                    user_home.address = models.Address()
-                    
-                    #assign home essentials
-                    user_home.attributes.essentials.kind = kind
-                    user_home.attributes.essentials.num_hab = num_hab
-                    user_home.attributes.essentials.size = size
-                    logging.info("...essentials assigned...")
-
-                    #assign home address
-                    user_home.address.zipcode = int(zipcode)
-                    user_home.address.ageb = ageb
-                    user_home.address.neighborhood = neighborhood
-                    user_home.address.municipality = municipality
-                    user_home.address.state = state
-                    user_home.address.region = region
-                    user_home.address.latlng = ndb.GeoPt(latlng)
-                    logging.info("...address assigned...")
-
-                    #assign dac limit
-                    user_home.cfe.dac_limit = int(dacl)
-                    user_home.cfe.base_fee = fee  
-                    logging.info("...dac limit & base fee assigned...") 
-
-                    #assign solar installation
-                    if user_home.solar != None:
-                        user_home.solar.panels = panels
-                        user_home.solar.capacity = capacity
-                        if (len(since) > 9):
-                            user_home.solar.since = date(int(since[:4]), int(since[5:7]), int(since[8:]))
-                    else:
-                        user_home.solar = models.FV()
-                        user_home.solar.panels = panels
-                        user_home.solar.capacity = capacity
-                        if (len(since) > 9):
-                            user_home.solar.since = date(int(since[:4]), int(since[5:7]), int(since[8:]))
-                    
-                    #allocate in datastore
-                    user_home.put()
-                    logging.info("Home updated with ID: %s" % user_home.key.id())
-
-                user_home = models.Home.get_by_id(long(user_info.home_id))
-                #: Email rodrigo if user from out of region or base_fee is different from fee while not being DAC
-                if flag == 1 or (user_home.cfe.fee != user_home.cfe.base_fee and '1' in user_home.cfe.fee):
-                    subject = "Usuario fuera de regiones tarifarias."
-                    template_val = {
-                        "username": user_info.username,
-                        "email": user_info.email,
-                        "support_url": self.uri_for("contact", _full=True),
-                    }
-                    body_path = "emails/user_out_of_region.txt"
-                    body = self.jinja2.render_template(body_path, **template_val)
-                    email = "rodrigo.dibildox@invictus.mx"
-                    email_url = self.uri_for('taskqueue-send-email')                    
-                    taskqueue.add(url=email_url, params={
-                        'to': str(email),
-                        'subject': subject,
-                        'body': body,
-                    })
+                user_info.address.zipcode = int(zipcode)
+                user_info.address.ageb = ageb
+                user_info.address.neighborhood = neighborhood
+                user_info.address.municipality = municipality
+                user_info.address.state = state
+                user_info.address.region = region
+                user_info.address.latlng = ndb.GeoPt(latlng)
+                user_info.put()
 
                 message = ''                
                 message += " " + _(messages.saving_success)
@@ -2157,7 +1994,7 @@ class MaterializeSettingsAddressRequestHandler(BaseHandler):
                 return self.get()
 
             except (AttributeError, KeyError, ValueError), e:
-                logging.error('Error updating home profile: ' + e)
+                logging.error('Error updating address: ' + e)
                 message = _(messages.saving_error)
                 self.add_message(message, 'danger')
                 return self.get()
@@ -2169,7 +2006,7 @@ class MaterializeSettingsAddressRequestHandler(BaseHandler):
 
     @webapp2.cached_property
     def form(self):
-        f = forms.EditHomeForm(self)
+        f = forms.AddressForm(self)
         return f
 
 class MaterializeSettingsReferralsRequestHandler(BaseHandler):

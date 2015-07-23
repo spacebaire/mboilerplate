@@ -5,6 +5,7 @@ import blog
 import logsemails
 import logsvisits
 import crontasks
+import tools
 
 
 _routes = [
@@ -20,6 +21,9 @@ _routes = [
     RedirectRoute('/admin/logs/emails/<email_id>/', logsemails.AdminLogsEmailViewHandler, name='admin-logs-email-view', strict_slash=True),
     RedirectRoute('/admin/logs/visits/', logsvisits.AdminLogsVisitsHandler, name='admin-logs-visits', strict_slash=True),
     RedirectRoute('/admin/logout/', admin.AdminLogoutHandler, name='admin-logout', strict_slash=True),
+    RedirectRoute('/admin/tools/css/', tools.AdminCSSHandler, name='admin-tools-css', strict_slash=True),
+    RedirectRoute('/admin/tools/icons/', tools.AdminIconsHandler, name='admin-tools-icons', strict_slash=True),
+    RedirectRoute('/admin/tools/media/', tools.AdminMediaHandler, name='admin-tools-media', strict_slash=True),
     RedirectRoute('/crontasks/cleanuptokens/', crontasks.AdminCleanupTokensHandler, name='admin-crontasks-cleanuptokens', strict_slash=True),
 ]
 
