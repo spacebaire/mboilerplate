@@ -6,6 +6,7 @@ import logsemails
 import logsvisits
 import crontasks
 import tools
+import sendemails
 
 
 _routes = [
@@ -20,6 +21,7 @@ _routes = [
     RedirectRoute('/admin/logs/emails/', logsemails.AdminLogsEmailsHandler, name='admin-logs-emails', strict_slash=True),
     RedirectRoute('/admin/logs/emails/<email_id>/', logsemails.AdminLogsEmailViewHandler, name='admin-logs-email-view', strict_slash=True),
     RedirectRoute('/admin/logs/visits/', logsvisits.AdminLogsVisitsHandler, name='admin-logs-visits', strict_slash=True),
+    RedirectRoute('/admin/send/email/', sendemails.AdminSendEmailListHandler, name='admin-send-email', strict_slash=True),
     RedirectRoute('/admin/logout/', admin.AdminLogoutHandler, name='admin-logout', strict_slash=True),
     RedirectRoute('/admin/tools/css/', tools.AdminCSSHandler, name='admin-tools-css', strict_slash=True),
     RedirectRoute('/admin/tools/icons/', tools.AdminIconsHandler, name='admin-tools-icons', strict_slash=True),

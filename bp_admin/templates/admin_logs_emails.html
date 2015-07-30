@@ -40,7 +40,13 @@
     {% for email in emails %}
     <tr>
         <td>
-            <a class="icon" href="{{ uri_for('admin-logs-email-view', email_id=email.get_id()) }}"><span style="margin-left: 8px;">👀</span></a>
+            <div>
+                <a class="icon" href="{{ uri_for('admin-logs-email-view', email_id=email.get_id()) }}"><i class="glyphicon-eye-open glyphicon"></i> View</a>
+            </div>
+            <br>
+            <div>
+                <a class="icon" href="{{ uri_for('admin-send-email') }}?email_id={{email.to}}"><i class="glyphicon-envelope glyphicon"></i> Write</a>
+            </div>
         </td>
         {% for attr, when in list_columns %}
         <td>

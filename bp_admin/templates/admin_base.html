@@ -165,6 +165,7 @@
                                     <li {% if path == uri_for('admin-logs-emails') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-emails') }}">{% trans %}Emails sent{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">{% trans %}Visits log{% endtrans %}</a></li>
                                     <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
+                                    <li {% if path == uri_for('admin-send-email') %}class="active"{% endif %}><a href="{{ uri_for('admin-send-email') }}">{% trans %}Send Email{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-blog') %}class="active"{% endif %}><a href="{{ uri_for('admin-blog') }}">{% trans %}Blog posts{% endtrans %}</a></li>
                                     <li class="no-padding">
                                         <ul class="collapsible collapsible-accordion">

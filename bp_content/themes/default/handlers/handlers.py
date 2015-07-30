@@ -56,3 +56,12 @@ class SecureRequestHandler(BaseHandler):
             return "Secure zone error:" + " %s." % e
 
         
+
+
+class EmailsRequestHandler(BaseHandler):
+
+    @user_required
+    def get(self):
+        return self.render_template('emails/emails.html', **params)
+
+        

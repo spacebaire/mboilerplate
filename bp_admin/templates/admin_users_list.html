@@ -40,7 +40,13 @@
         {% for user in users %}
         <tr>
             <td>
-                <a class="icon" href="{{ uri_for('admin-user-edit', user_id=user.get_id()) }}"><span style="margin-left: 8px;">✎</span></a>
+                <div>    
+                    <a class="icon" href="{{ uri_for('admin-user-edit', user_id=user.get_id()) }}"><i class="glyphicon-pencil glyphicon"></i> Edit</a>
+                </div>
+                <br>
+                <div>
+                    <a class="icon" href="{{ uri_for('admin-send-email') }}?email_id={{user.email}}"><i class="glyphicon-envelope glyphicon"></i> Write</a>
+                </div>
             </td>
             {% for attr, name in list_columns %}
             <td>

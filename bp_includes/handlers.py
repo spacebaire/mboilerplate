@@ -1202,7 +1202,7 @@ class MaterializeLoginRequestHandler(BaseHandler):
         """ Returns a simple HTML form for login """
 
         if self.user:
-            self.redirect_to('materialize-home')
+            self.redirect_to('landing')
 
         params = {
             'captchahtml': captchaBase(self),
@@ -1281,7 +1281,9 @@ class MaterializeLoginRequestHandler(BaseHandler):
             if continue_url:
                 self.redirect(continue_url)
             else:
-                self.redirect_to('materialize-home')
+                message = _('Welcome back, %s! ' % user.name)
+                self.add_message(message, 'success')
+                self.redirect_to('landing')
         except (InvalidAuthIdError, InvalidPasswordError), e:
             # Returns error message to self.response.write in
             # the BaseHandler.dispatcher
@@ -1579,8 +1581,8 @@ class MaterializeLandingRequestHandler(BaseHandler):
             self.add_message(message, 'success')
             return self.render_template('materialize/landing/base.html', **params)
         else:
-            user_info = self.user_model.get_by_id(long(self.user_id)) 
-            return self.redirect_to('materialize-home')     
+            params, user_info = disclaim(self)            
+            return self.render_template('materialize/landing/base.html', **params)
 
 class MaterializeLandingBlogRequestHandler(BaseHandler):
     """
@@ -1588,7 +1590,10 @@ class MaterializeLandingBlogRequestHandler(BaseHandler):
     """
     def get(self):
         """ returns simple html for a get request """
-        params = {}        
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {}        
         params['captchahtml'] = captchaBase(self)
         posts = models.BlogPost.query()
         params['total'] = posts.count()
@@ -1606,7 +1611,10 @@ class MaterializeLandingBlogPostRequestHandler(BaseHandler):
     """
     def get(self, post_id):
         """ returns simple html for a get request """
-        params = {}
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {} 
         params['captchahtml'] = captchaBase(self)
         blog = models.BlogPost.get_by_id(long(post_id))
         if blog is not None:
@@ -1625,7 +1633,10 @@ class MaterializeLandingFaqRequestHandler(BaseHandler):
     """
     def get(self):
         """ returns simple html for a get request """
-        params = {}
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {} 
         params['captchahtml'] = captchaBase(self)
         return self.render_template('materialize/landing/faq.html', **params)
 
@@ -1635,7 +1646,10 @@ class MaterializeLandingTouRequestHandler(BaseHandler):
     """
     def get(self):
         """ returns simple html for a get request """
-        params = {}
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {} 
         params['captchahtml'] = captchaBase(self)
         return self.render_template('materialize/landing/tou.html', **params)
 
@@ -1645,7 +1659,10 @@ class MaterializeLandingPrivacyRequestHandler(BaseHandler):
     """
     def get(self):
         """ returns simple html for a get request """
-        params = {}
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {} 
         params['captchahtml'] = captchaBase(self)
         return self.render_template('materialize/landing/privacy.html', **params)
 
@@ -1655,7 +1672,10 @@ class MaterializeLandingLicenseRequestHandler(BaseHandler):
     """
     def get(self):
         """ returns simple html for a get request """
-        params = {}
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {} 
         params['captchahtml'] = captchaBase(self)
         return self.render_template('materialize/landing/license.html', **params)
 
@@ -1665,7 +1685,10 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
     """
     def get(self):
         """ returns simple html for a get request """
-        params = {}
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {} 
         params['captchahtml'] = captchaBase(self)
         if self.user:
             user_info = self.user_model.get_by_id(long(self.user_id))
@@ -2447,13 +2470,10 @@ class MediaDownloadHandler(BaseHandler):
     """
     Handler for Serve Vendor's Logo
     """
-    @user_required
     def get(self, kind, media_id):
         """ Handles download"""
 
         params = {}
-        if not self.user:
-             return self.redirect_to('login')
 
         if kind == 'profile':
             user_info = self.user_model.get_by_id(long(media_id))        

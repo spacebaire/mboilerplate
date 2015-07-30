@@ -92,7 +92,24 @@
 				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
 				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
 				    {% else %}
-				    <li id="nav-home"><a href="{{uri_for("materialize-home")}}" class="modal-trigger menu-item">Home</a></li>
+				    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px;">
+		                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("materialize-home") }}">My dashboard</a>
+	                        </li>
+	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
+	                        </li>
+	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("logout") }}">Logout</a>
+	                        </li>
+		            </ul>
+				    <li class="nav-user" style="margin-right: -18px;">
+                       <a class="btn-flat dropdown-button waves-effect waves-light light-blue-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;">
+                        	{% if has_picture %}
+								<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px;border: 1px solid rgb(3, 169, 244); height:35px">
+							{% else %}
+                            	<span class="circle red lighten-1" style="width: 35px;   height: 35px; display: inline-block;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300;">{{ name_i }}</span>
+							{% endif %}
+								<i class="material-icons right" style="line-height: 1.6;margin-left: 8px;">arrow_drop_down</i>
+                        </a>
+                     </li>	
 				    {% endif %}
 				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
 				    <li id="nav-download"><a href="#download" class="menu-item">Want some love?</a></li>
@@ -102,7 +119,30 @@
 				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
 				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
 				    {% else %}
-				    <li id="nav-home"><a href="{{uri_for("materialize-home")}}" class="modal-trigger menu-item">Home</a></li>
+				    <li class="no-padding">
+                        <ul class="collapsible collapsible-accordion">
+                            <li class="bold">
+                            	<a class="collapsible-header waves-effect waves-cyan">
+						    	{% if has_picture %}
+									<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style="margin-top:6px;border: 1px solid rgb(3, 169, 244); height:35px">
+								{% else %}
+		                        	<span class="circle red lighten-1" style="width: 35px;   height: 35px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; margin-top: 10px;margin-left: 10px;">{{ name_i }}</span>
+								{% endif %}
+									<i class="material-icons right" style="line-height: 1.6;margin-left: -38px;">arrow_drop_down</i>
+                            	<div class="collapsible-body">
+                                    <ul>
+									  <li><a href="{{ uri_for("materialize-home") }}">My dashboard</a>
+		                                </li>
+		                              <li><a href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
+		                                </li>
+		                              <li><a href="{{ uri_for("logout") }}">Logout</a>
+		                                </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                     </li>
+				     <li class="divider"></li>
 				    {% endif %}
 				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
 				    <li id="nav-download"><a href="#download" class="menu-item">Want some love?</a></li>
