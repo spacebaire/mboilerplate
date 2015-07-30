@@ -44,7 +44,13 @@ $(function() {
   /*----------------------
   * Plugin initialization
   ------------------------*/
-
+  //    FONT LOADERS
+  WebFont.load({
+      custom: {
+        families: ['Roboto-Black','Roboto-BlackItalic','Roboto-Bold','Roboto-BoldItalic','Roboto-Italic','Roboto-Light','Roboto-LightItalic','Roboto-Medium','Roboto-MediumItalic','Roboto-Regular','Roboto-Thin','Roboto-ThinItalic']
+      }
+  });
+  
   // Materialize Slider
   $('.slider').slider({
     full_width: true
@@ -55,7 +61,7 @@ $(function() {
     inDuration: 300,
     outDuration: 125,
     constrain_width: true, // Does not change width of dropdown to that of the activator
-    hover: false, // Activate on click
+    hover: true, // Activate on click
     alignment: 'left', // Aligns dropdown to left or right edge (works with constrain_width)
     gutter: 0, // Spacing from edge
     belowOrigin: true // Displays dropdown below the button

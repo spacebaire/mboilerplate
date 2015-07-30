@@ -68,6 +68,7 @@
 		{% block priority_js %}
 			<script type="text/javascript" src="/boilerplate/webcomponents/bower_components/webcomponentsjs/webcomponents.min.js"></script>	
     		<script type="text/javascript" src="/boilerplate/js/libs/modernizr-2.7.1.min.js"></script>
+   		 	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js"></script>
 		{% endblock %}
 
 		<!--  POLYMER   -->
@@ -92,7 +93,7 @@
 				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
 				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
 				    {% else %}
-				    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px;">
+				    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px; border-radius:4px; padding:10px">
 		                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("materialize-home") }}">My dashboard</a>
 	                        </li>
 	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
@@ -100,15 +101,21 @@
 	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("logout") }}">Logout</a>
 	                        </li>
 		            </ul>
-				    <li class="nav-user" style="margin-right: -18px;">
-                       <a class="btn-flat dropdown-button waves-effect waves-light light-blue-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;">
+				    <li class="nav-user" style="margin-right: -32px;">
                         	{% if has_picture %}
-								<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px;border: 1px solid rgb(3, 169, 244); height:35px">
+								<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
+										<div style="position: absolute;left: 0px;"><img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px;border: 1px solid white; height:35px"></div>
+										<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;
+">arrow_drop_down</i></span>
+		                        </a>
 							{% else %}
-                            	<span class="circle red lighten-1" style="width: 35px;   height: 35px; display: inline-block;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300;">{{ name_i }}</span>
+								<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
+										<div style="position: absolute;left: 0px;">
+											<span class="circle white light-blue-text lighten-1" style="width: 35px;   height: 35px; display: inline-block;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300;margin-top: 5px;line-height: 2.2rem;">{{ name_i }}</span>
+										</div>
+										<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
+		                        </a>
 							{% endif %}
-								<i class="material-icons right" style="line-height: 1.6;margin-left: 8px;">arrow_drop_down</i>
-                        </a>
                      </li>	
 				    {% endif %}
 				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
@@ -532,7 +539,8 @@
 	        {% block onload_methods %}
 				<script type="text/javascript">
 	    			var is_Safari = false, not_Chrome = false;
-					$(function(){
+					$(function(){						
+
 						$('a[href*=#]:not([href=#])').click(function() {
 						    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
 						      var target = $(this.hash);
