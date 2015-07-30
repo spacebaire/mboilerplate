@@ -1374,7 +1374,7 @@ class MaterializeAccountActivationHandler(BaseHandler):
             message = _(messages.activation_success).format(
                 user.email)
             self.add_message(message, 'success')
-            self.redirect_to('materialize-home')
+            self.redirect_to('landing')
 
         except (AttributeError, KeyError, InvalidAuthIdError, NameError), e:
             logging.error("Error activating an account: %s" % e)
@@ -1458,7 +1458,7 @@ class MaterializeAccountActivationReferralHandler(BaseHandler):
             message = _(messages.activation_success).format(
                 referred_user.email)
             self.add_message(message, 'success')
-            self.redirect_to('materialize-home')
+            self.redirect_to('landing')
 
         except (AttributeError, KeyError, InvalidAuthIdError, NameError), e:
             logging.error("Error activating an account: %s" % e)
