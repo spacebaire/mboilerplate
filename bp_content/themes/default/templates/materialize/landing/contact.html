@@ -23,7 +23,13 @@
                         <form class="col s12">
                           <div class="row">
                             <div class="input-field col s12 center">
+                              {% if t == 'bug' %}
+                              <p class="center login-form-text">Hey! Tell me where's that bug and I'll pet him.</p>
+                              {% elif t == 'dl' %}
+                              <p class="center login-form-text">Hey! Download is not ready, if you want it anyway, tell me.</p>
+                              {% else %}
                               <p class="center login-form-text">Hey! Leave me a message.</p>
+                              {% endif %}
                             </div>
                           </div>
                           <div class="row">

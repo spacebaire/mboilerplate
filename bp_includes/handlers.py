@@ -1698,6 +1698,8 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
                 self.form.email.data = user_info.email
         params['exception'] = self.request.get('exception')
 
+        params['t'] = str(self.request.get('t')) if len(self.request.get('t')) > 1 else 'no'
+
         return self.render_template('materialize/landing/contact.html', **params)
 
     def post(self):

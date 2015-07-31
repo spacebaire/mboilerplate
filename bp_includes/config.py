@@ -21,7 +21,7 @@ config = {
                               'environment_args': {'extensions': ['jinja2.ext.i18n']}},
 
     # application name
-    'app_name': 'GAE Materialize Boilerplate',
+    'app_name': 'M Boilerplate',
 
     # the default language code for the application.
     # should match whatever language the site uses when i18n is disabled
