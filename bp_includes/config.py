@@ -84,7 +84,7 @@ config = {
     'meta_tags_code': """
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="description" content="This an amazing, magical materialized boilerplate for the Google AppEngine." />
-            <meta name="keywords" content="google, cloud, appengine, material, materialize, webcomponents, boilerplate, gae, gcp"/>
+            <meta name="keywords" content="mboilerplate, appengine, materialize, boilerplate, webcomponents, google cloud, gae"/>
             <meta property="og:site_name" content="MBoilerplate.appspot.com"/>
             <meta property="og:title" content="MBoilerplate"/>
             <meta property="og:type" content="website"/>
