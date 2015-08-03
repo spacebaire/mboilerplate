@@ -13,18 +13,18 @@
 /*----------------------------------------
   General Layout Style
 ------------------------------------------*/
-@font-face {font-family: "Roboto-Black"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-Black.ttf) ;}
-@font-face {font-family: "Roboto-BlackItalic"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-BlackItalic.ttf);}
-@font-face {font-family: "Roboto-Bold"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-Bold.ttf);}
-@font-face {font-family: "Roboto-BoldItalic"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-BoldItalic.ttf);}
-@font-face {font-family: "Roboto-Italic"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-Italic.ttf);}
-@font-face {font-family: "Roboto-Light"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-Light.ttf);}
-@font-face {font-family: "Roboto-LightItalic"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-LightItalic.ttf);}
-@font-face {font-family: "Roboto-Medium"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-Medium.ttf);}
-@font-face {font-family: "Roboto-MediumItalic"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-MediumItalic.ttf);}
-@font-face {font-family: "Roboto-Regular"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-Regular.ttf);}
-@font-face {font-family: "Roboto-Thin"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-Thin.ttf);}
-@font-face {font-family: "Roboto-ThinItalic"; src: url(http://mboilerplate.appspot.com/default/materialize/font/roboto/Roboto-ThinItalic.ttf);}
+@font-face {font-family: "Roboto-Black"; src: url(/default/materialize/font/roboto/Roboto-Black.ttf) ;}
+@font-face {font-family: "Roboto-BlackItalic"; src: url(/default/materialize/font/roboto/Roboto-BlackItalic.ttf);}
+@font-face {font-family: "Roboto-Bold"; src: url(/default/materialize/font/roboto/Roboto-Bold.ttf);}
+@font-face {font-family: "Roboto-BoldItalic"; src: url(/default/materialize/font/roboto/Roboto-BoldItalic.ttf);}
+@font-face {font-family: "Roboto-Italic"; src: url(/default/materialize/font/roboto/Roboto-Italic.ttf);}
+@font-face {font-family: "Roboto-Light"; src: url(/default/materialize/font/roboto/Roboto-Light.ttf);}
+@font-face {font-family: "Roboto-LightItalic"; src: url(/default/materialize/font/roboto/Roboto-LightItalic.ttf);}
+@font-face {font-family: "Roboto-Medium"; src: url(/default/materialize/font/roboto/Roboto-Medium.ttf);}
+@font-face {font-family: "Roboto-MediumItalic"; src: url(/default/materialize/font/roboto/Roboto-MediumItalic.ttf);}
+@font-face {font-family: "Roboto-Regular"; src: url(/default/materialize/font/roboto/Roboto-Regular.ttf);}
+@font-face {font-family: "Roboto-Thin"; src: url(/default/materialize/font/roboto/Roboto-Thin.ttf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(/default/materialize/font/roboto/Roboto-ThinItalic.ttf);}
 
 body {
   background-color: #fcfcfc;
