@@ -38,6 +38,8 @@ _routes = [
     # User
     RedirectRoute('/user/home/', handlers.MaterializeHomeRequestHandler, name='materialize-home', strict_slash=True),
     RedirectRoute('/user/referrals/', handlers.MaterializeReferralsRequestHandler, name='materialize-referrals', strict_slash=True),
+    RedirectRoute('/user/polymer/', handlers.MaterializePolymerRequestHandler, name='materialize-polymer', strict_slash=True),
+    RedirectRoute('/user/cartodb/', handlers.MaterializeCartoDBRequestHandler, name='materialize-cartodb', strict_slash=True),
     RedirectRoute('/user/settings/profile/', handlers.MaterializeSettingsProfileRequestHandler, name='materialize-settings-profile', strict_slash=True),
     RedirectRoute('/user/settings/address/', handlers.MaterializeSettingsAddressRequestHandler, name='materialize-settings-address', strict_slash=True),
     RedirectRoute('/user/settings/email/', handlers.MaterializeSettingsEmailRequestHandler, name='materialize-settings-email', strict_slash=True),

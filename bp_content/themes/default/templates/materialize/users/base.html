@@ -7,7 +7,7 @@
 
 {% block document_head %}
 	<head>
-	    {% block title %}<title>MBoilerplate</title>{% endblock %}
+	    {% block title %}<title>{{app_name}}</title>{% endblock %}
 
 	    <!-- All meta tags from config files -->
 	    {% block metadata %}
@@ -156,9 +156,9 @@
 				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-maps-layers"></i> Sections</a>
 				                                <div class="collapsible-body">
 				                                    <ul>
-				                                        <li><a href="{{ uri_for("materialize-home") }}">Polymer</a>
+				                                        <li><a href="{{ uri_for("materialize-polymer") }}">Polymer</a>
 				                                        </li>                                        
-				                                        <li><a href="{{ uri_for("materialize-home") }}">CartoDB</a>
+				                                        <li><a href="{{ uri_for("materialize-cartodb") }}">CartoDB</a>
 				                                        </li>
 				                                    </ul>
 				                                </div>
@@ -183,7 +183,7 @@
 				                            </li>
 				                        </ul>
 				                    </li>
-				                    <li class="bold"><a href="{{ uri_for("materialize-home") }}" class="waves-effect waves-cyan"><i class="mdi-navigation-arrow-back"></i> Back to landing</a>
+				                    <li class="bold"><a href="{{ uri_for("landing") }}" class="waves-effect waves-cyan"><i class="mdi-navigation-arrow-back"></i> Back to landing</a>
 				                    </li>
 				                </ul>
 				                <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating waves-effect waves-light hide-on-large-only darken-2" style="margin-top:-5px;"><i class="mdi-navigation-more-vert" style="color: rgb(62, 193, 251);background-color: white;" ></i></a>
