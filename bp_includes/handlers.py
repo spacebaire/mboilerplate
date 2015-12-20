@@ -704,7 +704,7 @@ class SendEmailHandler(BaseHandler):
                 sender = self.app.config.get('contact_sender')
             else:
                 app_id = app_identity.get_application_id()
-                sender = "{{app_name}} Mail <no-reply@%s.appspotmail.com>" % (app_id)
+                sender = "%s Mail <no-reply@%s.appspotmail.com>" % (self.app.config.get('app_name'),app_id)
 
         if self.app.config['log_email']:
             try:
@@ -801,6 +801,8 @@ class PasswordResetHandler(BaseHandler):
                 "email": user.email,
                 "reset_password_url": reset_url,
                 "support_url": self.uri_for("contact", _full=True),
+                "twitter_url": self.app.config.get('twitter_url'),
+                "facebook_url": self.app.config.get('facebook_url'),
                 "faq_url": self.uri_for("faq", _full=True),
                 "app_name": self.app.config.get('app_name'),
             }
@@ -979,6 +981,8 @@ class MaterializeRegisterReferralHandler(BaseHandler):
                         "username": _username,
                         "confirmation_url": confirmation_url,
                         "support_url": self.uri_for("contact", _full=True),
+                        "twitter_url": self.app.config.get('twitter_url'),
+                        "facebook_url": self.app.config.get('facebook_url'),
 						"faq_url": self.uri_for("faq", _full=True)
                     }
                     body_path = "emails/account_activation.txt"
@@ -1160,6 +1164,8 @@ class MaterializeRegisterRequestHandler(BaseHandler):
                         "username": name,
                         "confirmation_url": confirmation_url,
                         "support_url": self.uri_for("contact", _full=True),
+                        "twitter_url": self.app.config.get('twitter_url'),
+                        "facebook_url": self.app.config.get('facebook_url'),
                         "faq_url": self.uri_for("faq", _full=True)
                     }
                     body_path = "emails/account_activation.txt"
@@ -1494,6 +1500,8 @@ class ResendActivationEmailHandler(BaseHandler):
                     "username": user.name,
                     "confirmation_url": confirmation_url,
                     "support_url": self.uri_for("contact", _full=True),
+                    "twitter_url": self.app.config.get('twitter_url'),
+                    "facebook_url": self.app.config.get('facebook_url'),
 					"faq_url": self.uri_for("faq", _full=True)
                 }
                 body_path = "emails/account_activation.txt"
@@ -1559,6 +1567,21 @@ def disclaim(_self, **kwargs):
 
 
 # LANDING
+class MaterializeCCRequestHandler(BaseHandler):
+    """
+    Handler to show the landing page
+    """
+
+    def get(self):
+        """ Returns a simple HTML form for landing """
+        params = {}
+        if not self.user:
+            params['captchahtml'] = captchaBase(self)
+            return self.render_template('materialize/landing/cc.html', **params)
+        else:
+            params, user_info = disclaim(self)            
+            return self.render_template('materialize/landing/cc.html', **params)
+
 class MaterializeLandingRequestHandler(BaseHandler):
     """
     Handler to show the landing page
@@ -1853,6 +1876,8 @@ class MaterializeReferralsRequestHandler(BaseHandler):
                 "user_name": _username,
                 "link_referral" : user_info.link_referral,
                 "support_url": self.uri_for("contact", _full=True),
+                "twitter_url": self.app.config.get('twitter_url'),
+                "facebook_url": self.app.config.get('facebook_url'),
                 "faq_url": self.uri_for("faq", _full=True)
             }
             body_path = "emails/referrals.txt"
@@ -2135,6 +2160,8 @@ class MaterializeSettingsReferralsRequestHandler(BaseHandler):
                 "user_name": _username,
                 "link_referral" : user_info.link_referral,
                 "support_url": self.uri_for("contact", _full=True),
+                "twitter_url": self.app.config.get('twitter_url'),
+                "facebook_url": self.app.config.get('facebook_url'),
                 "faq_url": self.uri_for("faq", _full=True)
             }
             body_path = "emails/referrals.txt"
@@ -2242,6 +2269,8 @@ class MaterializeSettingsEmailRequestHandler(BaseHandler):
                         "new_email": new_email,
                         "confirmation_url": confirmation_url,
                         "support_url": self.uri_for("contact", _full=True),
+                        "twitter_url": self.app.config.get('twitter_url'),
+                        "facebook_url": self.app.config.get('facebook_url'),
                         "faq_url": self.uri_for("faq", _full=True)
                     }
 
@@ -2378,6 +2407,8 @@ class MaterializeSettingsPasswordRequestHandler(BaseHandler):
                     "email": user.email,
                     "reset_password_url": self.uri_for("password-reset", _full=True),
                     "support_url": self.uri_for("contact", _full=True),
+                    "twitter_url": self.app.config.get('twitter_url'),
+                    "facebook_url": self.app.config.get('facebook_url'),
                     "faq_url": self.uri_for("faq", _full=True)
                 }
                 email_body_path = "emails/password_changed.txt"
@@ -2611,6 +2642,8 @@ class WelcomeHandler(BaseHandler):
                                     "username": _username,
                                     "_url": self.uri_for("history", _full=True),
                                     "support_url": self.uri_for("contact", _full=True),
+                                    "twitter_url": self.app.config.get('twitter_url'),
+                                    "facebook_url": self.app.config.get('facebook_url'),
                                     "faq_url": self.uri_for("faq", _full=True)
                                 }
                                 body_path = "emails/welcome.txt"

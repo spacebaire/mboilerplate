@@ -20,8 +20,30 @@ config = {
     'webapp2_extras.jinja2': {'template_path': ['bp_admin/templates', 'bp_content/themes/%s/templates' % os.environ['theme']],
                               'environment_args': {'extensions': ['jinja2.ext.i18n']}},
 
-    # application name
+    # application name and social accounts
     'app_name': 'M Boilerplate',
+    'twitter_url': '',
+    'facebook_url': '',
+    'meta_tags_code': """
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <meta name="description" content="This an amazing, magical materialized boilerplate for the Google AppEngine." />
+            <meta name="keywords" content="mboilerplate, appengine, materialize, boilerplate, webcomponents, google cloud, gae"/>
+            <meta property="og:site_name" content="MBoilerplate.appspot.com"/>
+            <meta property="og:title" content="MBoilerplate"/>
+            <meta property="og:type" content="website"/>
+            <meta property="og:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine."/>
+            <meta property="og:url" content="http://mboilerplate.appspot.com"/>
+            <meta property="og:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png"/>
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="twitter:site" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
+            <meta name="twitter:creator" content="@chuycepeda">
+            <meta name="twitter:title" content="MBoilerplate">
+            <meta name="twitter:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
+            <meta name="twitter:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png">
+            <meta property="twitter:url" content="http://mboilerplate.appspot.com"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">""",
+
 
     # the default language code for the application.
     # should match whatever language the site uses when i18n is disabled
@@ -81,27 +103,7 @@ config = {
     # In config/boilerplate.py there is an example to fill out this value
     'google_analytics_code': '',
 
-    'meta_tags_code': """
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-            <meta name="description" content="This an amazing, magical materialized boilerplate for the Google AppEngine." />
-            <meta name="keywords" content="mboilerplate, appengine, materialize, boilerplate, webcomponents, google cloud, gae"/>
-            <meta property="og:site_name" content="MBoilerplate.appspot.com"/>
-            <meta property="og:title" content="MBoilerplate"/>
-            <meta property="og:type" content="website"/>
-            <meta property="og:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine."/>
-            <meta property="og:url" content="http://mboilerplate.appspot.com"/>
-            <meta property="og:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png"/>
-            <meta name="twitter:card" content="summary_large_image">
-            <meta name="twitter:site" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
-            <meta name="twitter:creator" content="@chuycepeda">
-            <meta name="twitter:title" content="MBoilerplate">
-            <meta name="twitter:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
-            <meta name="twitter:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png">
-            <meta property="twitter:url" content="http://mboilerplate.appspot.com"/>
-            <meta name="bitly-verification" content="08b699436857"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">""",
-
+    
     # add status codes and templates used to catch and display errors
     # if a status code is not listed here it will use the default app engine
     # stacktrace error page or browser error page

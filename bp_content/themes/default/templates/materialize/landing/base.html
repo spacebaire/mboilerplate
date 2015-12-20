@@ -105,8 +105,7 @@
                         	{% if has_picture %}
 								<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
 										<div style="position: absolute;left: 0px;"><img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px;border: 1px solid white; height:35px"></div>
-										<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;
-">arrow_drop_down</i></span>
+										<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
 		                        </a>
 							{% else %}
 								<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
@@ -705,7 +704,6 @@
 						};
 						BrowserDetect.init();	
 					}); 
-
 					function sendForm(formID){
 			    		if (formID == "form_login_user"){
 			    			if (document.getElementById('login_email').value != "" && document.getElementById('login_password') != ""){
@@ -720,19 +718,70 @@
 			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
 			    			}
 			    		}else if (formID == "form_register_user"){
-			    			if (document.getElementById('register_name').value != "" && document.getElementById('register_email').value != "" && document.getElementById('register_password') != ""){
-			    				document.getElementById(formID).submit();
+			    			if (document.getElementById('register_name').value != "" && document.getElementById('register_email').value != "" && document.getElementById('register_password').value != ""){
+			    				if (cleanUpSpecialChars(document.getElementById('register_password').value) == document.getElementById('register_password').value && cleanUpMailSpecialChars(document.getElementById('register_email').value) == document.getElementById('register_email').value)
+			    					document.getElementById(formID).submit();
+			    				else
+			    					Materialize.toast('<span class="toast-warning">Oops! Please avoid special chars.</span>',4500);
+
 			    			}else{
 			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
 			    			}
 			    		}else if (formID == "form_register"){
-			    			if (document.getElementById('r_name').value != "" && document.getElementById('r_email').value != "" && document.getElementById('r_password') != ""){
-			    				document.getElementById(formID).submit();
+			    			if (document.getElementById('r_name').value != "" && document.getElementById('r_email').value != "" && document.getElementById('r_password').value != ""){
+			    				if (cleanUpSpecialChars(document.getElementById('r_password').value) == document.getElementById('r_password').value && cleanUpMailSpecialChars(document.getElementById('r_email').value) == document.getElementById('r_email').value)
+			    					document.getElementById(formID).submit();
+			    				else
+			    					Materialize.toast('<span class="toast-warning">Oops! Please avoid special chars.</span>',4500);
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
+			    			}
+			    		}else if (formID == "form_pass_reset"){
+			    			if (document.getElementById('password').value != ""){
+			    				if (cleanUpSpecialChars(document.getElementById('password').value) == document.getElementById('password').value){
+			    					document.getElementById('c_password').value = document.getElementById('password').value;
+			    					document.getElementById(formID).submit();
+			    				}else
+			    					Materialize.toast('<span class="toast-warning">Oops! Please avoid special chars.</span>',4500);
+
 			    			}else{
 			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
 			    			}
 			    		}
-
+					}
+					function cleanUpSpecialChars(str){
+						str = str.replace(/[ÀÁÂÃÄÅ]/g,"A");
+						str = str.replace(/[àáâãäå]/g,"a");
+						str = str.replace(/[ÈÉÊË]/g,"E");
+						str = str.replace(/[éèëê]/g,"e");
+						str = str.replace(/[ÍÌÎÏ]/g,"I");
+						str = str.replace(/[íîïì]/g,"i");
+						str = str.replace(/[ÓÖÒÔ]/g,"O");
+						str = str.replace(/[óòôö]/g,"o");
+						str = str.replace(/[ÚÜÛÙ]/g,"U");
+						str = str.replace(/[úùûü]/g,"u");
+						str = str.replace(/[Ñ]/g,"N");
+						str = str.replace(/[ñ]/g,"n");
+						str = str.replace(/[Ç]/g,"C");
+						str = str.replace(/[ç]/g,"c");
+						return str.replace(/[^a-zA-Z0-9 ]/g, "");
+					}
+					function cleanUpMailSpecialChars(str){
+						str = str.replace(/[ÀÁÂÃÄÅ]/g,"A");
+						str = str.replace(/[àáâãäå]/g,"a");
+						str = str.replace(/[ÈÉÊË]/g,"E");
+						str = str.replace(/[éèëê]/g,"e");
+						str = str.replace(/[ÍÌÎÏ]/g,"I");
+						str = str.replace(/[íîïì]/g,"i");
+						str = str.replace(/[ÓÖÒÔ]/g,"O");
+						str = str.replace(/[óòôö]/g,"o");
+						str = str.replace(/[ÚÜÛÙ]/g,"U");
+						str = str.replace(/[úùûü]/g,"u");
+						str = str.replace(/[Ñ]/g,"N");
+						str = str.replace(/[ñ]/g,"n");
+						str = str.replace(/[Ç]/g,"C");
+						str = str.replace(/[ç]/g,"c");
+						return str;
 					}
 				</script>
 			{% endblock %}

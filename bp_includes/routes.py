@@ -14,6 +14,7 @@ _routes = [
 
     # Landing
     RedirectRoute('/', handlers.MaterializeLandingRequestHandler, name='landing', strict_slash=True),   
+    RedirectRoute('/cc', handlers.MaterializeCCRequestHandler, name='landing-cc', strict_slash=True),   
     RedirectRoute('/blog/', handlers.MaterializeLandingBlogRequestHandler, name='blog', strict_slash=True),
     RedirectRoute('/blog/<post_id>/', handlers.MaterializeLandingBlogPostRequestHandler, name='blog-post', strict_slash=True),
     RedirectRoute('/contact/', handlers.MaterializeLandingContactRequestHandler, name='contact', strict_slash=True),
