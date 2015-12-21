@@ -26,7 +26,7 @@ config = {
     # application branding 
     'brand_logo': '/default/materialize/images/favicon/fav-white.png',
     'brand_favicon': '/default/materialize/images/favicon/fav.png',
-    'brand_color' : '#03a9f4',
+    'brand_color' : '#00AFF0',
     'brand_secondary_color' : '#0d47a1',
     'brand_tertiary_color' : '#EAEAEA',
     # application on social media
