@@ -11,7 +11,6 @@ import sendemails
 
 _routes = [
     RedirectRoute('/admin/', users.AdminStatsHandler, name='admin', strict_slash=True),
-    RedirectRoute('/admin/geo/', users.AdminUserGeoChartHandler, name='admin-users-geochart', strict_slash=True),
     RedirectRoute('/admin/blog/', blog.AdminBlogHandler, name='admin-blog', strict_slash=True),
     RedirectRoute('/admin/blog/<post_id>/', blog.AdminBlogEditHandler, name='admin-blog-edit', strict_slash=True),
     RedirectRoute('/admin/blog/upload/<post_id>/', blog.AdminBlogUploadHandler, name='admin-blog-upload', strict_slash=True),

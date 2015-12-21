@@ -17,17 +17,8 @@ class Notifications(ndb.Model):
     twitter = ndb.StringProperty()
 
 class Address(ndb.Model):
-    ageb = ndb.StringProperty()                                                                     #: Mexico Only - INEGI zone key 
-    region = ndb.StringProperty()                                                                   #: Mexico Only - CFE related region
-    country = ndb.StringProperty()                                                                  #: User Country, initialized by boilerplate... 
-    state = ndb.StringProperty()                                                                    #: Administrative state region
-    municipality = ndb.StringProperty()                                                             #: Administrative municipality region   
-    zipcode = ndb.IntegerProperty()                                                                 #: Administrative zipcode region
-    neighborhood = ndb.StringProperty()                                                             #: Administrative neighborhood region
-    latlng = ndb.GeoPtProperty()                                                                    #: Geocoded lat,lng, from address fields
-    #street = ndb.StringProperty()                                                                  #: Unused
-    #streetnum = ndb.StringProperty()                                                               #: Unused
-    tz = ndb.StringProperty()                                                                       #: User TimeZone, initialized by boilerplate...       
+    address_from_coord = ndb.GeoPtProperty()                                                        #: lat/long address
+    address_from = ndb.StringProperty()  
     
 class Media(ndb.Model):
     blob_key = ndb.BlobKeyProperty()                                                                #: Refer to https://cloud.google.com/appengine/docs/python/blobstore/

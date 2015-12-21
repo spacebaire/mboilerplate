@@ -20,10 +20,25 @@ config = {
     'webapp2_extras.jinja2': {'template_path': ['bp_admin/templates', 'bp_content/themes/%s/templates' % os.environ['theme']],
                               'environment_args': {'extensions': ['jinja2.ext.i18n']}},
 
-    # application name and social accounts
-    'app_name': 'M Boilerplate',
+    # application name
+    'app_name':  unicode('M Boilerplate','utf-8'),
+    'app_id': 'mboilerplate',
+    # application branding 
+    'brand_logo': '/default/materialize/images/favicon/fav-white.png',
+    'brand_favicon': '/default/materialize/images/favicon/fav.png',
+    'brand_color' : '#03a9f4',
+    'brand_secondary_color' : '#0d47a1',
+    'brand_tertiary_color' : '#EAEAEA',
+    # application on social media
     'twitter_url': '',
+    'twitter_appID': '', #GET IT FROM: https://apps.twitter.com/
+    'twitter_handle': '',
     'facebook_url': '',
+    'facebook_handle':'',
+    'facebook_appID': '523620084480399', #GET IT FROM: https://developers.facebook.com/apps/
+    'google_clientID': '143126415076-6sm0gdcglfnv1t3bp7ffbp7eok9sklm6.apps.googleusercontent.com', #GET IT FROM: https://elements.polymer-project.org/elements/google-signin
+    # application on the web
+
     'meta_tags_code': """
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="description" content="This an amazing, magical materialized boilerplate for the Google AppEngine." />
@@ -132,11 +147,6 @@ config = {
     'log_visit': True,
 
     # ----> ADD MORE CONFIGURATION OPTIONS HERE <----
-
-    #branding stuff
-    'brand_logo': '/default/materialize/images/favicon/fav-white.png',
-    'brand_favicon': '/default/materialize/images/favicon/fav.png',
-    'brand_color' : 'light-blue',
 
     #bitly integration
     'bitly_login' : '',

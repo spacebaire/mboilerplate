@@ -317,6 +317,8 @@ class BaseHandler(webapp2.RequestHandler):
             'brand_logo': self.app.config.get('brand_logo'),
             'brand_favicon': self.app.config.get('brand_favicon'),
             'brand_color': self.app.config.get('brand_color'),
+            'brand_secondary_color': self.app.config.get('brand_secondary_color'),
+            'brand_tertiary_color': self.app.config.get('brand_tertiary_color'),
             'user_id': self.user_id,
             'username': self.username,
             'name': self.name,

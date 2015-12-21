@@ -12,7 +12,7 @@
   <div class="parallax-container z-depth-3" style="height:auto;">
     <div class="section no-pad-bot" style="padding-bottom: 40px;">
       <div class="container center row" style="margin-top: 80px;opacity: 0.8;">
-        <div class="white light-blue-text center col s10 m6 offset-m3 offset-s1" style="opacity: 1; top: 0px;">
+        <div class="white brand-color-text center col s10 m6 offset-m3 offset-s1" style="opacity: 1; top: 0px;">
           <div class="modal-content">
             <form id="form_contact" action="{{ url|safe }}" method="post">
             <input type="hidden" name="exception" value="{{ exception|e }}">
@@ -34,27 +34,27 @@
                           </div>
                           <div class="row">
                             <div class="input-field col s12">
-                              <i class="mdi-action-account-circle prefix {{brand_color}}-text"></i>
+                              <i class="mdi-action-account-circle prefix brand-color-text brand-color-text"></i>
                               <input id="name" name="name" type="text" class="validate" value="">
                               <label for="first_name">Name</label>
                             </div>
                           </div>
                           <div class="row">
                             <div class="input-field col s12">
-                              <i class="mdi-communication-email prefix {{brand_color}}-text"></i>
+                              <i class="mdi-communication-email prefix brand-color-text brand-color-text"></i>
                               <input id="email" name="email" type="email" class="validate" value="">
                               <label for="email">Email</label>
                             </div>
                           </div>
                           <div class="row">
                             <div class="input-field col s12">
-                              <i class="mdi-action-question-answer prefix {{brand_color}}-text"></i>
+                              <i class="mdi-action-question-answer prefix brand-color-text brand-color-text"></i>
                               <textarea id="message" name="message" class="materialize-textarea validate" length="120"></textarea>
                               <label for="message">Message</label>
                             </div>
                             <div class="row">
                               <div class="input-field col s12">
-                                <button class="btn {{brand_color}} waves-effect waves-light right" style="margin-right:20px;" type="submit" name="action">Send
+                                <button class="btn brand-color waves-effect waves-light right" style="margin-right:20px;" type="submit" name="action">Send
                                   <i class="mdi-content-send right"></i>
                                 </button>
                               </div>

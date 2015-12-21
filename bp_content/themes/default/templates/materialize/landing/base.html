@@ -55,6 +55,62 @@
   					  -webkit-transform: scale(0.8);
   					  transform: scale(0.8);
 				}
+	
+				/* BRANDING */
+				.brand-color{
+					background-color: {{brand_color}}!important;
+				}
+				.brand-color-text{
+					color:{{brand_color}}!important;
+				}
+				.brand-secondary-color{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.brand-secondary-color-text{
+					color:{{brand_secondary_color}}!important;
+				}
+				.brand-tertiary-color{
+					background-color: {{brand_tertiary_color}}!important;
+				}
+				.brand-tertiary-color-text{
+					color:{{brand_tertiary_color}}!important;
+				}
+				.btn{
+					background-color: {{brand_color}};
+				}
+				.btn:hover{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.btn-large{
+					background-color: {{brand_color}};
+				}
+				.btn-large:hover{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.btn-floating{
+					background-color: {{brand_color}};
+				}
+				.btn-floating:hover{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				#loader {
+				  border-top-color: {{brand_color}}!important;
+				}
+				#loader:before {
+				  border-top-color: {{brand_secondary_color}}!important;
+				}
+				#loader:after {
+				  border-top-color: {{brand_tertiary_color}}!important;
+				}
+				#loader {
+				  border-top-color: #ffffff;
+				}
+				#loader:before {
+				  border-top-color: #044967;
+				}
+				#loader:after {
+				  border-top-color: #4FC3F7;
+				}
 	    	</style>
 		    {% block page_css %}{% endblock %}
 		{% endblock %}
@@ -94,11 +150,11 @@
 				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
 				    {% else %}
 				    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px; border-radius:4px; padding:10px">
-		                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("materialize-home") }}">My dashboard</a>
+		                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-home") }}">My home</a>
 	                        </li>
-	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
+	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
 	                        </li>
-	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="{{brand_color}}-text" href="{{ uri_for("logout") }}">Logout</a>
+	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("logout") }}">Logout</a>
 	                        </li>
 		            </ul>
 				    <li class="nav-user" style="margin-right: -32px;">
@@ -110,7 +166,7 @@
 							{% else %}
 								<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
 										<div style="position: absolute;left: 0px;">
-											<span class="circle white light-blue-text lighten-1" style="width: 35px;   height: 35px; display: inline-block;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300;margin-top: 5px;line-height: 2.2rem;">{{ name_i }}</span>
+											<span class="circle white brand-color-text lighten-1" style="width: 35px;   height: 35px; display: inline-block;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300;margin-top: 5px;line-height: 2.2rem;">{{ name_i }}</span>
 										</div>
 										<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
 		                        </a>
@@ -137,7 +193,7 @@
 									<i class="material-icons right" style="line-height: 1.6;margin-left: -38px;">arrow_drop_down</i>
                             	<div class="collapsible-body">
                                     <ul>
-									  <li><a href="{{ uri_for("materialize-home") }}">My dashboard</a>
+									  <li><a href="{{ uri_for("materialize-home") }}">My home</a>
 		                                </li>
 		                              <li><a href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
 		                                </li>
@@ -163,7 +219,7 @@
 				<div class="section no-pad-bot">
 				  <div class="container">
 				    <br><br>
-				    <h1 class="header center {{brand_color}}-text text-lighten-2 " >{{app_name}}</h1>
+				    <h1 class="header center brand-color-text text-lighten-2 " >{{app_name}}</h1>
 				    <div class="row center">
 				      <h5 class="header col s12 white-text light tooltipped" data-position="bottom" data-delay="50" data-tooltip="aka - your webapp twice as good, in half the time, at half the cost !">A modern responsive front-end + back-end GAE boilerplate based on material design</h5>
 
@@ -186,7 +242,7 @@
 				   	<h3 class="col s12 light center header grey-text">What you see is what you get !</h3>
 				    <div class="col s12 m4">
 				      <div class="icon-block">
-				        <h2 class="center {{brand_color}}-text"><i class="material-icons">flash_on</i></h2>
+				        <h2 class="center brand-color-text"><i class="material-icons">flash_on</i></h2>
 				        <h5 class="center">Instant deploys</h5>
 
 				        <p class="light">Through the <a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a> plus the <a target="_blank" href="http://materializecss.com/">MaterializeCSS</a> and <a target="_blank" href="http://fezvrasta.github.io/bootstrap-material-design/">Bootstrap Material Design</a>, M Boilerplate provides an exceptional experience for developers. Models, templates, and routes - ready enables for instantaneous deployment and rapid prototyping.</p>
@@ -195,7 +251,7 @@
 
 				    <div class="col s12 m4">
 				      <div class="icon-block">
-				        <h2 class="center {{brand_color}}-text"><i class="material-icons">group</i></h2>
+				        <h2 class="center brand-color-text"><i class="material-icons">group</i></h2>
 				        <h5 class="center">Human-centered</h5>
 
 				        <p class="light">More than a year now of <a target="_blank" href="https://www.google.com/design/spec/material-design/introduction.html">Material Design</a> and the newest <a target="_blank" href="https://cloud.google.com/datastore/">Google Datastore</a>, here you have a single underlying responsive system across all platforms and a standard user model for a more unified user experience.</p>
@@ -204,7 +260,7 @@
 
 				    <div class="col s12 m4">
 				      <div class="icon-block">
-				        <h2 class="center {{brand_color}}-text"><i class="material-icons">settings</i></h2>
+				        <h2 class="center brand-color-text"><i class="material-icons">settings</i></h2>
 				        <h5 class="center">Easy, powerful and low-cost</h5>
 
 				        <p class="light">Leveraging the use of <a target="_blank" href="https://cloud.google.com/appengine/docs">Google AppEngine</a> and its <a target="_blank" href="https://cloud.google.com/appengine/docs/quotas">Free Quotas</a>, M Boilerplate provides all the ease of the <a target="_blank" href="https://cloud.google.com/docs/">Google Cloud Platform</a> at amazingly low costs and super easy scalability and traffic splitting in one of the most <a target="_blank" href="http://www.google.com/about/datacenters/">powerful</a> and <a target="_blank" href="http://www.google.com/green/bigpicture/">green</a> infrastructures in the world.</p>
@@ -218,7 +274,7 @@
 			      <div class="container">
 			        <br><br>
 			        <div class="row center">
-			          <h5 class="header col s12 white-text light" style="line-height: 2;">Ever noticed goats scream like humans? <span id="speak" class="{{brand_color}}-text text-lighten-2" style="cursor:pointer;">Try it !</span></h5>
+			          <h5 class="header col s12 white-text light" style="line-height: 2;">Ever noticed goats scream like humans? <span id="speak" class="brand-color-text text-lighten-2" style="cursor:pointer;">Try it !</span></h5>
 			        </div>
 			      </div>
 			    </div>
@@ -231,7 +287,7 @@
 				   	<h3 class="col s12 light center header grey-text">+20 amazing technologies at your service</h3>
 				    <div class="col s12 m4">
 				      <div class="icon-block">
-				      	<h3 class="center"><i class="mdi-action-dns {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				      	<h3 class="center"><i class="mdi-action-dns brand-color-text" style="font-size:45px;"></i></h3>
 				        <h5 class="center">Back-end</h5>
 
 				        <p class="light">Because beauty isn't only at front-end, this M Boilerplate includes beautiful technologies at its back-end. Among the most interesting you'll find:</p>
@@ -248,7 +304,7 @@
 
 				    <div class="col s12 m4">
 				      <div class="icon-block">
-				      	<h3 class="center"><i class="mdi-av-web {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				      	<h3 class="center"><i class="mdi-av-web brand-color-text" style="font-size:45px;"></i></h3>
 				        <h5 class="center">Front-end</h5>
 						 <p class="light">With M Boilerplate everything will be shinny because it has been brought from the future, where the internet is pretty and organized. In this future you'll find:</p>
 				        <ul>
@@ -265,7 +321,7 @@
 
 				    <div class="col s12 m4">
 				      <div class="icon-block">
-				      	<h3 class="center"><i class="mdi-action-extension {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				      	<h3 class="center"><i class="mdi-action-extension brand-color-text" style="font-size:45px;"></i></h3>
 				        <h5 class="center">Integrations</h5>
 						<p class="light">As if it wasn't enough, M Boilerplate has been prepared for you to easily integrate popular technologies. Among the most interesting you'll find:</p>
 				        <ul>
@@ -286,7 +342,7 @@
 				  <div class="container">
 				    <br><br>
 				    <div class="row center">
-				      <h5 class="header col s12 white-text light" style="line-height: 2;">You heard the goat, right? But what a about a seal ? <span id="speak-two" class="{{brand_color}}-text text-lighten-2" style="cursor:pointer;">No way !</span></h5>
+				      <h5 class="header col s12 white-text light" style="line-height: 2;">You heard the goat, right? But what a about a seal ? <span id="speak-two" class="brand-color-text text-lighten-2" style="cursor:pointer;">No way !</span></h5>
 				    </div>
 				  </div>
 				</div>
@@ -297,7 +353,7 @@
 
 				  <div class="row">
 				    <div class="col s12 center">
-				      <h3><i class="mdi-av-queue {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				      <h3><i class="mdi-av-queue brand-color-text" style="font-size:45px;"></i></h3>
 				      <h4>Wait, there's even more !</h4>
 
 					  <ul class="collection" style="margin-top:35px;">
@@ -338,8 +394,8 @@
 		{% endblock %}
 
 		{% block modals_content %}
-			<div id="modal1" class="modal white {{brand_color}}-text center" style="display: none; opacity: 1; top: 0px;">
-		      <i class="mdi-navigation-close {{brand_color}}-text right modal-action modal-close" style="padding: 10px;"></i>
+			<div id="modal1" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
 		      <div class="modal-content">
 	        	<form id="form_login_user" action="/login/" method="post">
 		            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
@@ -350,14 +406,14 @@
 			        </div>
 			        <div class="row margin">
 			          <div class="input-field col s12">
-			            <i class="mdi-social-person-outline prefix"></i>
+			            <i class="mdi-social-person-outline prefix brand-color-text"></i>
 			            <input id="login_email" name="email" type="email" class="validate">
 			            <label for="email" class="center-align">Email</label>
 			          </div>
 			        </div>
 			        <div class="row margin">
 			          <div class="input-field col s12">
-			            <i class="mdi-action-lock-outline prefix"></i>
+			            <i class="mdi-action-lock-outline prefix brand-color-text"></i>
 			            <input id="login_password" name="password" type="password">
 			            <label for="password">Password</label>
 			          </div>
@@ -381,8 +437,8 @@
 			      </form>
 		      </div>
 		    </div>
-		    <div id="modal2" class="modal white {{brand_color}}-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
-		      <i class="mdi-navigation-close {{brand_color}}-text right modal-action modal-close" style="padding: 10px;"></i>
+		    <div id="modal2" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
 		      <div class="modal-content">
 	        	<form id="form_register_user" action="/register/" method="post">
 		            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
@@ -393,21 +449,21 @@
 			        </div>
 			        <div class="row margin">
 			          <div class="input-field col s12">
-			            <i class="mdi-social-person-outline prefix"></i>
+			            <i class="mdi-social-person-outline prefix brand-color-text"></i>
 			            <input id="register_name" name="name" type="text">
 			            <label for="name" class="center-align">Name</label>
 			          </div>
 			        </div>
 			        <div class="row margin">
 			          <div class="input-field col s12">
-			            <i class="mdi-communication-email prefix"></i>
+			            <i class="mdi-communication-email prefix brand-color-text"></i>
 			            <input id="register_email" name="email" type="email" class="validate">
 			            <label for="email" class="center-align">Email</label>
 			          </div>
 			        </div>
 			        <div class="row margin">
 			          <div class="input-field col s12">
-			            <i class="mdi-action-lock-outline prefix"></i>
+			            <i class="mdi-action-lock-outline prefix brand-color-text"></i>
 			            <input id="register_password" name="password" type="password">
 			            <label for="password">Password</label>
 			          </div>
@@ -448,20 +504,20 @@
 
 				  <div class="row">
 				    <div class="col s12 center">
-				      <h3><i class="mdi-file-file-download {{brand_color}}-text" style="font-size:45px;"></i></h3>
+				      <h3><i class="mdi-file-file-download brand-color-text" style="font-size:45px;"></i></h3>
 				      <h4>The source is the source, of course, of course...</h4>
 				      <p class="center light">After all charm, it wouldn't be love if you couldn't own it. So go for it ! Also if you want to see a step-by-step follow through from Google Cloud SDK installation to having your own version of what you're seeing here, don't hesitate and <a href="#modal2" class="modal-trigger">register</a> to find it out. Additionally, if you want some help just reach me out and I can do it for you but charges apply for laziness.</p>
 				      <div class="col s12 center">
-	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}?t=bug" class="waves-effect waves-light {{brand_color}} white-text btn-large "><i class="mdi-action-bug-report left"></i>Report a bug</a>
-	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}?t=dl" class="waves-effect waves-light {{brand_color}} white-text btn-large "><i class="mdi-file-file-download left"></i>Download</a>
-	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light {{brand_color}} white-text btn-large "><i class="mdi-communication-comment left"></i>Reach me out!</a>
+	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}?t=bug" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-action-bug-report left"></i>Report a bug</a>
+	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}?t=dl" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-file-file-download left"></i>Download</a>
+	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-communication-comment left"></i>Reach me out!</a>
 	                  </div>
 				    </div>
 				  </div>
 				</div>
 			</div>
 			<!-- START FOOTER -->
-			<footer class="page-footer {{brand_color}} darken-1">
+			<footer class="page-footer brand-color darken-1">
 				<a href="#"><i class="mdi-navigation-expand-less white-text right" style="padding: 10px;"></i></a>
 				<div class="container">
 				  <div class="row">

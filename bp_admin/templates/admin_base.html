@@ -161,7 +161,6 @@
                                         </div>
                                     </li>
                                     <li {% if path == uri_for('admin') %}class="active"{% endif %}><a href="{{ uri_for('admin') }}">{% trans %}Overview{% endtrans %}</a></li>
-                                    <li {% if path == uri_for('admin-users-geochart') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-geochart') }}">{% trans %}Geofence{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-users-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-list') }}">{% trans %}Users list{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-logs-emails') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-emails') }}">{% trans %}Emails sent{% endtrans %}</a></li>
                                     <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">{% trans %}Visits log{% endtrans %}</a></li>

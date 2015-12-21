@@ -53,6 +53,62 @@
   					  -webkit-transform: scale(0.8);
   					  transform: scale(0.8);
 				}
+
+				/* BRANDING */
+				.brand-color{
+					background-color: {{brand_color}}!important;
+				}
+				.brand-color-text{
+					color:{{brand_color}}!important;
+				}
+				.brand-secondary-color{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.brand-secondary-color-text{
+					color:{{brand_secondary_color}}!important;
+				}
+				.brand-tertiary-color{
+					background-color: {{brand_tertiary_color}}!important;
+				}
+				.brand-tertiary-color-text{
+					color:{{brand_tertiary_color}}!important;
+				}
+				.btn{
+					background-color: {{brand_color}};
+				}
+				.btn:hover{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.btn-large{
+					background-color: {{brand_color}};
+				}
+				.btn-large:hover{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.btn-floating{
+					background-color: {{brand_color}};
+				}
+				.btn-floating:hover{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				#loader {
+				  border-top-color: {{brand_color}}!important;
+				}
+				#loader:before {
+				  border-top-color: {{brand_secondary_color}}!important;
+				}
+				#loader:after {
+				  border-top-color: {{brand_tertiary_color}}!important;
+				}
+				#loader {
+				  border-top-color: #ffffff;
+				}
+				#loader:before {
+				  border-top-color: #044967;
+				}
+				#loader:after {
+				  border-top-color: #4FC3F7;
+				}
 	    	</style>
 		    {% block page_css %}{% endblock %}
 		    {% if user_id %}
@@ -100,8 +156,6 @@
 		                    <h1 class="logo-wrapper"><a href="{{ uri_for("landing") }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-light-blue.png" alt="materialize logo" style="height: 45px;margin-top: 3px"></a></h1>
 		                    <ul class="right hide-on-med-and-down">
 		                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan" style="color: #03A9F4;"></i></a>
-		                        </li>
-		                        <li><a href="#" id="chat_alias" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat" style="color: #03A9F4;"></i></a>
 		                        </li>
 		                    </ul>
 		                </div>
@@ -165,24 +219,9 @@
 				                            </li>
 				                        </ul>
 				                    </li>
-				                    <li class="li-hover"><div class="divider"></div></li>
-
-				                    <li class="no-padding">
-				                        <ul class="collapsible collapsible-accordion">
-				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-maps-local-library"></i> </i> Getting started</a>
-				                                <div class="collapsible-body">
-				                                    <ul>
-				                                        <li><a href="{{ uri_for("materialize-tutorials") }}">Tutorials</a></li>  
-				                                        <li><a href="{{ uri_for("contact") }}">Contact</a></li>  
-				                                        <li><a href="{{ uri_for("faq") }}">FAQ</a></li>
-				                                        <li><a href="{{ uri_for("tou") }}">Terms</a></li> 
-				                                        <li><a href="{{ uri_for("privacy") }}">Privacy</a></li>  
-				                                        <li><a href="{{ uri_for("license") }}">License</a></li>  
-				                                    </ul>
-				                                </div>
-				                            </li>
-				                        </ul>
+				                    <li class="bold"><a href="{{ uri_for("materialize-tutorials") }}" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Getting started</a>
 				                    </li>
+				                    <li class="li-hover"><div class="divider"></div></li>
 				                    <li class="bold"><a href="{{ uri_for("landing") }}" class="waves-effect waves-cyan"><i class="mdi-navigation-arrow-back"></i> Back to landing</a>
 				                    </li>
 				                </ul>
@@ -204,7 +243,7 @@
 						                 <i onclick="$('#disclaimer').hide();" class="mdi-navigation-close right white-text "></i>    
 						            </div>
 						        {% else %} 					           
-				                    <div id="disclaimer" class="row disclaimer light-blue lighten-2"> 
+				                    <div id="disclaimer" class="row disclaimer brand-color lighten-2"> 
 				                         <span class="glyphicon-exclamation-sign glyphicon"></span>
 				                         <span>Hey what about uploading a profile picture? </span> 
 						                 <span onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')" style="text-decoration: underline; font-family: roboto-regular;">just click here</span>.  
@@ -260,9 +299,9 @@
 				                    <div id="right-search" class="row">
 				                        <form class="col s12">
 				                            <div class="input-field">
-				                                <i class="mdi-action-search prefix"></i>
-				                                <input id="icon_prefix" type="text" class="validate">
-				                                <label for="icon_prefix">Search</label>
+				                                <i class="mdi-action-search prefix brand-color-text"></i>
+				                                <input id="icon_prefix brand-color-text" type="text" class="validate">
+				                                <label for="icon_prefix brand-color-text">Search</label>
 				                            </div>
 				                        </form>
 				                    </div>
@@ -315,7 +354,7 @@
 				                            </div>
 				                        </li>
 				                        <li>
-				                            <div class="collapsible-header light-blue white-text active"><i class="mdi-editor-attach-money"></i>Sales Repoart</div>
+				                            <div class="collapsible-header brand-color white-text active"><i class="mdi-editor-attach-money"></i>Sales Repoart</div>
 				                            <div class="collapsible-body sales-repoart">
 				                                <div class="sales-repoart-list  chat-out-list row">
 				                                    <div class="col s8">Target Salse</div>

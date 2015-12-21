@@ -1558,10 +1558,19 @@ def disclaim(_self, **kwargs):
     _params['gender'] = user_info.gender if user_info.gender != None else ""
     _params['birth'] = user_info.birth.strftime("%Y-%m-%d") if user_info.birth != None else ""
     _params['has_picture'] = True if user_info.picture is not None else False
+    _params['has_address'] = True if user_info.address is not None else False
+    _params['address_from'] = False
+    if _params['has_address']:
+        if user_info.address.address_from_coord is not None:
+            lat = str(user_info.address.address_from_coord.lat)
+            lng = str(user_info.address.address_from_coord.lon)
+            _params['address_from_coord'] = lat + "," + lng
+        _params['address_from'] = user_info.address.address_from
     if not _params['has_picture']:
         _params['disclaim'] = True
     _params['link_referral'] = user_info.link_referral
     _params['date'] = date.today().strftime("%Y-%m-%d")
+    
 
     return _params, user_info
 
@@ -1847,6 +1856,7 @@ class MaterializeReferralsRequestHandler(BaseHandler):
         """ returns simple html for a get request """
         params, user_info = disclaim(self)
         params['link_referral'] = user_info.link_referral
+        params['google_clientID'] = self.app.config.get('google_clientID')
         return self.render_template('materialize/users/sections/referrals.html', **params)
 
     def post(self):
@@ -1935,7 +1945,6 @@ class MaterializeReferralsRequestHandler(BaseHandler):
         f = forms.ReferralsForm(self)
         return f
 
-
 class MaterializePolymerRequestHandler(BaseHandler):
     """
     Handler for materialized polymer
@@ -1972,7 +1981,6 @@ class MaterializeCartoDBRequestHandler(BaseHandler):
         
         return self.render_template('materialize/users/sections/cartodb.html', **params)
 
-
 class MaterializeSettingsProfileRequestHandler(BaseHandler):
     """
         Handler for materialized settings profile
@@ -1981,6 +1989,10 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
     def get(self):
         """ returns simple html for a get request """
         params, user_info = disclaim(self)
+        if not params['address_from']:
+            params['address_from'] = ""
+        params['google_clientID'] = self.app.config.get('google_clientID')
+        params['facebook_appID'] = self.app.config.get('facebook_appID')
         return self.render_template('materialize/users/settings/profile.html', **params)
 
     def post(self):
@@ -1995,6 +2007,8 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
         gender = self.request.get('gender')
         phone = self.request.get('phone')
         birth = self.request.get('birth')
+        address_from = self.request.get('address_from')
+        address_from_coord = self.request.get('address_from_coord')
         picture = self.request.get('picture') if len(self.request.get('picture'))>1 else None
 
         try:
@@ -2011,6 +2025,11 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
                 user_info.phone = phone
                 if picture is not None:
                     user_info.picture = images.resize(picture, width=180, height=180, crop_to_fit=True, quality=100)
+                if address_from is not None:
+                    user_info.address = models.Address()
+                    user_info.address.address_from = address_from
+                    if len(address_from_coord.split(',')) == 2:
+                        user_info.address.address_from_coord = ndb.GeoPt(address_from_coord)
                 user_info.put()
                 message += " " + _(messages.saving_success)
                 self.add_message(message, 'success')
@@ -2031,178 +2050,6 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
     @webapp2.cached_property
     def form(self):
         f = forms.SettingsProfileForm(self)
-        return f
-
-class MaterializeSettingsAddressRequestHandler(BaseHandler):
-    """
-        Handler for materialized settings home
-    """
-    @user_required
-    def get(self):
-        """ returns simple html for a get request """
-        params, user_info = disclaim(self)
-        params['zipcode'] = ''
-        params['neighborhood'] = False
-        params['latlng'] = 'null'
-            
-        return self.render_template('materialize/users/settings/address.html', **params)
-
-    def post(self):
-        """ Get fields from POST dict """
-
-        if not self.form.validate():
-            message = _(messages.saving_error)
-            message += "Tip: Asegura que el marcador en el mapa se encuentre en tu zona."
-            self.add_message(message, 'danger')
-            return self.get()
-        zipcode = int(self.form.zipcode.data)
-        ageb = self.form.ageb.data
-        latlng = self.form.latlng.data
-        neighborhood = self.form.neighborhood.data
-        municipality = self.form.municipality.data
-        state = self.form.state.data
-        region = self.form.region.data
-
-        try:
-            user_info = self.user_model.get_by_id(long(self.user_id))
-            try:
-                
-                user_info.address.zipcode = int(zipcode)
-                user_info.address.ageb = ageb
-                user_info.address.neighborhood = neighborhood
-                user_info.address.municipality = municipality
-                user_info.address.state = state
-                user_info.address.region = region
-                user_info.address.latlng = ndb.GeoPt(latlng)
-                user_info.put()
-
-                message = ''                
-                message += " " + _(messages.saving_success)
-                self.add_message(message, 'success')
-                return self.get()
-
-            except (AttributeError, KeyError, ValueError), e:
-                logging.error('Error updating address: ' + e)
-                message = _(messages.saving_error)
-                self.add_message(message, 'danger')
-                return self.get()
-
-        except (AttributeError, TypeError), e:
-            login_error_message = _(messages.expired_session)
-            self.add_message(login_error_message, 'danger')
-            self.redirect_to('login')
-
-    @webapp2.cached_property
-    def form(self):
-        f = forms.AddressForm(self)
-        return f
-
-class MaterializeSettingsReferralsRequestHandler(BaseHandler):
-    """
-        Handler for materialized settings referrals
-    """
-    @user_required
-    def get(self):
-        """ returns simple html for a get request """
-        params, user_info = disclaim(self)
-        params['referrals'] = []
-        rewards = user_info.rewards
-        rewards.reverse
-        unique_emails = []
-        page = 1
-        if self.request.get('p') != '':
-            page = 1 + int(self.request.get('p'))
-        offset = (page - 1)*51
-        last = page*51
-        if last > len(rewards):
-            last = len(rewards)
-        for i in range(offset, last):
-            if 'invite' in rewards[i].category and rewards[i].content != '' and 'Invitado Invictus' not in rewards[i].content and rewards[i].content not in unique_emails:
-                params['referrals'].append(rewards[i])
-                unique_emails.append(rewards[i].content)
-                if rewards[i].status == 'invited':
-                    aUser = self.user_model.get_by_email(rewards[i].content)
-                    if aUser is not None:
-                        params['referrals'][params['referrals'].index(rewards[i])].status = 'inelegible'
-
-        params['page'] = page
-        params['last_page'] = int(len(rewards)/50)
-        params['total'] = len(params['referrals'])
-        params['grand_total'] = int(len(rewards))
-        params['properties'] = ['timestamp','content','status']
-
-        return self.render_template('materialize/users/settings/referrals.html', **params)
-
-    def post(self):
-        """ Get fields from POST dict """
-        user_info = self.user_model.get_by_id(long(self.user_id))
-        message = ''
-
-        if not self.form.validate():
-            message += messages.saving_error
-            self.add_message(message, 'error')
-            return self.get()
-
-        _emails = self.form.emails.data.replace('"','').replace('[','').replace(']','')
-        logging.info("Referrals' email addresses: %s" % _emails)
-
-        try:
-            # send email
-            subject = _(messages.email_referral_subject)
-            if user_info.name != '':
-                _username = user_info.name
-            else:
-                _username = user_info.username
-             # load email's template
-            template_val = {
-                "app_name": self.app.config.get('app_name'),
-                "user_email": user_info.email,
-                "user_name": _username,
-                "link_referral" : user_info.link_referral,
-                "support_url": self.uri_for("contact", _full=True),
-                "twitter_url": self.app.config.get('twitter_url'),
-                "facebook_url": self.app.config.get('facebook_url'),
-                "faq_url": self.uri_for("faq", _full=True)
-            }
-            body_path = "emails/referrals.txt"
-            body = self.jinja2.render_template(body_path, **template_val)
-
-            email_url = self.uri_for('taskqueue-send-email')
-            _email = _emails.split(",")
-
-            for _email_ in _email:
-                taskqueue.add(url=email_url, params={
-                    'to': str(_email_),
-                    'subject': subject,
-                    'body': body,
-                })
-                reward = models.Rewards(amount = 0,earned = True, category = 'invite',content = _email_,
-                                        timestamp = utils.get_date_time(),status = 'invited')    
-                
-                edited_userinfo = False
-                for rewards in user_info.rewards:
-                    if 'invite' in rewards.category and rewards.content == reward.content:
-                        user_info.rewards[user_info.rewards.index(rewards)] = reward
-                        edited_userinfo = True
-                if not edited_userinfo:
-                    user_info.rewards.append(reward)
-
-                user_info.put()
-
-            message += " " + _(messages.invite_success)
-            self.add_message(message, 'success')
-            return self.get()
-           
-        except (KeyError, AttributeError), e:
-            logging.error("Error resending invitation email: %s" % e)
-            message = _(messages.post_error)
-            self.add_message(message, 'danger')
-            return self.redirect_to('home')
-
-          
-    @webapp2.cached_property
-    def form(self):
-        f = forms.ReferralsForm(self)
         return f
 
 class MaterializeSettingsAccountRequestHandler(BaseHandler):
@@ -2317,6 +2164,114 @@ class MaterializeSettingsEmailRequestHandler(BaseHandler):
     @webapp2.cached_property
     def form(self):
         return forms.EditEmailForm(self)
+
+class MaterializeSettingsReferralsRequestHandler(BaseHandler):
+    """
+        Handler for materialized settings referrals
+    """
+    @user_required
+    def get(self):
+        """ returns simple html for a get request """
+        params, user_info = disclaim(self)
+        params['referrals'] = []
+        rewards = user_info.rewards
+        rewards.reverse
+        unique_emails = []
+        page = 1
+        if self.request.get('p') != '':
+            page = 1 + int(self.request.get('p'))
+        offset = (page - 1)*51
+        last = page*51
+        if last > len(rewards):
+            last = len(rewards)
+        for i in range(offset, last):
+            if 'invite' in rewards[i].category and rewards[i].content != '' and 'Invitado Invictus' not in rewards[i].content and rewards[i].content not in unique_emails:
+                params['referrals'].append(rewards[i])
+                unique_emails.append(rewards[i].content)
+                if rewards[i].status == 'invited':
+                    aUser = self.user_model.get_by_email(rewards[i].content)
+                    if aUser is not None:
+                        params['referrals'][params['referrals'].index(rewards[i])].status = 'inelegible'
+
+        params['page'] = page
+        params['last_page'] = int(len(rewards)/50)
+        params['total'] = len(params['referrals'])
+        params['grand_total'] = int(len(rewards))
+        params['properties'] = ['timestamp','content','status']
+
+        return self.render_template('materialize/users/settings/referrals.html', **params)
+
+    def post(self):
+        """ Get fields from POST dict """
+        user_info = self.user_model.get_by_id(long(self.user_id))
+        message = ''
+
+        if not self.form.validate():
+            message += messages.saving_error
+            self.add_message(message, 'error')
+            return self.get()
+
+        _emails = self.form.emails.data.replace('"','').replace('[','').replace(']','')
+        logging.info("Referrals' email addresses: %s" % _emails)
+
+        try:
+            # send email
+            subject = _(messages.email_referral_subject)
+            if user_info.name != '':
+                _username = user_info.name
+            else:
+                _username = user_info.username
+             # load email's template
+            template_val = {
+                "app_name": self.app.config.get('app_name'),
+                "user_email": user_info.email,
+                "user_name": _username,
+                "link_referral" : user_info.link_referral,
+                "support_url": self.uri_for("contact", _full=True),
+                "twitter_url": self.app.config.get('twitter_url'),
+                "facebook_url": self.app.config.get('facebook_url'),
+                "faq_url": self.uri_for("faq", _full=True)
+            }
+            body_path = "emails/referrals.txt"
+            body = self.jinja2.render_template(body_path, **template_val)
+
+            email_url = self.uri_for('taskqueue-send-email')
+            _email = _emails.split(",")
+
+            for _email_ in _email:
+                taskqueue.add(url=email_url, params={
+                    'to': str(_email_),
+                    'subject': subject,
+                    'body': body,
+                })
+                reward = models.Rewards(amount = 0,earned = True, category = 'invite',content = _email_,
+                                        timestamp = utils.get_date_time(),status = 'invited')    
+                
+                edited_userinfo = False
+                for rewards in user_info.rewards:
+                    if 'invite' in rewards.category and rewards.content == reward.content:
+                        user_info.rewards[user_info.rewards.index(rewards)] = reward
+                        edited_userinfo = True
+                if not edited_userinfo:
+                    user_info.rewards.append(reward)
+
+                user_info.put()
+
+            message += " " + _(messages.invite_success)
+            self.add_message(message, 'success')
+            return self.get()
+           
+        except (KeyError, AttributeError), e:
+            logging.error("Error resending invitation email: %s" % e)
+            message = _(messages.post_error)
+            self.add_message(message, 'danger')
+            return self.redirect_to('home')
+
+          
+    @webapp2.cached_property
+    def form(self):
+        f = forms.ReferralsForm(self)
+        return f
 
 class MaterializeEmailChangedCompleteHandler(BaseHandler):
     """

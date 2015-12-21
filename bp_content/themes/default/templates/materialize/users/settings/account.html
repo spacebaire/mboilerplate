@@ -44,9 +44,8 @@
             <h5 class="breadcrumbs-title">Profile</h5>
           </div>
         </div>
-        <paper-tabs id="scrollableTabs" selected="3" scrollable style="margin-left: -20px;background-color: #03A9F4;width: 110%;   margin-top: 5px;">
+        <paper-tabs id="scrollableTabs" selected="2" scrollable style="margin-left: -20px;background-color: #03A9F4;width: 110%;   margin-top: 5px;">
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-address") }}', '_top')">Address</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-account") }}', '_top')">Account</paper-tab>
       </paper-tabs>
@@ -61,27 +60,27 @@
 			<div class="row">
 				<ul class="collapsible collapsible-accordion col s12" data-collapsible="accordion">
 					<li class="">
-						<div class="collapsible-header light-blue-text text-darken-4" style="border-bottom: none"><i class="mdi-action-lock"></i> Change password</div>
+						<div class="collapsible-header brand-color-text text-darken-4" style="border-bottom: none"><i class="mdi-action-lock"></i> Change password</div>
 						<div class="collapsible-body" style="display: none;">
 								<form id="form_edit_password" action="/user/settings/password/" method="post" class="col s12">
 						          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 						          <div class="row">
 						            <div class="input-field col s12">
-						              <i class="mdi-action-lock-outline prefix light-blue-text text-darken-3"></i>
+						              <i class="mdi-action-lock-outline prefix brand-color-text brand-color-text text-darken-3"></i>
 						              <input id="current_password" name="current_password" type="password">
 						              <label for="current_password">Current password</label>
 						            </div>
 						          </div>
 						          <div class="row">
 						            <div class="input-field col s12">
-						              <i class="mdi-action-lock-outline prefix light-blue-text"></i>
+						              <i class="mdi-action-lock-outline prefix brand-color-text brand-color-text"></i>
 						              <input id="password" name="password" type="password">
 						              <label for="password">New password</label>
 						            </div>
 						          </div>
 						          <div class="row">
 						            <div class="input-field col s12">
-						              <i class="mdi-action-lock-outline prefix light-blue-text"></i>
+						              <i class="mdi-action-lock-outline prefix brand-color-text brand-color-text"></i>
 						              <input id="c_password" name="c_password" type="password">
 						              <label for="c_password">Confirm new password</label>
 						            </div>
@@ -89,7 +88,7 @@
 						          <div class="row">
 						            <div class="row">
 						              <div class="input-field col s12">
-						                <button class="waves-effect waves-light light-blue white-text btn right" type="submit" name="action">Update changes
+						                <button class="waves-effect waves-light brand-color white-text btn right" type="submit" name="action">Update changes
 						                  <i class="mdi-content-send right"></i>
 						                </button>
 						              </div>
@@ -99,12 +98,12 @@
 						</div>
 					</li>
 					<li class="">
-						<div class="collapsible-header light-blue-text text-darken-4" style="border-bottom: none"><i class="mdi-communication-email"></i> Change email</div>
+						<div class="collapsible-header brand-color-text text-darken-4" style="border-bottom: none"><i class="mdi-communication-email"></i> Change email</div>
 						<div class="collapsible-body" style="display: none;">
 							<div class="col s12 center" style="margin-top:8px;">
 						        <div class="row" style="margin-left:0px;">
 						            <div class="input-field col s12">
-						              <i class="mdi-communication-email prefix light-blue-text text-darken-3"></i>
+						              <i class="mdi-communication-email prefix brand-color-text brand-color-text text-darken-3"></i>
 						              <input id="current_email" type="email" value="{{email}}" disabled>
 						              <label for="current_email">Current email</label>
 						            </div>
@@ -113,21 +112,21 @@
 						          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 						          <div class="row">
 						            <div class="input-field col s12">
-						              <i class="mdi-communication-email prefix light-blue-text"></i>
+						              <i class="mdi-communication-email prefix brand-color-text brand-color-text"></i>
 						              <input id="new_email" name="new_email" type="email" class="validate">
 						              <label for="new_email">New email</label>
 						            </div>
 						          </div>
 						          <div class="row">
 						            <div class="input-field col s12">
-						              <i class="mdi-action-lock-outline prefix light-blue-text"></i>
+						              <i class="mdi-action-lock-outline prefix brand-color-text brand-color-text"></i>
 						              <input id="password" name="password" type="password" class="required">
 						              <label for="password">Type your password</label>
 						            </div>
 						          </div>
 						          <div class="row" style="margin-bottom:20px;">
 						              <div class="input-field col s12">
-						                <button class="waves-effect waves-light light-blue white-text btn right" type="submit" name="action">Update changes
+						                <button class="waves-effect waves-light brand-color white-text btn right" type="submit" name="action">Update changes
 						                  <i class="mdi-content-send right"></i>
 						                </button>
 						              </div>
@@ -148,7 +147,7 @@
 						          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 						          <div class="row">
 						            <div class="input-field col s12">
-						              <i class="mdi-action-lock-outline  prefix" style="color:red"></i>
+						              <i class="mdi-action-lock-outline  prefix brand-color-text" style="color:red"></i>
 						              <input id="password" name="password" type="password">
 						              <label for="password">Type your password</label>
 						            </div>

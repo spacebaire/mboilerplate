@@ -81,9 +81,8 @@
             <h5 class="breadcrumbs-title">Referrals</h5>
           </div>
         </div>
-        <paper-tabs id="scrollableTabs" selected="2" scrollable style="margin-left: -20px;background-color: #03A9F4;width: 110%;   margin-top: 5px;">
+        <paper-tabs id="scrollableTabs" selected="1" scrollable style="margin-left: -20px;background-color: #03A9F4;width: 110%;   margin-top: 5px;">
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')">Profile</paper-tab>
-          <paper-tab onclick="window.open('{{ uri_for("materialize-settings-address") }}', '_top')">Address</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-referrals") }}', '_top')">Referrals</paper-tab>
           <paper-tab onclick="window.open('{{ uri_for("materialize-settings-account") }}', '_top')">Account</paper-tab>
       </paper-tabs>
@@ -99,24 +98,24 @@
       <div class="col s12">
           {% if total > 0 %}
               <div class="row" style="position:relative;">
-                <p class="col s11 offset-s1 flow-text" style="margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46); position: absolute; top: -15px; z-index:2;">Haz invitado a 
-                  {% if last_page > 1 %} más de {{ grand_total }} contactos ! 
+                <p class="col s11 offset-s1 flow-text" style="margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46); position: absolute; top: -15px; z-index:2;">You've invited
+                  {% if last_page > 1 %} more than {{ grand_total }} contacts ! 
                     (
                       {% if page > 1 %} 
                         <core-icon icon="chevron-left" style="background:transparent; fill:#ff6623; cursor:pointer;" onclick="changePage('prev')"></core-icon>
                       {% endif %} 
-                    Grupo {{page}} de {{last_page}} <core-icon icon="chevron-right" style="background:transparent; fill:#ff6623; cursor:pointer;" onclick="changePage('next')"></core-icon>) 
+                    Group {{page}} of {{last_page}} <core-icon icon="chevron-right" style="background:transparent; fill:#ff6623; cursor:pointer;" onclick="changePage('next')"></core-icon>) 
                   {% else %} 
-                    {{total}} contactos. 
+                    {{total}} contacts. 
                   {% endif %}
                 </p>
                 <div class="col s10 offset-s1" id="table-datatables">
                     <table id="data-table-simple" class="responsive-table hoverable centered display">
                         <thead style="font-family:roboto; color:#777777;">
                           <tr>
-                              <th >Hace</th>
-                              <th >Contacto</th>
-                              <th >Estado</th>
+                              <th >Since</th>
+                              <th >Contact</th>
+                              <th >Status</th>
                           </tr>
                         </thead>
                         <tbody style="font-family:roboto-light;">
@@ -125,11 +124,11 @@
                                 {% for attr in properties %}
                                     <td class="property-{{attr}}">
                                         {% if getattr(referral, attr)|e == 'invited' %}
-                                            Volver a invitar: <paper-checkbox class="custom-checkbox" id="check-{{ getattr(referral, 'content')|e }}" onchange="addEmail(this)"></paper-checkbox>
+                                            Invite again: <paper-checkbox class="custom-checkbox" id="check-{{ getattr(referral, 'content')|e }}" onchange="addEmail(this)"></paper-checkbox>
                                         {% elif getattr(referral, attr)|e == 'joined' %}
-                                            <span style="color:#43CC20">¡Se unió!</span>
+                                            <span style="color:#43CC20">Joined!</span>
                                         {% elif getattr(referral, attr)|e == 'inelegible' %}
-                                            <span style="color:#00A0D7">Ya tenía cuenta</span>
+                                            <span style="color:#00A0D7">He had an account</span>
                                         {% else %}
                                             {{ getattr(referral, attr)|e }}
                                         {% endif %}
@@ -139,10 +138,10 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <button onclick="sendForm('form_referrals')" class="waves-effect waves-light light-blue white-text btn right" style="margin-top:20px" id="connect-btn" name="action">Invitar de nuevo
+                    <button onclick="sendForm('form_referrals')" class="waves-effect waves-light brand-color white-text btn right" style="margin-top:20px" id="connect-btn" name="action">Invite again
                       <i class="mdi-content-send right"></i>
                     </button>
-                    <p class="left" style="margin-top: 20px;">¿No ves algún invitado? <a href="/materialize/referrals/">Clic aquí para invitarlo.</a></p>  
+                    <p class="left" style="margin-top: 20px;">Not seeing an invitee? <a href="/materialize/referrals/">Click to invite.</a></p>  
                 </div>             
               </div>
               <form id="form_referrals" action="{{ url|safe }}" method="post" style="display:none;">
@@ -153,8 +152,8 @@
               </form>
               {% else %}
               <div class="row">
-                <p class="col s12 flow-text" style="margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46);">Haz invitado a {{total}} contactos.</p>
-                <button onclick="window.open('{{ uri_for("materialize-referrals") }}', '_top')" class="waves-effect waves-light light-blue white-text btn center" style="margin-left: 12px;" id="connect-btn" name="action">Invitar ahora
+                <p class="col s12 flow-text" style="margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46);">You've invited {{total}} contacts.</p>
+                <button onclick="window.open('{{ uri_for("materialize-referrals") }}', '_top')" class="waves-effect waves-light brand-color white-text btn center" style="margin-left: 12px;" id="connect-btn" name="action">Invite now
                       <i class="mdi-content-send right"></i>
                 </button>    
               </div>
@@ -177,7 +176,7 @@
 
 <!-- ADD PAGE SCRIPT ELEMENTS-->
 {% block page_scripts %}
-  <script src="/{{ theme }}/js/lib/moment-with-locales.min.js"></script>
+  <script src="/{{ theme }}/materialize/js/plugins/moment/moment-with-locales.min.js"></script>
   <script src="/{{ theme }}/materialize/js/plugins/data-tables/js/jquery.dataTables.min.js"></script>
   <script>
       moment.locale('es');
@@ -197,7 +196,7 @@
           if (document.getElementById('emails').value != '[]'){
               document.getElementById(formID).submit();
           }else
-            Materialize.toast('<span class="toast-warning">Por favor selecciona al menos 1 contacto.</span>', 4500);
+            Materialize.toast('<span class="toast-warning">Please select at least 1 contact.</span>', 4500);
               
       }
 
@@ -208,7 +207,7 @@
               paging: false,
               "language": {
                 "search": "Buscar:",
-                "zeroRecords": "Registro ninja encontrado"
+                "zeroRecords": "Ninja record found."
               }
           } );
 

@@ -65,10 +65,10 @@
       <div class="container">
         <div class="row">
           <div class="col s12 m12 l12">
-            <h5 class="breadcrumbs-title">Invitados</h5>
+            <h5 class="breadcrumbs-title">Invites</h5>
             <ol class="breadcrumb">
-                <li><a href="{{ uri_for("materialize-home") }}">Inicio</a></li>
-                <li class="active">Invitados <span style="font-size: 14px;">(<a href="{{ uri_for("materialize-settings-referrals") }}">rastrear invitaciones</a>)</span></li>
+                <li><a href="{{ uri_for("materialize-home") }}">Home</a></li>
+                <li class="active">Invites <span style="font-size: 14px;">(<a href="{{ uri_for("materialize-settings-referrals") }}">track invitations</a>)</span></li>
             </ol>
           </div>
         </div>
@@ -81,44 +81,45 @@
 	<div class="section">
 		<div class="container">
 			<div class="row center">
+				{% if google_clientID != '' %}
 				<div class="row">
 					<div class="col s12">
-		                <h5 class="grey-text left">Importa tus contactos.</h5>
+		                <h5 class="grey-text left">Import contacts.</h5>
 					</div>
 					<div class="col s12 m6 offset-m1  card">
-		                <p><google-signin  clientId="706872180157-47cmrgdsj2tm5epqb3ocj8haahnqpdii.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/contacts.readonly" labelSignin="Importar contactos de google" labelSignout="Desconectar"width="wide" height="tall" style="max-width:290px;"></google-signin> <a id="gselect2"class="waves-effect waves-light btn modal-trigger left" href="#modal1" style="display:none;max-width:166px;"></a></p>
-		                <button onclick="gselect2.click()" class="btn red waves-effect waves-light right" style="margin-top: 20px; margin-bottom:20px; display:none;" id="g-select" name="action">Seleccionar
+		                <p><google-signin  clientId="{{google_clientID}}" scopes="https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/plus.me" labelSignin="Import contacts" labelSignout="Desconectar"width="wide" height="tall" style="max-width:290px;"></google-signin> <a id="gselect2"class="waves-effect waves-light btn modal-trigger left" href="#modal1" style="display:none;max-width:166px;"></a></p>
+		                <button onclick="gselect2.click()" class="btn brand-color white-text waves-effect waves-light" style="margin-top: 20px; margin-bottom:20px;" id="g-select" name="action">Choose
 	                      <i class="mdi-content-send right"></i>
 	                </button> 
 					</div>
 				</div>
+				{% endif %}
 				<div class="row">
 					<div class="col s12">
-		                <h5 class="grey-text left">Escribe los correos.</h5>
+		                <h5 class="grey-text left">Write their emails.</h5>
 					</div>
 					<div class="col s12 m6 offset-m1  card">
 						<form id="form_referrals" action="{{ url|safe }}" method="post">
 		                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 		                    <div class="input-field col s12">
 			                    <input id="emails" name="emails" type="text" value="">
-			                    <label for="emails">Escribe cada correo separado por un <strong>ENTER</strong>.</label>
+			                    <label for="emails">Separate them with an <strong>ENTER</strong>.</label>
 			                </div>
 		                </form>
-		                <button onclick="sendForm('form_referrals')" class="waves-effect waves-light light-blue white-text btn center" style="margin-top: 20px; margin-bottom:20px;" id="connect-btn" name="action">Invitar ahora
+		                <button onclick="sendForm('form_referrals')" class="waves-effect waves-light brand-color white-text btn center" style="margin-top: 20px; margin-bottom:20px;" id="connect-btn" name="action">Invite now
 		                      <i class="mdi-content-send right"></i>
 		                </button> 
 					</div>
 				</div>
 				<div class="row">
 					<div class="col s12">
-		                <h5 class="grey-text left">Comparte tu link único.</h5>
+		                <h5 class="grey-text left">Share your referrals link.</h5>
 					</div>
 					<div class="col s12 m6 offset-m1  card">
 	                    <center>                           
 	                        <div class="row" >
 	                            <p style="transform: scale(0.85)!important;-webkit-transform: scale(0.85)!important;">
 	                                {{link_referral}}
-	                                <core-icon-button icon="content-copy" id="copy-button" data-clipboard-text="{{link_referral}}" data-clipboard-target="fe_text" title="Clic para copiar." style="margin-left: 10px;">Copiar</core-icon-button>
 	                            </p>
 	                        </div>
 	                        <div class="row">
@@ -142,7 +143,7 @@
 		                              var js, fjs = d.getElementsByTagName(s)[0];
 		                              if (d.getElementById(id)) return;
 		                              js = d.createElement(s); js.id = id;
-		                              js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&appId=417725118380572&version=v2.0";
+		                              js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=417725118380572&version=v2.0";
 		                              fjs.parentNode.insertBefore(js, fjs);
 		                            }(document, 'script', 'facebook-jssdk'));
 	                            </script>   
@@ -150,7 +151,7 @@
 	                            <div class="col s4" style="margin-bottom:20px; -webkit-transform: scale(1.15);transform: scale(1.15);margin-top: 3px;padding-top: 9px; border: 1px solid rgb(221, 75, 56); border-radius: 4px;width: 110px;background: rgb(221, 75, 56);margin-left: 38px;padding-bottom: 7px;">
 	                                <div class="g-plus" data-action="share" data-annotation="none" data-height="24" data-href="{{link_referral}}"></div>
 	                            </div>
-	                            <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'es-419'}</script>                         
+	                            <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'en-US'}</script>                         
 	                        </div>
 	                    </center> 
 					</div>
@@ -159,15 +160,16 @@
 		</div>
 	</div>
 	<div id="modal1" class="modal">
+	  <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
       <div class="modal-content" style="height:80%">
-        <h6 style="text-align:center; border-bottom:1px solid #ff6623; padding-bottom:18px;">Selecciona los contactos que deseas invitar.</h6>
+        <h6 style="text-align:center; padding-bottom:18px;">Choose the contacts you wish to invite.</h6>
 	    <input type="text" id="search" placeholder="  Buscar" style="background: white; border: 1px solid lightgray; font-size:14px;">                        
 	    <div id="google_contacts" style="height: 200px;overflow-y: scroll;margin-top: -8px;padding: 10px;border: 1px solid lightgray;background:white;"></div>
       </div>
       <div class="modal-footer center">
-       <h6 class="indicator-title" >Total seleccionados <core-icon icon="communication:email" style="fill:#ff6623; height:16px; margin-top:-5px"></core-icon>: <span id="indicator" class="indicator">0</span></h6> 
-      	<a id="gsend" href="#" class="waves-effect waves-orange btn-flat modal-action modal-close" onclick="sendForm('form_referrals')" style="display:none; font-size:16px; max-height: 40px!important; cursor:pointer;">Enviar invitaciones</a>
-		<button onclick="gsend.click()" class="btn waves-effect waves-light right" name="action" style="background-color: #ff6623;">Enviar
+       <h6 class="indicator-title" >Total <core-icon icon="communication:email" style="fill:#ff6623; height:16px; margin-top:-5px"></core-icon>: <span id="indicator" class="indicator">0</span></h6> 
+      	<a id="gsend" href="#" class="waves-effect waves-orange btn-flat modal-action modal-close" onclick="sendForm('form_referrals')" style="display:none; font-size:16px; max-height: 40px!important; cursor:pointer;">Send invites</a>
+		<button onclick="gsend.click()" class="btn waves-effect waves-light right brand-color white-text" name="action">Send
               <i class="mdi-content-send right"></i>
         </button>
       </div>
@@ -190,7 +192,7 @@
 <!-- ADD PAGE SCRIPT ELEMENTS-->
 {% block page_scripts %}
 	<script src="/{{theme}}/materialize/js/plugins/multiple-emails/multiple-emails.js"></script>
-	<script src="/{{theme}}/materialize/js/plugins/zero-clipboard/ZeroClipboard.js"></script>
+	{% if google_clientID != '' %}
 	<script type="text/javascript">
 		  var contact_count = 0;
 		  var first_time = true;
@@ -199,8 +201,8 @@
 		    if (first_time){
 		        url = "https://www.google.com/m8/feeds/contacts/default/full?access_token="+ e.detail.result.access_token + "&max-results=999999999&alt=json&orderby=lastmodified";
 		        $.get(url, 
-		            function( data ) {
-		                console.log(data);
+		            function(data) {
+		                console.log('contacts', data);
 		                html = '<table class="bordered" id="table"><thead><tr><th data-field="name"></th><th data-field="email"></th><th data-field=""></th></tr></thead><tbody>';
 		                for (entry in data.feed.entry) { 
 		                    if (data.feed.entry[entry].gd$email && data.feed.entry[entry].title && data.feed.entry[entry].content)
@@ -212,7 +214,7 @@
 		                }
 		                html += '</tbody></table>';
 		                document.getElementById("google_contacts").innerHTML = html;
-		                document.getElementById("g-select").style.display = "block";
+		                $("#g-select").show();
 
 		                var $rows = $('#table tr');
 		                 $('#search').keyup(function() {
@@ -224,7 +226,13 @@
 		                     }).hide();
 		                 });
 		            }
-		        );
+		        );					
+				url = 'https://content.googleapis.com/plus/v1/people/me?access_token='+e.detail.result.access_token;
+				$.get(url,
+					function(data){
+						console.log('user', data);
+					}
+				);
 		    }
 		    first_time = !first_time;
 		  });
@@ -243,23 +251,14 @@
 		  }
 
 	</script>
+	{% endif %}
 	<script>
-		var client = new ZeroClipboard( document.getElementById("copy-button") );
-
-	    client.on( "ready", function( readyEvent ) {
-	      // alert( "ZeroClipboard SWF is ready!" );
-
-	      client.on( "aftercopy", function( event ) {
-	        event.target.style.opacity = "0.3";
-	        // alert("Copied text to clipboard: " + event.data["text/plain"] );
-	      } );
-	    } );
 
 	    function sendForm(formID){
 	        if (document.getElementById('emails').value != '' && document.getElementById('emails').value != '[]'){
 	            document.getElementById(formID).submit();
 	        }else
-            	Materialize.toast('<span class="toast-warning">Por favor agrega al menos 1 email.</span>', 4500);
+            	Materialize.toast('<span class="toast-warning">Please choose at least 1 email.</span>', 4500);
 	            
 	    }
 
