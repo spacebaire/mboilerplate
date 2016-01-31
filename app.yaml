@@ -153,8 +153,8 @@ handlers:
   login: admin
 
 # Endpoints handler: this must be /_ah/spi for Endpoints, NOT /_ah/api!
-# - url: /_ah/spi/.*
-#   script: api.APPLICATION
+- url: /_ah/spi/.*
+  script: api.APPLICATION
 
 # Main
 - url: /.*
@@ -170,8 +170,8 @@ libraries:
   version: "0.15"
 - name: pycrypto
   version: "2.6"
-# - name: endpoints
-#   version: 1.0
+- name: endpoints
+  version: 1.0
 
 error_handlers:
   # Only errors with error_code, don't put a default error here

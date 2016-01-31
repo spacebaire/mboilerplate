@@ -6,7 +6,7 @@ import logging
 #endpoints related libraries
 import endpoints
 from google.appengine.ext import ndb
-from protorpc import messages as proto_messages
+from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 
@@ -18,18 +18,20 @@ from protorpc import remote
 # IOS_CLIENT_ID = 'replace this with your iOS client ID'
 # ANDROID_AUDIENCE = WEB_CLIENT_ID
 
+# Endpoints API is accessible at: <app_id>.appspot.com/_ah/api/explorer
+
 
 package = 'Hello'
 
 
-class Greeting(proto_messages.Message):
+class Greeting(messages.Message):
     """Greeting that stores a message."""
-    message = proto_messages.StringField(1)
+    message = messages.StringField(1)
 
 
-class GreetingCollection(proto_messages.Message):
+class GreetingCollection(messages.Message):
     """Collection of Greetings."""
-    items = proto_messages.MessageField(Greeting, 1, repeated=True)
+    items = messages.MessageField(Greeting, 1, repeated=True)
 
 
 STORED_GREETINGS = GreetingCollection(items=[
@@ -46,7 +48,7 @@ class HelloWorldApi(remote.Service):
 
     MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(
             Greeting,
-            times=proto_messages.IntegerField(2, variant=proto_messages.Variant.INT32,
+            times=messages.IntegerField(2, variant=messages.Variant.INT32,
                                         required=True))
 
     @endpoints.method(MULTIPLY_METHOD_RESOURCE, Greeting,
@@ -63,7 +65,7 @@ class HelloWorldApi(remote.Service):
 
     ID_RESOURCE = endpoints.ResourceContainer(
             message_types.VoidMessage,
-            id=proto_messages.IntegerField(1, variant=proto_messages.Variant.INT32))
+            id=messages.IntegerField(1, variant=messages.Variant.INT32))
 
     @endpoints.method(ID_RESOURCE, Greeting,
                       path='hellogreeting/{id}', http_method='GET',
@@ -78,18 +80,18 @@ class HelloWorldApi(remote.Service):
 
 
 
-class Users(proto_messages.Message):
+class Users(messages.Message):
     """Users that stores a message."""
-    identifier = proto_messages.StringField(1)
-    created_at = proto_messages.StringField(2)
-    last_login = proto_messages.StringField(3)
+    identifier = messages.StringField(1)
+    created_at = messages.StringField(2)
+    last_login = messages.StringField(3)
     
 
 
-class UsersCollection(proto_messages.Message):
+class UsersCollection(messages.Message):
     """Collection of Users."""
-    total_rows = proto_messages.IntegerField(1)
-    items = proto_messages.MessageField(Users, 2, repeated=True)
+    total_rows = messages.IntegerField(1)
+    items = messages.MessageField(Users, 2, repeated=True)
 
 
 def getUsers():
@@ -98,7 +100,7 @@ def getUsers():
   users_array = []
   for user in users:
     _identifier = str(user.key.id())
-    _created_at = str(user.created_at)
+    _created_at = str(user.created)
     _last_login= str(user.last_login)
 
     users_array.append(Users(identifier=_identifier, created_at=_created_at, last_login=_last_login))
