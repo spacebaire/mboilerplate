@@ -3,6 +3,20 @@
 
 {% block page_css %}
 	<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css">
+	<style>
+	.collapsible-header{
+		display: block;
+	    cursor: pointer;
+	    height: 3rem;
+	    line-height: 3rem;
+	    padding: 0 1rem;
+	    background-color: #fff;
+	    border-bottom: 1px solid #ddd;
+	}
+	.collapsible-header:after{
+		color:white;
+	}
+	</style>
 {% endblock %}
 
 
@@ -16,7 +30,7 @@
 	    	<div class="col s10 offset-s1">
 	    		<div class="row right">
 	    			<div class="col s7">
-        				<input type="text" name="Search" id="search-input" class="header-search-input z-depth-2" placeholder="Explore ...">
+        				<input type="text" name="Search" id="search-input" class="header-search-input z-depth-2" placeholder="Explore ..." style="    background: #9A9A9A; padding: 8px 8px 8px 8px;">
         			</div>
         			<div class="col s1 valign-wrapper" onclick="searchInput=document.getElementById('search-input').value; setQ();"><i class="mdi-action-search active btn"></i></div>
 	    		</div>

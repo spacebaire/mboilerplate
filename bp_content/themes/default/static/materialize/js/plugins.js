@@ -1,6 +1,6 @@
 /*================================================================================
   Item Name: Materialize - Material Design Admin Template
-  Version: 1.0
+  Version: 3.1
   Author: GeeksLabs
   Author URL: http://www.themeforest.net/user/geekslabs
 ================================================================================*/
@@ -17,10 +17,16 @@ $(function() {
       $('body').addClass('loaded');      
     }, 200);
   });  
+
   
-  $('.show-search').click(function() {
-    $('.search-out').fadeToggle( "50", "linear" );
-  });
+  // Search class for focus
+  $('.header-search-input').focus(
+  function(){
+      $(this).parent('div').addClass('header-search-wrapper-focus');
+  }).blur(
+  function(){
+      $(this).parent('div').removeClass('header-search-wrapper-focus');
+  });  
 
   // Check first if any of the task is checked
   $('#task-card input:checkbox').each(function() {
@@ -51,6 +57,12 @@ $(function() {
       }
   });
   
+  $('select').material_select();
+  // Set checkbox on forms.html to indeterminate
+  var indeterminateCheckbox = document.getElementById('indeterminate-checkbox');
+  if (indeterminateCheckbox !== null)
+    indeterminateCheckbox.indeterminate = true;
+      
   // Materialize Slider
   $('.slider').slider({
     full_width: true
@@ -61,11 +73,33 @@ $(function() {
     inDuration: 300,
     outDuration: 125,
     constrain_width: true, // Does not change width of dropdown to that of the activator
-    hover: true, // Activate on click
+    hover: false, // Activate on click
     alignment: 'left', // Aligns dropdown to left or right edge (works with constrain_width)
     gutter: 0, // Spacing from edge
     belowOrigin: true // Displays dropdown below the button
   });
+  // Translation Dropdown
+  $('.translation-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: false, // Does not change width of dropdown to that of the activator
+      hover: true, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+    }
+  );
+  // Notification Dropdown
+  $('.notification-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: false, // Does not change width of dropdown to that of the activator
+      hover: true, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+    }
+  );
 
   // Materialize Tabs
   $('.tab-demo').show().tabs();
@@ -73,7 +107,20 @@ $(function() {
 
   // Materialize Parallax
   $('.parallax').parallax();
-  $('.modal-trigger').leanModal();
+  // Materialize Modal
+  $('.modal-trigger').leanModal({
+      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+      opacity: .5, // Opacity of modal background
+      in_duration: 300, // Transition in duration
+      out_duration: 200, // Transition out duration
+      ready: function() { 
+      //alert('Ready'); 
+      }, // Callback for Modal open
+      complete: function() { 
+      //alert('Closed'); 
+      $('.lean-overlay').hide();
+      } // Callback for Modal close
+  });
 
   // Materialize scrollSpy
   $('.scrollspy').scrollSpy();
@@ -87,12 +134,32 @@ $(function() {
 
   //Main Left Sidebar Menu
   $('.sidebar-collapse').sideNav({
-    edge: 'left', // Choose the horizontal origin      
+    edge: 'left', // Choose the horizontal origin    
   });
+
+  // FULL SCREEN MENU (Layout 02)
+  $('.menu-sidebar-collapse').sideNav({
+        menuWidth: 240,
+        edge: 'left', // Choose the horizontal origin     
+        //closeOnClick:true, // Set if default menu open is true
+        menuOut:false // Set if default menu open is true
+        
+      });
+
+  // HORIZONTAL MENU (Layout 03)
+  $('.dropdown-menu').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: false, // Does not change width of dropdown to that of the activator
+      hover: true, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true // Displays dropdown below the button
+    });
+
   
   //Main Left Sidebar Chat
   $('.chat-collapse').sideNav({
-    menuWidth: 240,
+    menuWidth: 300,
     edge: 'right',
   });
   $('.chat-close-collapse').click(function() {
@@ -105,18 +172,9 @@ $(function() {
   // Pikadate datepicker
   $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
-    selectYears: 100, // Creates a dropdown of 15 years to control year
-    format: 'yyyy-mm-dd', // Creates adequate html5 default formatting
-    formatSubmit: 'yyyy-mm-dd' // Creates adequate html5 default formatting
-    // monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-    // monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-    // weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-    // weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-    // today: 'Hoy',
-    // clear: '',
-    // close: 'Cerrar'
+    selectYears: 15 // Creates a dropdown of 15 years to control year
   });
-
+  
   // Perfect Scrollbar
   $('select').not('.disabled').material_select();
     var leftnav = $(".page-topbar").height();  
@@ -127,8 +185,9 @@ $(function() {
     var righttnav = $("#chat-out").height();
   $('.rightside-navigation').height(righttnav).perfectScrollbar({
     suppressScrollX: true
-  });
-
+  }); 
+  
+  
   // Fullscreen
   function toggleFullScreen() {
     if ((document.fullScreenElement && document.fullScreenElement !== null) ||
@@ -186,6 +245,10 @@ $(function() {
     })
   });
   
+  //Alerts
+  $("#card-alert .close").click(function(){
+    $(this).closest('#card-alert').fadeOut('slow');
+  });
   
   //Toggle Containers on page
   var toggleContainersButton = $('#container-toggle-button');
@@ -218,23 +281,33 @@ $(function() {
     })
   }
 
-  // //LINE CHART WITH AREA IN SIDEBAR
-  //   new Chartist.Line('#ct2-chart', {
-  //       labels: [1, 2, 3, 4, 5, 6, 7, 8],
-  //       series: [
-  //           [5, 9, 7, 8, 5, 3, 5, 4]
-  //       ]
-  //   }, {
-  //       low: 0,
-  //       showArea: true
-  //   });
+  //LINE CHART WITH AREA IN SIDEBAR
+  if (typeof Chartist != "undefined") {
+    new Chartist.Line('#ct2-chart', {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8],
+        series: [
+            [5, 9, 7, 8, 5, 3, 5, 4]
+        ]
+    }, {
+        low: 0,
+        showArea: true
+    });
+  }
+  //Trending chart for small screen
+  if(window_width <= 480){    
+    $("#trending-line-chart").attr({
+      height: '200'
+    });
+  }
+  
+  /*
+  * Advanced UI 
+  */
+  
+  
+         
     
-  // //Trending chart for small screen
-  // if(window_width <= 480){    
-  //   $("#trending-line-chart").attr({
-  //     height: '200'
-  //   });
-  // }
+
 
 
 }); // end of document ready
