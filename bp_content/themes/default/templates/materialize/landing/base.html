@@ -29,6 +29,7 @@
 	  	{% block stylesheets %}
 	  		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	  		<link href="/{{theme}}/materialize/css/materialize.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">		    
+	  		<link href="/{{theme}}/materialize/css/plugins/perfect-scrollbar/perfect-scrollbar.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">		    
 		    <link href="/{{theme}}/materialize/css/style.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">
 		    <style type="text/css">
 	    		.toast-success{ color: #2EF97D!important; line-height: 18px; }
@@ -106,9 +107,6 @@
 				.materialboxed{
 					cursor: auto;
 				}
-	    	</style>
-		    {% block page_css %}
-			<style>
 				@font-face {
 				  font-family: 'Monoton';
 				  font-style: normal;
@@ -139,7 +137,8 @@
 				#counter_holder a:hover {
 				  color: white;
 				}
-			</style>
+	    	</style>
+		    {% block page_css %}
 		    {% endblock %}
 		{% endblock %}
 		
@@ -640,7 +639,7 @@
 		    <!--scrollbar-->
 		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 		    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
-		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins.js?v=10"></script>
+		    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins.js?v=11"></script>
 		  	<script src="/{{theme}}/materialize/js/plugins/jquery/jquery.color-2.1.0.js"></script>
 		  	<!-- Toast Notification -->
 		    {% if messages|safe %}		    	
@@ -696,9 +695,6 @@
 					    $('.button-collapse').sideNav({
 					      edge: 'right'
 					    });
-						$('.modal-trigger').leanModal();
-						$('.tooltipped').tooltip({delay: 50});
-					    $('.parallax').parallax();
 					    $("#speak").mouseenter(function(){
 							document.getElementById("goat").play();
 						});
