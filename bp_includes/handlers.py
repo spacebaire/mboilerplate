@@ -27,7 +27,7 @@ from google.appengine.runtime import apiproxy_errors
 import models, messages, forms
 from github import github
 from linkedin import linkedin
-from lib import utils, captcha, twitter, facebook, bitly, myhtmlparser
+from lib import utils, captcha, bitly
 from lib.cartodb import CartoDBAPIKey, CartoDBException
 from lib.basehandler import BaseHandler
 from lib.decorators import user_required, taskqueue_method

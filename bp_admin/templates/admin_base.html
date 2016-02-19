@@ -29,8 +29,8 @@
         <!-- All stylesheets   -->
         {% block stylesheets %}
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-            <link href="/{{theme}}/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">         
-            <link href="/{{theme}}/materialize/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+            <link href="/{{theme}}/materialize/css/materialize.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">         
+            <link href="/{{theme}}/materialize/css/style.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">
             <link href="/default/materialize/css/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
             <style type="text/css">
                 .toast-success{ color: #2EF97D!important; line-height: 18px; }
@@ -125,7 +125,7 @@
                 <div class="navbar-fixed">
                     <nav class="white">
                         <div class="nav-wrapper">
-                            <h1 class="logo-wrapper"><a href="{{ uri_for('admin') }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-gray.png" alt="materialize logo" style="height: 45px;margin-top: 3px"></a></h1>
+                            <h1 class="logo-wrapper"><a href="{{ uri_for('admin') }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-gray.png" alt="materialize logo" style="height: 45px;width: 45px;"></a></h1>
                             <ul class="right hide-on-med-and-down">
                                 <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen grey-text text-ligthen-1"><i class="mdi-action-settings-overscan"></i></a>
                                 </li>

@@ -472,7 +472,7 @@
 				      <h5 class="center"><a href="http://onesmart.city/" target="_blank" class="brand-color-text">onesmart.city</a></h5>
 				    </div>
 				  </div>
-				  <h5 class="center" id="counter_holder"><a>7 sites, <span id="counter"></span> users<br> currently being served !</a></h5>
+				  <h5 class="center" id="counter_holder"><a>7 sites,<br> <span id="counter"></span> users,<br> <span id="counter2"></span> geo-points<br> currently being served !</a></h5>
 				</div>
 			</div>
 		{% endblock %}
@@ -939,6 +939,11 @@
 					var mihogarinvictus_users = 0;
 					var gpegobmx_users = 0;
 
+					var dfcmexico_points = 0;
+					var usocialmaps_points = 0;
+					var gpegobmx_points = 0;
+
+
 					var options = {
 					  useEasing : true, 
 					  useGrouping : true, 
@@ -953,53 +958,114 @@
 		                type: 'GET',
 		                async: true,
 		                success: function(data) { 
+		                },
+		                error: function(data) { 
+		                	dfcmexico_users = 3;
 		                }
 		            }).done(function(data) {
-		                console.log(data);
-		                dfcmexico_users = data.users || 3;
-		                $.ajax({
-			                url: 'http://devcb.usocialmaps.appspot.com/mboilerplate/users/',
-			                type: 'GET',
-			                async: true,
-			                success: function(data) { 
-			                }
-			            }).done(function(data) {
-			                console.log(data);
-			                usocialmaps_users = data.users || 13;
-			                $.ajax({
-				                url: 'http://devcb.i-mfit.appspot.com/mboilerplate/users/',
-				                type: 'GET',
-				                async: true,
-				                success: function(data) { 
-				                }
-				            }).done(function(data) {
-				                console.log(data);
-				                mfit_users = data.users || 12;
-				                $.ajax({
-					                url: 'http://devcb.mihogarinvictus.appspot.com/mboilerplate/users/',
-					                type: 'GET',
-					                async: true,
-					                success: function(data) { 
-					                }
-					            }).done(function(data) {
-					                console.log(data);
-					                mihogarinvictus_users = data.users || 1749;
-					                $.ajax({
-						                url: 'http://devcb.gpegobmx.appspot.com/mboilerplate/users/',
-						                type: 'GET',
-						                async: true,
-						                success: function(data) { 
-						                }
-						            }).done(function(data) {
-						                console.log(data);
-						                gpegobmx_users = data.users || 1013;
-						                var total = dfcmexico_users + usocialmaps_users + mfit_users + mihogarinvictus_users + gpegobmx_users;
-										var demo = new CountUp("counter", 0, total, 0, 2.5, options);
-										demo.start();
-						            });
-					            });
-				            });
-			            });			            
+		                console.log('dfcmexico_users', data);
+		                dfcmexico_users = data.users;
+		                		            
+		            });
+
+		            $.ajax({
+		                url: 'http://devcb.usocialmaps.appspot.com/mboilerplate/users/',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                },
+		                error: function(data) { 
+		                	usocialmaps_users = 13;
+		                }
+		            }).done(function(data) {
+		                console.log('usocialmaps_users', data);
+		                usocialmaps_users = data.users;
+		                
+		            });	
+
+		            $.ajax({
+		                url: 'http://devcb.i-mfit.appspot.com/mboilerplate/users/',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                },
+		                error: function(data) { 
+		                	mfit_users = 12;
+		                }
+		            }).done(function(data) {
+		                console.log('mfit_users', data);
+		                mfit_users = data.users;		                
+		            });
+
+		            $.ajax({
+		                url: 'http://devcb.mihogarinvictus.appspot.com/mboilerplate/users/',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                },
+		                error: function(data) { 
+		                	mihogarinvictus_users = 1749;		                
+		                }
+		            }).done(function(data) {
+		                console.log('mihogarinvictus_users', data);
+		                mihogarinvictus_users = data.users;	
+		                if (data.exception.indexOf("more quota") != -1)	                
+		                	mihogarinvictus_users = 1749;		                
+		                console.log('mihogarinvictus_users', data);
+		            });
+
+		            $.ajax({
+		                url: 'http://devcb.gpegobmx.appspot.com/mboilerplate/users/',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                },
+		                error: function(data) { 
+		                	gpegobmx_users = 1247;
+		                }
+		            }).done(function(data) {
+		                console.log('gpegobmx_users', data);
+		                gpegobmx_users = data.users;
+		                var total = dfcmexico_users + usocialmaps_users + mfit_users + mihogarinvictus_users + gpegobmx_users;
+						var demo = new CountUp("counter", 0, total, 0, 2.5, options);
+						demo.start();
+		            });
+
+
+		            $.ajax({
+		                url: 'http://educaruno.cartodb.com/api/v2/sql?q=SELECT%20count(*)%20FROM%20dec_proyectos',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                }
+		            }).done(function(data) {
+		                console.log('dfcmexico_points', data);
+		                dfcmexico_points = data.rows[0].count;		                
+		            });
+
+		            $.ajax({
+		                url: 'http://usocialmaps.cartodb.com/api/v2/sql?q=SELECT%20count(*)%20FROM%20public_reports',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                }
+		            }).done(function(data) {
+		                console.log('usocialmaps_points', data);
+		                usocialmaps_points = data.rows[0].count;              
+		            });
+
+		            $.ajax({
+		                url: 'http://gpegobmx.cartodb.com/api/v2/sql?q=SELECT%20count(*)%20FROM%20public_reports',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                }
+		            }).done(function(data) {
+		                console.log('gpegobmx_points', data);
+		                gpegobmx_points = data.rows[0].count;
+		                var total = dfcmexico_points + usocialmaps_points + gpegobmx_points;
+						var demo = new CountUp("counter2", 0, total, 0, 2.5, options);
+						demo.start();
 		            });
 				</script>
 
