@@ -29,16 +29,7 @@ config = {
     'brand_color' : '#00AFF0',
     'brand_secondary_color' : '#0d47a1',
     'brand_tertiary_color' : '#EAEAEA',
-    # application on social media
-    'twitter_url': '',
-    'twitter_appID': '', #GET IT FROM: https://apps.twitter.com/
-    'twitter_handle': '',
-    'facebook_url': '',
-    'facebook_handle':'',
-    'facebook_appID': '523620084480399', #GET IT FROM: https://developers.facebook.com/apps/
-    'google_clientID': '143126415076-6sm0gdcglfnv1t3bp7ffbp7eok9sklm6.apps.googleusercontent.com', #GET IT FROM: https://elements.polymer-project.org/elements/google-signin
     # application on the web
-
     'meta_tags_code': """
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="description" content="This an amazing, magical materialized boilerplate for the Google AppEngine." />
@@ -59,11 +50,9 @@ config = {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">""",
 
-
     # the default language code for the application.
     # should match whatever language the site uses when i18n is disabled
     'app_lang': 'en',
-
 
     # jinja2 base layout template
     'base_layout': '/materialize/users/base.html',
@@ -79,40 +68,25 @@ config = {
 
     # contact page email settings
     'contact_sender': '',
-    'contact_recipient': '',
+    'contact_recipient': "chuycepeda@gmail.com",
+
+    # application on social media
+    'twitter_url': '',
+    'twitter_appID': '', #GET IT FROM: https://apps.twitter.com/
+    'twitter_handle': '',
+    'facebook_url': '',
+    'facebook_handle':'',
+    'facebook_appID': '523620084480399', #GET IT FROM: https://developers.facebook.com/apps/
+    'google_clientID': '143126415076-6sm0gdcglfnv1t3bp7ffbp7eok9sklm6.apps.googleusercontent.com', #GET IT FROM: https://elements.polymer-project.org/elements/google-signin
+
+    # get your own recaptcha keys by registering at http://www.google.com/recaptcha/
+    'captcha_public_key': "6LcMfv0SAAAAAGMJ9i-g5aJhXFvSHpPsqDLOHTUD",
+    'captcha_private_key': "6LcMfv0SAAAAALMUmCmFt5NOAw_ZTHabWRHAFJI6",
 
     # Password AES Encryption Parameters
     # aes_key must be only 16 (*AES-128*), 24 (*AES-192*), or 32 (*AES-256*) bytes (characters) long.
-    'aes_key': "12_24_32_BYTES_KEY_FOR_PASSWORDS",
-    'salt': "_PUT_SALT_HERE_TO_SHA512_PASSWORDS_",
-
-    # get your own consumer key and consumer secret by registering at https://dev.twitter.com/apps
-    # callback url must be: http://[YOUR DOMAIN]/login/twitter/complete
-    'twitter_consumer_key': '',
-    'twitter_consumer_secret': '',
-
-    #Facebook Login
-    # get your own consumer key and consumer secret by registering at https://developers.facebook.com/apps
-    #Very Important: set the site_url= your domain in the application settings in the facebook app settings page
-    # callback url must be: http://[YOUR DOMAIN]/login/facebook/complete
-    'fb_api_key': '',
-    'fb_secret': '',
-
-    #Linkedin Login
-    #Get you own api key and secret from https://www.linkedin.com/secure/developer
-    'linkedin_api': '',
-    'linkedin_secret': '',
-
-    # Github login
-    # Register apps here: https://github.com/settings/applications/new
-    'github_server': 'github.com',
-    'github_redirect_uri': 'http://www.example.com/social_login/github/complete',
-    'github_client_id': '',
-    'github_client_secret': '',
-
-    # get your own recaptcha keys by registering at http://www.google.com/recaptcha/
-    'captcha_public_key': '',
-    'captcha_private_key': '',
+    'aes_key': "A1BED038702434F8358F799990208234",
+    'salt': "634907BCD5EC4F29BE5DE8ED97637366B2C18E42E14EEEBA3925E9E0485FCCC9480BFC6CB2D8E4E8A9464F3C10ADFA0DB97451C8DB1033A6C2D6C4231D0645EF",
 
     # Use a complete Google Analytics code, no just the Tracking ID
     # In config/boilerplate.py there is an example to fill out this value
@@ -148,6 +122,7 @@ config = {
     # fellas' list
     'developers': (
         ('Santa Klauss', 'snowypal@northpole.com'),
+        ('chuycepeda', 'chuycepeda@gmail.com'),
     ),
 
     # If true, it will write in datastore a log of every email sent
@@ -158,16 +133,16 @@ config = {
 
     # ----> ADD MORE CONFIGURATION OPTIONS HERE <----
 
-    #bitly integration
-    'bitly_login' : '',
-    'bitly_apikey' : '',
-
-    #sendgrid integration
+    #sendgrid integration if you wish to get more than 20,100 free emails from google email service.
     'sendgrid_login' : '',
     'sendgrid_passkey' : '',
 
-    #slack webhook integration
-    'slack_webhook_url' : '',
+      #bitly Login & API KEY, get them from your bitly account under settings/advanced. this is used to generate a short referrals link.
+    'bitly_login' : "mboilerplate",
+    'bitly_apikey' : "R_c7794de8fef148c6b950578064492e95",
+
+    #slack webhook url to bring notifications to your dev slack channel
+    'slack_webhook_url' : "https://hooks.slack.com/services/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",
     'slack_notify_user' : '',
     'slack_notify_home_visit' : '',
     'slack_notify_landing_visit' : '',

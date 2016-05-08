@@ -2,6 +2,29 @@
 
 *The materialize boilerplate project is an amazing fusion from material design, polymer web components, and boilerplate framework for easy and quick deployments of web applications on the Google Cloud Platform.*
 
+###Get started in just a few easy steps*
+
+1. Download the last version of the [App Engine SDK](http://code.google.com/appengine/downloads.html#Google_App_Engine_SDK_for_Python) for Linux, Mac OS or Windows.
+2. Download or clone the code of this Boilerplate ([here](https://github.com/chuycepeda/mboilerplate/zipball/master))
+3. Run locally ([instructions](https://developers.google.com/appengine/docs/python/tools/devserver)).
+4. Set your 'application' name in [app.yaml](https://github.com/chuycepeda/mboilerplate/blob/master/app.yaml)
+1. Set custom config parameters in bp_content/themes [config/localhost.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/localhost.py), [config/testing.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/testing.py) and [config/production.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/production.py) like secret key, [recaptcha code](http://www.google.com/recaptcha), salt and other.
+ * Boilerplate will identify which config file to use in local, unit testing and production.
+ * To get started, look the default settings in [bp_includes/config.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_includes/config.py). Those settings will be overwrite for your config files.
+ * Most of the default settings will need to be changed to yield a secure and working application.
+1. Deploy it online ([instructions](https://developers.google.com/appengine/docs/python/gettingstarted/uploading) - recommended setup: python 2.7, high replication datastore)
+
+Please note that your custom application code **should be located in the bp_content folder within your own theme**.
+The intention is that separating the boilerplate code from your application code will avoid merge conflicts as you keep up with future boilerplate changes.
+
+*As is from [GAEBoilerplate Repo](https://github.com/coto/gae-boilerplate/)
+
+Also, you can see a simple and quick setup in this video:
+
+[![Getting your app in 7 minutes](https://i.ytimg.com/vi/l7fc8rLUOjM/default.jpg)](https://www.youtube.com/watch?v=l7fc8rLUOjM)
+
+
+
 ###What's Materialize?
 Materialize simplifies life for developers and the users they serve. It speeds up development, heavy lifting has been done for you to provide a smoother experience for visitors. ([showcase](http://materializecss.com/showcase.html))
 
@@ -11,7 +34,6 @@ Polymer lets you build encapsulated, re-usable elements that work just like HTML
 
 ###What's Boilerplate?
 A Boilerplate is used to describe sections of code that can be reused over and over in new contexts or applications which provides good default values, reducing the need to specify program details in every project. ([wikipedia](http://en.wikipedia.org/wiki/Boilerplate_code))
-
 
 ---
 

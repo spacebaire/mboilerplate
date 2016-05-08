@@ -155,7 +155,17 @@
 		            <nav class="white">
 		                <div class="nav-wrapper">
 		                    <h1 class="logo-wrapper"><a href="{{ uri_for("landing") }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-light-blue.png" alt="materialize logo" style="height: 45px;margin-top: -5px;width: 45px;"></a></h1>
+
+							  <ul id="translation-dropdown" class="dropdown-content">
+			                      <li>
+			                        <a style="cursor:pointer;" onclick="forceLang('en');return false;"><img src="/{{theme}}/materialize/images/flags/US.png" alt="English" />  <span class="language-select">English</span></a>
+			                      </li>
+			                      <li>
+			                        <a style="cursor:pointer;" onclick="forceLang('es');return false;"><img src="/{{theme}}/materialize/images/flags/Mexico.png" alt="Español" />  <span class="language-select">Español</span></a>
+			                      </li>
+			                  </ul>
 		                    <ul class="right hide-on-med-and-down">
+		                    	<li><a href="javascript:void(0);" class="waves-effect waves-block waves-light translation-button"  data-activates="translation-dropdown"><img id="tr-flag" src="/{{theme}}/materialize/images/flags/Mexico.png" alt="Español" /></a></li>
 		                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan brand-color-text"></i></a>
 		                        </li>
 		                    </ul>
@@ -646,13 +656,37 @@
 
 			{% endif %}
 
-			{% if locale_language_id != "en" %}
-				{% if locale_iso.language == "pt" and locale_iso.territory == "BR" %}
-					<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_iso.language }}_{{ locale_iso.territory }}.js"></script>
-				{% else %}
-					<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_language_id }}.js"></script>
+			
+
+			{% block translate %}
+			  	<script src="/{{theme}}/materialize/js/plugins/jquery/jquery.cookies.min.js"></script>
+			    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/translator/jqueryTranslator.min.js"></script>
+			    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/translator/translation-script.js"></script>
+			    <script>
+	    			function forceLang(lang){
+	    				if (lang == 'en') $('#tr-flag').attr("src", "/default/materialize/images/flags/US.png");
+	    				if (lang == 'es') $('#tr-flag').attr("src", "/default/materialize/images/flags/Mexico.png");
+	    				$("[data-translate]").jqTranslate('/default/materialize/js/plugins/translator/translate', {
+				            forceLang: lang
+				        });
+
+				        /* We save language inside a cookie */
+				        $.cookie('app-language', lang);
+				        $.cookie('app-language', lang, { path: '/' });
+	    			}
+			    </script>
+			    {% if locale_language_id != "en" %}
+					{% if locale_iso.language == "pt" and locale_iso.territory == "BR" %}
+						<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_iso.language }}_{{ locale_iso.territory }}.js"></script>
+					{% else %}
+						<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_language_id }}.js"></script>
+					{% endif %}
 				{% endif %}
-			{% endif %}
+			    {% if locale_language_id == "en" or locale_language_id == "es" %}
+			    	<!-- YOU CAN ADD MORE LANGUAGES BY ADDING A translate_<locale_language_id>.js AT BP_CONTENT/THEMES/DEFAULT/STATIC/MATERIALIZE/JS/PLUGINS/TRANSLATOR 
+			    	<script>forceLang('{{locale_language_id}}');</script>-->
+				{% endif %}
+			{% endblock %}
 
 	        {% block page_scripts %}{% endblock %}
 			

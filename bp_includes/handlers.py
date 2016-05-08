@@ -25,8 +25,6 @@ from google.appengine.runtime import apiproxy_errors
 
 # local imports
 import models, messages, forms
-from github import github
-from linkedin import linkedin
 from lib import utils, captcha, bitly
 from lib.cartodb import CartoDBAPIKey, CartoDBException
 from lib.basehandler import BaseHandler
@@ -954,20 +952,6 @@ def disclaim(_self, **kwargs):
 
 
 # LANDING
-class MaterializeCCRequestHandler(BaseHandler):
-    """
-    Handler to show the landing page
-    """
-
-    def get(self):
-        """ Returns a simple HTML form for landing """
-        params = {}
-        if not self.user:
-            params['captchahtml'] = captchaBase(self)
-            return self.render_template('materialize/landing/cc.html', **params)
-        else:
-            params, user_info = disclaim(self)            
-            return self.render_template('materialize/landing/cc.html', **params)
 
 class MaterializeLandingRequestHandler(BaseHandler):
     """

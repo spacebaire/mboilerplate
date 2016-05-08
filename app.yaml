@@ -51,23 +51,8 @@ handlers:
   script: main.app
   login: admin
 
-- url: /favicon\.ico
-  mime_type: image/vnd.microsoft.icon
-  static_files: bp_content/themes/default/static/favicon.ico
-  upload: bp_content/themes/default/static/favicon.ico
-
-- url: /(\w*)/favicon\.ico
-  mime_type: image/vnd.microsoft.icon
-  static_files: bp_content/themes/\1/static/favicon.ico
-  upload: bp_content/themes/(\w*)/static/favicon.ico
-
 - url: /(robots\.txt|humans\.txt|sitemap\.xml|crossdomain\.xml)
   script: main.app
-
-# @bp_includes - styles
-- url: /boilerplate/css
-  mime_type: text/css
-  static_dir: bp_includes/static/css
 
 # @bp_includes - scripts
 - url: /boilerplate/js
@@ -77,16 +62,6 @@ handlers:
 # @bp_includes - polymer components
 - url: /boilerplate/webcomponents
   static_dir: bp_includes/static/webcomponents
-
-# @bp_includes - images
-- url: /boilerplate/img/(.*\.(gif|png|jpg))
-  static_files: bp_includes/static/img/\1
-  upload: bp_includes/static/img/(.*\.(gif|png|jpg))
-
-# @bp_includes - fonts
-- url: /boilerplate/fonts/(.*\.(eot|svg|ttf|woff))
-  static_files: bp_includes/static/fonts/\1
-  upload: bp_includes/static/fonts/(.*\.(eot|svg|ttf|woff))
 
 # @bp_content - materialize styles
 - url: /(\w*)/materialize/css/(.*\.(css|map|scss))$

@@ -5,7 +5,7 @@ config = {
 
     # ----> ADD MORE CONFIGURATION OPTIONS HERE <----
     
-    'app_name': "mboilertplate @localhost",
+    'app_name': "mboilerplate @localhost",
     
     
     'error_templates': {
@@ -26,19 +26,7 @@ config = {
     # Password AES Encryption Parameters
     # aes_key must be only 16 (*AES-128*), 24 (*AES-192*), or 32 (*AES-256*) bytes (characters) long.
     'aes_key': "12_24_32_BYTES_KEY_FOR_PASSWORDS",
-    'salt': "_PUT_SALT_HERE_TO_SHA512_PASSWORDS_",
-
-    # get your own consumer key and consumer secret by registering at https://dev.twitter.com/apps
-    # callback url must be: http://[YOUR DOMAIN]/login/twitter/complete
-    'twitter_consumer_key': 'TWITTER_CONSUMER_KEY',
-    'twitter_consumer_secret': 'TWITTER_CONSUMER_SECRET',
-
-    #Facebook Login
-    # get your own consumer key and consumer secret by registering at https://developers.facebook.com/apps
-    #Very Important: set the site_url= your domain in the application settings in the facebook app settings page
-    # callback url must be: http://[YOUR DOMAIN]/login/facebook/complete
-    'fb_api_key': 'FACEBOOK_API_KEY',
-    'fb_secret': 'FACEBOOK_SECRET',
+    'salt': "_PUT_SALT_HERE_TO_SHA512_PASSWORDS_",   
     
     # jinja2 base layout template
     #'base_layout': 'master.html',

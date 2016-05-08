@@ -1,9 +1,13 @@
 {% extends 'admin_base.html' %}
 
 {% block page_css %}
+<link href="/default/materialize/css/plugins/dropify/dropify.css" type="text/css" rel="stylesheet" media="screen,projection">
 <style>
   #live { 
-  	background: #efefef; 
+    background: #efefef; 
+  }
+  .dropify-message p{
+    text-align: center!important;
   }
 </style>
 {% endblock %}
@@ -74,11 +78,9 @@
                   </div>
                 </div>
 
-                <div class="file-field input-field">
-                  <input class="file-path validate right" type="text">
-                  <div class="btn">
-                    <span>Main picture</span>
-                    <input type="file" name="file">
+                <div class="row">
+                  <div class="input-field col s12">
+                    <input type="file" id="input-file-now" name="file" class="dropify" data-default-file="" />
                   </div>
                 </div>
 
@@ -111,8 +113,17 @@
 {% endblock %}
 
 {% block page_scripts %}
+<script type="text/javascript" src="/default/materialize/js/plugins/dropify/dropify.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(){
+  $(document).ready(function(){
+    $('.dropify').dropify({
+                messages: {
+                    default: 'Drag and drop a file here or click to add main picture',
+                    replace: 'Drag and drop or click to replace main picture',
+                    remove:  'Remove',
+                    error:   'Sorry, this file is too large'
+                }
+            });
 		category.value = category.value.replace(/u'/g,'').replace(/'/g,'').replace(/\[/g,'').replace(/\]/g,'');
 		live.innerHTML = _content.value;
 	    $('#content').keyup(function() {

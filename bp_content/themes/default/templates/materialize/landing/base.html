@@ -171,10 +171,19 @@
 				<div class="nav-wrapper" style="">
 				  <a href="{{uri_for("landing")}}" class="brand-logo"><img src="{{brand_logo}}" style="height:75px; margin-top:-5px;"></a>
 				  <a href="#" data-activates="mobile-demo" class="button-collapse right"><i class="mdi-navigation-more-vert"></i></a>
+				  <ul id="translation-dropdown" class="dropdown-content">
+			                      <li>
+			                        <a style="cursor:pointer;" onclick="forceLang('en');return false;"><img src="/{{theme}}/materialize/images/flags/US.png" alt="English" />  <span class="language-select">English</span></a>
+			                      </li>
+			                      <li>
+			                        <a style="cursor:pointer;" onclick="forceLang('es');return false;"><img src="/{{theme}}/materialize/images/flags/Mexico.png" alt="Español" />  <span class="language-select">Español</span></a>
+			                      </li>
+			                  </ul>
 				  <ul id="nav-mobile" class="right hide-on-med-and-down">
+				  	<li><a href="javascript:void(0);" class="waves-effect waves-block waves-light translation-button"  data-activates="translation-dropdown"><img id="tr-flag" src="/{{theme}}/materialize/images/flags/Mexico.png" alt="Español" /></a></li>
 				    {% if not user_id %}
-				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
-				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
+				    <li id="nav-login" ><a href="#modal1" class="modal-trigger menu-item" data-translate="menu-login">Login</a></li>
+				    <li id="nav-register" ><a href="#modal2" class="modal-trigger menu-item" data-translate="menu-register">Register</a></li>
 				    {% else %}
 				    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px; border-radius:4px; padding:10px">
 		                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-home") }}">My home</a>
@@ -201,12 +210,12 @@
                      </li>	
 				    {% endif %}
 				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
-				    <li id="nav-download"><a href="#download" class="menu-item">Want some love?</a></li>
+				    <li id="nav-download"><a href="#download" class="menu-item" data-translate="menu-love">Want some love?</a></li>
 				  </ul>
 				  <ul class="side-nav" id="mobile-demo">
 				    {% if not user_id %}
-				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Login</a></li>
-				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Register</a></li>
+				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item" data-translate="menu-login">Login</a></li>
+				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item" data-translate="menu-register">Register</a></li>
 				    {% else %}
 				    <li class="no-padding">
                         <ul class="collapsible collapsible-accordion">
@@ -234,7 +243,7 @@
 				     <li class="divider"></li>
 				    {% endif %}
 				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
-				    <li id="nav-download"><a href="#download" class="menu-item">Want some love?</a></li>
+				    <li id="nav-download"><a href="#download" class="menu-item" data-translate="menu-love">Want some love?</a></li>
 				  </ul>
 				</div>
 			</nav>
@@ -248,7 +257,7 @@
 				    <br><br>
 				    <h1 class="header center brand-color-text text-lighten-2 " style="font-family: Monoton;line-height: 42pt;letter-spacing: 6px;font-size: 45px;">{{app_name}}</h1>
 				    <div class="row center">
-				      <h5 class="header col s12 white-text light tooltipped" data-position="bottom" data-delay="50" data-tooltip="aka - your webapp twice as good, in half the time, at half the cost !">A modern responsive front-end + back-end GAE boilerplate based on material design</h5>
+				      <h5 class="header col s12 white-text light tooltipped" data-translate="base-heading" data-position="bottom" data-delay="50" data-tooltip="aka - your webapp twice as good, in half the time, at ~90% less cost !">A modern responsive front-end + back-end GAE boilerplate based on material design</h5>
 
 				    </div>
 				    <div class="row center">
@@ -266,31 +275,31 @@
 				<div class="section">
 
 				  <div class="row">
-				   	<h3 class="col s12 light center header grey-text">What you see is what you get !</h3>
+				   	<h3 class="col s12 light center header grey-text" data-translate="landing-header1">What you see is what you get !</h3>
 				    <div class="col s12 m4">
 				      <div class="icon-block">
 				        <h2 class="center brand-color-text"><i class="material-icons">flash_on</i></h2>
-				        <h5 class="center">Instant deploys</h5>
+				        <h5 class="center" data-translate="landing-subheader1">Instant deploys</h5>
 
-				        <p class="light">Through the <a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a> plus the <a target="_blank" href="http://materializecss.com/">MaterializeCSS</a> and <a target="_blank" href="http://fezvrasta.github.io/bootstrap-material-design/">Bootstrap Material Design</a>, M Boilerplate provides an exceptional experience for developers. Models, templates, and routes - ready enables for instantaneous deployment and rapid prototyping.</p>
+				        <p class="light" data-translate="landing-description1">Through the <a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a> plus the <a target="_blank" href="http://materializecss.com/">MaterializeCSS</a> and <a target="_blank" href="http://fezvrasta.github.io/bootstrap-material-design/">Bootstrap Material Design</a>, M Boilerplate provides an exceptional experience for developers. Models, templates, and routes - ready enables for instantaneous deployment and rapid prototyping.</p>
 				      </div>
 				    </div>
 
 				    <div class="col s12 m4">
 				      <div class="icon-block">
 				        <h2 class="center brand-color-text"><i class="material-icons">group</i></h2>
-				        <h5 class="center">Human-centered</h5>
+				        <h5 class="center" data-translate="landing-subheader2">Human-centered</h5>
 
-				        <p class="light">More than a year now of <a target="_blank" href="https://www.google.com/design/spec/material-design/introduction.html">Material Design</a> and the newest <a target="_blank" href="https://cloud.google.com/datastore/">Google Datastore</a>, here you have a single underlying responsive system across all platforms and a standard user model for a more unified user experience with unlimited scalability, highly available and dude-level reliable.</p>
+				        <p class="light" data-translate="landing-description2">More than a year now of <a target="_blank" href="https://www.google.com/design/spec/material-design/introduction.html">Material Design</a> and the newest <a target="_blank" href="https://cloud.google.com/datastore/">Google Datastore</a>, here you have a single underlying responsive system across all platforms and a standard user model for a more unified user experience with unlimited scalability, highly available and dude-level reliable.</p>
 				      </div>
 				    </div>
 
 				    <div class="col s12 m4">
 				      <div class="icon-block">
 				        <h2 class="center brand-color-text"><i class="material-icons">settings</i></h2>
-				        <h5 class="center">Easy, powerful and low-cost</h5>
+				        <h5 class="center" data-translate="landing-subheader3">Easy, powerful and low-cost</h5>
 
-				        <p class="light">Leveraging the use of <a target="_blank" href="https://cloud.google.com/appengine/docs">Google AppEngine</a> (<a href="https://www.youtube.com/watch?v=pHoHEWspcYg" target="_blank">what is this?</a>) and its <a target="_blank" href="https://cloud.google.com/appengine/docs/quotas">Free Quotas</a>, M Boilerplate provides all the ease of the <a target="_blank" href="https://cloud.google.com/docs/">Google Cloud Platform</a> at amazingly low costs and super easy scalability and traffic splitting in one of the most <a target="_blank" href="http://www.google.com/about/datacenters/">powerful</a> and <a target="_blank" href="http://www.google.com/green/bigpicture/">green</a> infrastructures in the world.</p>
+				        <p class="light" data-translate="landing-description3">Leveraging the use of <a target="_blank" href="https://cloud.google.com/appengine/docs">Google AppEngine</a> (<a href="https://www.youtube.com/watch?v=pHoHEWspcYg" target="_blank">what is this?</a>) and its <a target="_blank" href="https://cloud.google.com/appengine/docs/quotas">Free Quotas</a>, M Boilerplate provides all the ease of the <a target="_blank" href="https://cloud.google.com/docs/">Google Cloud Platform</a> at amazingly low costs and super easy scalability and traffic splitting in one of the most <a target="_blank" href="http://www.google.com/about/datacenters/">powerful</a> and <a target="_blank" href="http://www.google.com/green/bigpicture/">green</a> infrastructures in the world.</p>
 				      </div>
 				    </div>
 				  </div>
@@ -301,7 +310,7 @@
 			      <div class="container">
 			        <br><br>
 			        <div class="row center">
-			          <h5 class="header col s12 white-text light" style="line-height: 2;">Ever noticed goats scream like humans? <span id="speak" class="brand-color-text text-lighten-2" style="cursor:pointer;">Try it !</span></h5>
+			          <h5 class="header col s12 white-text light" style="line-height: 2;" data-translate="landing-image1">Ever noticed goats scream like humans? <span id="speak" class="brand-color-text text-lighten-2" style="cursor:pointer;">Try it !</span></h5>
 			        </div>
 			      </div>
 			    </div>
@@ -311,20 +320,20 @@
 				<div class="section">
 
 				  <div class="row">
-				   	<h3 class="col s12 light center header grey-text">+20 amazing technologies at your service</h3>
+				   	<h3 class="col s12 light center header grey-text" data-translate="landing-header2">+20 amazing technologies at your service</h3>
 				    <div class="col s12 m4">
 				      <div class="icon-block">
 				      	<h3 class="center"><i class="mdi-action-dns brand-color-text" style="font-size:45px;"></i></h3>
 				        <h5 class="center">Back-end</h5>
 
-				        <p class="light">Because beauty isn't only at front-end, this M Boilerplate includes beautiful technologies at its back-end. Among the most interesting you'll find:</p>
+				        <p class="light" data-translate="landing-description4">Because beauty isn't only at front-end, this M Boilerplate includes beautiful technologies at its back-end. Among the most interesting you'll find:</p>
 				        <ul>
 					        <li><a target="_blank" href="https://www.python.org/download/releases/2.7.5/">Python 2.7.5</a>, well you know Python <a href="/{{theme}}/materialize/images/programming.jpg" target="_blank">don't you?</a>,</li>
 					        <li><a target="_blank" href="http://developers.google.com/appengine/docs/python/ndb/">NDB 1.0.10</a>, the best no-sql database API with <a href="https://www.youtube.com/watch?v=HQiARz8b6VE" target="_blank">unlimited scalability</a>,</li>
 					        <li><a target="_blank" href="http://jinja.pocoo.org/docs/">Jinja2 2.6</a>, a fully featured template engine for Python,</li>
 					        <li><a target="_blank" href="http://wtforms.simplecodes.com/">WTForms-1.0.2</a>, forms validation keeping user interaction secure and flexible,</li>
-					        <li><a target="_blank" href="http://babel.edgewall.org/">Babel-0.9.6</a>, renders the site in multiple languages, and</li>
-					        <li><a target="_blank" href="http://webapp-improved.appspot.com/">WebApp2 2.5.2</a>, lightweight Python web framework, best for the GAE Python runtime.</li>
+					        <li><a target="_blank" href="http://babel.edgewall.org/">Babel-0.9.6</a>, renders the site in multiple languages (maybe you'll prefer to use included front-end jQueryTranslator =) ), and</li>
+					        <li><a target="_blank" href="http://webapp-improved.appspot.com/">WebApp2 2.5.2</a>, lightweight Python web framework, the best for the GAE Python runtime. Why Django or Flask if we already did everything for you?</li>
 				        </ul>
 				      </div>
 				    </div>
@@ -333,7 +342,7 @@
 				      <div class="icon-block">
 				      	<h3 class="center"><i class="mdi-av-web brand-color-text" style="font-size:45px;"></i></h3>
 				        <h5 class="center">Front-end</h5>
-						 <p class="light">With M Boilerplate everything will be shinny because it has been brought from the future, where the internet is pretty and organized. In this future you'll find:</p>
+						 <p class="light" data-translate="landing-description5">With M Boilerplate everything will be shinny because it has been brought from the future, where the internet is pretty and organized. In this future you'll find:</p>
 				        <ul>
 					        <li><a target="_blank" href="http://html5boilerplate.com/">HTML5Boilerplate</a>, yes, the HTML that rocks !,</li>
 					        <li><a target="_blank" href="http://modernizr.com">Modernizr 2.6.1</a>, modernize says it all,</li>
@@ -349,8 +358,8 @@
 				    <div class="col s12 m4">
 				      <div class="icon-block">
 				      	<h3 class="center"><i class="mdi-action-extension brand-color-text" style="font-size:45px;"></i></h3>
-				        <h5 class="center">Integrations</h5>
-						<p class="light">As if it wasn't enough, M Boilerplate has been prepared for you to easily integrate popular technologies. Among the most interesting you'll find:</p>
+				        <h5 class="center" data-translate="landing-subheader4">Integrations</h5>
+						<p class="light" data-translate="landing-description6">As if it wasn't enough, M Boilerplate has been prepared for you to easily integrate popular technologies. Among the most interesting you'll find:</p>
 				        <ul>
 					        <li><a target="_blank" href="https://bitly.com">Bit.ly</a> and <a href="https://goo.gl">Goo.gl</a>, for shortlink generators,</li>
 					        <li><a target="_blank" href="http://slack.com">Slack</a>, to receive chat notifications everytime you have a new user so that you can tell them how much you care,</li>
@@ -369,7 +378,7 @@
 				  <div class="container">
 				    <br><br>
 				    <div class="row center">
-				      <h5 class="header col s12 white-text light" style="line-height: 2;">You heard the goat, right? But what a about a seal ? <span id="speak-two" class="brand-color-text text-lighten-2" style="cursor:pointer;">No way !</span></h5>
+				      <h5 class="header col s12 white-text light" style="line-height: 2;" data-translate="landing-image2">You heard the goat, right? But what a about a seal ? <span id="speak-two" class="brand-color-text text-lighten-2" style="cursor:pointer;">No way !</span></h5>
 				    </div>
 				  </div>
 				</div>
@@ -381,34 +390,34 @@
 				  <div class="row">
 				    <div class="col s12 center">
 				      <h3><i class="mdi-av-queue brand-color-text" style="font-size:45px;"></i></h3>
-				      <h4>Wait, there's even more !</h4>
+				      <h4 data-translate="landing-header3">Wait, there's even more !</h4>
 
 					  <ul class="collection" style="margin-top:35px;">
 		                  <li class="collection-item avatar" style="height:auto;">
 		                    <img src="/{{theme}}/materialize/images/appengine-icon.png" alt="" class="circle">
-		                    <span class="title" style="font-family:roboto-light!important;"><strong>Innate benefits (<a href="https://cloud.google.com/appengine/" target="_blank">Google AppEngine</a>)</strong></span>
-		                    <p style="margin-top:10px;">
+		                    <span class="title" style="font-family:roboto-light!important;" data-translate="landing-subheader5"><strong>Innate benefits (<a href="https://cloud.google.com/appengine/" target="_blank">Google AppEngine</a>)</strong></span>
+		                    <p style="margin-top:10px;" data-translate="landing-description7">
 		                    <span class="blue-text text-darken-3">(1)</span> Ideal choice for getting your idea out quickly and seeing if there is a viable market <span class="blue-text text-darken-3">(2)</span> Zero to App in a few minutes, no other provider out there gets you set up and developing in as little time <span class="blue-text text-darken-3">(3)</span> Admin interface that gives access to everything you need <span class="blue-text text-darken-3">(4)</span><a href="https://cloud.google.com/appengine/docs" target="_blank">Excellent documentation</a> as well as active stack overflow community <span class="blue-text text-darken-3">(5)</span> Free for vast quotas, but you can <a href="https://cloud.google.com/products/calculator/" target="_blank"> calculate</a> how much you <a href="https://cloud.google.com/appengine/#pricing" target="_blank">need to pay</a> when you have proven there's a viable market <span class="blue-text text-darken-3">(6)</span> Amazing performance and real-time <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.cloudconsole" target="_blank">on-the-go monitoring</a> <span class="blue-text text-darken-3">(7)</span> Custom domain if you need or free appspot.com <span class="blue-text text-darken-3">(8)</span> Scaling is automagical.
 		                    </p>
 		                  </li>
 		                  <li class="collection-item avatar" style="height:auto;">
 		                    <i class="mdi-hardware-memory circle green"></i>
-		                    <span class="title" style="font-family:roboto-light!important;"><strong>Essential features (<a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a>)</strong></span>
-		                    <p style="margin-top:10px;">
+		                    <span class="title" style="font-family:roboto-light!important;" data-translate="landing-subheader6"><strong>Essential features (<a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a>)</strong></span>
+		                    <p style="margin-top:10px;" data-translate="landing-description8">
 		                    <span class="green-text text-darken-3">(1)</span> Authentication: login, logout, register <span class="green-text text-darken-3">(2)</span> Login via your favorite social network <span class="green-text text-darken-3">(3)</span> Reset password <span class="green-text text-darken-3">(4)</span> Update user profile <span class="green-text text-darken-3">(5)</span> Contact form <span class="green-text text-darken-3">(6)</span> Client side and server side form validation <span class="green-text text-darken-3">(7)</span> Automatic detection of user language <span class="green-text text-darken-3">(8)</span> Support for many languages <span class="green-text text-darken-3">(9)</span> Visitors log <span class="green-text text-darken-3">(10)</span> Notifications and confirmation for users when they change their email or password <span class="green-text text-darken-3">(11)</span> Responsive design for viewing on PCs, tablets, and mobile phones <span class="green-text text-darken-3">(12)</span> Mobile device recognition <span class="green-text text-darken-3">(13)</span> Unit testing <span class="green-text text-darken-3">(14)</span> Error handling <span class="green-text text-darken-3">(15)</span> Basic user management features available under <em>/admin/</em> for GAE Administrators.
 		                    </p>
 		                  </li>
 		                  <li class="collection-item avatar" style="height:auto;">
 		                    <i class="mdi-communication-vpn-key circle grey darken-2"></i>
-		                    <span class="title" style="font-family:roboto-light!important;"><strong>Security and passwords (<a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a>)</strong></span>
-		                    <p style="margin-top:10px;">
+		                    <span class="title" style="font-family:roboto-light!important;" data-translate="landing-subheader7"><strong>Security and passwords (<a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a>)</strong></span>
+		                    <p style="margin-top:10px;" data-translate="landing-description9">
 		                    <span class="grey-text text-darken-4">(1)</span> SSL is enabled site wide by adding <em>secure: always</em> to the section: <em>- url: /.*</em> in app.yaml <span class="grey-text text-darken-4">(2)</span> SSL either requires a free google app engine *.appspot.com domain or a <a target="_blank" href="https://developers.google.com/appengine/docs/ssl">custom domain and certificate</a> <span class="grey-text text-darken-4">(3)</span> Alternatively SSL can be enabled at a controller level via webapp2 schemes. Use the secure_scheme provided in routes.py <span class="grey-text text-darken-4">(4)</span> It is recommended to enable ssl site wide to help prevent <a target="_blank" href="http://en.wikipedia.org/wiki/Session_hijacking">session hijacking</a> <span class="grey-text text-darken-4">(5)</span> Passwords are hashed and encrypted with SHA512 and PyCrypto <span class="grey-text text-darken-4">(6)</span> Forms are secured through <a target="_blank" href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">cross-site request forgery</a> protection.
 		                    </p>
 		                  </li>
 		                  <li class="collection-item avatar" style="height:auto;">
 		                    <i class="mdi-av-new-releases circle yellow darken-2"></i>
-		                    <span class="title" style="font-family:roboto-light!important;"><strong>Additional perks (<a target="_blank" href="#">MBoilerplate</a>)</strong></span>
-		                    <p style="margin-top:10px;">
+		                    <span class="title" style="font-family:roboto-light!important;" data-translate="landing-subheader8"><strong>Additional perks (<a target="_blank" href="#">MBoilerplate</a>)</strong></span>
+		                    <p style="margin-top:10px;" data-translate="landing-description10">
 		                    <span class="yellow-text text-darken-3">(1)</span> <a href="https://www.dropbox.com/referrals" target="_blank">Dropbox-inspired referrals system</a> for users to invite with their unique link <span class="yellow-text text-darken-3">(2)</span> Rewards system for you to praise users' loyalty <span class="yellow-text text-darken-3">(3)</span> Pre-loaded web components for easier chart generation <span class="yellow-text text-darken-3">(4)</span> Beautiful email templates for a bunch of situations <span class="yellow-text text-darken-3">(5)</span> Pretty server-client messaging through toast, dismissible, swipeable notifications <span class="yellow-text text-darken-3">(6)</span> API Key - based handlers for complete REST API <span class="yellow-text text-darken-3">(7)</span> Enabled <a target="_blank" href="https://cloud.google.com/appengine/docs/python/endpoints/">Endpoints</a> for Google-based API as mobile backend for running cloud endpoint clients such as Android and iOS apps <span class="yellow-text text-darken-3">(8)</span> Image handling ready ! Dispatching files using <a href="https://cloud.google.com/appengine/docs/python/ndb/properties#types" target="_blank">Google's NDB Blob Properties</a> and <a href="https://cloud.google.com/appengine/docs/python/images/usingimages" target="_blank">Google Images API</a> <span class="yellow-text text-darken-3">(9)</span> Konami-code surprise for the fun of it <span class="yellow-text text-darken-3">(10)</span> Super easy blogging tool <span class="yellow-text text-darken-3">(11)</span> Profile connection to favorite social networks <span class="yellow-text text-darken-3">(12)</span> Beautiful examples using Polymer and CartoDB (13) to be continued...
 		                    </p>
 		                  </li>
@@ -423,7 +432,7 @@
 				  <div class="container">
 				    <br><br>
 				    <div class="row center">
-				      <h5 class="header col s12 white-text light" style="line-height: 2;">Still hesitating? Take a look at some apps built with M Boilerplate.</h5>
+				      <h5 class="header col s12 white-text light" style="line-height: 2;" data-translate="landing-image3">Still hesitating? Take a look at some apps built with M Boilerplate.</h5>
 				    </div>
 				  </div>
 				</div>
@@ -472,7 +481,7 @@
 				      <h5 class="center"><a href="http://onesmart.city/" target="_blank" class="brand-color-text">onesmart.city</a></h5>
 				    </div>
 				  </div>
-				  <h5 class="center" id="counter_holder"><a>7 sites,<br> <span id="counter"></span> users,<br> <span id="counter2"></span> geo-points<br> currently being served !</a></h5>
+				  <h5 class="center" id="counter_holder"><a>7 sites,<br> <span id="counter"></span> users,<br> <span id="counter2"></span> geo-points<br></a></h5>
 				</div>
 			</div>
 		{% endblock %}
@@ -588,11 +597,12 @@
 				  <div class="row">
 				    <div class="col s12 center">
 				      <h3><i class="mdi-file-file-download brand-color-text" style="font-size:45px;"></i></h3>
-				      <h4>The source is the source, of course, of course...</h4>
-				      <p class="center light">After all charm, it wouldn't be love if you couldn't own it. So go for it ! Also if you want to see a step-by-step follow through from Google Cloud SDK installation to having your own version of what you're seeing here, don't hesitate and <a href="#modal2" class="modal-trigger">register</a> to find it out. Additionally, if you want some help just reach me out and I can do it for you but charges apply for laziness.</p>
+				      <h4 data-translate="landing-header4">The source is the source, of course, of course...</h4>
+				      <p class="center light col s12 m10 offset-m1" data-translate="landing-description11">After all charm, it wouldn't be love if you couldn't own it. So go for it ! Also if you want to see technologies in action, don't hesitate and <a href="#modal2" class="modal-trigger">register</a> to find it out. Additionally, if you want some help just reach me out and I can do it for you but charges apply for laziness.</p>
 				      <div class="col s12 center">
+				      		<br>
 	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}?t=bug" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-action-bug-report left"></i>Report a bug</a>
-	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}?t=dl" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-file-file-download left"></i>Download</a>
+	                      <a style="margin-bottom:30px;" href="https://github.com/chuycepeda/mboilerplate" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-file-file-download left"></i>Github Download</a>
 	                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-communication-comment left"></i>Reach me out!</a>
 	                  </div>
 				    </div>
@@ -606,7 +616,7 @@
 				  <div class="row">
 				    <div class="col m7 s12">
 				      <h5 class="white-text">About</h5>
-				      <p class="grey-text text-lighten-4">This is something every developer, non-profit, startup and freelancer wishes to find. It makes deployments and prototyping quick and easy. But not only that, it looks astonishingly beautiful and it's really, really low-cost under the Google Cloud Platform ! Forget about huge dev teams, server maintenance, system uptime, scalability and extendibility; may the gcloud be with you.</p>
+				      <p class="grey-text text-lighten-4" data-translate="footer">This is something every developer, non-profit, startup and freelancer wishes to find. It makes deployments and prototyping quick and easy. But not only that, it looks astonishingly beautiful and it's really, really low-cost under the Google Cloud Platform ! Forget about huge dev teams, server maintenance, system uptime, scalability and extendibility; may the gcloud be with you.</p>
 				    </div>
 				    <div class="col offset-m2 m3 s12" style="margin-top:-10px;">
 				      <ul>
@@ -695,18 +705,7 @@
 					    $('.button-collapse').sideNav({
 					      edge: 'right'
 					    });
-					    $("#speak").mouseenter(function(){
-							document.getElementById("goat").play();
-						});
-						$("#speak-two").mouseenter(function(){
-							document.getElementById("seal").play();
-						});
-						$("#speak").click(function(){
-							document.getElementById("goat").play();
-						});
-						$("#speak-two").click(function(){
-							document.getElementById("seal").play();
-						});
+					    
 						$(".menu-item").click(function(){
 							$('.button-collapse').sideNav('hide');
 						});
@@ -919,16 +918,69 @@
 						str = str.replace(/[ç]/g,"c");
 						return str;
 					}
+
+					function enableSoundsandModals(){
+						$("#speak").mouseenter(function(){
+							document.getElementById("goat").play();
+						});
+						$("#speak-two").mouseenter(function(){
+							document.getElementById("seal").play();
+						});
+						$("#speak").click(function(){
+							document.getElementById("goat").play();
+						});
+						$("#speak-two").click(function(){
+							document.getElementById("seal").play();
+						});
+						$('.modal-trigger').leanModal({
+						      dismissible: false, // Modal can be dismissed by clicking outside of the modal
+						      opacity: .5, // Opacity of modal background
+						      in_duration: 300, // Transition in duration
+						      out_duration: 200, // Transition out duration
+						      ready: function() { 
+						      //alert('Ready'); 
+						      }, // Callback for Modal open
+						      complete: function() { 
+						      //alert('Closed'); 
+						      $('.lean-overlay').hide();
+						      } // Callback for Modal close
+						});
+					}
 				</script>
 			{% endblock %}
 
-			{% if locale_language_id != "en" %}
-				{% if locale_iso.language == "pt" and locale_iso.territory == "BR" %}
-					<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_iso.language }}_{{ locale_iso.territory }}.js"></script>
-				{% else %}
-					<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_language_id }}.js"></script>
+			{% block translate %}
+			  	<script src="/{{theme}}/materialize/js/plugins/jquery/jquery.cookies.min.js"></script>
+			    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/translator/jqueryTranslator.min.js"></script>
+			    <script type="text/javascript" src="/{{theme}}/materialize/js/plugins/translator/translation-script.js"></script>
+			    <script>
+	    			function forceLang(lang){
+	    				if (lang == 'en') $('#tr-flag').attr("src", "/default/materialize/images/flags/US.png");
+	    				if (lang == 'es') $('#tr-flag').attr("src", "/default/materialize/images/flags/Mexico.png");
+	    				$("[data-translate]").jqTranslate('/default/materialize/js/plugins/translator/translate', {
+				            forceLang: lang
+				        });
+
+				        /* We save language inside a cookie */
+				        $.cookie('app-language', lang);
+				        $.cookie('app-language', lang, { path: '/' });
+	    			}
+
+	    			// just for the fun of it, after translations occur any affected class and id with interactions should be re-enabled...
+				    setTimeout(function (){enableSoundsandModals(); }, 1500);
+			    </script>
+			    {% if locale_language_id != "en" %}
+					{% if locale_iso.language == "pt" and locale_iso.territory == "BR" %}
+						<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_iso.language }}_{{ locale_iso.territory }}.js"></script>
+					{% else %}
+						<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_language_id }}.js"></script>
+					{% endif %}
 				{% endif %}
-			{% endif %}
+			    {% if locale_language_id == "en" or locale_language_id == "es" %}
+			    	<!-- YOU CAN ADD MORE LANGUAGES BY ADDING A translate_<locale_language_id>.js AT BP_CONTENT/THEMES/DEFAULT/STATIC/MATERIALIZE/JS/PLUGINS/TRANSLATOR 
+			    	<script>forceLang('{{locale_language_id}}');</script>-->
+				{% endif %}
+			{% endblock %}
 
 			{% block page_scripts %}
 				<script src="/{{ theme }}/materialize/js/plugins/jquery/countUp.js"></script>
@@ -942,6 +994,7 @@
 					var dfcmexico_points = 0;
 					var usocialmaps_points = 0;
 					var gpegobmx_points = 0;
+					var cic_points = 0;
 
 
 					var options = {
@@ -960,7 +1013,7 @@
 		                success: function(data) { 
 		                },
 		                error: function(data) { 
-		                	dfcmexico_users = 3;
+		                	dfcmexico_users = 34507;
 		                }
 		            }).done(function(data) {
 		                console.log('dfcmexico_users', data);
@@ -975,7 +1028,7 @@
 		                success: function(data) { 
 		                },
 		                error: function(data) { 
-		                	usocialmaps_users = 13;
+		                	usocialmaps_users = 17;
 		                }
 		            }).done(function(data) {
 		                console.log('usocialmaps_users', data);
@@ -1004,7 +1057,7 @@
 		                success: function(data) { 
 		                },
 		                error: function(data) { 
-		                	mihogarinvictus_users = 1749;		                
+		                	mihogarinvictus_users = 1761;		                
 		                }
 		            }).done(function(data) {
 		                console.log('mihogarinvictus_users', data);
@@ -1021,14 +1074,11 @@
 		                success: function(data) { 
 		                },
 		                error: function(data) { 
-		                	gpegobmx_users = 1247;
+		                	gpegobmx_users = 1372;
 		                }
 		            }).done(function(data) {
 		                console.log('gpegobmx_users', data);
 		                gpegobmx_users = data.users;
-		                var total = dfcmexico_users + usocialmaps_users + mfit_users + mihogarinvictus_users + gpegobmx_users;
-						var demo = new CountUp("counter", 0, total, 0, 2.5, options);
-						demo.start();
 		            });
 
 
@@ -1063,10 +1113,30 @@
 		            }).done(function(data) {
 		                console.log('gpegobmx_points', data);
 		                gpegobmx_points = data.rows[0].count;
-		                var total = dfcmexico_points + usocialmaps_points + gpegobmx_points;
+		            });
+
+		            $.ajax({
+		                url: 'http://cicadmin.cartodb.com/api/v2/sql?q=SELECT%20count(*)%20FROM%20nl_public',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                }
+		            }).done(function(data) {
+		                console.log('cic_points', data);
+		                cic_points = data.rows[0].count;
+		            });
+
+		            setTimeout(function(){ 
+		            	var total = dfcmexico_points + usocialmaps_points + gpegobmx_points + cic_points;
 						var demo = new CountUp("counter2", 0, total, 0, 2.5, options);
 						demo.start();
-		            });
+
+						total = dfcmexico_users + usocialmaps_users + mfit_users + mihogarinvictus_users + gpegobmx_users;
+						var _demo = new CountUp("counter", 0, total, 0, 2.5, options);
+						_demo.start();
+
+		            }, 6000);
+
 				</script>
 
 			{% endblock %}			

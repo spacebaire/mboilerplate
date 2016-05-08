@@ -12,6 +12,9 @@
 import re
 import logging
 import urllib2
+import cgi
+import hashlib
+import os
 # related third party imports
 import webapp2
 from google.appengine.ext import ndb
@@ -27,7 +30,6 @@ from bp_includes.lib.decorators import user_required
 from bp_includes.lib import captcha, utils
 import bp_includes.models as models_boilerplate
 import forms as forms
-
 
 class SecureRequestHandler(BaseHandler):
     """
@@ -55,14 +57,9 @@ class SecureRequestHandler(BaseHandler):
         except (AttributeError, KeyError), e:
             return "Secure zone error:" + " %s." % e
 
-        
-
-
 class EmailsRequestHandler(BaseHandler):
 
     @user_required
     def get(self):
         params = {}
         return self.render_template('emails/emails.html', **params)
-
-        
