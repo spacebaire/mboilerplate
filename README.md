@@ -5,15 +5,16 @@
 
 ###Get started in just a few easy steps*
 
-1. Download the last version of the [App Engine SDK](http://code.google.com/appengine/downloads.html#Google_App_Engine_SDK_for_Python) for Linux, Mac OS or Windows.
+1. Download the last version of the [Cloud Platform SDK](https://cloud.google.com/sdk/docs/) and [App Engine SDK](http://code.google.com/appengine/downloads.html#Google_App_Engine_SDK_for_Python) for Linux, Mac OS or Windows. - <em>hint for linux users: you must copy appengine sdk files into cloud platform sdk/bin/ folder</em>.
 2. Download or clone the code of this Boilerplate ([here](https://github.com/chuycepeda/mboilerplate/zipball/master))
 3. Run locally ([instructions](https://developers.google.com/appengine/docs/python/tools/devserver)).
-4. Set your 'application' name in [app.yaml](https://github.com/chuycepeda/mboilerplate/blob/master/app.yaml)
-1. Set custom config parameters in bp_content/themes [config/localhost.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/localhost.py), [config/testing.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/testing.py) and [config/production.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/production.py) like secret key, [recaptcha code](http://www.google.com/recaptcha), salt and other.
- * Boilerplate will identify which config file to use in local, unit testing and production.
- * To get started, look the default settings in [bp_includes/config.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_includes/config.py). Those settings will be overwrite for your config files.
- * Most of the default settings will need to be changed to yield a secure and working application.
-1. Deploy it online ([instructions](https://developers.google.com/appengine/docs/python/gettingstarted/uploading) - recommended setup: python 2.7, high replication datastore)
+4. Create your new project in [Cloud Platform Console](https://console.cloud.google.com) and get your <em>PROJECT_ID</em>. You can then go to https://console.cloud.google.com/code/tools?project=<em>PROJECT_ID</em> and download your preferred IDE.
+5.  Set your 'application' name in [app.yaml](https://github.com/chuycepeda/mboilerplate/blob/master/app.yaml)
+6. Set custom config parameters in bp_content/themes [config/localhost.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/localhost.py), [config/testing.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/testing.py) and [config/production.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_content/themes/default/config/production.py) like secret key, [recaptcha code](http://www.google.com/recaptcha), salt and other.
+7. Boilerplate will identify which config file to use in local, unit testing and production.
+8. To get started, look the default settings in [bp_includes/config.py](https://github.com/chuycepeda/mboilerplate/blob/master/bp_includes/config.py). Those settings will be overwrite for your config files.
+9. Most of the default settings will need to be changed to yield a secure and working application.
+10. Deploy it online with these [instructions](https://developers.google.com/appengine/docs/python/gettingstarted/uploading) or use the installed Google AppEngine Launcher for Mac and Windows users - <em>recommended setup: python 2.7, high replication datastore</em>
 
 Please note that your custom application code **should be located in the bp_content folder within your own theme**.
 The intention is that separating the boilerplate code from your application code will avoid merge conflicts as you keep up with future boilerplate changes.
