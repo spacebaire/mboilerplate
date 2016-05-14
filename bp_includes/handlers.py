@@ -946,6 +946,7 @@ def disclaim(_self, **kwargs):
         _params['disclaim'] = True
     _params['link_referral'] = user_info.link_referral
     _params['date'] = date.today().strftime("%Y-%m-%d")
+    
 
     return _params, user_info
 
