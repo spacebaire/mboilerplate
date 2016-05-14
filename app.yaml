@@ -17,6 +17,7 @@ threadsafe: true
 
 env_variables:
   theme: 'default'
+# GOOGLE_APPLICATION_CREDENTIALS: bp_includes/MBoilerplate-33b708128a18.json
 
 default_expiration: "30d"
 
