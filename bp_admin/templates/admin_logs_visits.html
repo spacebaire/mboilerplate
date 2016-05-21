@@ -27,9 +27,10 @@
 <div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
     <div class="container">
         <div class="row">
-          <div class="col s12 m12 l12">
-            <h5 class="breadcrumbs-title">Visits</h5>
-          </div>
+          <div class="col s12">
+          <ol class="breadcrumb" style="font-size: 29px;">
+                <li class="active">Visits {{count}}</li>
+            </ol></div>
         </div>
     </div>
 </div>
@@ -40,7 +41,7 @@
 <div class="row" style="margin-top:60px;">
     <form method="get" class="col s12" role="search">
         <div class="input-field col s12 m6">
-          <input placeholder="Search visits" id="q" name="q" type="text" class="validate">
+          <input placeholder="Search visits by User ID or IP" id="q" name="q" type="text" class="validate">
           <label for="q" class="active">Total Visits {{count}}</label>
         </div>
         <button type="submit" class="btn waves-effect waves-light light-blue" style="margin-top:20px;">Search<i class="mdi-action-search right"></i></button><a id="remove" href="/admin/logs/visits/" class="grey-text" style="font-size: 15px;padding:10px;">Remove</a>
@@ -80,13 +81,13 @@
         </td>
         {% endfor %}
         <td>
-            {{ rec_visits[visit.user.id()] }}
+            {{ visit.get_user_count(visit.user.id())}}
         </td>
     </tr>
     {% endfor %}
 </table>
 {{ lib.render_pager() }}
-<div class="row center">
+<div class="row center" style="display:none;">
     <h6 style="  margin-top: 35px;">Recurrent visits histogram (logins after activation: {{ len_hist }})</h6>
     <histogram style="text-align: center;"></histogram>
 </div>
@@ -115,60 +116,60 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var values = {{histogram}};
+// var values = {{histogram}};
 
-// A formatter for counts.
-var formatCount = d3.format(",.0f");
+// // A formatter for counts.
+// var formatCount = d3.format(",.0f");
 
-var margin = {top: 10, right: 30, bottom: 30, left: 30},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+// var margin = {top: 10, right: 30, bottom: 30, left: 30},
+//     width = 960 - margin.left - margin.right,
+//     height = 500 - margin.top - margin.bottom;
 
-var x = d3.scale.linear()
-    .domain([0, {{maxValue}}])
-    .range([0, width]);
+// var x = d3.scale.linear()
+//     .domain([0, {{maxValue}}])
+//     .range([0, width]);
 
-// Generate a histogram using twenty uniformly-spaced bins.
-var data = d3.layout.histogram()
-    .bins(x.ticks(50))
-    (values);
+// // Generate a histogram using twenty uniformly-spaced bins.
+// var data = d3.layout.histogram()
+//     .bins(x.ticks(50))
+//     (values);
 
-var y = d3.scale.linear()
-    .domain([0, d3.max(data, function(d) { return d.y; })])
-    .range([height, 0]);
+// var y = d3.scale.linear()
+//     .domain([0, d3.max(data, function(d) { return d.y; })])
+//     .range([height, 0]);
 
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
+// var xAxis = d3.svg.axis()
+//     .scale(x)
+//     .orient("bottom");
 
-var svg = d3.select("histogram").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+// var svg = d3.select("histogram").append("svg")
+//     .attr("width", width + margin.left + margin.right)
+//     .attr("height", height + margin.top + margin.bottom)
+//   .append("g")
+//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var bar = svg.selectAll(".bar")
-    .data(data)
-  .enter().append("g")
-    .attr("class", "bar")
-    .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+// var bar = svg.selectAll(".bar")
+//     .data(data)
+//   .enter().append("g")
+//     .attr("class", "bar")
+//     .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
 
-bar.append("rect")
-    .attr("x", 1)
-    .attr("width", x(data[0].dx) - 1)
-    .attr("height", function(d) { return height - y(d.y); });
+// bar.append("rect")
+//     .attr("x", 1)
+//     .attr("width", x(data[0].dx) - 1)
+//     .attr("height", function(d) { return height - y(d.y); });
 
-bar.append("text")
-    .attr("dy", ".75em")
-    .attr("y", 6)
-    .attr("x", x(data[0].dx) / 2)
-    .attr("text-anchor", "middle")
-    .text(function(d) { return formatCount(d.y); });
+// bar.append("text")
+//     .attr("dy", ".75em")
+//     .attr("y", 6)
+//     .attr("x", x(data[0].dx) / 2)
+//     .attr("text-anchor", "middle")
+//     .text(function(d) { return formatCount(d.y); });
 
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+// svg.append("g")
+//     .attr("class", "x axis")
+//     .attr("transform", "translate(0," + height + ")")
+//     .call(xAxis);
 
 </script>
 {% endblock %}

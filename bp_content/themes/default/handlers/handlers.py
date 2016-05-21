@@ -59,7 +59,6 @@ class SecureRequestHandler(BaseHandler):
 
 class EmailsRequestHandler(BaseHandler):
 
-    @user_required
     def get(self):
         params = {}
         return self.render_template('emails/emails.html', **params)

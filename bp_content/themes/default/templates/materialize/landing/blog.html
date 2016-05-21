@@ -4,28 +4,51 @@
   <title>{{app_name}} » Blog</title>
 {% endblock %}
 
+{% block page_css %}
+  <style>
+  .blog-post-full-cat{
+    padding: 5px!important;
+    margin: 25px;
+    right: 0px;
+    left: inherit!important;
+    font-size: 15px!important;
+    font-weight: 500!important;
+    letter-spacing: 1px;
+    text-transform: uppercase;  
+    border-radius: 0px!important;
+  }
+  .blog-post-full-cat a{  
+    color: #fff;
+    text-shadow:none;
+  }
+  .card-title{
+      background: rgba(128, 128, 128, 0.42);
+      border-radius: 2px 35px 0px 0px;
+  }
+</style>
+{% endblock %}
+
 {% block header_content %}
   <div class="parallax-container z-depth-3">
     <div class="section no-pad-bot">
-      <div class="container">
-        <br><br>
-        <h1 class="header center brand-color-text text-lighten-2 ">BLOG</h1>
+      <div class="container row">
+        <h6 class="center counter_holder col m3 offset-m8 s8 offset-s4 hide-on-small-only animated rubberBand sloop white-text" style="text-decoration:underline;margin-top: 70px; font-size:35px; margin-bottom: -50px;padding: 2px;">Blog</h6>
+        <div class="card-panel col m3 offset-m8 s8 offset-s4 z-index-3" style="    opacity: 0.76;    margin-top: 80px;">
+          <h5 class="header col s12 brand-color-text light" style="line-height: 40px;">Welcome, please fasten your seatbelts.<br>
         <div class="row center">
-          <h5 class="header col s12 white-text light">{{app_name}}</h5>
+          <a class="glow btn-floating btn-large brand-color" href="#more"><i class="mdi-navigation-expand-more"></i></a>
+        </div>    
+          </h5>
         </div>
-        <div class="row center">
-        </div>
-        <br>
-        <br>
       </div>
     </div>
-    <div class="parallax"><img src="/{{theme}}/materialize/images/landing/black_mac.png" alt="Unsplashed background img 1" style="display: block; transform: translate3d(-50%, 351px, 0px);"></div>
+    <div class="parallax"><img src="{{brand_splash}}" alt="onesmart.city" style="/*-webkit-animation: sunrise 10s ease-out; -webkit-animation-iteration-count: infinite;*/"></div>
   </div>
 {% endblock %}
 
 {% block body_content %}
   <div class="container">
-    <div class="section">
+    <div class="section" id="more">
         {% if total == 0 %}
         <div class="row">
           <div class="col s12 m4 offset-m4">
@@ -37,30 +60,31 @@
         </div>
         {% endif %}
         <div class="row">
-          {% for id, updated, title, subtitle, blob_key, author, brief, category in posts %}
-              <div class="col s12 m4">
-                  <div class="card">
-                    <div class="card-image waves-effect waves-block waves-light">
-                      <img class="activator" src="/blobstore/serve/{{blob_key}}/" alt="">
+          {% for id, created, title, subtitle, blob_key, author, brief, category in posts %}
+              <div class="card medium">
+                    <div class="card-image">
+                      <img src="/blobstore/serve/{{blob_key}}/" alt="" style="-webkit-filter: brightness(75%);">
+                      <span class="card-title">{{title}} - <span style="font-family:roboto-thin">{{subtitle}}</span></span>
+                      <span class="card-title blog-post-full-cat right orange"><a style="cursor:pointer">#: {{category}}</a></span>
                     </div>
-                    <div class="card-content" style="background:white;">
-                      <span class="card-title activator grey-text text-darken-4">{{title}} <i class="mdi-navigation-more-vert right"></i></span>
-	                  <p style="font-family: roboto-thin;" class="ultra-small">{{updated}}</p>
-                      <p style="font-family: roboto-thin;">{{subtitle}}</p>
-                      <p class="ultra-small brand-color-text">#: {{category}}</p>
+                    <div class="card-content">
+                      <p class="ultra-small">{{created}}</p>
+                      <p class="truncate">{{brief}}</p>
                     </div>
                     <div class="card-action">
-                      by <a>{{author}}</a>
+                      Por <a href="http://www.twitter.com/{{author}}" target="_blank">@{{author}}</a>
                       <a href="/blog/{{id}}/" class="right">Read more &gt;</a>
                     </div>
-                    <div class="card-reveal" style="display: none; transform: translateY(0px);">
-                      <span class="card-title grey-text text-darken-4">{{title}} <i class="mdi-navigation-close right"></i></span>
-                      <p>{{brief}}</p>
-                    </div>
-                  </div>
               </div>
           {% endfor %}
         </div>
     </div>
   </div>
+{% endblock %}
+
+{% block footer_head %}
+{% endblock %}
+
+
+{% block page_scripts %}
 {% endblock %}

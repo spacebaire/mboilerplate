@@ -8,7 +8,7 @@ from bp_includes import forms, models, handlers, messages
 from bp_includes.lib.basehandler import BaseHandler
 from datetime import datetime, date, time, timedelta
 import logging
-
+from google.appengine.api import users as g_users #https://cloud.google.com/appengine/docs/python/refdocs/modules/google/appengine/api/users#get_current_user
 
 class AdminStatsHandler(BaseHandler):
     def get(self): 
@@ -18,6 +18,7 @@ class AdminStatsHandler(BaseHandler):
 
         blogs = models.BlogPost.query()
         params['sum_blogs'] = blogs.count()
+        params['nickname'] = g_users.get_current_user().email().lower()
         return self.render_template('admin_stats.html', **params)
 
 class AdminUserGeoChartHandler(BaseHandler):
@@ -37,6 +38,7 @@ class AdminUserGeoChartHandler(BaseHandler):
             "list_attrs": [('lat', 'lon')],
             "latlngs": latlngs,
         }
+        params['nickname'] = g_users.get_current_user().email().lower()
         return self.render_template('admin_users_geochart.html', **params)
 
 class EditProfileForm(forms.SettingsProfileForm):
@@ -51,18 +53,20 @@ class AdminUserListHandler(BaseHandler):
         cursor = Cursor(urlsafe=c)
 
         if q:
-            _users = []
-            qry = self.user_model.query(ndb.OR(self.user_model.name >= q.lower(),
-                                           self.user_model.email >= q.lower(),
-                                           self.user_model.username >= q.lower()))
-            for _qry in qry:
-                if q.lower() in _qry.name.lower() or q.lower() in _qry.email.lower() or q.lower() in _qry.username.lower():
-                    _users.append(_qry)
-            users = _users
-            count = len(users)
+            try:
+                qry = self.user_model.get_by_id(long(q.lower()))
+                count = 1 if qry else 0
+            except Exception as e:
+                logging.info('Exception at query: %s; trying with email' % e)
+                qry = self.user_model.get_by_email(q.lower())
+                count = 1 if qry else 0
+            users = []
+            if qry:
+                users.append(qry)
         else:
             qry = self.user_model.query()
             count = qry.count()
+
             PAGE_SIZE = 50
             if forward:
                 users, next_cursor, more = qry.order(-self.user_model.last_login).fetch_page(PAGE_SIZE, start_cursor=cursor)
@@ -76,7 +80,7 @@ class AdminUserListHandler(BaseHandler):
                 if next_cursor and more:
                     self.view.prev_cursor = next_cursor
                 self.view.next_cursor = cursor.reversed()
-
+            
         def pager_url(p, cursor):
             params = OrderedDict()
             if q:
@@ -95,7 +99,6 @@ class AdminUserListHandler(BaseHandler):
                              ('name', 'Name'),
                              ('last_name', 'Last'),
                              ('link_referral', 'Unique Link'),
-                             ('key', 'Key'),
                              ('rewards','Rewards'),
                              ('created', 'Created'),
                              ('last_login', 'Last Login')
@@ -103,6 +106,7 @@ class AdminUserListHandler(BaseHandler):
             "users": users,
             "count": count
         }
+        params['nickname'] = g_users.get_current_user().email().lower()
         return self.render_template('admin_users_list.html', **params)
 
 class AdminUserEditHandler(BaseHandler):
@@ -157,6 +161,7 @@ class AdminUserEditHandler(BaseHandler):
         params = {
             'user': user
         }
+        params['nickname'] = g_users.get_current_user().email().lower()
         return self.render_template('admin_user_edit.html', **params)
 
     @webapp2.cached_property

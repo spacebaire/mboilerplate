@@ -266,7 +266,7 @@
 				    <br>
 				  </div>
 				</div>
-				<div class="parallax"><img src="/{{theme}}/materialize/images/landing/black_mac.png" alt="Unsplashed background img 1" style="display: block; transform: translate3d(-50%, 351px, 0px);"></div>
+				<div class="parallax"><img src="{{brand_splash}}" alt="Unsplashed background img 1" style="display: block; transform: translate3d(-50%, 351px, 0px);"></div>
 			</div>
 		{% endblock %}
 
@@ -579,6 +579,7 @@
 		{% endblock %}
 
 		{% block footer %}
+			{% block footer_head %}
 			<!-- PAYPAL -->
 			<div class="parallax-container z-depth-3">
 				<div class="section no-pad-bot" style="  margin-top: 10%;">
@@ -611,6 +612,7 @@
 				  </div>
 				</div>
 			</div>
+			{% endblock %}
 			<!-- START FOOTER -->
 			<footer class="page-footer brand-color darken-1">
 				<a href="#"><i class="mdi-navigation-expand-less white-text right" style="padding: 10px;"></i></a>
@@ -633,7 +635,7 @@
 				</div>
 				<div class="footer-copyright " style="text-align:right;">
 				  <div class="container tooltipped" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">
-				  	<a class="white-text" href="{{uri_for("license")}}">MIT License - </a>© 2015 M Boilerplate, All rights reserved. Made from real<i class="mdi-image-flash-on white-text" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i> by <a href="http://onesmart.tech">OneSmart.Tech</a>
+				  	<a class="white-text" href="{{uri_for("license")}}">MIT License - </a>© 2015 {{app_name}}, All rights reserved. Made from real<i class="mdi-image-flash-on brand-secondary-color-text" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i> by <a class="brand-secondary-color-text href="http://onesmart.tech">OneSmart.Tech</a>
 				  </div>
 				</div>
 			</footer>

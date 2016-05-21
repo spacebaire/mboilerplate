@@ -53,11 +53,33 @@ $(function() {
   //    FONT LOADERS
   WebFont.load({
       custom: {
-        families: ['Roboto-Black','Roboto-BlackItalic','Roboto-Bold','Roboto-BoldItalic','Roboto-Italic','Roboto-Light','Roboto-LightItalic','Roboto-Medium','Roboto-MediumItalic','Roboto-Regular','Roboto-Thin','Roboto-ThinItalic']
+        families: ['Roboto-Black','Roboto-BlackItalic','Roboto-Bold','Roboto-BoldItalic','Roboto-Italic','Roboto-Light','Roboto-LightItalic','Roboto-Medium','Roboto-MediumItalic','Roboto-Regular','Roboto-Thin','Roboto-ThinItalic','Agenda-Light', 'Agenda-Bold', 'Novecentowide-Bold']
       }
   });
   
-  $('select').material_select();
+  // Materialize Slider
+  $('.slider').slider({
+    full_width: true
+  });
+
+  // Materialize Dropdown
+  // Pikadate datepicker
+  $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 60, // Creates a dropdown of years to control year
+    format: 'yyyy-mm-dd', // Creates adequate html5 default formatting
+    formatSubmit: 'yyyy-mm-dd', // Creates adequate html5 default formatting
+    monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+    weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+    today: 'Hoy',
+    clear: '',
+    close: 'Cerrar',
+    max: new Date()
+  });
+
+$('select').material_select();
   // Set checkbox on forms.html to indeterminate
   var indeterminateCheckbox = document.getElementById('indeterminate-checkbox');
   if (indeterminateCheckbox !== null)
@@ -109,8 +131,8 @@ $(function() {
   $('.parallax').parallax();
   // Materialize Modal
   $('.modal-trigger').leanModal({
-      dismissible: false, // Modal can be dismissed by clicking outside of the modal
-      opacity: .5, // Opacity of modal background
+      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+      opacity: .25, // Opacity of modal background
       in_duration: 300, // Transition in duration
       out_duration: 200, // Transition out duration
       ready: function() { 
@@ -168,25 +190,6 @@ $(function() {
   $('.chat-collapsible').collapsible({
     accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
   });
-
-  // Pikadate datepicker
-  $('.datepicker').pickadate({
-    selectMonths: true, // Creates a dropdown to control month
-    selectYears: 15 // Creates a dropdown of 15 years to control year
-  });
-  // $('.datepicker').pickadate({
-  //   selectMonths: true, // Creates a dropdown to control month
-  //   selectYears: 100, // Creates a dropdown of 15 years to control year
-  //   format: 'yyyy-mm-dd', // Creates adequate html5 default formatting
-  //   formatSubmit: 'yyyy-mm-dd', // Creates adequate html5 default formatting
-  //   monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-  //   monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-  //   weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-  //   weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-  //   today: 'Hoy',
-  //   clear: '',
-  //   close: 'Cerrar'
-  // });
   
   // Perfect Scrollbar
   $('select').not('.disabled').material_select();

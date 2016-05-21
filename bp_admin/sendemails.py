@@ -4,6 +4,7 @@ from bp_includes.lib.basehandler import BaseHandler
 from google.appengine.api import taskqueue
 import logging
 from bp_includes import messages
+from google.appengine.api import users as g_users #https://cloud.google.com/appengine/docs/python/refdocs/modules/google/appengine/api/users#get_current_user
 
 class AdminSendEmailListHandler(BaseHandler):
     def get(self):
@@ -11,6 +12,7 @@ class AdminSendEmailListHandler(BaseHandler):
         params = {
             "recipent": email_id,
         }        
+        params['nickname'] = g_users.get_current_user().email().lower()
         return self.render_template('admin_send_email.html', **params)
             
     def post(self):

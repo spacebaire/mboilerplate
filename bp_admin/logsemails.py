@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 from collections import OrderedDict
 from bp_includes.lib.basehandler import BaseHandler
 from bp_includes.models import LogEmail
+from google.appengine.api import users as g_users #https://cloud.google.com/appengine/docs/python/refdocs/modules/google/appengine/api/users#get_current_user
 
 
 class AdminLogsEmailsHandler(BaseHandler):
@@ -50,7 +51,7 @@ class AdminLogsEmailsHandler(BaseHandler):
 
         params = {
             "list_columns": [('when', 'When'),
-                             ('to', 'To'),
+                             ('to', 'Recipient'),
                              ('subject', 'Subject'),
                              ('sender', 'Sender'),
             #                 ('body', 'Body')
@@ -58,6 +59,7 @@ class AdminLogsEmailsHandler(BaseHandler):
             "emails": emails,
             "count": qry.count()
         }
+        params['nickname'] = g_users.get_current_user().email().lower()
         return self.render_template('admin_logs_emails.html', **params)
 
 
@@ -69,6 +71,7 @@ class AdminLogsEmailViewHandler(BaseHandler):
                 params = {
                     'emailinfo': emaildata
                 }
+                params['nickname'] = g_users.get_current_user().email().lower()
                 return self.render_template('admin_logs_email_view.html', **params)
         except ValueError:
             pass

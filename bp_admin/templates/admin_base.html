@@ -81,6 +81,120 @@
                     box-sizing: border-box;
                 }
 
+                li .active{
+                    background-color: rgba(0, 0, 0, 0.05)!important;
+                }
+                li .active a{
+                    color:#444!important;
+                }
+
+                /*BRANDING*/
+                .brand-color{
+                    background-color: {{brand_color}}!important;
+                }
+                .brand-color-text{
+                    color:{{brand_color}}!important;
+                }
+                .brand-secondary-color{
+                    background-color: {{brand_secondary_color}}!important;
+                }
+                .brand-secondary-color-text{
+                    color:{{brand_secondary_color}}!important;
+                }
+                .brand-tertiary-color{
+                    background-color: {{brand_tertiary_color}}!important;
+                }
+                .brand-tertiary-color-text{
+                    color:{{brand_tertiary_color}}!important;
+                }
+                .btn{
+                    background-color: {{brand_color}};
+                    font-family: roboto-light;
+                }
+                .btn:hover{
+                    background-color: {{brand_secondary_color}}!important;
+                    color:white!important;
+                }
+                .btn-large{
+                    background-color: {{brand_color}};
+                    font-family: roboto-light;
+                }
+                .btn-large:hover{
+                    background-color: {{brand_secondary_color}}!important;
+                }
+                .btn-floating{
+                    background-color: {{brand_color}};
+                }
+                .btn-floating:hover{
+                    background-color: {{brand_secondary_color}}!important;
+                }
+                {% if is_mobile %}
+                .btn{
+                    margin-top:15px;
+                }
+                .btn-large{
+                    margin-top:15px;
+                }
+                {% endif %} 
+                #loader {
+                  border-top-color: {{brand_color}}!important;
+                }
+                #loader:before {
+                  border-top-color: {{brand_secondary_color}}!important;
+                }
+                #loader:after {
+                  border-top-color: {{brand_tertiary_color}}!important;
+                }
+                [type=checkbox].filled-in:checked+label:after{
+                    border: 2px solid {{brand_secondary_color}}!important;
+                    background-color: {{brand_secondary_color}}!important;
+                }
+                .dataTables_scrollBody {
+                    min-height: 200px;
+                }
+                .side-nav .collapsible-body li a {
+                    margin: 0 1rem 0 2rem;
+                }
+
+                ol{
+                    list-style-type: none!important;
+                }
+
+                .breadcrumb:last-child {
+                    color: {{brand_color}}!important;
+                    font-family: roboto-thin;
+                }
+                
+                .breadcrumb li a {
+                    color: {{brand_secondary_color}};
+                    font-family: roboto-light;
+                }
+
+                .breadcrumb{
+                    height: 15px;
+                    margin-top: 15px;
+                }
+
+                .dropdown-content li > a, .dropdown-content li > span{
+                    color: {{brand_secondary_color}}!important;
+                }
+                                
+                .picker__day--selected{
+                    background-color: {{brand_color}}!important;
+                }
+
+                .picker__date-display{
+                    background-color: {{brand_color}}!important;
+                }
+
+                .picker__weekday-display{
+                    background-color: {{brand_color}}!important;
+                }
+                
+                .picker__close, .picker__today{
+                    color: {{brand_color}}!important;
+                }
+
             </style>
             {% block page_css %}{% endblock %}
             {% if user_id %}
@@ -125,7 +239,7 @@
                 <div class="navbar-fixed">
                     <nav class="white">
                         <div class="nav-wrapper">
-                            <h1 class="logo-wrapper"><a href="{{ uri_for('admin') }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-gray.png" alt="materialize logo" style="height: 45px;width: 45px;"></a></h1>
+                            <h1 class="logo-wrapper"><a href="{{ uri_for('admin') }}" class="brand-logo darken-1"><img src="{{brand_email_logo}}" alt="materialize logo" style="height: 45px;width: 45px;"></a></h1>
                             <ul class="right hide-on-med-and-down">
                                 <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen grey-text text-ligthen-1"><i class="mdi-action-settings-overscan"></i></a>
                                 </li>
@@ -150,13 +264,10 @@
                             <!-- START LEFT SIDEBAR NAV-->
                             <aside id="left-sidebar-nav">
                                 <ul id="slide-out" class="side-nav fixed leftside-navigation">
-                                    <li class="user-details" style="background: url(/{{theme}}/materialize/images/user_back.jpg) no-repeat center center; background-size:cover">
+                                    <li class="user-details brand-color">
                                         <div class="row">
-                                            <div class="col col s4 m4 l4">
-                                                <span class="circle grey lighten-1" style="width: 42px;   height: 42px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; margin-top: 0px;margin-left: 10px;   margin-bottom: 15px;">A</span>
-                                            </div>
-                                            <div class="col col s8 m8 l8">
-                                                <a class="btn-flat waves-effect waves-light white-text profile-btn" href="#" >Admin Panel</a>
+                                            <div class="col col s12" style="    margin-bottom: 15px;">
+                                                <a class="btn-flat waves-effect waves-light white-text profile-btn truncate">{{nickname}}</a>
                                             </div>
                                         </div>
                                     </li>
@@ -284,7 +395,7 @@
                 {% block page_footer %}{% endblock %}
                 <div class="footer-copyright white grey-text text-lighten-2">
                     <div class="container">
-                        <div class="container" style="text-align:right;" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">Made from real<i class="mdi-image-flash-on yellow-text text-lighten-1" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i>
+                        <div class="container" style="text-align:right;" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">Made from real<i class="mdi-image-flash-on brand-color-text text-lighten-1" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i> by <a href="http://onesmart.tech">OneSmart.Tech</a>
                     </div>
                 </div>
             </footer>

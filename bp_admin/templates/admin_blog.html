@@ -5,9 +5,10 @@
 <div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
     <div class="container">
         <div class="row">
-          <div class="col s12 m12 l12">
-            <h5 class="breadcrumbs-title">Blog <a class="btn waves-effect waves-light right indigo" href="/admin/blog/1/">New<i class="mdi-action-note-add left"></i></a></h5>
-          </div>
+          <div class="col s12">
+          <ol class="breadcrumb" style="font-size: 29px;">
+              <li class="active">Blog <a class="btn waves-effect waves-light right brand-color white-text" href="/admin/blog/1/">New<i class="mdi-action-note-add left"></i></a></li>
+          </ol></div>
         </div>
     </div>
 </div>
@@ -36,6 +37,7 @@
                 {{ when|safe }}
             </th>
             {% endfor %}
+            <th class="col m1">Delete</th>
         </tr>
     </thead>
     {% for blog in blogs %}
@@ -51,10 +53,39 @@
             {{ getattr(blog, attr)|e }}
         </td>
         {% endfor %}
+        <td>
+            <a class="icon modal-trigger" href="#modal_delete" onclick="setID({{blog.get_id()}})"><span style="margin-left: 8px; color:red">X</span></a>
+        </td>
     </tr>
     {% endfor %}
 </table>
 {{ lib.render_pager() }}
+ <form class="col s12" id="form_delete" action="{{ url|safe }}" method="post" style="display:none;">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" id="blog_id" name="blog_id">
+ </form>
+
+<div id="modal_delete" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 25%; z-index: 9;">
+          <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+          <div class="modal-content">
+              <div class="row">
+                    <div class="input-field col s12 center">
+                      <p class="center login-form-text">¿Seguro que deseas eliminar el caso de estudio?</p>
+                    </div>
+                    <div class="row">
+                      <div class="container">
+                          <div class="row">
+                            <div class="input-field col s12">
+                              <a class="btn-large waves-effect waves-light col s4 grey white-text modal-action modal-close" style="cursor:pointer;">Cancelar</a>
+                              <a class="btn-large waves-effect waves-light col s4 offset-s4 brand-color white-text" style="cursor:pointer;" id="submit_form_delete">Sí, seguro</a>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+              </div>
+          </div>
+    </div>
+
 {% endblock %}
 
 
@@ -74,6 +105,15 @@
             $('#remove').show();
           else
             $('#remove').hide();
+      });
+
+      function setID(_id){
+          document.getElementById("blog_id").value = parseInt(_id);
+      }
+
+    
+      document.querySelector('#submit_form_delete').addEventListener('click', function() { 
+          document.getElementById("form_delete").submit();
       });
     </script>
 

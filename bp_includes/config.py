@@ -23,12 +23,15 @@ config = {
     # application name
     'app_name':  unicode('M Boilerplate','utf-8'),
     'app_id': 'mboilerplate',
+    'app_domain':  'http://mboilerplate.appspot.com',
     # application branding 
-    'brand_logo': '/default/materialize/images/favicon/fav-white.png',
-    'brand_favicon': '/default/materialize/images/favicon/fav.png',
+    'brand_logo': 'http://mboilerplate.appspot.com/default/materialize/images/favicon/fav-white.png',
+    'brand_email_logo': 'http://mboilerplate.appspot.com/default/materialize/images/favicon/fav-blue.png',
+    'brand_favicon': 'http://mboilerplate.appspot.com/default/materialize/images/favicon/fav.png',
     'brand_color' : '#00AFF0',
     'brand_secondary_color' : '#0d47a1',
     'brand_tertiary_color' : '#EAEAEA',
+    'brand_splash': 'http://mboilerplate.appspot.com/default/materialize/images/landing/black_mac.png',
     # application on the web
     'meta_tags_code': """
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -39,13 +42,13 @@ config = {
             <meta property="og:type" content="website"/>
             <meta property="og:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine."/>
             <meta property="og:url" content="http://mboilerplate.appspot.com"/>
-            <meta property="og:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png"/>
+            <meta property="og:image" content="http://mboilerplate.appspot.com{{brand_splash}}"/>
             <meta name="twitter:card" content="summary_large_image">
             <meta name="twitter:site" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
             <meta name="twitter:creator" content="@chuycepeda">
             <meta name="twitter:title" content="MBoilerplate">
             <meta name="twitter:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
-            <meta name="twitter:image" content="http://mboilerplate.appspot.com/{{theme}}/materialize/images/landing/black_mac.png">
+            <meta name="twitter:image" content="http://mboilerplate.appspot.com{{brand_splash}}">
             <meta property="twitter:url" content="http://mboilerplate.appspot.com"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">""",

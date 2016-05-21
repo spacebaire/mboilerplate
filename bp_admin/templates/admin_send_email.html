@@ -9,9 +9,11 @@
 <div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
     <div class="container">
         <div class="row">
-          <div class="col s12 m12 l12">
-            <h5 class="breadcrumbs-title">Send email<a class="btn waves-effect waves-light right indigo" href="/admin/">Back<i class="mdi-navigation-arrow-back left"></i></a></h5>
-          </div>
+          <div class="col s12">
+            <ol class="breadcrumb" style="font-size: 29px;">
+                <li class="active">Send email<a class="btn waves-effect waves-light right brand-color white-text" href="/admin/">Back<i class="mdi-navigation-arrow-back left"></i></a></li>
+            </ol>
+            </div>
         </div>
     </div>
 </div>
@@ -53,6 +55,7 @@
         </div>
         </div>
         <div class="row">
+        <div class="row">
         <div id="dataforemail" class="col s12 l6" style="border-right:1px solid grey">
             <table cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFFFF;width:554px;margin:0px auto;padding:0px;border-spacing:0;border-collapse:collapse;">
                 <tbody>
@@ -61,8 +64,8 @@
                         <td style="background-color: #FFFFFF;padding:15px 10px">
                             <center>
                                 <div style="width: 100%">
-                                    <label for="logourl">URL for logo image</label>
-                                    <input id="logourl"type="text" style="padding:10px; width: 100%" placeholder="http://mboilerplate.appspot.com/default/materialize/images/favicon/fav-gray.png" value="http://mboilerplate.appspot.com/default/materialize/images/favicon/fav-gray.png">
+                                    <label for="logourl">URL logo</label>
+                                    <input id="logourl"type="text" style="padding:10px; width: 100%" placeholder="{{brand_email_logo}}" value="{{brand_email_logo}}">
                                 </div>
                             </center>
                         </td>
@@ -73,8 +76,8 @@
                         <td style="background-color: #FFFFFF;padding:15px 10px">
                             <center>
                                 <div >
-                                    <label for="moodurl">URL for art image</label>
-                                    <input id="moodurl"type="text" style="padding:10px; width: 100%;height: 100%" placeholder="http://mboilerplate.appspot.com/default/materialize/images/emails/ninja.png" value="http://mboilerplate.appspot.com/default/materialize/images/emails/ninja.png">
+                                    <label for="moodurl">URL art</label>
+                                    <input id="moodurl"type="text" style="padding:10px; width: 100%;height: 100%" placeholder="{{brand_splash}}" value="{{brand_splash}}">
                                 </div>
                             </center>
                         </td>
@@ -84,7 +87,7 @@
                         <td style="width:24px;background-color: #FFFFFF;"></td>
                         <td style="background-color: #FFFFFF;padding:15px 10px">
                             <div>
-                                <label for="greetingtitle">Welcoming title</label>
+                                <label for="greetingtitle">Title</label>
                             </div>
                             <div>
                                 <input id="greetingtitle"type="text" style="padding:10px;" placeholder="Hello !" value="Hello !">
@@ -95,7 +98,7 @@
                             <div>
                                 <input id="greeting"type="text" style="padding:10px;" placeholder="How are you Random User!" value="How are you Random User!">
                             </div>
-                            <label for="body">Body</label>
+                            <label for="body">Message</label>
                             <textarea id="body" rows="8" style="width: 100%" placeholder="Mensaje principal del correo" >We're happy to have you so close. Thus, we wanted to tell you that...</textarea>
                         </td>
                         <td style="width:24px;background-color: #FFFFFF;"></td>
@@ -104,18 +107,18 @@
                         <td style="width:24px;background-color: #FFFFFF;"></td>
                         <td style="background-color: #FFFFFF;padding:15px 10px; color:white;text-align:center;">
                             <center>
-                                <div style="padding: 5px; width: 60%; border-style: solid; background-color:#03A9F4" >
+                                <div style="padding: 5px; width: 100%; border-style: solid;" >
                                 <div>
                                     <label for="ctatext">Call to action text</label>
                                 </div>
                                 <div>
-                                    <input id="ctatext"type="text" style="padding:10px; width: 50%" placeholder="Confirm email" value="Confirm email">
+                                    <input id="ctatext"type="text" style="padding:10px; width: 100%; color: #BABABA" placeholder="Visit M Boilerplate" value="Visit M Boilerplate">
                                 </div>
                                 <div>
-                                    <label for="ctaurl">URL for call to action</label>
+                                    <label for="ctaurl">Call to action URL</label>
                                 </div>
                                 <div>
-                                    <input id="ctaurl"type="text" style="padding:10px; width: 50%" placeholder="http://mboilerplate.appspot.com/" value="http://mboilerplate.appspot.com/">
+                                    <input id="ctaurl"type="text" style="padding:10px; width: 100%; color: #BABABA" placeholder="{{app_domain}}" value="{{app_domain}}">
                                 </div>
                                 </div>
                             </center>
@@ -129,7 +132,7 @@
                                 <label for="closing">Closing</label>
                             </div>
                             <div style="width: 60%">
-                                <input id="closing"type="text" style="padding:10px;width: 100%" placeholder="Mensaje de cierre" value="Have a good one !">
+                                <input id="closing"type="text" style="padding:10px;width: 100%" placeholder="Have a good one !" value="Have a good one !">
                             </div>
                             <div>
                                 <label for="cheers">Good-bye</label>
@@ -141,46 +144,7 @@
                                <label for="sign">Signature</label>
                             </div>
                             <div>
-                                <input id="sign"type="text" style="padding:10px;" placeholder="Firma" value="Mboilerplate team">
-                            </div>
-                            <div style="margin-top: 50px;padding:0px 15px 5px;color: #5A5858;font-size: 13px;line-height:24px;">                         
-                                <p style="font-family: roboto;font-size:14px;text-align:center; letter-spacing:0.5px;color: #657D8D;">Doubts? Check our </span><a href="{{uri_for("faq")}}" style="color:#03A9F4; text-decoration:none" target="_blank">FAQ</a>.</p>
-                            </div>      
-                            <div align="center">
-                                <table cellpadding="0" cellspacing="0" border="0" style="margin:auto;background-color: #FFF;width:500px;font-size:11px;font-weight:400;color:#ffffff;margin-top: 30px;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="width:200px;padding:0px 0px;border-top: 1px solid rgb(223, 223, 223); padding-top: 15px;">
-                                                <table cellpadding="0" cellspacing="0" border="0" style="margin: auto;padding: 8px 0px 8px 0px;">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td style="text-align:center;padding:0px 10px">
-                                                                <a href="{{support_url}}" title="Contáctanos" target="_blank">
-                                                                    <img alt="Contáctanos" title="Contáctanos" border="0" src="http://mboilerplate.appspot.com/default/materialize/images/emails/mail_bl.png" height="30px" style="display:block;margin:auto">
-                                                                </a>
-                                                            </td>
-                                                            <td style="text-align:center;padding:0px 10px">
-                                                                <a href="http://twitter.com/invictusmx" title="Comparte en Twitter" target="_blank">
-                                                                    <img alt="Comparte en Twitter" title="Comparte en Twitter" border="0" src="http://mboilerplate.appspot.com/default/materialize/images/emails/tw_bl.png" height="30px" style="display:block;margin:auto">
-                                                                </a>
-                                                            </td>
-                                                            <td style="text-align:center;padding:0px 10px">
-                                                                <a href="http://www.facebook.com/wwwinvictusmx" title="Comparte en Facebook" target="_blank">
-                                                                    <img alt="Comparte en Facebook" border="0" title="Invictus Facebook" src="http://mboilerplate.appspot.com/default/materialize/images/emails/fb_bl.png" height="30px" style="display:block;margin:auto">
-                                                                </a>
-                                                            </td>
-                                                            <td style="text-align:center;padding:0px 10px">
-                                                                <a href="https://www.linkedin.com/company/3577170?trk=tyah&trkInfo=tarId%3A1422386950602%2Ctas%3Ainvictus.mx%2Cidx%3A2-1-2" title="Ver en LinkedIn" target="_blank">
-                                                                    <img alt="Ver en LinkedIn" border="0" title="Ver en LinkedIn" src="http://mboilerplate.appspot.com/default/materialize/images/emails/in_bl.png" height="30px" style="display:block;margin:auto">
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <input id="sign"type="text" style="padding:10px; color:{{brand_color}};" placeholder="Team {{app_name}}" value="Team {{app_name}}">
                             </div>
                         </td>
                         <td style="width:24px;background-color: #FFFFFF;"></td>
@@ -198,7 +162,7 @@
                         <td style="width:24px;background-color: #FFFFFF;"></td>
                         <td style="background-color: #FFFFFF;padding:15px 10px">
                             <center>
-                                <a href="http://mihogar.invictus.mx" target="_blank">
+                                <a href="#" target="_blank">
                                     <img id="p_logourl" src="" height="40px">
                                 </a>
                             </center>
@@ -214,7 +178,7 @@
                             <div style="text-align:center">                            
                                 <img id="p_moodurl" src="" style="max-width:547px;">
                             </div>
-                            <h1 id= "p_greetingtitle" style="min-height:48px;margin:0;color: #657D8D;font-size:20px;font-weight: 700;line-height:48px;margin-left: 20px;font-family:roboto"></h1>
+                            <h1 id= "p_greetingtitle" style="min-height:48px;margin:0;color: #657D8D;font-size:20px;font-weight: 700;line-height:48px;margin-left: 20px;font-family:roboto; margin-top:30px;text-align:center"></h1>
                             <table cellpadding="0" cellspacing="0" border="0" style="width:552px;margin:-16px auto;padding:0px;background-color:#ffffff;border-spacing:0;border-collapse:collapse">
                                 <tbody>
                                     <tr height="20" style="height:20px">
@@ -235,8 +199,8 @@
                                                                 <table cellspacing="0" cellpadding="0" style="text-align:center;margin-left:auto;margin-right:auto; margin-top: 50px;">
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td width="290" height="50" style="text-align:center;border-radius: 4px; cursor:pointer;background-color:#03A9F4"onclick="">
-                                                                                <a id="p_cta" href="" style="text-align:center; color: #ffffff;font-size:18px;font-family: roboto;text-decoration:none; letter-spacing:1px" target="_blank"></a>
+                                                                            <td width="290" height="50" style="text-align:center;cursor:pointer;border: 1px solid {{brand_color}}; border-radius: 8px;"onclick="">
+                                                                                <a id="p_cta" href="" style="color: {{brand_color}};font-size:18px;font-family: roboto;text-decoration:none; letter-spacing:1px" target="_blank"></a>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
@@ -245,46 +209,7 @@
                                                             </div>
                                                             <p id="p_closing"style="margin:45px 0 22px;font-size:14px;line-height:24px;letter-spacing:.5px;font-family:roboto-light;color: #657D8D;"></p>    
                                                             <p id="p_cheers"style="margin:0 0 -5px;font-size:14px;line-height:24px;letter-spacing:.5px;font-family:roboto-light;color: #657D8D;"></p>
-                                                            <p id="p_sign"style="margin:0 0 -5px;font-size:14px;line-height:24px;letter-spacing:.5px;font-family:roboto-light;color:#03A9F4" ></p>                          
-                                                            <div style="margin-top: 50px;padding:0px 15px 5px;color: #5A5858;font-size: 13px;line-height:24px;">                         
-                                                                <p style="font-family: roboto;font-size:14px;text-align:center; letter-spacing:0.5px;color: #657D8D;">Doubts? Check our </span><a href="{{uri_for("faq")}}" style="color:#03A9F4; text-decoration:none" target="_blank">FAQ</a>.</p>
-                                                            </div>
-                                                            <div align="center">
-                                                                <table cellpadding="0" cellspacing="0" border="0" style="margin:auto;background-color: #FFF;width:500px;font-size:11px;font-weight:400;color:#ffffff;margin-top: 30px;">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td style="width:200px;padding:0px 0px;border-top: 1px solid rgb(223, 223, 223);">
-                                                                                <table cellpadding="0" cellspacing="0" border="0" style="margin: auto;padding: 8px 0px 8px 0px;">
-                                                                                    <tbody>
-                                                                                        <tr>
-                                                                                            <td style="text-align:center;padding:0px 10px">
-                                                                                                <a href="{{ uri_for("contact") }}" title="Contáctanos" target="_blank">
-                                                                                                    <img alt="Contáctanos" title="Contáctanos" border="0" src="http://mboilerplate.appspot.com/default/materialize/images/emails/mail_bl.png" height="30px" style="display:block;margin:auto">
-                                                                                                </a>
-                                                                                            </td>
-                                                                                            <td style="text-align:center;padding:0px 10px">
-                                                                                                <a href="http://twitter.com/" title="Comparte en Twitter" target="_blank">
-                                                                                                    <img alt="Comparte en Twitter" title="Comparte en Twitter" border="0" src="http://mboilerplate.appspot.com/default/materialize/images/emails/tw_bl.png" height="30px" style="display:block;margin:auto">
-                                                                                                </a>
-                                                                                            </td>
-                                                                                            <td style="text-align:center;padding:0px 10px">
-                                                                                                <a href="http://www.facebook.com/" title="Comparte en Facebook" target="_blank">
-                                                                                                    <img alt="Comparte en Facebook" border="0" title="Invictus Facebook" src="http://mboilerplate.appspot.com/default/materialize/images/emails/fb_bl.png" height="30px" style="display:block;margin:auto">
-                                                                                                </a>
-                                                                                            </td>
-                                                                                            <td style="text-align:center;padding:0px 10px">
-                                                                                                <a href="https://www.linkedin.com/" title="Ver en LinkedIn" target="_blank">
-                                                                                                    <img alt="Ver en LinkedIn" border="0" title="Ver en LinkedIn" src="http://mboilerplate.appspot.com/default/materialize/images/emails/in_bl.png" height="30px" style="display:block;margin:auto">
-                                                                                                </a>
-                                                  </td>
-                                                                                        </tr>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
+                                                            <p id="p_sign"style="margin:6px 0 -5px;font-size:14px;line-height:24px;letter-spacing:.5px;font-family:roboto-light;color:{{brand_color}}" ></p>  
                                                         </td>
                                                         <td width="20" valign="middle" style="width:20px"></td>
                                                     </tr>

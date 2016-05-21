@@ -112,6 +112,10 @@ class LogVisit(ndb.Model):
     ip = ndb.StringProperty()
     timestamp = ndb.StringProperty()
 
+    def get_user_count(self, user_id):
+        logs = LogVisit.query(LogVisit.user == ndb.Key('User',user_id))
+        return logs.count()
+
 class OptionsSite(ndb.Model):
     name = ndb.KeyProperty
     value = ndb.StringProperty()

@@ -5,6 +5,7 @@ from collections import OrderedDict
 from bp_includes.lib.basehandler import BaseHandler
 from bp_includes.models import LogVisit
 from bp_includes.models import User
+from google.appengine.api import users as g_users #https://cloud.google.com/appengine/docs/python/refdocs/modules/google/appengine/api/users#get_current_user
 
 
 class AdminLogsVisitsHandler(BaseHandler):
@@ -16,31 +17,19 @@ class AdminLogsVisitsHandler(BaseHandler):
         cursor = Cursor(urlsafe=c)
 
         if q:
-            user_key = ndb.Key(User,long(q.lower()))
-            qry = LogVisit.query(ndb.OR(   LogVisit.user == user_key,
-                                            LogVisit.timestamp == q.lower(),
-                                            LogVisit.uastring == q.lower(),
-                                            LogVisit.ip == q.lower()))
+            try:
+                user_key = ndb.Key(User,long(q.lower()))
+                qry = LogVisit.query(ndb.OR(    LogVisit.user == user_key,
+                                                LogVisit.timestamp == q.lower(),
+                                                LogVisit.uastring == q.lower(),
+                                                LogVisit.ip == q.lower()))
+            except:
+                qry = LogVisit.query(ndb.OR(    LogVisit.timestamp == q.lower(),
+                                                LogVisit.uastring == q.lower(),
+                                                LogVisit.ip == q.lower()))
         else:
             qry = LogVisit.query()
-
-        #evil things work great
-        temp = {}
-        avg = 0
-        ids = 0        
-        for visit in qry:
-            if(self.user_model.get_by_id(long(visit.user.id())) != None):
-                if visit.user.id() not in temp:
-                    temp[visit.user.id()] = 1
-                else:
-                    temp[visit.user.id()] += 1
-                ids += 1
-                avg += temp[visit.user.id()]
-        try:
-            avg /= ids
-        except:
-            pass
-
+    
         PAGE_SIZE = 50
         if forward:
             visits, next_cursor, more = qry.order(LogVisit.key).fetch_page(PAGE_SIZE, start_cursor=cursor)
@@ -74,12 +63,12 @@ class AdminLogsVisitsHandler(BaseHandler):
             if(self.user_model.get_by_id(long(_visit.user.id())) != None):
                 _visits.append(_visit)
 
-        maxValue = 1
-        histogram = []
-        for t in temp:
-            histogram.append(temp[t])
-            if (temp[t]> maxValue):
-                maxValue = temp[t]
+        # maxValue = 1
+        # histogram = []
+        # for t in temp:
+        #     histogram.append(temp[t])
+        #     if (temp[t]> maxValue):
+        #         maxValue = temp[t]
         
         params = {
             "list_columns": [('timestamp', 'Timestamp'),
@@ -87,12 +76,12 @@ class AdminLogsVisitsHandler(BaseHandler):
                              ('uastring', 'Browser')
             ],
             "visits": _visits,
-            "count": qry.count(),
-            "rec_visits": temp,
-            "avg": avg,
-            "histogram": histogram,
-            "maxValue": maxValue,
-            "ids": ids,
-            "len_hist": len(histogram)
+            "count": qry.count()
+            # "avg": avg,
+            # "histogram": histogram,
+            # "maxValue": maxValue,
+            # "ids": ids,
+            # "len_hist": len(histogram)
         }
+        params['nickname'] = g_users.get_current_user().email().lower()
         return self.render_template('admin_logs_visits.html', **params)
