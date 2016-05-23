@@ -26,6 +26,8 @@ _routes = [
     RedirectRoute('/admin/tools/icons/', tools.AdminIconsHandler, name='admin-tools-icons', strict_slash=True),
     RedirectRoute('/admin/tools/media/', tools.AdminMediaHandler, name='admin-tools-media', strict_slash=True),
     RedirectRoute('/admin/crontasks/cleanuptokens/', crontasks.AdminCleanupTokensHandler, name='admin-crontasks-cleanuptokens', strict_slash=True),
+    #Email Bouncer
+    RedirectRoute('/_ah/bounce', users.LogBounceHandler, name='bouncer', strict_slash=True),
 ]
 
 def get_routes():

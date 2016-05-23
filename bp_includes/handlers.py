@@ -22,6 +22,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.api import taskqueue, users, images
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.runtime import apiproxy_errors
+from google.appengine.ext.webapp.mail_handlers import BounceNotificationHandler
 
 # local imports
 import models, messages, forms
@@ -30,6 +31,13 @@ from lib.cartodb import CartoDBAPIKey, CartoDBException
 from lib.basehandler import BaseHandler
 from lib.decorators import user_required, taskqueue_method
 
+# [START bounce_handler]
+class LogBounceHandler(BounceNotificationHandler):
+    def receive(self, bounce_message):
+        logging.info('Received bounce post ... [%s]', self.request)
+        logging.info('Bounce original: %s', bounce_message.original)
+        logging.info('Bounce notification: %s', bounce_message.notification)
+# [END bounce_handler]
 
 
 def captchaBase(self):

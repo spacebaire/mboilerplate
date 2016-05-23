@@ -9,6 +9,18 @@ from bp_includes.lib.basehandler import BaseHandler
 from datetime import datetime, date, time, timedelta
 import logging
 from google.appengine.api import users as g_users #https://cloud.google.com/appengine/docs/python/refdocs/modules/google/appengine/api/users#get_current_user
+from google.appengine.ext.webapp.mail_handlers import BounceNotificationHandler
+
+
+
+class LogBounceHandler(BounceNotificationHandler):
+    def receive(self, bounce_message):
+        logging.info('Received bounce post ... [%s]', self.request)
+        logging.info('Bounce original: %s', bounce_message.original)
+        logging.info('Bounce notification: %s', bounce_message.notification)
+# [END bounce_handler]
+
+
 
 class AdminStatsHandler(BaseHandler):
     def get(self): 

@@ -169,3 +169,6 @@ error_handlers:
 
   - error_code: timeout
     file: bp_content/themes/default/errors/timeout.html
+    
+inbound_services:
+- mail_bounce
