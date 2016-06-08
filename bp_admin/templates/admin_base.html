@@ -272,6 +272,7 @@
                                         </div>
                                     </li>
                                     <li {% if path == uri_for('admin') %}class="active"{% endif %}><a href="{{ uri_for('admin') }}">Overview</a></li>
+                                    <li {% if path == uri_for('admin-brand') %}class="active"{% endif %}><a href="{{ uri_for('admin-brand') }}">Brand setup</a></li>
                                     <li {% if path == uri_for('admin-users-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-list') }}">Users list</a></li>
                                     <li {% if path == uri_for('admin-logs-emails') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-emails') }}">Emails sent</a></li>
                                     <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">Visits log</a></li>

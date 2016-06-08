@@ -32,6 +32,7 @@ config = {
     'brand_secondary_color' : '#0d47a1',
     'brand_tertiary_color' : '#EAEAEA',
     'brand_splash': 'http://mboilerplate.appspot.com/default/materialize/images/landing/black_mac.png',
+    'brand_splash_light':  '45',
     # application on the web
     'meta_tags_code': """
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

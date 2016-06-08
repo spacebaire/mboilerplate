@@ -10,6 +10,8 @@ import sendemails
 
 
 _routes = [
+    RedirectRoute('/admin/logout/', admin.AdminLogoutHandler, name='admin-logout', strict_slash=True),
+    RedirectRoute('/admin/brand/', admin.AdminBrandHandler, name='admin-brand', strict_slash=True),
     RedirectRoute('/admin/', users.AdminStatsHandler, name='admin', strict_slash=True),
     RedirectRoute('/admin/blog/', blog.AdminBlogHandler, name='admin-blog', strict_slash=True),
     RedirectRoute('/admin/blog/<post_id>/', blog.AdminBlogEditHandler, name='admin-blog-edit', strict_slash=True),
@@ -21,7 +23,6 @@ _routes = [
     RedirectRoute('/admin/logs/emails/<email_id>/', logsemails.AdminLogsEmailViewHandler, name='admin-logs-email-view', strict_slash=True),
     RedirectRoute('/admin/logs/visits/', logsvisits.AdminLogsVisitsHandler, name='admin-logs-visits', strict_slash=True),
     RedirectRoute('/admin/send/email/', sendemails.AdminSendEmailListHandler, name='admin-send-email', strict_slash=True),
-    RedirectRoute('/admin/logout/', admin.AdminLogoutHandler, name='admin-logout', strict_slash=True),
     RedirectRoute('/admin/tools/css/', tools.AdminCSSHandler, name='admin-tools-css', strict_slash=True),
     RedirectRoute('/admin/tools/icons/', tools.AdminIconsHandler, name='admin-tools-icons', strict_slash=True),
     RedirectRoute('/admin/tools/media/', tools.AdminMediaHandler, name='admin-tools-media', strict_slash=True),

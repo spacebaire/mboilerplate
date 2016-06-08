@@ -272,6 +272,30 @@ class BaseHandler(webapp2.RequestHandler):
         """
         self.landing_layout = layout
 
+    @webapp2.cached_property
+    def brand(self):
+        params = {}
+        brand = models.Brand.query().get()
+        if brand is not None:
+            params['app_name'] = self.app.config.get('app_name') if brand.app_name == '' else brand.app_name 
+            params['brand_splash'] = self.app.config.get('brand_splash') if brand.brand_splash == '' else brand.brand_splash 
+            params['brand_splash_light'] = self.app.config.get('brand_splash_light') if brand.brand_splash_light == '' else brand.brand_splash_light 
+            params['brand_logo'] = self.app.config.get('brand_logo') if brand.brand_logo == '' else brand.brand_logo 
+            params['brand_favicon'] = self.app.config.get('brand_favicon') if brand.brand_favicon == '' else brand.brand_favicon 
+            params['brand_color'] = self.app.config.get('brand_color') if brand.brand_color == '' else brand.brand_color 
+            params['brand_secondary_color'] = self.app.config.get('brand_secondary_color') if brand.brand_secondary_color == '' else brand.brand_secondary_color 
+            params['brand_tertiary_color'] = self.app.config.get('brand_tertiary_color') if brand.brand_tertiary_color == '' else brand.brand_tertiary_color 
+        else:
+            params['app_name'] = self.app.config.get('app_name')
+            params['brand_splash'] = self.app.config.get('brand_splash')
+            params['brand_splash_light'] = self.app.config.get('brand_splash_light')
+            params['brand_logo'] = self.app.config.get('brand_logo')
+            params['brand_favicon'] = self.app.config.get('brand_favicon')
+            params['brand_color'] = self.app.config.get('brand_color')
+            params['brand_secondary_color'] = self.app.config.get('brand_secondary_color')
+            params['brand_tertiary_color'] = self.app.config.get('brand_tertiary_color')
+        return params
+
     def render_template(self, filename, **kwargs):
         locales = self.app.config.get('locales') or []
         locale_iso = None
@@ -296,16 +320,17 @@ class BaseHandler(webapp2.RequestHandler):
             'meta_tags_code': self.app.config.get('meta_tags_code'),
             'zendesk_code': self.app.config.get('zendesk_code'),
             'zendesk_imports': self.app.config.get('zendesk_imports'),
-            'app_name': self.app.config.get('app_name'),
+            'app_name': self.brand['app_name'],
             'app_domain': self.app.config.get('app_domain'),
             'theme': self.get_theme,
-            'brand_logo': self.app.config.get('brand_logo'),
+            'brand_splash': self.brand['brand_splash'],
+            'brand_splash_light': self.brand['brand_splash_light'],
             'brand_email_logo': self.app.config.get('brand_email_logo'),
-            'brand_favicon': self.app.config.get('brand_favicon'),
-            'brand_color': self.app.config.get('brand_color'),
-            'brand_secondary_color': self.app.config.get('brand_secondary_color'),
-            'brand_tertiary_color': self.app.config.get('brand_tertiary_color'),
-            'brand_splash': self.app.config.get('brand_splash'),
+            'brand_logo': self.brand['brand_logo'],
+            'brand_favicon': self.brand['brand_favicon'],
+            'brand_color': self.brand['brand_color'],
+            'brand_secondary_color': self.brand['brand_secondary_color'],
+            'brand_tertiary_color': self.brand['brand_tertiary_color'],
             'user_id': self.user_id,
             'username': self.username,
             'name': self.name,
