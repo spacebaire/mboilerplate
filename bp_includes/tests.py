@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Run the tests using testrunner.py script in the project root directory.
 

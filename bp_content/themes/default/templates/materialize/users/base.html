@@ -28,15 +28,16 @@
 	    <!-- All stylesheets   -->
 	    {% block stylesheets %}
 		    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	  		<link href="/{{theme}}/materialize/css/materialize.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">		    
+		    <link href="/{{theme}}/materialize/css/materialize.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">		    
 	  		<link href="/{{theme}}/materialize/css/plugins/perfect-scrollbar/perfect-scrollbar.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">		    
 		    <link href="/{{theme}}/materialize/css/style.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">
-		    <style type="text/css">
-	    		.toast-success{ color: #2EF97D!important; line-height: 18px; }
-	    		.toast-danger{ color: #EF1515!important; line-height: 18px; }
-	    		.toast-warning{ color: #fdd835!important; line-height: 18px; }
-	    		.toast-info{ color: #29b6f6!important; line-height: 18px; }
-	    		@-webkit-keyframes pulsate {
+		    <style>
+		    	.toast {background-color: white!important}
+				.toast-success{ color: {{brand_color}}!important; line-height: 18px; }
+				.toast-danger{ color: #EF1515!important; line-height: 18px; }
+				.toast-warning{ color: #fdd835!important; line-height: 18px; }
+				.toast-info{ color: #29b6f6!important; line-height: 18px; }
+				@-webkit-keyframes pulsate {
 				    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
 				    50% {opacity: 1.0;}
 				    100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
@@ -49,49 +50,95 @@
 				  font-size: inherit;
 				}
 				.g-recaptcha{
-					  margin-left: 23%;
-  					  -webkit-transform: scale(0.8);
-  					  transform: scale(0.8);
+				      margin-left: 23%;
+				      -webkit-transform: scale(0.8);
+				      transform: scale(0.8);
+				}
+				.pager{
+				      padding-left: 0;
+				      margin: 20px 0;
+				      text-align: center;
+				      list-style: none;
+				}
+				.pager:before{
+				    display: table;
+				    content: " ";
+				    box-sizing: border-box;
+				}
+				.pager li{
+				    display: inline;
+				}
+				.pager li>a, .pager li>span{
+				    display: inline-block;
+				    padding: 5px 14px;
+				    background-color: #fff;
+				    border: 1px solid #ddd;
+				    border-radius: 15px;
+				}
+				.pager:after{
+				    clear: both;
+				    content: " ";
+				    box-sizing: border-box;
 				}
 
-				/* BRANDING */
+				ul li{
+				    font-family: roboto-thin!important;
+				}
+				li .active{
+				    /*background-color: rgba(0, 0, 0, 0.05)!important;*/
+				}
+				li .active a{
+				    color:#444!important;
+				}
+
+				/*BRANDING*/
 				.brand-color{
-					background-color: {{brand_color}}!important;
+				    background-color: {{brand_color}}!important;
 				}
 				.brand-color-text{
-					color:{{brand_color}}!important;
+				    color:{{brand_color}}!important;
 				}
 				.brand-secondary-color{
-					background-color: {{brand_secondary_color}}!important;
+				    background-color: {{brand_secondary_color}}!important;
 				}
 				.brand-secondary-color-text{
-					color:{{brand_secondary_color}}!important;
+				    color:{{brand_secondary_color}}!important;
 				}
 				.brand-tertiary-color{
-					background-color: {{brand_tertiary_color}}!important;
+				    background-color: {{brand_tertiary_color}}!important;
 				}
 				.brand-tertiary-color-text{
-					color:{{brand_tertiary_color}}!important;
+				    color:{{brand_tertiary_color}}!important;
 				}
 				.btn{
-					background-color: {{brand_color}};
+				    background-color: {{brand_color}};
+				    font-family: roboto-light;
 				}
 				.btn:hover{
-					background-color: {{brand_secondary_color}}!important;
-                    color:white!important;
+				    background-color: {{brand_secondary_color}}!important;
+				    color:white!important;
 				}
 				.btn-large{
-					background-color: {{brand_color}};
+				    background-color: {{brand_color}};
+				    font-family: roboto-light;
 				}
 				.btn-large:hover{
-					background-color: {{brand_secondary_color}}!important;
+				    background-color: {{brand_secondary_color}}!important;
 				}
 				.btn-floating{
-					background-color: {{brand_color}};
+				    background-color: {{brand_color}};
 				}
 				.btn-floating:hover{
-					background-color: {{brand_secondary_color}}!important;
+				    background-color: {{brand_secondary_color}}!important;
 				}
+				{% if is_mobile %}
+				.btn{
+				    margin-top:15px;
+				}
+				.btn-large{
+				    margin-top:15px;
+				}
+				{% endif %} 
 				#loader {
 				  border-top-color: {{brand_color}}!important;
 				}
@@ -101,16 +148,90 @@
 				#loader:after {
 				  border-top-color: {{brand_tertiary_color}}!important;
 				}
-				#loader {
-				  border-top-color: #ffffff;
+				[type=checkbox].filled-in:checked+label:after{
+				    border: 2px solid {{brand_secondary_color}}!important;
+				    background-color: {{brand_secondary_color}}!important;
 				}
-				#loader:before {
-				  border-top-color: #044967;
+				.dataTables_scrollBody {
+				    min-height: 200px;
 				}
-				#loader:after {
-				  border-top-color: #4FC3F7;
+				.side-nav .collapsible-body li a {
+				    margin: 0 1rem 0 2rem;
 				}
-	    	</style>
+
+				ol{
+				    list-style-type: none!important;
+				}
+
+				.breadcrumb:last-child {
+				    color: {{brand_color}}!important;
+				    font-family: roboto-thin;
+				}
+
+				.breadcrumb li a {
+				    color: {{brand_secondary_color}};
+				    font-family: roboto-light;
+				}
+
+				.breadcrumb{
+				    height: 15px;
+				    margin-top: 15px;
+				}
+
+				.dropdown-content li > a, .dropdown-content li > span{
+				    color: {{brand_secondary_color}}!important;
+				}
+				                
+				.picker__day--selected{
+				    background-color: {{brand_color}}!important;
+				}
+
+				.picker__date-display{
+				    background-color: {{brand_color}}!important;
+				}
+
+				.picker__weekday-display{
+				    background-color: {{brand_color}}!important;
+				}
+
+				.picker__close, .picker__today{
+				    color: {{brand_color}}!important;
+				}
+
+				.materialboxed{
+				    cursor: auto;
+				}
+				@font-face {
+				  font-family: 'Monoton';
+				  font-style: normal;
+				  font-weight: 400;
+				  src: local('Monoton'), local('Monoton-Regular'), url(http://themes.googleusercontent.com/static/fonts/monoton/v4/AKI-lyzyNHXByGHeOcds_w.woff) format('woff');
+				}
+				@-webkit-keyframes neon2 {
+				  from {
+				    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #228DFF, 0 0 70px #228DFF, 0 0 80px #228DFF, 0 0 100px #228DFF, 0 0 150px #228DFF;
+				  }
+				  to {
+				    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #228DFF, 0 0 35px #228DFF, 0 0 40px #228DFF, 0 0 50px #228DFF, 0 0 75px #228DFF;
+				  }
+				}
+				#counter_holder a {
+				  color: {{brand_color}};
+				  font-family: Monoton;
+				  line-height: 42pt;
+				  letter-spacing: 6px;
+				  font-size: 45px;
+				}
+
+				#counter_holder a:hover {
+				  -webkit-animation: neon2 1.5s ease-in-out infinite alternate;
+				  -moz-animation: neon2 1.5s ease-in-out infinite alternate;
+				  animation: neon2 1.5s ease-in-out infinite alternate;
+				}
+				#counter_holder a:hover {
+				  color: white;
+				}
+		    </style>
 		    {% block page_css %}{% endblock %}
 		    {% if user_id %}
 				{{ zendesk_imports }}
@@ -214,7 +335,6 @@
 				                        </div>
 				                    </li>
 				                    <li class="bold"><a href="{{ uri_for("materialize-home") }}" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
-				                    </li>
 				                    </li>
 				                    <li class="no-padding">
 				                        <ul class="collapsible collapsible-accordion">

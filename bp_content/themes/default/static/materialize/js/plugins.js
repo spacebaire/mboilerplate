@@ -56,11 +56,6 @@ $(function() {
         families: ['Roboto-Black','Roboto-BlackItalic','Roboto-Bold','Roboto-BoldItalic','Roboto-Italic','Roboto-Light','Roboto-LightItalic','Roboto-Medium','Roboto-MediumItalic','Roboto-Regular','Roboto-Thin','Roboto-ThinItalic','Agenda-Light', 'Agenda-Bold', 'Novecentowide-Bold']
       }
   });
-  
-  // Materialize Slider
-  $('.slider').slider({
-    full_width: true
-  });
 
   // Materialize Dropdown
   // Pikadate datepicker

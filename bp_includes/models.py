@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb, blobstore
 

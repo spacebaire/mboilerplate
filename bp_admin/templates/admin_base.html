@@ -32,8 +32,9 @@
             <link href="/{{theme}}/materialize/css/materialize.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">            
             <link href="/{{theme}}/materialize/css/plugins/perfect-scrollbar/perfect-scrollbar.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">            
             <link href="/{{theme}}/materialize/css/style.css?v=10" type="text/css" rel="stylesheet" media="screen,projection">
-            <style type="text/css">
-                .toast-success{ color: #2EF97D!important; line-height: 18px; }
+            <style>
+                .toast {background-color: white!important}
+                .toast-success{ color: {{brand_color}}!important; line-height: 18px; }
                 .toast-danger{ color: #EF1515!important; line-height: 18px; }
                 .toast-warning{ color: #fdd835!important; line-height: 18px; }
                 .toast-info{ color: #29b6f6!important; line-height: 18px; }
@@ -81,8 +82,11 @@
                     box-sizing: border-box;
                 }
 
+                ul li{
+                    font-family: roboto-thin!important;
+                }
                 li .active{
-                    background-color: rgba(0, 0, 0, 0.05)!important;
+                    /*background-color: rgba(0, 0, 0, 0.05)!important;*/
                 }
                 li .active a{
                     color:#444!important;
@@ -164,7 +168,7 @@
                     color: {{brand_color}}!important;
                     font-family: roboto-thin;
                 }
-                
+
                 .breadcrumb li a {
                     color: {{brand_secondary_color}};
                     font-family: roboto-light;
@@ -190,11 +194,44 @@
                 .picker__weekday-display{
                     background-color: {{brand_color}}!important;
                 }
-                
+
                 .picker__close, .picker__today{
                     color: {{brand_color}}!important;
                 }
 
+                .materialboxed{
+                    cursor: auto;
+                }
+                @font-face {
+                  font-family: 'Monoton';
+                  font-style: normal;
+                  font-weight: 400;
+                  src: local('Monoton'), local('Monoton-Regular'), url(http://themes.googleusercontent.com/static/fonts/monoton/v4/AKI-lyzyNHXByGHeOcds_w.woff) format('woff');
+                }
+                @-webkit-keyframes neon2 {
+                  from {
+                    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #228DFF, 0 0 70px #228DFF, 0 0 80px #228DFF, 0 0 100px #228DFF, 0 0 150px #228DFF;
+                  }
+                  to {
+                    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #228DFF, 0 0 35px #228DFF, 0 0 40px #228DFF, 0 0 50px #228DFF, 0 0 75px #228DFF;
+                  }
+                }
+                #counter_holder a {
+                  color: {{brand_color}};
+                  font-family: Monoton;
+                  line-height: 42pt;
+                  letter-spacing: 6px;
+                  font-size: 45px;
+                }
+
+                #counter_holder a:hover {
+                  -webkit-animation: neon2 1.5s ease-in-out infinite alternate;
+                  -moz-animation: neon2 1.5s ease-in-out infinite alternate;
+                  animation: neon2 1.5s ease-in-out infinite alternate;
+                }
+                #counter_holder a:hover {
+                  color: white;
+                }
             </style>
             {% block page_css %}{% endblock %}
             {% if user_id %}

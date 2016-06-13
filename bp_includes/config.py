@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ============= DON'T MODIFY THIS FILE ============
 This is the boilerplate default configuration file.

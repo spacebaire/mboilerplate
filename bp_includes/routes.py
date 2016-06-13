@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Using redirect route instead of simple routes since it supports strict_slash
 Simple route: http://webapp-improved.appspot.com/guide/routing.html#simple-routes
