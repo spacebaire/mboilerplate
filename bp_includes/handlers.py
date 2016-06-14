@@ -1183,7 +1183,7 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
             logging.error("error getting user agent info: %s" % e)
 
         try:
-            subject = _("Alguien ha enviado un mensaje")
+            subject = _(messages.contact_subject)
             # exceptions for error pages that redirect to contact
             if exception != "":
                 subject = "{} (Exception error: {})".format(subject, exception)

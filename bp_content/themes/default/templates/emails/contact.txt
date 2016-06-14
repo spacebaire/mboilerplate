@@ -6,7 +6,7 @@
         <td style="width:24px;background-color: #FFF;"></td>
         <td style="background-color: #FFF;padding:15px 10px">
           <center>
-          <a href="http://dfcmexico.appspot.com" target="_blank">
+          <a href="" target="_blank">
             <img src="{{brand_email_logo}}" height="60px">
           </a>
           </center>

@@ -65,7 +65,7 @@ _routes = [
     RedirectRoute('/mbapi/test/', handlers.APITestingHandler, name='mbapi-test', strict_slash=True),
     
     #Email Bouncer
-    RedirectRoute('/_ah/bounce', handlers.LogBounceHandler, name='bouncer', strict_slash=True),
+    RedirectRoute('/_ah/bounce/', handlers.LogBounceHandler, name='bouncer', strict_slash=True),
    
     # Blob handlers for small media
     RedirectRoute('/media/serve/<kind>/<media_id>/', handlers.MediaDownloadHandler, name='media-serve', strict_slash=True),
