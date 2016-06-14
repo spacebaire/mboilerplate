@@ -60,7 +60,7 @@ class AdminLogsEmailsHandler(BaseHandler):
             "count": qry.count()
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('admin_logs_emails.html', **params)
+        return self.render_template('emails/admin_logs_emails.html', **params)
 
 
 class AdminLogsEmailViewHandler(BaseHandler):
@@ -72,7 +72,7 @@ class AdminLogsEmailViewHandler(BaseHandler):
                     'emailinfo': emaildata
                 }
                 params['nickname'] = g_users.get_current_user().email().lower()
-                return self.render_template('admin_logs_email_view.html', **params)
+                return self.render_template('emails/admin_logs_email_view.html', **params)
         except ValueError:
             pass
         self.abort(404)

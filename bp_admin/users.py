@@ -20,8 +20,6 @@ class LogBounceHandler(BounceNotificationHandler):
         logging.info('Bounce notification: %s', bounce_message.notification)
 # [END bounce_handler]
 
-
-
 class AdminStatsHandler(BaseHandler):
     def get(self): 
         params = {}       
@@ -31,7 +29,7 @@ class AdminStatsHandler(BaseHandler):
         blogs = models.BlogPost.query()
         params['sum_blogs'] = blogs.count()
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('admin_stats.html', **params)
+        return self.render_template('essentials/admin_stats.html', **params)
 
 class AdminUserGeoChartHandler(BaseHandler):
     def get(self):
@@ -119,7 +117,7 @@ class AdminUserListHandler(BaseHandler):
             "count": count
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('admin_users_list.html', **params)
+        return self.render_template('users/admin_users_list.html', **params)
 
 class AdminUserEditHandler(BaseHandler):
     def get_or_404(self, user_id):
@@ -174,7 +172,7 @@ class AdminUserEditHandler(BaseHandler):
             'user': user
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('admin_user_edit.html', **params)
+        return self.render_template('users/admin_user_edit.html', **params)
 
     @webapp2.cached_property
     def form(self):

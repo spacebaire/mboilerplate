@@ -66,7 +66,7 @@ class AdminBlogHandler(BaseHandler):
             "count": count
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('admin_blog.html', **params)
+        return self.render_template('blog/admin_blog.html', **params)
 
     def post(self):
         blog_id = self.request.get('blog_id')
@@ -102,7 +102,7 @@ class AdminBlogEditHandler(BaseHandler):
                 params['content'] = blog.content
                 params['category'] = blog.category
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('admin_blog_edit.html', **params)
+        return self.render_template('blog/admin_blog_edit.html', **params)
 
     def post(self, post_id):
         if post_id == '1':
@@ -167,3 +167,20 @@ class AdminBlogUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             self.response.headers['Content-Type'] = 'text/plain'
             self.response.out.write('error')
 
+class AdminCSSHandler(BaseHandler):
+    def get(self):
+        params = {}
+        params['nickname'] = g_users.get_current_user().email().lower()
+        return self.render_template('blog/admin_tools_css.html', **params)
+
+class AdminIconsHandler(BaseHandler):
+    def get(self):
+        params = {}
+        params['nickname'] = g_users.get_current_user().email().lower()
+        return self.render_template('blog/admin_tools_icons.html', **params)
+
+class AdminMediaHandler(BaseHandler):
+    def get(self):
+        params = {}
+        params['nickname'] = g_users.get_current_user().email().lower()
+        return self.render_template('blog/admin_tools_media.html', **params)

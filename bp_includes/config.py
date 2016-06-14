@@ -29,9 +29,11 @@ config = {
     'brand_logo': 'http://mboilerplate.appspot.com/default/materialize/images/favicon/fav-white.png',
     'brand_email_logo': 'http://mboilerplate.appspot.com/default/materialize/images/favicon/fav-blue.png',
     'brand_favicon': 'http://mboilerplate.appspot.com/default/materialize/images/favicon/fav.png',
-    'brand_color' : '#00AFF0',
-    'brand_secondary_color' : '#0d47a1',
+    'brand_color' : '#16ADED',
+    'brand_secondary_color' : '#0D3290',
     'brand_tertiary_color' : '#EAEAEA',
+    'brand_layout': 'splash',  #splash or video choices
+    'brand_video': 'http://mboilerplate.appspot.com/default/materialize/video/boat.mp4',
     'brand_splash': 'http://mboilerplate.appspot.com/default/materialize/images/landing/black_mac.png',
     'brand_splash_light':  '45',
     # application on the web

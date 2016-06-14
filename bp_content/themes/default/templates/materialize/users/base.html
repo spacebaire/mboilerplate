@@ -173,6 +173,10 @@
 				    font-family: roboto-light;
 				}
 
+                .breadcrumb li a.btn{
+                    font-size: 20px;
+                }
+
 				.breadcrumb{
 				    height: 15px;
 				    margin-top: 15px;
@@ -275,7 +279,7 @@
 		        <div class="navbar-fixed">
 		            <nav class="white">
 		                <div class="nav-wrapper">
-		                    <h1 class="logo-wrapper"><a href="{{ uri_for("landing") }}" class="brand-logo darken-1"><img src="/{{theme}}/materialize/images/favicon/fav-light-blue.png" alt="materialize logo" style="height: 45px;margin-top: -5px;width: 45px;"></a></h1>
+		                    <h1 class="logo-wrapper"><a href="{{ uri_for("landing") }}" class="brand-logo darken-1"><img src="{{brand_email_logo}}" alt="materialize logo" style="height: 45px;margin-top: -5px;width: 45px;"></a></h1>
 
 							  <ul id="translation-dropdown" class="dropdown-content">
 			                      <li>
@@ -310,11 +314,11 @@
 				            <!-- START LEFT SIDEBAR NAV-->
 				            <aside id="left-sidebar-nav">
 				                <ul id="slide-out" class="side-nav fixed leftside-navigation">
-				                    <li class="user-details" style="background: url(/{{theme}}/materialize/images/user_back.jpg) no-repeat center center; background-size:cover">
+				                    <li class="user-details" style="background: url('{{brand_splash}}') no-repeat center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;margin-bottom: 15px;padding: 15px 0 0 15px;">
 				                        <div class="row">
 				                            <div class="col col s4 m4 l4">
 												{% if has_picture %}
-													<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style="margin-top:6px;border: 1px solid rgb(3, 169, 244);">
+													<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style="margin-top:6px;">
 												{% else %}
 				                                	<span class="circle red lighten-1" style="width: 42px;   height: 42px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; margin-top: 10px;margin-left: 10px;">{{ name_i }}</span>
 												{% endif %}
@@ -334,24 +338,27 @@
 				                            </div>
 				                        </div>
 				                    </li>
-				                    <li class="bold"><a href="{{ uri_for("materialize-home") }}" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
+				                    <li class="bold {% if path == uri_for('materialize-home') %}active{% endif %}" style="margin-bottom: 15px;"><a href="{{ uri_for("materialize-home") }}" class="waves-effect waves-cyan"><i class="mdi-action-home grey-text"></i> Home</a>
 				                    </li>
-				                    <li class="no-padding">
+				                    <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
+
+
+                                    <li class="no-padding" style="margin-bottom: 15px; margin-top:15px;">
 				                        <ul class="collapsible collapsible-accordion">
-				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-maps-layers"></i> Sections</a>
+				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan {% if uri_for('materialize-polymer') in path or uri_for('materialize-cartodb') in path %}active{% endif %}"><i class="mdi-maps-layers grey-text"></i> Sections</a>
 				                                <div class="collapsible-body">
 				                                    <ul>
-				                                        <li><a href="{{ uri_for("materialize-polymer") }}">Polymer</a>
+				                                        <li {% if path == uri_for('materialize-polymer') %}class="active"{% endif %}><a href="{{ uri_for("materialize-polymer") }}">Polymer</a>
 				                                        </li>                                        
-				                                        <li><a href="{{ uri_for("materialize-cartodb") }}">CartoDB</a>
+				                                        <li {% if path == uri_for('materialize-cartodb') %}class="active"{% endif %}><a href="{{ uri_for("materialize-cartodb") }}">CartoDB</a>
 				                                        </li>
 				                                    </ul>
 				                                </div>
 				                            </li>
 				                        </ul>
 				                    </li>
-				                    <li class="li-hover"><div class="divider"></div></li>
-				                    <li class="bold"><a href="{{ uri_for("landing") }}" class="waves-effect waves-cyan"><i class="mdi-navigation-arrow-back"></i> Back to landing</a>
+				                    <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
+				                    <li class="bold"><a href="{{ uri_for("landing") }}" class="waves-effect waves-cyan"><i class="mdi-navigation-arrow-back grey-text"></i> Back to landing</a>
 				                    </li>
 				                </ul>
 				                <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating waves-effect waves-light hide-on-large-only darken-2" style="margin-top:-5px;"><i class="mdi-navigation-more-vert" style="color: rgb(62, 193, 251);background-color: white;" ></i></a>

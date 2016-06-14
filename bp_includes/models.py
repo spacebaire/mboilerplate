@@ -5,9 +5,12 @@ from google.appengine.ext import ndb, blobstore
 #---------------------------------------  B R A N D    M O D E L -------------------------------------------------------------------          
 class Brand(ndb.Model):
     app_name = ndb.StringProperty(default = '')
+    brand_layout = ndb.StringProperty(default = 'splash', choices = ['splash', 'video'])
+    brand_video = ndb.StringProperty(default = '')
     brand_splash = ndb.StringProperty(default = '')
     brand_splash_light = ndb.StringProperty(default = '')
     brand_logo = ndb.StringProperty(default = '')
+    brand_email_logo = ndb.StringProperty(default = '')
     brand_favicon = ndb.StringProperty(default = '')
     brand_color = ndb.StringProperty(default = '')
     brand_secondary_color = ndb.StringProperty(default = '')

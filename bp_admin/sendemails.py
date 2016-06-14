@@ -13,7 +13,7 @@ class AdminSendEmailListHandler(BaseHandler):
             "recipent": email_id,
         }        
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('admin_send_email.html', **params)
+        return self.render_template('emails/admin_send_email.html', **params)
             
     def post(self):
         

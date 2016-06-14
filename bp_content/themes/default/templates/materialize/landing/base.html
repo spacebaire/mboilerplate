@@ -173,6 +173,10 @@
 				    font-family: roboto-light;
 				}
 
+                .breadcrumb li a.btn{
+                    font-size: 20px;
+                }
+
 				.breadcrumb{
 				    height: 15px;
 				    margin-top: 15px;
@@ -230,6 +234,21 @@
 				}
 		    </style>
 		    {% block page_css %}
+		    <style>
+		    	video { 
+                   position: absolute;
+                   top: 50%;
+                   left: 50%;
+                   min-width: 100%;
+                   min-height: 100%;
+                   width: auto;
+                   height: auto;
+                   z-index: -100;
+                   transform: translateX(-50%) translateY(-50%);
+                   background: black;
+                   transition: 1s opacity;
+				}		 
+		    </style>
 		    {% endblock %}
 		{% endblock %}
 		
@@ -275,7 +294,10 @@
 				    {% if not user_id %}
 				    <li id="nav-login" ><a href="#modal1" class="modal-trigger menu-item" data-translate="menu-login">Login</a></li>
 				    <li id="nav-register" ><a href="#modal2" class="modal-trigger menu-item" data-translate="menu-register">Register</a></li>
-				    {% else %}
+				    {% endif %}
+				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
+				    <li id="nav-download"><a href="#download" class="menu-item" data-translate="menu-love">Want some love?</a></li>
+				    {% if user_id %}
 				    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px; border-radius:4px; padding:10px">
 		                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-home") }}">My home</a>
 	                        </li>
@@ -284,10 +306,10 @@
 	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("logout") }}">Logout</a>
 	                        </li>
 		            </ul>
-				    <li class="nav-user" style="margin-right: -32px;">
+				    <li class="nav-user" style="padding-left:15px;">
                         	{% if has_picture %}
 								<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
-										<div style="position: absolute;left: 0px;"><img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px;border: 1px solid white; height:35px"></div>
+										<div style="position: absolute;left: 0px;"><img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px; height:35px"></div>
 										<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
 		                        </a>
 							{% else %}
@@ -300,8 +322,6 @@
 							{% endif %}
                      </li>	
 				    {% endif %}
-				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
-				    <li id="nav-download"><a href="#download" class="menu-item" data-translate="menu-love">Want some love?</a></li>
 				  </ul>
 				  <ul class="side-nav" id="mobile-demo">
 				    {% if not user_id %}
@@ -313,11 +333,10 @@
                             <li class="bold">
                             	<a class="collapsible-header waves-effect waves-cyan">
 						    	{% if has_picture %}
-									<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style="margin-top:6px;border: 1px solid rgb(3, 169, 244); height:35px">
+									<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style="margin-top: 10px;height: 50px;margin-bottom: -15px;">
 								{% else %}
 		                        	<span class="circle red lighten-1" style="width: 35px;   height: 35px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; margin-top: 10px;margin-left: 10px;">{{ name_i }}</span>
 								{% endif %}
-									<i class="material-icons right" style="line-height: 1.6;margin-left: -38px;">arrow_drop_down</i>
 								</a>
                             	<div class="collapsible-body">
                                     <ul>
@@ -343,31 +362,58 @@
 		{% endblock %}
 
 		{% block header_content %}
-			<div class="parallax-container z-depth-3">
-				<div class="section no-pad-bot">
-				  <div class="container">
-				    <br><br>
-				    <br><br>
-				    <h1 class="header center brand-color-text text-lighten-2 hero-title" style="font-family: Monoton;line-height: 42pt;letter-spacing: 6px;{% if is_mobile %}font-size: 25px;{% else %}font-size: 65px;{% endif %}">{{app_name}}</h1>
-				    <div class="row center">
-				      <h5 class="header col s12 white-text light tooltipped" data-translate="base-heading" data-position="bottom" data-delay="50" data-tooltip="aka - your webapp twice as good, in half the time, at ~90% less cost !">A modern responsive front-end + back-end GAE boilerplate based on material design</h5>
+			{% if not is_mobile and brand_layout == 'video' %}
+	            <div class="parallax-container" style="height: 100vh">
+	                <div class="section no-pad-bot">
+	                    <div id="tagline" style="opacity: 1;" class="container">
+	                        <br>
+	                        <br>
+	                        <div class="row center">
+	                            <br>
+	                            <br>
+	                            <br>
+	                            <br>
+	                            <br>
+	                            <h1 class="header center brand-color-text text-lighten-2 hero-title" style="font-family: Monoton;line-height: 42pt;letter-spacing: 6px;{% if is_mobile %}font-size: 25px;{% else %}font-size: 65px;{% endif %}">{{app_name}}</h1>
+	                            <div class="col s12">
+	                                <h1><a class="btn-floating btn-large brand-color" href="#contents" style="opacity:0.5"><i class="mdi-navigation-expand-more"></i></a></h1>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="parallax">
+	                    <video autoplay="autoplay" id="bgvid" loop >
+	                      <source src="{{brand_video}}" type="video/mp4">
+	                    </video>    
+	                </div>
+	            </div>                
+	        {% else %}
+				<div class="parallax-container z-depth-3">
+					<div class="section no-pad-bot">
+					  <div class="container">
+					    <br><br>
+					    <br><br>
+					    <h1 class="header center brand-color-text text-lighten-2 hero-title" style="font-family: Monoton;line-height: 42pt;letter-spacing: 6px;{% if is_mobile %}font-size: 25px;{% else %}font-size: 65px;{% endif %}">{{app_name}}</h1>
+					    <div class="row center">
+					      <h5 class="header col s12 white-text light tooltipped" data-translate="base-heading" data-position="bottom" data-delay="50" data-tooltip="aka - your webapp twice as good, in half the time, at ~90% less cost !">A modern responsive front-end + back-end GAE boilerplate based on material design</h5>
 
-				    </div>
-				    <div class="row center">
-				    </div>
-				    <br>
-				    <br>
-				  </div>
+					    </div>
+					    <div class="row center">
+					    </div>
+					    <br>
+					    <br>
+					  </div>
+					</div>
+					<div class="parallax"><img src="{{brand_splash}}" alt="Unsplashed background img 1" style="display: block; -webkit-filter: brightness({{brand_splash_light}}%);"></div>
 				</div>
-				<div class="parallax"><img src="{{brand_splash}}" alt="Unsplashed background img 1" style="display: block; -webkit-filter: brightness({{brand_splash_light}}%);"></div>
-			</div>
+	        {% endif %}
 		{% endblock %}
 
 		{% block body_content %}
-			<div class="container">
+			<div class="container" id="contents">
 				<div class="section">
 
-				  <div class="row">
+				  <div class="row" style="margin-top:20px;">
 				   	<h3 class="col s12 light center header grey-text" data-translate="landing-header1">What you see is what you get !</h3>
 				    <div class="col s12 m4">
 				      <div class="icon-block">
