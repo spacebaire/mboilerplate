@@ -118,9 +118,9 @@ handlers:
   static_files: bp_content/themes/\1/static/materialize/images/\2
   upload: bp_content/themes/(\w*)/static/materialize/images/(.*\.(gif|png|jpg|jpeg|svg))
 
-- url: /(\w*)/materialize/images/(\w*)/(.*\.(gif|png|jpg|jpeg|svg))
+- url: /(\w*)/materialize/images/(\w*)/(.*\.(gif|png|jpg|jpeg|svg|mp4|webm))
   static_files: bp_content/themes/\1/static/materialize/images/\2/\3
-  upload: bp_content/themes/(\w*)/static/materialize/images/(\w*)/(.*\.(gif|png|jpg|jpeg|svg))
+  upload: bp_content/themes/(\w*)/static/materialize/images/(\w*)/(.*\.(gif|png|jpg|jpeg|svg|mp4|webm))
 
 # @bp_content - materialize fonts
 - url: /(\w*)/materialize/font/(\w*)/(.*\.(ttf|woff|woff2|eot|svg))$

@@ -198,9 +198,6 @@
 				    color: {{brand_color}}!important;
 				}
 
-				.materialboxed{
-				    cursor: auto;
-				}
 				@font-face {
 				  font-family: 'Monoton';
 				  font-style: normal;
@@ -545,41 +542,45 @@
 				  </div>
 				  <div class="row">
 				  	<div class="col s12 m6 l4">
-				      <div class="material-placeholder"><img class="materialboxed responsive-img z-depth-1 initialized" data-caption="Invictus Mexico" src="/{{theme}}/materialize/images/showcase/p_invictus.png"></div>
+				      <div class="material-placeholder"><img onclick="$('#modalinvictus').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="Invictus Mexico" src="/{{theme}}/materialize/images/showcase/p_invictus.png"></div>
 				      <h5 class="center"><a href="http://mihogar.invictus.mx/" target="_blank" class="brand-color-text">Invictus Mexico</a></h5>
 				    </div>
 				    <div class="col s12 m6 l4">
-				      <div class="material-placeholder"><img class="materialboxed responsive-img z-depth-1 initialized" data-caption="Design for Change Mexico" src="/{{theme}}/materialize/images/showcase/p_dfcmexico.png"></div>
+				      <div class="material-placeholder"><img onclick="$('#modaldfcmexico').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="Design for Change Mexico" src="/{{theme}}/materialize/images/showcase/p_dfcmexico.png"></div>
 				      <h5 class="center"><a href="http://disenaelcambio.com/" target="_blank" class="brand-color-text">Design for Change Mexico</a></h5>
 				    </div>
 				    <div class="col s12 m6 l4">
-				      <div class="material-placeholder"><img class="materialboxed responsive-img z-depth-1 initialized" data-caption="Social Maps" src="/{{theme}}/materialize/images/showcase/p_socialmaps.png"></div>
+				      <div class="material-placeholder"><img onclick="$('#modalusocial').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="Social Maps" src="/{{theme}}/materialize/images/showcase/p_socialmaps.png"></div>
 				      <h5 class="center"><a href="http://usocialmaps.com/" target="_blank" class="brand-color-text">Social Maps</a></h5>
 				    </div>
 				  	<div class="col s12 m6 l4">
-				      <div class="material-placeholder"><img class="materialboxed responsive-img z-depth-1 initialized" data-caption="Alcalde en Línea" src="/{{theme}}/materialize/images/showcase/p_alcaldeenlinea.png"></div>
+				      <div class="material-placeholder"><img onclick="$('#modalael').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="Alcalde en Línea" src="/{{theme}}/materialize/images/showcase/p_alcaldeenlinea.png"></div>
 				      <h5 class="center"><a href="http://www.alcaldeenlinea.com/" target="_blank" class="brand-color-text">Alcalde en Línea</a></h5>
 				    </div>
 				    <div class="col s12 m6 l4">
-				      <div class="material-placeholder"><img class="materialboxed responsive-img z-depth-1 initialized" data-caption="Global Shapers MTY" src="/{{theme}}/materialize/images/showcase/p_shapers.png"></div>
+				      <div class="material-placeholder"><img onclick="$('#modalshapers').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="Global Shapers MTY" src="/{{theme}}/materialize/images/showcase/p_shapers.png"></div>
 				      <h5 class="center"><a href="http://globalshapersmty.org/ target="_blank" class="brand-color-text">Global Shapers MTY</a></h5>
 				    </div>
 				    <div class="col s12 m6 l4">
-				      <div class="material-placeholder"><img class="materialboxed responsive-img z-depth-1 initialized" data-caption="I'm Fit" src="/{{theme}}/materialize/images/showcase/p_imfit.png"></div>
+				      <div class="material-placeholder"><img onclick="$('#modalimfit').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="I'm Fit" src="/{{theme}}/materialize/images/showcase/p_imfit.png"></div>
 				      <h5 class="center"><a href="http://www.i-mfit.com/" target="_blank" class="brand-color-text">I'm Fit</a></h5>
 				    </div>
 				  </div>
 				  <div class="row">
 				  	<div class="col s12 m6 l4">
-				      <div class="material-placeholder"><img class="materialboxed responsive-img z-depth-1 initialized" data-caption="One Smart City" src="/{{theme}}/materialize/images/showcase/p_onesmartcity.png"></div>
+				      <div class="material-placeholder"><img onclick="$('#modaloscity').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="One Smart City" src="/{{theme}}/materialize/images/showcase/p_onesmartcity.png"></div>
 				      <h5 class="center"><a href="http://onesmart.city/" target="_blank" class="brand-color-text">OneSmart.City</a></h5>
 				    </div>
 				    <div class="col s12 m6 l4">
-				      <div class="material-placeholder"><img class="materialboxed responsive-img z-depth-1 initialized" data-caption="One Smart City" src="/{{theme}}/materialize/images/showcase/p_kurierme.png"></div>
+				      <div class="material-placeholder"><img onclick="$('#modalkurier').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="Kurier Me" src="/{{theme}}/materialize/images/showcase/p_kurierme.png"></div>
 				      <h5 class="center"><a href="http://kurierme.com/" target="_blank" class="brand-color-text">Kurier Me</a></h5>
 				    </div>
+				    <div class="col s12 m6 l4">
+				      <div class="material-placeholder"><img onclick="$('#modalostech').openModal();return false;" class="materialboxed responsive-img z-depth-1 initialized" data-caption="One Smart Tech" src="/{{theme}}/materialize/images/showcase/p_onesmarttech.png"></div>
+				      <h5 class="center"><a href="http://onesmart.tech/" target="_blank" class="brand-color-text">OneSmart.Tech</a></h5>
+				    </div>
 				  </div>
-				  <h5 class="center" id="counter_holder"><a>8 sites,<br> <span id="counter"></span> users,<br> <span id="counter2"></span> geo-points<br></a></h5>
+				  <h5 class="center" id="counter_holder"><a>9 sites,<br> <span id="counter"></span> users,<br> <span id="counter2"></span> geo-points<br></a></h5>
 				</div>
 			</div>
 		{% endblock %}
@@ -670,6 +671,60 @@
 			          </div>
 			        </div>
 			      </form>
+		      </div>
+		    </div>
+		    <div id="modalinvictus" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_invictus.png" alt="sample">
+		      </div>
+		    </div>
+		    <div id="modaldfcmexico" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_dfcmexico.png" alt="sample">
+		      </div>
+		    </div>
+		    <div id="modalusocial" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_socialmaps.png" alt="sample">
+		      </div>
+		    </div>
+		    <div id="modalael" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_alcaldeenlinea.png" alt="sample">
+		      </div>
+		    </div>
+		    <div id="modalshapers" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_shapers.png" alt="sample">
+		      </div>
+		    </div>
+		    <div id="modalimfit" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_imfit.png" alt="sample">
+		      </div>
+		    </div>
+		    <div id="modaloscity" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_onesmartcity.png" alt="sample">
+		      </div>
+		    </div>
+		    <div id="modalkurier" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_kurierme.png" alt="sample">
+		      </div>
+		    </div>
+		    <div id="modalostech" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	            <img class="materialboxed responsive-img" src="/{{theme}}/materialize/images/showcase/p_onesmarttech.png" alt="sample">
 		      </div>
 		    </div>
 		{% endblock %}
