@@ -277,87 +277,89 @@
 
 		{% block navbar %}
 			<!-- START NAVBAR -->
-			<nav style="background-color: transparent;position: fixed;border-bottom: none; z-index: 9999999;" class="z-depth-0">
-				<div class="nav-wrapper" style="">
-				  <a href="{{uri_for("landing")}}" class="brand-logo"><img src="{{brand_logo}}" style="height:75px; margin-top:-5px;"></a>
-				  <a href="#" data-activates="mobile-demo" class="button-collapse right"><i class="mdi-navigation-more-vert"></i></a>
-				  <ul id="translation-dropdown" class="dropdown-content">
-			                      <li>
-			                        <a style="cursor:pointer;" onclick="forceLang('en');return false;"><img src="/{{theme}}/materialize/images/flags/US.png" alt="English" />  <span class="language-select">English</span></a>
-			                      </li>
-			                      <li>
-			                        <a style="cursor:pointer;" onclick="forceLang('es');return false;"><img src="/{{theme}}/materialize/images/flags/Mexico.png" alt="Español" />  <span class="language-select">Español</span></a>
-			                      </li>
-			                  </ul>
-				  <ul id="nav-mobile" class="right hide-on-med-and-down">
-				  	<li><a href="javascript:void(0);" class="waves-effect waves-block waves-light translation-button"  data-activates="translation-dropdown"><img id="tr-flag" src="/{{theme}}/materialize/images/flags/Mexico.png" alt="Español" /></a></li>
-				    {% if not user_id %}
-				    <li id="nav-login" ><a href="#modal1" class="modal-trigger menu-item" data-translate="menu-login">Login</a></li>
-				    <li id="nav-register" ><a href="#modal2" class="modal-trigger menu-item" data-translate="menu-register">Register</a></li>
-				    {% endif %}
-				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
-				    <li id="nav-download"><a href="#download" class="menu-item" data-translate="menu-love">Want some love?</a></li>
-				    {% if user_id %}
-				    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px; border-radius:4px; padding:10px">
-		                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-home") }}">My home</a>
-	                        </li>
-	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
-	                        </li>
-	                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("logout") }}">Logout</a>
-	                        </li>
-		            </ul>
-				    <li class="nav-user" style="padding-left:15px;">
-                        	{% if has_picture %}
-								<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
-										<div style="position: absolute;left: 0px;"><img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px; height:35px"></div>
-										<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
-		                        </a>
-							{% else %}
-								<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
-										<div style="position: absolute;left: 0px;">
-											<span class="circle white brand-color-text lighten-1" style="width: 35px;   height: 35px; display: inline-block;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300;margin-top: 5px;line-height: 2.2rem;">{{ name_i }}</span>
-										</div>
-										<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
-		                        </a>
-							{% endif %}
-                     </li>	
-				    {% endif %}
-				  </ul>
-				  <ul class="side-nav" id="mobile-demo">
-				    {% if not user_id %}
-				    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item" data-translate="menu-login">Login</a></li>
-				    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item" data-translate="menu-register">Register</a></li>
-				    {% else %}
-				    <li class="no-padding">
-                        <ul class="collapsible collapsible-accordion">
-                            <li class="bold">
-                            	<a class="collapsible-header waves-effect waves-cyan">
-						    	{% if has_picture %}
-									<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style="margin-top: 10px;height: 50px;margin-bottom: -15px;">
+            <div class="navbar-fixed" style="height: 0px;">
+				<nav style="background-color: transparent;" class="z-depth-0">
+					<div class="nav-wrapper" style="">
+					  <a href="{{uri_for("landing")}}" class="brand-logo"><img src="{{brand_logo}}" style="height:75px; margin-top:-5px;"></a>
+					  <a href="#" data-activates="mobile-demo" class="button-collapse right"><i class="mdi-navigation-more-vert"></i></a>
+					  <ul id="translation-dropdown" class="dropdown-content">
+				                      <li>
+				                        <a style="cursor:pointer;" onclick="forceLang('en');return false;"><img src="/{{theme}}/materialize/images/flags/US.png" alt="English" />  <span class="language-select">English</span></a>
+				                      </li>
+				                      <li>
+				                        <a style="cursor:pointer;" onclick="forceLang('es');return false;"><img src="/{{theme}}/materialize/images/flags/Mexico.png" alt="Español" />  <span class="language-select">Español</span></a>
+				                      </li>
+				                  </ul>
+					  <ul id="nav-mobile" class="right hide-on-med-and-down">
+					  	<li><a href="javascript:void(0);" class="waves-effect waves-block waves-light translation-button"  data-activates="translation-dropdown"><img id="tr-flag" src="/{{theme}}/materialize/images/flags/Mexico.png" alt="Español" /></a></li>
+					    {% if not user_id %}
+					    <li id="nav-login" ><a href="#modal1" class="modal-trigger menu-item" data-translate="menu-login">Login</a></li>
+					    <li id="nav-register" ><a href="#modal2" class="modal-trigger menu-item" data-translate="menu-register">Register</a></li>
+					    {% endif %}
+					    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
+					    <li id="nav-download"><a href="#download" class="menu-item" data-translate="menu-love">Want some love?</a></li>
+					    {% if user_id %}
+					    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px; border-radius:4px; padding:10px">
+			                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-home") }}">My home</a>
+		                        </li>
+		                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
+		                        </li>
+		                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("logout") }}">Logout</a>
+		                        </li>
+			            </ul>
+					    <li class="nav-user" style="padding-left:15px;">
+	                        	{% if has_picture %}
+									<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
+											<div style="position: absolute;left: 0px;"><img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px; height:35px"></div>
+											<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
+			                        </a>
 								{% else %}
-		                        	<span class="circle red lighten-1" style="width: 35px;   height: 35px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; margin-top: 10px;margin-left: 10px;">{{ name_i }}</span>
+									<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
+											<div style="position: absolute;left: 0px;">
+												<span class="circle white brand-color-text lighten-1" style="width: 35px;   height: 35px; display: inline-block;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300;margin-top: 5px;line-height: 2.2rem;">{{ name_i }}</span>
+											</div>
+											<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
+			                        </a>
 								{% endif %}
-								</a>
-                            	<div class="collapsible-body">
-                                    <ul>
-									  <li><a href="{{ uri_for("materialize-home") }}">My home</a>
-		                                </li>
-		                              <li><a href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
-		                                </li>
-		                              <li><a href="{{ uri_for("logout") }}">Logout</a>
-		                                </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                     </li>
-				     <li class="divider"></li>
-				    {% endif %}
-				    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
-				    <li id="nav-download"><a href="#download" class="menu-item" data-translate="menu-love">Want some love?</a></li>
-				  </ul>
-				</div>
-			</nav>
+	                     </li>	
+					    {% endif %}
+					  </ul>
+					  <ul class="side-nav" id="mobile-demo">
+					    {% if not user_id %}
+					    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item" data-translate="menu-login">Login</a></li>
+					    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item" data-translate="menu-register">Register</a></li>
+					    {% else %}
+					    <li class="no-padding">
+	                        <ul class="collapsible collapsible-accordion">
+	                            <li class="bold">
+	                            	<a class="collapsible-header waves-effect waves-cyan">
+							    	{% if has_picture %}
+										<img src="/media/serve/profile/{{user_id}}/" alt="" class="circle responsive-img valign profile-image" style="margin-top: 10px;height: 50px;margin-bottom: -15px;">
+									{% else %}
+			                        	<span class="circle red lighten-1" style="width: 35px;   height: 35px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; margin-top: 10px;margin-left: 10px;">{{ name_i }}</span>
+									{% endif %}
+									</a>
+	                            	<div class="collapsible-body">
+	                                    <ul>
+										  <li><a href="{{ uri_for("materialize-home") }}">My home</a>
+			                                </li>
+			                              <li><a href="{{ uri_for("materialize-settings-profile") }}">My profile </a>
+			                                </li>
+			                              <li><a href="{{ uri_for("logout") }}">Logout</a>
+			                                </li>
+	                                    </ul>
+	                                </div>
+	                            </li>
+	                        </ul>
+	                     </li>
+					     <li class="divider"></li>
+					    {% endif %}
+					    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
+					    <li id="nav-download"><a href="#download" class="menu-item" data-translate="menu-love">Want some love?</a></li>
+					  </ul>
+					</div>
+				</nav>
+			</div>
 			<!-- END NAVBAR -->
 		{% endblock %}
 
