@@ -158,6 +158,10 @@ config = {
     'cartodb_user': '',
     'cartodb_apikey': '',
 
+    #google apis
+    'google_maps_key': 'AIzaSyBaSx2JjNt0VSrilJVRcsEwX3W-zft_FQM',
+    'google_nlp_key': 'AIzaSyCXbP34cg9cLJEAJXi501DxrR34L_tsxqk',
+
     #zendesk integration
     'zendesk_imports': '',
     #EXAMPLE OF ZENDESK IMPORTS

@@ -1,0 +1,134 @@
+{% extends base_layout %}
+{% block title %}<title>{{app_name}} » NLP</title>{% endblock %}
+
+{% block page_css %}
+	<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css">
+	<style>
+	.collapsible-header{
+		display: block;
+	    cursor: pointer;
+	    height: 3rem;
+	    line-height: 3rem;
+	    padding: 0 1rem;
+	    background-color: #fff;
+	    border-bottom: 1px solid #ddd;
+	}
+	.collapsible-header:after{
+		color:white;
+	}
+	</style>
+{% endblock %}
+
+
+
+
+{% block page_content %}
+<div class="section">
+    <div class="container">
+        <h5 class="grey-text">Google NLP API example</h5>
+        <div class="container">
+	    	<div class="col s10 offset-s1">
+	    		<div class="row">
+                    <div class="input-field col s12 l6">
+                        <i class="mdi-maps-map prefix brand-color-text brand-color-text"></i>
+                        <textarea id="nlp_input" name="nlp_input" class="materialize-textarea" length="500" style="height: 22px;" type="text" >
+                        Google, headquartered in Mountain View, unveiled the new Android phone at the Consumer Electronic Show.  Sundar Pichai said in his keynote that users love their new Android phones.
+                        </textarea>
+                        <label for="nlp_input">Text to parse using Google NLP API</label>
+                    </div>
+                    <div class="row">
+			        	<div class="input-field col s10 offset-s1 center">
+			                <button class="waves-effect waves-light brand-color white-text btn-large right" id="submit_report_form" >Submit
+			                    <i class="mdi-content-send right"></i>
+			                </button>	                          
+			            </div>
+			        </div>
+			        <div class="row" id="response"></div>
+                </div>    
+            </div>
+	    </div>
+    </div>
+</div>
+{% endblock %}
+
+
+<!-- Remove floating button from home -->
+{% block page_floatings %}
+{% endblock %}
+
+
+
+{% block page_scripts %}
+	<script>
+
+		$( "#submit_report_form" ).click(function() {
+			value = document.getElementById('nlp_input').value;
+			if (value != ''){
+				$.ajax({
+		            url: "https://language.googleapis.com/v1beta1/documents:analyzeEntities?key={{google_nlp_key}}",
+		            type: 'POST',
+		            contentType: "application/json; charset=utf-8",
+		            data: JSON.stringify({
+					  "document":{
+					    "type":"PLAIN_TEXT",
+					    "content": value
+					  },
+					  "encodingType":"UTF8"
+					}) 
+		        }).done(function(data) {
+		        	console.log(data);
+		        	var html = '<h5> The following entities have been detected (laguage: '+ data.language +'):</h5>';
+		        	for (var i=0, j=data.entities.length; i<j; i++){
+		        		html += '<p style="font-family:roboto-thin">"' + data.entities[i].name + '" interpreted as a ' + data.entities[i].type +' with a relevance among context of ' + data.entities[i].salience +'.</p>';
+		        	}
+		        	console.log(html);
+		        	document.getElementById('response').innerHTML = html;
+
+		        	if (data.language == "en"){
+		        		$.ajax({
+				            url: "https://language.googleapis.com/v1beta1/documents:analyzeSentiment?key={{google_nlp_key}}",
+				            type: 'POST',
+				            contentType: "application/json; charset=utf-8",
+				            data: JSON.stringify({
+							  "document":{
+							    "type":"PLAIN_TEXT",
+							    "content": value
+							  }
+							}) 
+				        }).done(function(data) {
+				        	console.log(data);
+				        	document.getElementById('response').innerHTML += '<p style="font-family:roboto-black"> Sentiment detected has a magnitude of ' + data.documentSentiment.magnitude + ' with polarity of ' + data.documentSentiment.polarity + '.</p>';
+				        });
+				        
+				        $.ajax({
+				            url: "https://language.googleapis.com/v1beta1/documents:annotateText?key={{google_nlp_key}}",
+				            type: 'POST',
+				            contentType: "application/json; charset=utf-8",
+				            data: JSON.stringify({
+							  "document":{
+							    "type":"PLAIN_TEXT",
+							    "content": value
+							  },
+							  "features": {
+							  	"extractSyntax": true,
+								"extractEntities": true,
+								"extractDocumentSentiment": true,
+							  },
+					  		  "encodingType":"UTF8"
+							}) 
+				        }).done(function(data) {
+				        	console.log(data);
+				        	document.getElementById('response').innerHTML += '<p style="font-family:roboto-black"> Total sentences: ' + data.sentences.length + '.</p>';
+				        	document.getElementById('response').innerHTML += '<p style="font-family:roboto-black"> Total entities: ' + data.entities.length + '.</p>';
+				        });
+		        	}
+		        });
+
+		        
+			}
+		    else
+    	        Materialize.toast('<span class="toast-warning">Please add some value to process.</span>',4500);
+    	});
+
+	</script>
+{% endblock %}	
