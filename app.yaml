@@ -137,10 +137,6 @@ handlers:
   static_files: bp_content/themes/\1/static/materialize/video/\2
   upload: bp_content/themes/(\w*)/static/materialize/video/(.*\.(gif|png|jpg|jpeg|svg|mp4|webm))
 
-- url: /(\w*)/materialize/video/(\w*)/(.*\.(gif|png|jpg|jpeg|svg|mp4|webm))
-  static_files: bp_content/themes/\1/static/materialize/video/\2/\3
-  upload: bp_content/themes/(\w*)/static/materialize/video/(\w*)/(.*\.(gif|png|jpg|jpeg|svg|mp4|webm))
-
 # @taskqueue email sender
 - url: /taskqueue-send-email.*
   script: main.app
