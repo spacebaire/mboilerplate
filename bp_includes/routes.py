@@ -39,6 +39,7 @@ _routes = [
     RedirectRoute('/user/polymer/', handlers.MaterializePolymerRequestHandler, name='materialize-polymer', strict_slash=True),
     RedirectRoute('/user/cartodb/', handlers.MaterializeCartoDBRequestHandler, name='materialize-cartodb', strict_slash=True),
     RedirectRoute('/user/nlp/', handlers.MaterializeNLPRequestHandler, name='materialize-nlp', strict_slash=True),
+    RedirectRoute('/user/vision/', handlers.MaterializeVisionRequestHandler, name='materialize-vision', strict_slash=True),
     RedirectRoute('/user/settings/profile/', handlers.MaterializeSettingsProfileRequestHandler, name='materialize-settings-profile', strict_slash=True),
     RedirectRoute('/user/settings/email/', handlers.MaterializeSettingsEmailRequestHandler, name='materialize-settings-email', strict_slash=True),
     RedirectRoute('/user/settings/password/', handlers.MaterializeSettingsPasswordRequestHandler, name='materialize-settings-password', strict_slash=True),

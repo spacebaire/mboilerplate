@@ -1392,6 +1392,26 @@ class MaterializeNLPRequestHandler(BaseHandler):
         
         return self.render_template('materialize/users/sections/nlp.html', **params)
 
+class MaterializeVisionRequestHandler(BaseHandler):
+    """
+    Handler for materialized home
+    """
+    @user_required
+    def get(self):
+        """ Returns a simple HTML form for materialize home """
+        ####-------------------- R E D I R E C T I O N S --------------------####
+        if not self.user:
+            return self.redirect_to('login')
+        ####------------------------------------------------------------------####
+
+        ####-------------------- P R E P A R A T I O N S --------------------####
+        params, user_info = disclaim(self)
+        ####------------------------------------------------------------------####
+
+        params['google_vision_key'] = self.app.config.get('google_vision_key')
+        
+        return self.render_template('materialize/users/sections/vision.html', **params)
+
 class MaterializeSettingsProfileRequestHandler(BaseHandler):
     """
         Handler for materialized settings profile

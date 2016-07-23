@@ -158,9 +158,12 @@ config = {
     'cartodb_user': '',
     'cartodb_apikey': '',
 
-    #google apis
+    #google apis, 
+    #grab each of them after enabling the api at https://console.cloud.google.com/apis/library?project=<YOUR PROJECT ID>
+    #after, create an appropriately named credential as API Key at https://console.cloud.google.com/apis/credentials?project=YOUR PROJECT ID>
     'google_maps_key': 'AIzaSyBaSx2JjNt0VSrilJVRcsEwX3W-zft_FQM',
     'google_nlp_key': 'AIzaSyCXbP34cg9cLJEAJXi501DxrR34L_tsxqk',
+    'google_vision_key': 'AIzaSyA1lWQlYlEaPATMaElEe6iTVl_cjkvonVQ',
 
     #zendesk integration
     'zendesk_imports': '',
