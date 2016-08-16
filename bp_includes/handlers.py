@@ -31,14 +31,17 @@ from lib.cartodb import CartoDBAPIKey, CartoDBException
 from lib.basehandler import BaseHandler
 from lib.decorators import user_required, taskqueue_method
 
-# [START bounce_handler]
+""" GLOBAL HELPERS 
+
+    This helpers are used across the whole code.
+
+"""
+
 class LogBounceHandler(BounceNotificationHandler):
     def receive(self, bounce_message):
         logging.info('Received bounce post ... [%s]', self.request)
         logging.info('Bounce original: %s', bounce_message.original)
         logging.info('Bounce notification: %s', bounce_message.notification)
-# [END bounce_handler]
-
 
 def captchaBase(self):
     if self.app.config.get('captcha_public_key') == "" or \
@@ -52,6 +55,40 @@ def captchaBase(self):
         chtml = captcha.displayhtml(public_key=self.app.config.get('captcha_public_key'))
     return chtml
 
+def disclaim(_self, **kwargs):
+    """
+        This method is used as a validator previous to loading a get handler for most of user's screens.
+        It can either redirect user to login, edit cfe data and edit home data, or
+        return required params, user_info and user_home values.
+    """
+    _params = {}
+    user_info = _self.user_model.get_by_id(long(_self.user_id))        
+    
+    #0: FOR PERSONALIZATION MEANS WE TAKE CARE OF BEST DATA TO ADDRESS USER
+    _params['email'] = user_info.email
+    _params['last_name'] = user_info.last_name
+    _params['last_name_i'] = user_info.last_name[0] + "." if len(user_info.last_name) >= 1 else ""
+    _params['name'] = user_info.name
+    _params['name_i'] = user_info.name[0].upper()
+    _params['role'] = 'Administrator' if user_info.role == 'Admin' else 'Member'
+    _params['phone'] = user_info.phone if user_info.phone != None else ""
+    _params['gender'] = user_info.gender if user_info.gender != None else ""
+    _params['birth'] = user_info.birth.strftime("%Y-%m-%d") if user_info.birth != None else ""
+    _params['has_picture'] = True if user_info.picture is not None else False
+    _params['has_address'] = True if user_info.address is not None else False
+    _params['address_from'] = False
+    if _params['has_address']:
+        if user_info.address.address_from_coord is not None:
+            lat = str(user_info.address.address_from_coord.lat)
+            lng = str(user_info.address.address_from_coord.lon)
+            _params['address_from_coord'] = lat + "," + lng
+        _params['address_from'] = user_info.address.address_from
+    if not _params['has_picture']:
+        _params['disclaim'] = True
+    _params['link_referral'] = user_info.link_referral
+    _params['date'] = date.today().strftime("%Y-%m-%d")
+
+    return _params, user_info
 
 
 """ ACCOUNT handlers 
@@ -254,8 +291,6 @@ class PasswordResetCompleteHandler(BaseHandler):
     @webapp2.cached_property
     def form(self):
         return forms.PasswordResetCompleteForm(self)
-
-
 
 
 """ REGISTRATION handlers 
@@ -927,48 +962,11 @@ class ResendActivationEmailHandler(BaseHandler):
             return self.redirect_to('login')
 
 
-
-
-""" MATERIALIZE handlers 
+""" BASIC handlers 
 
     These handlers are the core of the Platform, they give life to main user materialized screens
 
 """
-def disclaim(_self, **kwargs):
-    """
-        This method is used as a validator previous to loading a get handler for most of user's screens.
-        It can either redirect user to login, edit cfe data and edit home data, or
-        return required params, user_info and user_home values.
-    """
-    _params = {}
-    user_info = _self.user_model.get_by_id(long(_self.user_id))        
-    
-    #0: FOR PERSONALIZATION MEANS WE TAKE CARE OF BEST DATA TO ADDRESS USER
-    _params['email'] = user_info.email
-    _params['last_name'] = user_info.last_name
-    _params['last_name_i'] = user_info.last_name[0] + "." if len(user_info.last_name) >= 1 else ""
-    _params['name'] = user_info.name
-    _params['name_i'] = user_info.name[0].upper()
-    _params['role'] = 'Administrator' if user_info.role == 'Admin' else 'Member'
-    _params['phone'] = user_info.phone if user_info.phone != None else ""
-    _params['gender'] = user_info.gender if user_info.gender != None else ""
-    _params['birth'] = user_info.birth.strftime("%Y-%m-%d") if user_info.birth != None else ""
-    _params['has_picture'] = True if user_info.picture is not None else False
-    _params['has_address'] = True if user_info.address is not None else False
-    _params['address_from'] = False
-    if _params['has_address']:
-        if user_info.address.address_from_coord is not None:
-            lat = str(user_info.address.address_from_coord.lat)
-            lng = str(user_info.address.address_from_coord.lon)
-            _params['address_from_coord'] = lat + "," + lng
-        _params['address_from'] = user_info.address.address_from
-    if not _params['has_picture']:
-        _params['disclaim'] = True
-    _params['link_referral'] = user_info.link_referral
-    _params['date'] = date.today().strftime("%Y-%m-%d")
-
-    return _params, user_info
-
 
 # LANDING
 
@@ -996,49 +994,6 @@ class MaterializeLandingRequestHandler(BaseHandler):
         else:
             params, user_info = disclaim(self)            
             return self.render_template('materialize/landing/base.html', **params)
-
-class MaterializeLandingBlogRequestHandler(BaseHandler):
-    """
-        Handler for materialized privacy policy
-    """
-    def get(self):
-        """ returns simple html for a get request """
-        if self.user_id:
-            params, user_info = disclaim(self)
-        else:
-            params = {}        
-        params['captchahtml'] = captchaBase(self)
-        posts = models.BlogPost.query()
-        params['total'] = posts.count()
-        params['posts'] = []
-        for post in posts:
-            categories = ""
-            for category in post.category:
-                categories += str(category) + ", "
-            params['posts'].append((post.key.id(), post.updated.strftime("%Y-%m-%d"), post.title, post.subtitle, post.blob_key, post.author, post.brief, categories[0:-2]))
-        return self.render_template('materialize/landing/blog.html', **params)
-
-class MaterializeLandingBlogPostRequestHandler(BaseHandler):
-    """
-        Handler for materialized privacy policy
-    """
-    def get(self, post_id):
-        """ returns simple html for a get request """
-        if self.user_id:
-            params, user_info = disclaim(self)
-        else:
-            params = {} 
-        params['captchahtml'] = captchaBase(self)
-        blog = models.BlogPost.get_by_id(long(post_id))
-        if blog is not None:
-            params['title'] = blog.title
-            params['subtitle'] = blog.subtitle
-            params['blob_key'] = blog.blob_key
-            params['author'] = blog.author
-            params['content'] = blog.content
-            return self.render_template('materialize/landing/blogpost.html', **params)
-        else:
-            return self.error(404)
 
 class MaterializeLandingFaqRequestHandler(BaseHandler):
     """
@@ -1213,8 +1168,53 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
     def form(self):
         return forms.ContactForm(self)
 
+# BLOG
 
-# USER
+class MaterializeLandingBlogRequestHandler(BaseHandler):
+    """
+        Handler for materialized privacy policy
+    """
+    def get(self):
+        """ returns simple html for a get request """
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {}        
+        params['captchahtml'] = captchaBase(self)
+        posts = models.BlogPost.query()
+        params['total'] = posts.count()
+        params['posts'] = []
+        for post in posts:
+            categories = ""
+            for category in post.category:
+                categories += str(category) + ", "
+            params['posts'].append((post.key.id(), post.updated.strftime("%Y-%m-%d"), post.title, post.subtitle, post.blob_key, post.author, post.brief, categories[0:-2]))
+        return self.render_template('materialize/landing/blog.html', **params)
+
+class MaterializeLandingBlogPostRequestHandler(BaseHandler):
+    """
+        Handler for materialized privacy policy
+    """
+    def get(self, post_id):
+        """ returns simple html for a get request """
+        if self.user_id:
+            params, user_info = disclaim(self)
+        else:
+            params = {} 
+        params['captchahtml'] = captchaBase(self)
+        blog = models.BlogPost.get_by_id(long(post_id))
+        if blog is not None:
+            params['title'] = blog.title
+            params['subtitle'] = blog.subtitle
+            params['blob_key'] = blog.blob_key
+            params['author'] = blog.author
+            params['content'] = blog.content
+            return self.render_template('materialize/landing/blogpost.html', **params)
+        else:
+            return self.error(404)
+
+# USER ESSENTIALS
+
 class MaterializeHomeRequestHandler(BaseHandler):
     """
     Handler for materialized home
@@ -1333,84 +1333,6 @@ class MaterializeReferralsRequestHandler(BaseHandler):
     def form(self):
         f = forms.ReferralsForm(self)
         return f
-
-class MaterializePolymerRequestHandler(BaseHandler):
-    """
-    Handler for materialized polymer
-    """
-    @user_required
-    def get(self):
-        """ Returns a simple HTML form for materialize home """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
-
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-        
-        return self.render_template('materialize/users/sections/polymer.html', **params)
-
-class MaterializeCartoDBRequestHandler(BaseHandler):
-    """
-    Handler for materialized home
-    """
-    @user_required
-    def get(self):
-        """ Returns a simple HTML form for materialize home """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
-
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-
-        params['google_maps_key'] = self.app.config.get('google_maps_key')
-        
-        return self.render_template('materialize/users/sections/cartodb.html', **params)
-
-class MaterializeNLPRequestHandler(BaseHandler):
-    """
-    Handler for materialized home
-    """
-    @user_required
-    def get(self):
-        """ Returns a simple HTML form for materialize home """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
-
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-
-        params['google_nlp_key'] = self.app.config.get('google_nlp_key')
-        
-        return self.render_template('materialize/users/sections/nlp.html', **params)
-
-class MaterializeVisionRequestHandler(BaseHandler):
-    """
-    Handler for materialized home
-    """
-    @user_required
-    def get(self):
-        """ Returns a simple HTML form for materialize home """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
-
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-
-        params['google_vision_key'] = self.app.config.get('google_vision_key')
-        
-        return self.render_template('materialize/users/sections/vision.html', **params)
 
 class MaterializeSettingsProfileRequestHandler(BaseHandler):
     """
@@ -1914,8 +1836,88 @@ class MaterializeSettingsDeleteRequestHandler(BaseHandler):
     def form(self):
         return forms.DeleteAccountForm(self)
 
+# USER SECTIONS
 
-""" SMALL MEDIA handlers
+class MaterializePolymerRequestHandler(BaseHandler):
+    """
+    Handler for materialized polymer
+    """
+    @user_required
+    def get(self):
+        """ Returns a simple HTML form for materialize home """
+        ####-------------------- R E D I R E C T I O N S --------------------####
+        if not self.user:
+            return self.redirect_to('login')
+        ####------------------------------------------------------------------####
+
+        ####-------------------- P R E P A R A T I O N S --------------------####
+        params, user_info = disclaim(self)
+        ####------------------------------------------------------------------####
+        
+        return self.render_template('materialize/users/sections/polymer.html', **params)
+
+class MaterializeCartoDBRequestHandler(BaseHandler):
+    """
+    Handler for materialized home
+    """
+    @user_required
+    def get(self):
+        """ Returns a simple HTML form for materialize home """
+        ####-------------------- R E D I R E C T I O N S --------------------####
+        if not self.user:
+            return self.redirect_to('login')
+        ####------------------------------------------------------------------####
+
+        ####-------------------- P R E P A R A T I O N S --------------------####
+        params, user_info = disclaim(self)
+        ####------------------------------------------------------------------####
+
+        params['google_maps_key'] = self.app.config.get('google_maps_key')
+        
+        return self.render_template('materialize/users/sections/cartodb.html', **params)
+
+class MaterializeNLPRequestHandler(BaseHandler):
+    """
+    Handler for materialized home
+    """
+    @user_required
+    def get(self):
+        """ Returns a simple HTML form for materialize home """
+        ####-------------------- R E D I R E C T I O N S --------------------####
+        if not self.user:
+            return self.redirect_to('login')
+        ####------------------------------------------------------------------####
+
+        ####-------------------- P R E P A R A T I O N S --------------------####
+        params, user_info = disclaim(self)
+        ####------------------------------------------------------------------####
+
+        params['google_nlp_key'] = self.app.config.get('google_nlp_key')
+        
+        return self.render_template('materialize/users/sections/nlp.html', **params)
+
+class MaterializeVisionRequestHandler(BaseHandler):
+    """
+    Handler for materialized home
+    """
+    @user_required
+    def get(self):
+        """ Returns a simple HTML form for materialize home """
+        ####-------------------- R E D I R E C T I O N S --------------------####
+        if not self.user:
+            return self.redirect_to('login')
+        ####------------------------------------------------------------------####
+
+        ####-------------------- P R E P A R A T I O N S --------------------####
+        params, user_info = disclaim(self)
+        ####------------------------------------------------------------------####
+
+        params['google_vision_key'] = self.app.config.get('google_vision_key')
+        
+        return self.render_template('materialize/users/sections/vision.html', **params)
+
+
+""" MEDIA handlers
 
     These handlers are used to serve small media files from datastore
 
@@ -1940,14 +1942,6 @@ class MediaDownloadHandler(BaseHandler):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('No image')
 
-
-
-
-""" BIG MEDIA handlers
-
-    These handlers operate files larger than the 1Mb, upload and serve.
-
-"""
 class BlobFormHandler(BaseHandler, blobstore_handlers.BlobstoreUploadHandler):
     """
         To better handle text inputs included in same file form, please refer to bp_admin/blog.py
@@ -1977,8 +1971,6 @@ class BlobDownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
             self.error(404)
         else:
             self.send_blob(photo_key)
-
-
 
 
 """ CRONJOB + TASKQUEUE handlers
@@ -2063,8 +2055,6 @@ class WelcomeHandler(BaseHandler):
                                 'offset': count,
                             })
                         break
-
-
 
 
 """ REST API preparation handlers
@@ -2163,8 +2153,6 @@ class APITestingHandler(BaseHandler):
             pass
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Tests went good... =)')
-
-
 
 
 """ WEB  static handlers

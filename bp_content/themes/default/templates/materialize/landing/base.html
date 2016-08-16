@@ -1299,6 +1299,20 @@
 		                gpegobmx_users = data.users;
 		            });
 
+		            $.ajax({
+		                url: 'http://tlalnegobmx.appspot.com/mboilerplate/users/',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                },
+		                error: function(data) { 
+		                	tlalnegobmx_users = 1372;
+		                }
+		            }).done(function(data) {
+		                console.log('tlalnegobmx_users', data);
+		                tlalnegobmx_users = data.users;
+		            });
+
 
 		            $.ajax({
 		                url: 'http://educaruno.cartodb.com/api/v2/sql?q=SELECT%20count(*)%20FROM%20dec_proyectos',
@@ -1334,6 +1348,17 @@
 		            });
 
 		            $.ajax({
+		                url: 'http://tlalnegobmx.cartodb.com/api/v2/sql?q=SELECT%20count(*)%20FROM%20public_reports',
+		                type: 'GET',
+		                async: true,
+		                success: function(data) { 
+		                }
+		            }).done(function(data) {
+		                console.log('tlalnegobmx_points', data);
+		                tlalnegobmx_points = data.rows[0].count;
+		            });
+
+		            $.ajax({
 		                url: 'http://cicadmin.cartodb.com/api/v2/sql?q=SELECT%20count(*)%20FROM%20nl_public',
 		                type: 'GET',
 		                async: true,
@@ -1345,11 +1370,11 @@
 		            });
 
 		            setTimeout(function(){ 
-		            	var total = dfcmexico_points + usocialmaps_points + gpegobmx_points + cic_points;
+		            	var total = dfcmexico_points + usocialmaps_points + gpegobmx_points + tlalnegobmx_points + cic_points;
 						var demo = new CountUp("counter2", 0, total, 0, 2.5, options);
 						demo.start();
 
-						total = dfcmexico_users + usocialmaps_users + mfit_users + mihogarinvictus_users + gpegobmx_users;
+						total = dfcmexico_users + usocialmaps_users + mfit_users + mihogarinvictus_users + gpegobmx_users + tlalnegobmx_users;
 						var _demo = new CountUp("counter", 0, total, 0, 2.5, options);
 						_demo.start();
 
