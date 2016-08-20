@@ -142,33 +142,32 @@ class SendEmailHandler(BaseHandler):
 
 
 
-
-        #using appengine email 
-        try:            
-            message = mail.EmailMessage()
-            message.sender = sender
-            message.to = to
-            message.subject = subject
-            message.html = body
-            message.send()
-            logging.info("... sending email to: %s ..." % to)
-        except Exception, e:
-            logging.error("Error sending email: %s" % e)
-
-
-        # using sendgrid
-        # try:
-        #     sg = sendgrid.SendGridClient(self.app.config.get('sendgrid_login'), self.app.config.get('sendgrid_passkey'))
-        #     logging.info("sending with sendgrid client: %s" % sg)
-        #     message = sendgrid.Mail()
-        #     message.add_to(to)
-        #     message.set_subject(subject)
-        #     message.set_html(body)
-        #     message.set_text(body)
-        #     message.set_from(sender)
-        #     status, msg = sg.send(message)
-        # except Exception, e:
-        #     logging.error("Error sending email: %s" % e)
+        if self.app.config.get('sendgrid_priority'):
+            # using sendgrid
+            try:
+                sg = sendgrid.SendGridClient(self.app.config.get('sendgrid_login'), self.app.config.get('sendgrid_passkey'))
+                logging.info("sending with sendgrid client: %s" % sg)
+                message = sendgrid.Mail()
+                message.add_to(to.split(','))
+                message.set_subject(subject)
+                message.set_html(body)
+                message.set_text(body)
+                message.set_from(sender)
+                status, msg = sg.send(message)
+            except Exception, e:
+                logging.error("Error sending email: %s" % e)
+        else:
+            #using appengine email 
+            try:            
+                message = mail.EmailMessage()
+                message.sender = sender
+                message.to = to
+                message.subject = subject
+                message.html = body
+                message.send()
+                logging.info("... sending email to: %s ..." % to)
+            except Exception, e:
+                logging.error("Error sending email: %s" % e)       
 
 class PasswordResetHandler(BaseHandler):
     """

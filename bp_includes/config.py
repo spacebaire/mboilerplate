@@ -143,6 +143,7 @@ config = {
     #sendgrid integration if you wish to get more than 20,100 free emails from google email service.
     'sendgrid_login' : '',
     'sendgrid_passkey' : '',
+    'sendgrid_priority': False,
 
       #bitly Login & API KEY, get them from your bitly account under settings/advanced. this is used to generate a short referrals link.
     'bitly_login' : "mboilerplate",
