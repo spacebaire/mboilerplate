@@ -1298,6 +1298,7 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
             params['address_from'] = ""
         params['google_clientID'] = self.app.config.get('google_clientID')
         params['facebook_appID'] = self.app.config.get('facebook_appID')
+        params['google_maps_key'] = self.app.config.get('google_maps_key')
         return self.render_template('materialize/users/settings/profile.html', **params)
 
     def post(self):
