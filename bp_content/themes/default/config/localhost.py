@@ -5,7 +5,7 @@ config = {
 
     # ----> ADD MORE CONFIGURATION OPTIONS HERE <----
     
-    'app_name': "mboilerplate @localhost",
+    'app_name': "app @localhost",
     
     
     'error_templates': {

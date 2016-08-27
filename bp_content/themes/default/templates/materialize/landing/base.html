@@ -260,7 +260,7 @@
 	    <!-- All JavaScript at the bottom, except these. -->
 		{% block priority_js %}
 			<script type="text/javascript" src="/boilerplate/webcomponents/bower_components/webcomponentsjs/webcomponents.min.js"></script>	
-    		<script type="text/javascript" src="/boilerplate/js/libs/modernizr-2.7.1.min.js"></script>
+    		<script type="text/javascript" src="/{{theme}}/materialize/js/modernizr-2.7.1.min.js"></script>
    		 	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js"></script>
 		{% endblock %}
 
@@ -278,7 +278,7 @@
 		{% block navbar %}
 			<!-- START NAVBAR -->
             <div class="navbar-fixed" style="height: 0px;">
-				<nav style="background-color: transparent;" class="z-depth-0">
+				<nav style="background-color: {{brand_color}};" class="z-depth-0">
 					<div class="nav-wrapper" style="">
 					  <a href="{{uri_for("landing")}}" class="brand-logo"><img src="{{brand_logo}}" style="height:75px; margin-top:-5px;"></a>
 					  <a href="#" data-activates="mobile-demo" class="button-collapse right"><i class="mdi-navigation-more-vert"></i></a>
@@ -446,8 +446,8 @@
 				  </div>
 				</div>
 			</div>
-			<div class="parallax-container z-depth-3">
-			    <div class="section no-pad-bot" style="  margin-top: 10%;">
+			<div class="parallax-container z-depth-3" style="height:300px">
+			    <div class="section no-pad-bot" style="  margin-top: 62px;">
 			      <div class="container">
 			        <br><br>
 			        <div class="row center">
@@ -516,8 +516,8 @@
 				  </div>
 				</div>
 			</div>
-			<div class="parallax-container z-depth-3">
-				<div class="section no-pad-bot" style="  margin-top: 10%;">
+			<div class="parallax-container z-depth-3" style="height:300px">
+				<div class="section no-pad-bot" style="  margin-top: 62px;">
 				  <div class="container">
 				    <br><br>
 				    <div class="row center">
@@ -570,8 +570,8 @@
 				  </div>
 				</div>
 			</div>
-			<div class="parallax-container z-depth-3">
-				<div class="section no-pad-bot" style="  margin-top: 10%;">
+			<div class="parallax-container z-depth-3" style="height:300px">
+				<div class="section no-pad-bot" style="  margin-top: 62px;">
 				  <div class="container">
 				    <br><br>
 				    <div class="row center">
@@ -782,8 +782,8 @@
 		{% block footer %}
 			{% block footer_head %}
 			<!-- PAYPAL -->
-			<div class="parallax-container z-depth-3">
-				<div class="section no-pad-bot" style="  margin-top: 10%;">
+			<div class="parallax-container z-depth-3" style="height:300px">
+				<div class="section no-pad-bot" style="  margin-top: 42px;">
 				  <div class="container">
 				    <div class="row center">
 				      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
@@ -915,31 +915,32 @@
 							$('.button-collapse').sideNav('hide');
 						});
 
-						var body = document.body,html = document.documentElement;
-						var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
-						var scroll_pos = 0;
-					    var animation_begin_pos = 500;
-					    var animation_end_pos = height;
-					    var original_color = new $.Color( 'rgba(0,0,0,0)' );
-					    var beginning_color = new $.Color( '{{brand_secondary_color}}' );
-					    var ending_color = new $.Color( '{{brand_color}}' );
-					    $(document).scroll(function() {
-					        scroll_pos = $(this).scrollTop(); 
-					        if(scroll_pos >= animation_begin_pos && scroll_pos <= animation_end_pos ) { 
-					            var percentScrolled = scroll_pos / ( animation_end_pos - animation_begin_pos );
-					            var newRed = beginning_color.red() + ( ( ending_color.red() - beginning_color.red() ) * percentScrolled );
-					            var newGreen = beginning_color.green() + ( ( ending_color.green() - beginning_color.green() ) * percentScrolled );
-					            var newBlue = beginning_color.blue() + ( ( ending_color.blue() - beginning_color.blue() ) * percentScrolled );
-					            var newColor = new $.Color( newRed, newGreen, newBlue );
-					            $('nav').animate({ backgroundColor: newColor }, 0);
-					        } else if ( scroll_pos > animation_end_pos ) {
-					            $('nav').animate({ backgroundColor: ending_color }, 0);
-					        } else if ( scroll_pos < animation_begin_pos && scroll_pos > 0) {
-					        } else { 
-					            $('nav').animate({ backgroundColor: original_color }, 0);
+						// EVER WANTED A COLOR TRANSITIONING NAVBAR? THIS IS WHAT YOU'RE LOOKING FOR:
+						// var body = document.body,html = document.documentElement;
+						// var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+						// var scroll_pos = 0;
+						//    var animation_begin_pos = 500;
+						//    var animation_end_pos = height;
+						//    var original_color = new $.Color( 'rgba(0,0,0,0)' );
+						//    var beginning_color = new $.Color( '{{brand_secondary_color}}' );
+						//    var ending_color = new $.Color( '{{brand_color}}' );
+						//    $(document).scroll(function() {
+						//        scroll_pos = $(this).scrollTop(); 
+						//        if(scroll_pos >= animation_begin_pos && scroll_pos <= animation_end_pos ) { 
+						//            var percentScrolled = scroll_pos / ( animation_end_pos - animation_begin_pos );
+						//            var newRed = beginning_color.red() + ( ( ending_color.red() - beginning_color.red() ) * percentScrolled );
+						//            var newGreen = beginning_color.green() + ( ( ending_color.green() - beginning_color.green() ) * percentScrolled );
+						//            var newBlue = beginning_color.blue() + ( ( ending_color.blue() - beginning_color.blue() ) * percentScrolled );
+						//            var newColor = new $.Color( newRed, newGreen, newBlue );
+						//            $('nav').animate({ backgroundColor: newColor }, 0);
+						//        } else if ( scroll_pos > animation_end_pos ) {
+						//            $('nav').animate({ backgroundColor: ending_color }, 0);
+						//        } else if ( scroll_pos < animation_begin_pos && scroll_pos > 0) {
+						//        } else { 
+						//            $('nav').animate({ backgroundColor: original_color }, 0);
 
-					        }
-					    });
+						//        }
+						//    });
 
 						var BrowserDetect = {
 							init: function() {
@@ -1056,7 +1057,6 @@
 				      var n = Math.floor(heroTextEl.width() / 18);
 				      n = Math.min(n, 70), currentHeroTextSize !== n && (heroTextEl.css("font-size", n + "px"), currentHeroTextSize = n);
 				    }
-
 					function sendForm(formID){
 			    		if (formID == "form_login_user"){
 			    			if (document.getElementById('login_email').value != "" && document.getElementById('login_password') != ""){
@@ -1136,7 +1136,6 @@
 						str = str.replace(/[ç]/g,"c");
 						return str;
 					}
-
 					function enableSoundsandModals(){
 						$("#speak").mouseenter(function(){
 							document.getElementById("goat").play();
@@ -1187,13 +1186,6 @@
 	    			// just for the fun of it, after translations occur any affected class and id with interactions should be re-enabled...
 				    setTimeout(function (){enableSoundsandModals(); }, 1500);
 			    </script>
-			    {% if locale_language_id != "en" %}
-					{% if locale_iso.language == "pt" and locale_iso.territory == "BR" %}
-						<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_iso.language }}_{{ locale_iso.territory }}.js"></script>
-					{% else %}
-						<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_language_id }}.js"></script>
-					{% endif %}
-				{% endif %}
 			    {% if locale_language_id == "en" or locale_language_id == "es" %}
 			    	<!-- YOU CAN ADD MORE LANGUAGES BY ADDING A translate_<locale_language_id>.js AT BP_CONTENT/THEMES/DEFAULT/STATIC/MATERIALIZE/JS/PLUGINS/TRANSLATOR 
 			    	<script>forceLang('{{locale_language_id}}');</script>-->

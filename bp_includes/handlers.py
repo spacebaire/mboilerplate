@@ -2,6 +2,9 @@
 """
     A real simple app for using webapp2 with auth and session.
 
+    It just covers the basics. Creating a user, login, logout
+    and a decorator for protecting certain handlers.
+
     Routes are setup in routes.py and added in main.py
 """
 # python imports
@@ -31,17 +34,7 @@ from lib.cartodb import CartoDBAPIKey, CartoDBException
 from lib.basehandler import BaseHandler
 from lib.decorators import user_required, taskqueue_method
 
-""" GLOBAL HELPERS 
-
-    This helpers are used across the whole code.
-
-"""
-
-class LogBounceHandler(BounceNotificationHandler):
-    def receive(self, bounce_message):
-        logging.info('Received bounce post ... [%s]', self.request)
-        logging.info('Bounce original: %s', bounce_message.original)
-        logging.info('Bounce notification: %s', bounce_message.notification)
+""" --------------- GLOBAL UTILS --------------- """
 
 def captchaBase(self):
     if self.app.config.get('captcha_public_key') == "" or \
@@ -91,16 +84,14 @@ def disclaim(_self, **kwargs):
     return _params, user_info
 
 
-""" ACCOUNT handlers 
 
-    These handlers include all classes concerning the login and logout interactions with users.
+""" --------------- EMAIL + TASKQUEUES HANDLERS --------------- """
 
-"""
-
-class LoginRequiredHandler(BaseHandler):
-    def get(self):
-        continue_url = self.request.get_all('continue')
-        self.redirect(users.create_login_url(dest_url=continue_url))
+class LogBounceHandler(BounceNotificationHandler):
+    def receive(self, bounce_message):
+        logging.info('Received bounce post ... [%s]', self.request)
+        logging.info('Bounce original: %s', bounce_message.original)
+        logging.info('Bounce notification: %s', bounce_message.notification)
 
 class SendEmailHandler(BaseHandler):
     """
@@ -168,6 +159,149 @@ class SendEmailHandler(BaseHandler):
                 logging.info("... sending email to: %s ..." % to)
             except Exception, e:
                 logging.error("Error sending email: %s" % e)       
+
+class ResendActivationEmailHandler(BaseHandler):
+    """
+    Handler to resend activation email
+    """
+
+    def get(self, user_id, token):
+        try:
+            if not self.user_model.validate_resend_token(user_id, token):
+                message = _(messages.used_activation_link)
+                self.add_message(message, 'danger')
+                return self.redirect_to('login')
+
+            user = self.user_model.get_by_id(long(user_id))
+            email = user.email
+
+            if (user.activated == False):
+                # send email
+                subject = _(messages.email_activation_subject)
+                confirmation_url = self.uri_for("account-activation",
+                                                user_id=user.get_id(),
+                                                token=self.user_model.create_auth_token(user.get_id()),
+                                                _full=True)
+                # load email's template
+                template_val = {
+                    "app_name": self.app.config.get('app_name'),
+                    "username": user.name,
+                    "confirmation_url": confirmation_url,
+                    "brand_email_logo": self.app.config.get('brand_email_logo'),
+                    "brand_color": self.app.config.get('brand_color'),
+                    "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                    "support_url": self.uri_for("contact", _full=True),
+                    "twitter_url": self.app.config.get('twitter_url'),
+                    "facebook_url": self.app.config.get('facebook_url'),
+                    "faq_url": self.uri_for("faq", _full=True)
+                }
+                body_path = "emails/account_activation.txt"
+                body = self.jinja2.render_template(body_path, **template_val)
+
+                email_url = self.uri_for('taskqueue-send-email')
+                taskqueue.add(url=email_url, params={
+                    'to': str(email),
+                    'subject': subject,
+                    'body': body,
+                })
+
+                self.user_model.delete_resend_token(user_id, token)
+
+                message = _(messages.resend_success).format(email)
+                self.add_message(message, 'success')
+                return self.redirect_to('login')
+            else:
+                message = _(messages.activation_success)
+                self.add_message(message, 'warning')
+                return self.redirect_to('materialize-home')
+
+        except (KeyError, AttributeError), e:
+            logging.error("Error resending activation email: %s" % e)
+            message = _(messages.post_error)
+            self.add_message(message, 'danger')
+            return self.redirect_to('login')
+
+class WelcomeHandler(BaseHandler):
+    """
+    Core Handler for sending users welcome message
+    Use with TaskQueue
+    """
+
+    @taskqueue_method
+    def post(self):
+        count = 0
+        offset = int(self.request.get("offset"))
+        attempt = 1
+        if (self.request.get("attempt")):
+            attempt = int(self.request.get("attempt")) + 1
+
+        #Case "One taskqueue, many homes"
+        homes = models.Home.query()
+        for home in homes:
+            if home.cfe.rpu != -1 and home.cfe.connected and home.tips_email_counter == 0:
+                logging.info("Welcoming Home ID: %s" % home.key.id())
+                count += 1
+                if count > offset:
+                    try:
+                        for habitant in home.habitant:
+                            user_info = self.user_model.get_by_id(long(habitant))
+                            if user_info != None:
+                                _username = user_info.name
+                                logging.info("Welcome message being sent to: %s" % user_info.email)
+                                subject = messages.email_welcome_subject
+                                template_val = {
+                                    "username": _username,
+                                    "_url": self.uri_for("history", _full=True),
+                                    "brand_email_logo": self.app.config.get('brand_email_logo'),
+                                    "brand_color": self.app.config.get('brand_color'),
+                                    "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                                    "support_url": self.uri_for("contact", _full=True),
+                                    "twitter_url": self.app.config.get('twitter_url'),
+                                    "facebook_url": self.app.config.get('facebook_url'),
+                                    "faq_url": self.uri_for("faq", _full=True)
+                                }
+                                body_path = "emails/welcome.txt"
+                                body = self.jinja2.render_template(body_path, **template_val)
+                                email = user_info.email
+                                email_url = self.uri_for('taskqueue-send-email')
+                                
+                                taskqueue.add(url=email_url, params={
+                                    'to': str(user_info.email),
+                                    'subject': subject,
+                                    'body': body,
+                                })
+
+                        home.tips_email_counter = 1
+                        home.tips_email_lastdate = date.today()
+                        home.put()
+
+                    except Exception, e:
+                        logging.error("Error welcoming home: %s. Retrying taskqueue in 5 seconds." % e)
+                        logging.info("Attempt number: %s" % attempt)
+                        time.sleep(5)
+                        if attempt < 10:
+                            welcome_url = self.uri_for('taskqueue-welcome')
+                            taskqueue.add(url=welcome_url, params={
+                                'offset': count - 1,
+                                'attempt': attempt,
+                            })
+                        else:
+                            welcome_url = self.uri_for('taskqueue-welcome')
+                            taskqueue.add(url=welcome_url, params={
+                                'offset': count,
+                            })
+                        break
+
+
+
+""" --------------- ACCOUNT HANDLERS --------------- """
+
+#LOGIN
+
+class LoginRequiredHandler(BaseHandler):
+    def get(self):
+        continue_url = self.request.get_all('continue')
+        self.redirect(users.create_login_url(dest_url=continue_url))
 
 class PasswordResetHandler(BaseHandler):
     """
@@ -291,12 +425,130 @@ class PasswordResetCompleteHandler(BaseHandler):
     def form(self):
         return forms.PasswordResetCompleteForm(self)
 
+class MaterializeLoginRequestHandler(BaseHandler):
+    """
+    Handler for authentication
+    """
 
-""" REGISTRATION handlers 
+    def get(self):
+        """ Returns a simple HTML form for login """
 
-    These handlers concern registration in 2 ways: direct, or from referral.
+        if self.user:
+            self.redirect_to('landing')
 
-"""
+        params = {
+            'captchahtml': captchaBase(self),
+        }
+        continue_url = self.request.get('continue').encode('ascii', 'ignore')
+        params['continue_url'] = continue_url
+        return self.render_template('materialize/landing/login.html', **params)
+
+    def post(self):
+        """
+        email: Get the email from POST dict
+        password: Get the password from POST dict
+        """
+
+        if not self.form.validate():
+            _message = _(messages.post_error)
+            self.add_message(_message, 'danger')
+            return self.get()
+        email = self.form.email.data.lower()
+        continue_url = self.request.get('continue').encode('ascii', 'ignore')
+
+        try:
+            if utils.is_email_valid(email):
+                user = self.user_model.get_by_email(email)
+                if user:
+                    auth_id = user.auth_ids[0]
+                else:
+                    raise InvalidAuthIdError
+            else:
+                auth_id = "own:%s" % email
+                user = self.user_model.get_by_auth_id(auth_id)
+            
+            password = self.form.password.data.strip()
+            remember_me = True if str(self.request.POST.get('remember_me')) == 'on' else False
+
+            # Password to SHA512
+            password = utils.hashing(password, self.app.config.get('salt'))
+
+            # Try to login user with password
+            # Raises InvalidAuthIdError if user is not found
+            # Raises InvalidPasswordError if provided password
+            # doesn't match with specified user
+            self.auth.get_user_by_password(
+                auth_id, password, remember=remember_me)
+
+            # if user account is not activated, logout and redirect to home
+            if (user.activated == False):
+                # logout
+                self.auth.unset_session()
+
+                # redirect to home with error message
+                resend_email_uri = self.uri_for('resend-account-activation', user_id=user.get_id(),
+                                                token=self.user_model.create_resend_token(user.get_id()))
+                message = _(messages.inactive_account) + ' ' + resend_email_uri
+                self.add_message(message, 'danger')
+                return self.redirect_to('login')
+            else:
+                try:
+                    user.last_login = utils.get_date_time()
+                    user.put()
+                except (apiproxy_errors.OverQuotaError, BadValueError):
+                    logging.error("Error saving Last Login in datastore")
+            
+
+            if self.app.config['log_visit']:
+                try:
+                    logVisit = models.LogVisit(
+                        user=user.key,
+                        uastring=self.request.user_agent,
+                        ip=self.request.remote_addr,
+                        timestamp=utils.get_date_time()
+                    )
+                    logVisit.put()
+                except (apiproxy_errors.OverQuotaError, BadValueError):
+                    logging.error("Error saving Visit Log in datastore")
+            if continue_url:
+                self.redirect(continue_url)
+            else:
+                message = _('Welcome back, %s! ' % user.name)
+                self.add_message(message, 'success')
+                self.redirect_to('landing')
+        except (InvalidAuthIdError, InvalidPasswordError), e:
+            # Returns error message to self.response.write in
+            # the BaseHandler.dispatcher
+            message = _(messages.user_pass_mismatch)
+            self.add_message(message, 'danger')
+            self.redirect_to('login', continue_url=continue_url) if continue_url else self.redirect_to('login')
+
+    @webapp2.cached_property
+    def form(self):
+        return forms.LoginForm(self)
+
+class MaterializeLogoutRequestHandler(BaseHandler):
+    """
+    Destroy user session and redirect to login
+    """
+
+    def get(self):
+        if self.user:
+            message = _(messages.logout)
+            self.add_message(message, 'info')
+
+        self.auth.unset_session()
+        # User is logged out, let's try redirecting to login page
+        try:
+            self.redirect_to('landing')
+        except (AttributeError, KeyError), e:
+            logging.error("Error logging out: %s" % e)
+            message = _(messages.logout_error)
+            self.add_message(message, 'danger')
+            return self.redirect_to('landing')
+
+# REGISTER
+
 class MaterializeRegisterReferralHandler(BaseHandler):
     """
     Handler to process the link of referrals for a given user_id
@@ -626,127 +878,7 @@ class MaterializeRegisterRequestHandler(BaseHandler):
         f = forms.RegisterForm(self)
         return f
 
-class MaterializeLoginRequestHandler(BaseHandler):
-    """
-    Handler for authentication
-    """
-
-    def get(self):
-        """ Returns a simple HTML form for login """
-
-        if self.user:
-            self.redirect_to('landing')
-
-        params = {
-            'captchahtml': captchaBase(self),
-        }
-        continue_url = self.request.get('continue').encode('ascii', 'ignore')
-        params['continue_url'] = continue_url
-        return self.render_template('materialize/landing/login.html', **params)
-
-    def post(self):
-        """
-        email: Get the email from POST dict
-        password: Get the password from POST dict
-        """
-
-        if not self.form.validate():
-            _message = _(messages.post_error)
-            self.add_message(_message, 'danger')
-            return self.get()
-        email = self.form.email.data.lower()
-        continue_url = self.request.get('continue').encode('ascii', 'ignore')
-
-        try:
-            if utils.is_email_valid(email):
-                user = self.user_model.get_by_email(email)
-                if user:
-                    auth_id = user.auth_ids[0]
-                else:
-                    raise InvalidAuthIdError
-            else:
-                auth_id = "own:%s" % email
-                user = self.user_model.get_by_auth_id(auth_id)
-            
-            password = self.form.password.data.strip()
-            remember_me = True if str(self.request.POST.get('remember_me')) == 'on' else False
-
-            # Password to SHA512
-            password = utils.hashing(password, self.app.config.get('salt'))
-
-            # Try to login user with password
-            # Raises InvalidAuthIdError if user is not found
-            # Raises InvalidPasswordError if provided password
-            # doesn't match with specified user
-            self.auth.get_user_by_password(
-                auth_id, password, remember=remember_me)
-
-            # if user account is not activated, logout and redirect to home
-            if (user.activated == False):
-                # logout
-                self.auth.unset_session()
-
-                # redirect to home with error message
-                resend_email_uri = self.uri_for('resend-account-activation', user_id=user.get_id(),
-                                                token=self.user_model.create_resend_token(user.get_id()))
-                message = _(messages.inactive_account) + ' ' + resend_email_uri
-                self.add_message(message, 'danger')
-                return self.redirect_to('login')
-            else:
-                try:
-                    user.last_login = utils.get_date_time()
-                    user.put()
-                except (apiproxy_errors.OverQuotaError, BadValueError):
-                    logging.error("Error saving Last Login in datastore")
-            
-
-            if self.app.config['log_visit']:
-                try:
-                    logVisit = models.LogVisit(
-                        user=user.key,
-                        uastring=self.request.user_agent,
-                        ip=self.request.remote_addr,
-                        timestamp=utils.get_date_time()
-                    )
-                    logVisit.put()
-                except (apiproxy_errors.OverQuotaError, BadValueError):
-                    logging.error("Error saving Visit Log in datastore")
-            if continue_url:
-                self.redirect(continue_url)
-            else:
-                message = _('Welcome back, %s! ' % user.name)
-                self.add_message(message, 'success')
-                self.redirect_to('landing')
-        except (InvalidAuthIdError, InvalidPasswordError), e:
-            # Returns error message to self.response.write in
-            # the BaseHandler.dispatcher
-            message = _(messages.user_pass_mismatch)
-            self.add_message(message, 'danger')
-            self.redirect_to('login', continue_url=continue_url) if continue_url else self.redirect_to('login')
-
-    @webapp2.cached_property
-    def form(self):
-        return forms.LoginForm(self)
-
-class MaterializeLogoutRequestHandler(BaseHandler):
-    """
-    Destroy user session and redirect to login
-    """
-
-    def get(self):
-        if self.user:
-            message = _(messages.logout)
-            self.add_message(message, 'info')
-
-        self.auth.unset_session()
-        # User is logged out, let's try redirecting to login page
-        try:
-            self.redirect_to('landing')
-        except (AttributeError, KeyError), e:
-            logging.error("Error logging out: %s" % e)
-            message = _(messages.logout_error)
-            self.add_message(message, 'danger')
-            return self.redirect_to('landing')
+# ACTIVATION
 
 class MaterializeAccountActivationHandler(BaseHandler):
     """
@@ -899,73 +1031,9 @@ class MaterializeAccountActivationReferralHandler(BaseHandler):
             self.add_message(message, 'danger')
             return self.redirect_to('login')
 
-class ResendActivationEmailHandler(BaseHandler):
-    """
-    Handler to resend activation email
-    """
-
-    def get(self, user_id, token):
-        try:
-            if not self.user_model.validate_resend_token(user_id, token):
-                message = _(messages.used_activation_link)
-                self.add_message(message, 'danger')
-                return self.redirect_to('login')
-
-            user = self.user_model.get_by_id(long(user_id))
-            email = user.email
-
-            if (user.activated == False):
-                # send email
-                subject = _(messages.email_activation_subject)
-                confirmation_url = self.uri_for("account-activation",
-                                                user_id=user.get_id(),
-                                                token=self.user_model.create_auth_token(user.get_id()),
-                                                _full=True)
-                # load email's template
-                template_val = {
-                    "app_name": self.app.config.get('app_name'),
-                    "username": user.name,
-                    "confirmation_url": confirmation_url,
-                    "brand_email_logo": self.app.config.get('brand_email_logo'),
-                    "brand_color": self.app.config.get('brand_color'),
-                    "brand_secondary_color": self.app.config.get('brand_secondary_color'),
-                    "support_url": self.uri_for("contact", _full=True),
-                    "twitter_url": self.app.config.get('twitter_url'),
-                    "facebook_url": self.app.config.get('facebook_url'),
-					"faq_url": self.uri_for("faq", _full=True)
-                }
-                body_path = "emails/account_activation.txt"
-                body = self.jinja2.render_template(body_path, **template_val)
-
-                email_url = self.uri_for('taskqueue-send-email')
-                taskqueue.add(url=email_url, params={
-                    'to': str(email),
-                    'subject': subject,
-                    'body': body,
-                })
-
-                self.user_model.delete_resend_token(user_id, token)
-
-                message = _(messages.resend_success).format(email)
-                self.add_message(message, 'success')
-                return self.redirect_to('login')
-            else:
-                message = _(messages.activation_success)
-                self.add_message(message, 'warning')
-                return self.redirect_to('materialize-home')
-
-        except (KeyError, AttributeError), e:
-            logging.error("Error resending activation email: %s" % e)
-            message = _(messages.post_error)
-            self.add_message(message, 'danger')
-            return self.redirect_to('login')
 
 
-""" BASIC handlers 
-
-    These handlers are the core of the Platform, they give life to main user materialized screens
-
-"""
+""" --------------- VISITOR HANDLERS --------------- """
 
 # LANDING
 
@@ -1212,126 +1280,11 @@ class MaterializeLandingBlogPostRequestHandler(BaseHandler):
         else:
             return self.error(404)
 
-# USER ESSENTIALS
 
-class MaterializeHomeRequestHandler(BaseHandler):
-    """
-    Handler for materialized home
-    """
-    @user_required
-    def get(self):
-        """ Returns a simple HTML form for materialize home """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
 
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-        
-        return self.render_template('materialize/users/sections/home.html', **params)
+""" --------------- USER HANDLERS --------------- """
 
-class MaterializeReferralsRequestHandler(BaseHandler):
-    """
-        Handler for materialized referrals
-    """
-    @user_required
-    def get(self):
-        """ returns simple html for a get request """
-        params, user_info = disclaim(self)
-        params['link_referral'] = user_info.link_referral
-        params['google_clientID'] = self.app.config.get('google_clientID')
-        return self.render_template('materialize/users/sections/referrals.html', **params)
-
-    def post(self):
-        """ Get fields from POST dict """
-        user_info = self.user_model.get_by_id(long(self.user_id))
-        message = ''
-
-        if not self.form.validate():
-            message += messages.saving_error
-            self.add_message(message, 'danger')
-            return self.get()
-
-        _emails = self.form.emails.data.replace('"','').replace('[','').replace(']','')
-        logging.info("Referrals' email addresses: %s" % _emails)
-
-        try:
-            # send email
-            subject = _(messages.email_referral_subject)
-            if user_info.name != '':
-                _username = user_info.name
-            else:
-                _username = user_info.username
-             # load email's template
-            template_val = {
-                "app_name": self.app.config.get('app_name'),
-                "user_email": user_info.email,
-                "user_name": _username,
-                "link_referral" : user_info.link_referral,
-                "brand_email_logo": self.app.config.get('brand_email_logo'),
-                "brand_color": self.app.config.get('brand_color'),
-                "brand_secondary_color": self.app.config.get('brand_secondary_color'),
-                "support_url": self.uri_for("contact", _full=True),
-                "twitter_url": self.app.config.get('twitter_url'),
-                "facebook_url": self.app.config.get('facebook_url'),
-                "faq_url": self.uri_for("faq", _full=True)
-            }
-            body_path = "emails/referrals.txt"
-            body = self.jinja2.render_template(body_path, **template_val)
-
-            email_url = self.uri_for('taskqueue-send-email')
-            _email = _emails.split(",")
-            _email = list(set(_email)) #removing duplicates
-
-            for _email_ in _email:
-
-                aUser = self.user_model.get_by_email(_email_)
-                if aUser is not None:
-                    reward = models.Rewards(amount = 0,earned = True, category = 'invite',content = _email_,
-                                            timestamp = utils.get_date_time(),status = 'inelegible')                 
-                    edited_userinfo = False
-                    for rewards in user_info.rewards:
-                        if 'invite' in rewards.category and rewards.content == reward.content:
-                            user_info.rewards[user_info.rewards.index(rewards)] = reward
-                            edited_userinfo = True
-                    if not edited_userinfo:
-                        user_info.rewards.append(reward)
-                else:
-                    taskqueue.add(url=email_url, params={
-                        'to': str(_email_),
-                        'subject': subject,
-                        'body': body,
-                    })
-                    logging.info('Sent referral invitation to %s' % str(_email_))
-                    reward = models.Rewards(amount = 0,earned = True, category = 'invite',content = _email_,
-                                            timestamp = utils.get_date_time(),status = 'invited')                 
-                    edited_userinfo = False
-                    for rewards in user_info.rewards:
-                        if 'invite' in rewards.category and rewards.content == reward.content:
-                            user_info.rewards[user_info.rewards.index(rewards)] = reward
-                            edited_userinfo = True
-                    if not edited_userinfo:
-                        user_info.rewards.append(reward)
-                    
-            user_info.put()
-
-            message += " " + _(messages.invite_success)
-            self.add_message(message, 'success')
-            return self.get()
-           
-        except (KeyError, AttributeError), e:
-            logging.error("Error resending invitation email: %s" % e)
-            message = _(messages.post_error)
-            self.add_message(message, 'danger')
-            return self.redirect_to('home')
-
-          
-    @webapp2.cached_property
-    def form(self):
-        f = forms.ReferralsForm(self)
-        return f
+# SETTINGS
 
 class MaterializeSettingsProfileRequestHandler(BaseHandler):
     """
@@ -1837,6 +1790,24 @@ class MaterializeSettingsDeleteRequestHandler(BaseHandler):
 
 # USER SECTIONS
 
+class MaterializeHomeRequestHandler(BaseHandler):
+    """
+    Handler for materialized home
+    """
+    @user_required
+    def get(self):
+        """ Returns a simple HTML form for materialize home """
+        ####-------------------- R E D I R E C T I O N S --------------------####
+        if not self.user:
+            return self.redirect_to('login')
+        ####------------------------------------------------------------------####
+
+        ####-------------------- P R E P A R A T I O N S --------------------####
+        params, user_info = disclaim(self)
+        ####------------------------------------------------------------------####
+        
+        return self.render_template('materialize/users/sections/home.html', **params)
+
 class MaterializePolymerRequestHandler(BaseHandler):
     """
     Handler for materialized polymer
@@ -1915,12 +1886,111 @@ class MaterializeVisionRequestHandler(BaseHandler):
         
         return self.render_template('materialize/users/sections/vision.html', **params)
 
+class MaterializeReferralsRequestHandler(BaseHandler):
+    """
+        Handler for materialized referrals
+    """
+    @user_required
+    def get(self):
+        """ returns simple html for a get request """
+        params, user_info = disclaim(self)
+        params['link_referral'] = user_info.link_referral
+        params['google_clientID'] = self.app.config.get('google_clientID')
+        return self.render_template('materialize/users/sections/referrals.html', **params)
 
-""" MEDIA handlers
+    def post(self):
+        """ Get fields from POST dict """
+        user_info = self.user_model.get_by_id(long(self.user_id))
+        message = ''
 
-    These handlers are used to serve small media files from datastore
+        if not self.form.validate():
+            message += messages.saving_error
+            self.add_message(message, 'danger')
+            return self.get()
 
-"""
+        _emails = self.form.emails.data.replace('"','').replace('[','').replace(']','')
+        logging.info("Referrals' email addresses: %s" % _emails)
+
+        try:
+            # send email
+            subject = _(messages.email_referral_subject)
+            if user_info.name != '':
+                _username = user_info.name
+            else:
+                _username = user_info.username
+             # load email's template
+            template_val = {
+                "app_name": self.app.config.get('app_name'),
+                "user_email": user_info.email,
+                "user_name": _username,
+                "link_referral" : user_info.link_referral,
+                "brand_email_logo": self.app.config.get('brand_email_logo'),
+                "brand_color": self.app.config.get('brand_color'),
+                "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                "support_url": self.uri_for("contact", _full=True),
+                "twitter_url": self.app.config.get('twitter_url'),
+                "facebook_url": self.app.config.get('facebook_url'),
+                "faq_url": self.uri_for("faq", _full=True)
+            }
+            body_path = "emails/referrals.txt"
+            body = self.jinja2.render_template(body_path, **template_val)
+
+            email_url = self.uri_for('taskqueue-send-email')
+            _email = _emails.split(",")
+            _email = list(set(_email)) #removing duplicates
+
+            for _email_ in _email:
+
+                aUser = self.user_model.get_by_email(_email_)
+                if aUser is not None:
+                    reward = models.Rewards(amount = 0,earned = True, category = 'invite',content = _email_,
+                                            timestamp = utils.get_date_time(),status = 'inelegible')                 
+                    edited_userinfo = False
+                    for rewards in user_info.rewards:
+                        if 'invite' in rewards.category and rewards.content == reward.content:
+                            user_info.rewards[user_info.rewards.index(rewards)] = reward
+                            edited_userinfo = True
+                    if not edited_userinfo:
+                        user_info.rewards.append(reward)
+                else:
+                    taskqueue.add(url=email_url, params={
+                        'to': str(_email_),
+                        'subject': subject,
+                        'body': body,
+                    })
+                    logging.info('Sent referral invitation to %s' % str(_email_))
+                    reward = models.Rewards(amount = 0,earned = True, category = 'invite',content = _email_,
+                                            timestamp = utils.get_date_time(),status = 'invited')                 
+                    edited_userinfo = False
+                    for rewards in user_info.rewards:
+                        if 'invite' in rewards.category and rewards.content == reward.content:
+                            user_info.rewards[user_info.rewards.index(rewards)] = reward
+                            edited_userinfo = True
+                    if not edited_userinfo:
+                        user_info.rewards.append(reward)
+                    
+            user_info.put()
+
+            message += " " + _(messages.invite_success)
+            self.add_message(message, 'success')
+            return self.get()
+           
+        except (KeyError, AttributeError), e:
+            logging.error("Error resending invitation email: %s" % e)
+            message = _(messages.post_error)
+            self.add_message(message, 'danger')
+            return self.redirect_to('home')
+
+          
+    @webapp2.cached_property
+    def form(self):
+        f = forms.ReferralsForm(self)
+        return f
+
+
+
+""" --------------- MEDIA HANDLERS --------------- """
+
 class MediaDownloadHandler(BaseHandler):
     """
     Handler for Serve Vendor's Logo
@@ -1972,11 +2042,9 @@ class BlobDownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
             self.send_blob(photo_key)
 
 
-""" CRONJOB + TASKQUEUE handlers
 
-    These handlers obey to cron.yaml in order to produce recurrent, autonomous tasks
+""" --------------- CRONJOB + TASKQUEUE handlers --------------- """
 
-"""
 class WelcomeCronjobHandler(BaseHandler):
     def get(self):
         welcome_url = self.uri_for('taskqueue-welcome')
@@ -1984,181 +2052,9 @@ class WelcomeCronjobHandler(BaseHandler):
             'offset': 0
         })
         
-class WelcomeHandler(BaseHandler):
-    """
-    Core Handler for sending users welcome message
-    Use with TaskQueue
-    """
-
-    @taskqueue_method
-    def post(self):
-        count = 0
-        offset = int(self.request.get("offset"))
-        attempt = 1
-        if (self.request.get("attempt")):
-            attempt = int(self.request.get("attempt")) + 1
-
-        #Case "One taskqueue, many homes"
-        homes = models.Home.query()
-        for home in homes:
-            if home.cfe.rpu != -1 and home.cfe.connected and home.tips_email_counter == 0:
-                logging.info("Welcoming Home ID: %s" % home.key.id())
-                count += 1
-                if count > offset:
-                    try:
-                        for habitant in home.habitant:
-                            user_info = self.user_model.get_by_id(long(habitant))
-                            if user_info != None:
-                                _username = user_info.name
-                                logging.info("Welcome message being sent to: %s" % user_info.email)
-                                subject = messages.email_welcome_subject
-                                template_val = {
-                                    "username": _username,
-                                    "_url": self.uri_for("history", _full=True),
-                                    "brand_email_logo": self.app.config.get('brand_email_logo'),
-                                    "brand_color": self.app.config.get('brand_color'),
-                                    "brand_secondary_color": self.app.config.get('brand_secondary_color'),
-                                    "support_url": self.uri_for("contact", _full=True),
-                                    "twitter_url": self.app.config.get('twitter_url'),
-                                    "facebook_url": self.app.config.get('facebook_url'),
-                                    "faq_url": self.uri_for("faq", _full=True)
-                                }
-                                body_path = "emails/welcome.txt"
-                                body = self.jinja2.render_template(body_path, **template_val)
-                                email = user_info.email
-                                email_url = self.uri_for('taskqueue-send-email')
-                                
-                                taskqueue.add(url=email_url, params={
-                                    'to': str(user_info.email),
-                                    'subject': subject,
-                                    'body': body,
-                                })
-
-                        home.tips_email_counter = 1
-                        home.tips_email_lastdate = date.today()
-                        home.put()
-
-                    except Exception, e:
-                        logging.error("Error welcoming home: %s. Retrying taskqueue in 5 seconds." % e)
-                        logging.info("Attempt number: %s" % attempt)
-                        time.sleep(5)
-                        if attempt < 10:
-                            welcome_url = self.uri_for('taskqueue-welcome')
-                            taskqueue.add(url=welcome_url, params={
-                                'offset': count - 1,
-                                'attempt': attempt,
-                            })
-                        else:
-                            welcome_url = self.uri_for('taskqueue-welcome')
-                            taskqueue.add(url=welcome_url, params={
-                                'offset': count,
-                            })
-                        break
 
 
-""" REST API preparation handlers
-
-    These handlers obey to interactions with key-holder developers
-
-"""
-class APIIncomingHandler(BaseHandler):
-    """
-    Core Handler for incoming interactions
-    """
-
-    def post(self):
-        KEY = "mwkMqTWFnK0LzJHyfkeBGoS2hr2KG7WhHqSGX0SbDJ4"
-        SECRET = "152731fe2b14da111a72127d642e73c779e530b3"
-        
-        api_key = ""
-        api_secret = ""
-        args = self.request.arguments()
-        for arg in args:
-            logging.info("argument: %s" % arg)
-            for key,value in json.loads(arg).iteritems():
-                if key == "api_key":
-                    api_key = value
-                if key == "api_secret":
-                    api_secret = value
-                if key == "method":
-                    if value == "101":
-                        logging.info("parsing method 101")
-                    elif value == "201":
-                        logging.info("parsing method 201")
-
-                        
-
-        if api_key == KEY and api_secret == SECRET:
-            logging.info("Attempt to receive incoming message with key: %s." % api_key)
-
-            # DO SOMETHING WITH RECEIVED PAYLOAD
-
-        else:
-            logging.info("Attempt to receive incoming message without appropriate key: %s." % api_key)
-            self.abort(403)
-
-class APIOutgoingHandler(BaseHandler):
-    """
-    Core Handler for outgoing interactions with simpplo
-    """
-
-    def post(self):
-        from google.appengine.api import urlfetch
-        
-        KEY = "mwkMqTWFnK0LzJHyfkeBGoS2hr2KG7WhHqSGX0SbDJ4"
-        _URL = ""
-
-
-        api_key = ""
-        api_secret = ""
-        args = self.request.arguments()
-        for arg in args:
-            logging.info("argument: %s" % arg)
-            for key,value in json.loads(arg).iteritems():
-                if key == "api_key":
-                    api_key = value
-                if key == "api_secret":
-                    api_secret = value
-                if key == "method":
-                    if value == "101":
-                        logging.info("parsing method 101")
-                    elif value == "201":
-                        logging.info("parsing method 201")
-                        
-
-        if api_key == KEY:
-            logging.info("Attempt to send outgoing message with appropriate key: %s." % api_key)
-            
-            # DO SOMETHING WITH RECEIVED PAYLOAD
-            #urlfetch.fetch(_URL, payload='', method='POST') 
-
-        else:
-            logging.info("Attempt to send outgoing message without appropriate key: %s." % api_key)
-            self.abort(403)
-       
-class APITestingHandler(BaseHandler):
-    """
-    Core Handler for testing interactions with simpplo
-    """
-
-    def get(self):
-        from google.appengine.api import urlfetch
-        import urllib
-
-        try:
-            _url = self.uri_for('mbapi-out', _full=True)
-            urlfetch.fetch(_url, payload='{"api_key": "mwkMqTWFnK0LzJHyfkeBGoS2hr2KG7WhHqSGX0SbDJ4","channel": "CHANNELHERE","container": "CONTENTSHERE"}', method="POST")
-        except:
-            pass
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.out.write('Tests went good... =)')
-
-
-""" WEB  static handlers
-
-    These handlers are just to be a full website in the web background.
-
-"""
+""" --------------- SEO HANDLERS --------------- """
 class RobotsHandler(BaseHandler):
     def get(self):
         params = {

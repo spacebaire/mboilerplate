@@ -19,6 +19,20 @@
 	</style>
 {% endblock %}
 
+{% block breadcrums %}
+<!--breadcrumbs start-->
+<div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
+    <div class="container">
+        <div class="row">
+          <div class="col s12">
+          <ol class="breadcrumb" style="font-size: 29px;">
+                <li class="active">Carto DB</li>
+            </ol></div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+{% endblock %}
 
 
 
@@ -30,12 +44,12 @@
 	    	<div class="col s10 offset-s1">
 	    		<div class="row right">
 	    			<div class="col s7">
-        				<input type="text" name="Search" id="search-input" class="header-search-input z-depth-2" placeholder="Explore ..." style="    background: #9A9A9A; padding: 8px 8px 8px 8px;">
+        				<input type="text" name="Search" id="search-input" class="z-depth-2" placeholder="Explore ...">
         			</div>
-        			<div class="col s3 offset-s1 btn" onclick="searchInput=document.getElementById('search-input').value; setQ();"><i class="mdi-action-search active"></i></div>
+        			<div class="btn-floating" onclick="searchInput=document.getElementById('search-input').value; setQ();"><i class="mdi-action-search active"></i></div>
 	    		</div>
 	    		<div id="map" style="width:100%; height: 500px; top: 35px; border-radius: 4px; margin-bottom:60px"></div>
-	    		<div class="hide-on-small-only" style="width:225px; position:fixed;     top: 235px; left: 310px;">
+	    		<div class="hide-on-small-only" style="width:225px; position:fixed;     top: 435px; left: 310px;">
                 <ul class="collapsible collapsible-accordion" data-collapsible="expandable">
                   <li>
                     <div class="collapsible-header white-text truncate brand-color"> You're seeing <span id="rep_count" style="font-family: roboto-regular;">0</span> reports.</div>
@@ -424,7 +438,7 @@
 		}
 
 		function setQ(){
-			if (searchInput != ''){
+			if (searchInput.trim() != ''){
 				var c_query = "SELECT "+cic_table_name+".* FROM " + cic_table_name + ", mun_poly WHERE " + cic_table_name + ".post_title ilike '%" + searchInput + "%' AND ST_Intersects(" + cic_table_name + ".the_geom, mun_poly.the_geom) AND mun_poly.name IN ('GPE')";
 				var g_query = "SELECT * FROM " + gpe_table_name + " WHERE description ilike '%" + searchInput + "%'";
 			}else{

@@ -11,7 +11,8 @@ secure_scheme = 'https'
 # Here go your routes, you can overwrite boilerplate routes (bp_includes/routes)
 
 _routes = [
-    RedirectRoute('/secure/', handlers.SecureRequestHandler, name='secure', strict_slash=True),
+	
+	#THIS IS JUST AN EASY CALL FOR TEMPORARY HTML TO EASILY SEE EMAIL DESIGN.
     RedirectRoute('/emails/', handlers.EmailsRequestHandler, name='emails', strict_slash=True)
 ]
 

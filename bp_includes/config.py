@@ -46,20 +46,16 @@ config = {
             <meta property="og:type" content="website"/>
             <meta property="og:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine."/>
             <meta property="og:url" content="http://mboilerplate.appspot.com"/>
-            <meta property="og:image" content="http://mboilerplate.appspot.com{{brand_splash}}"/>
+            <meta property="og:image" content="http://mboilerplate.appspot.com/default/materialize/images/landing/black_mac.png"/>
             <meta name="twitter:card" content="summary_large_image">
             <meta name="twitter:site" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
             <meta name="twitter:creator" content="@chuycepeda">
             <meta name="twitter:title" content="MBoilerplate">
             <meta name="twitter:description" content="This an amazing, magical materialized boilerplate for the Google AppEngine.">
-            <meta name="twitter:image" content="http://mboilerplate.appspot.com{{brand_splash}}">
+            <meta name="twitter:image" content="http://mboilerplate.appspot.com/default/materialize/images/landing/black_mac.png">
             <meta property="twitter:url" content="http://mboilerplate.appspot.com"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">""",
-
-    # the default language code for the application.
-    # should match whatever language the site uses when i18n is disabled
-    'app_lang': 'en',
 
     # jinja2 base layout template
     'base_layout': '/materialize/users/base.html',
@@ -71,6 +67,9 @@ config = {
     # Language codes defined under iso 639-1 http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
     # Territory codes defined under iso 3166-1 alpha-2 http://en.wikipedia.org/wiki/ISO_3166-1
     # disable i18n if locales array is empty or None
+    # the default language code for the application.
+    # should match whatever language the site uses when i18n is disabled
+    'app_lang': 'en',
     'locales': ['en_US', 'es_ES', 'it_IT', 'zh_CN', 'id_ID', 'fr_FR', 'de_DE', 'ru_RU', 'pt_BR', 'cs_CZ','vi_VN','nl_NL'],
 
     # contact page email settings

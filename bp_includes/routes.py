@@ -12,7 +12,6 @@ secure_scheme = 'https'
 _routes = [
     RedirectRoute('/_ah/login_required', handlers.LoginRequiredHandler),
     
-
     # Landing
     RedirectRoute('/', handlers.MaterializeLandingRequestHandler, name='landing', strict_slash=True), 
     RedirectRoute('/blog/', handlers.MaterializeLandingBlogRequestHandler, name='blog', strict_slash=True),
@@ -27,7 +26,6 @@ _routes = [
     RedirectRoute('/resend/<user_id>/<token>', handlers.ResendActivationEmailHandler, name='resend-account-activation', strict_slash=True),
     RedirectRoute('/register/referral/<user_id>/', handlers.MaterializeRegisterReferralHandler, name='register-referral', strict_slash=True),
     RedirectRoute('/activation/<ref_user_id>/<token>/<user_id>', handlers.MaterializeAccountActivationReferralHandler, name='account-activation-referral', strict_slash=True),
-    #RedirectRoute('/resend/<ref_user_id>/<token>/<user_id>', handlers.ResendActivationEmailReferralHandler, name='resend-account-activation-referral', strict_slash=True),
     RedirectRoute('/login/', handlers.MaterializeLoginRequestHandler, name='login', strict_slash=True),
     RedirectRoute('/logout/', handlers.MaterializeLogoutRequestHandler, name='logout', strict_slash=True),
     RedirectRoute('/password-reset/', handlers.PasswordResetHandler, name='password-reset', strict_slash=True),
@@ -48,7 +46,7 @@ _routes = [
     RedirectRoute('/user/settings/account/', handlers.MaterializeSettingsAccountRequestHandler, name='materialize-settings-account', strict_slash=True),
     RedirectRoute('/user/change-email/<user_id>/<encoded_email>/<token>', handlers.MaterializeEmailChangedCompleteHandler, name='materialize-email-changed-check', strict_slash=True),
     
-    # Statics
+    # SEO
     RedirectRoute(r'/robots.txt', handlers.RobotsHandler, name='robots', strict_slash=True),
     RedirectRoute(r'/humans.txt', handlers.HumansHandler, name='humans', strict_slash=True),
     RedirectRoute(r'/sitemap.xml', handlers.SitemapHandler, name='sitemap', strict_slash=True),
@@ -61,17 +59,11 @@ _routes = [
     RedirectRoute('/taskqueue-send-email/', handlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
     RedirectRoute('/taskqueue-welcome/', handlers.WelcomeHandler, name='taskqueue-welcome', strict_slash=True),
 
-    #API
-    RedirectRoute('/mbapi/in/', handlers.APIIncomingHandler, name='mbapi-in', strict_slash=True),
-    RedirectRoute('/mbapi/out/', handlers.APIOutgoingHandler, name='mbapi-out', strict_slash=True),
-    RedirectRoute('/mbapi/test/', handlers.APITestingHandler, name='mbapi-test', strict_slash=True),
-    
     #Email Bouncer
     RedirectRoute('/_ah/bounce/', handlers.LogBounceHandler, name='bouncer', strict_slash=True),
    
-    # Blob handlers for small media
+    # Blob handlers for media
     RedirectRoute('/media/serve/<kind>/<media_id>/', handlers.MediaDownloadHandler, name='media-serve', strict_slash=True),
-    # Blob handlers for large media
     RedirectRoute('/blobstore/form/', handlers.BlobFormHandler, name='blob-form', strict_slash=True),
     RedirectRoute('/blobstore/upload/', handlers.BlobUploadHandler, name='blob-upload', strict_slash=True),
     RedirectRoute('/blobstore/serve/<photo_key>', handlers.BlobDownloadHandler, name='blob-serve', strict_slash=True),

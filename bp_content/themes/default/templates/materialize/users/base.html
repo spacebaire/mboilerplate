@@ -88,7 +88,11 @@
 				    /*background-color: rgba(0, 0, 0, 0.05)!important;*/
 				}
 				li .active a{
-				    color:#444!important;
+				    color:{{brand_secondary_color}}!important;
+				}
+
+				ul.side-nav.leftside-navigation li.active > a{
+				    color:{{brand_secondary_color}}!important;
 				}
 
 				/*BRANDING*/
@@ -182,6 +186,11 @@
 				    margin-top: 15px;
 				}
 
+				#breadcrumbs-wrapper{
+					line-height: 65px;
+					height: 98px;
+				}
+
 				.dropdown-content li > a, .dropdown-content li > span{
 				    color: {{brand_secondary_color}}!important;
 				}
@@ -248,7 +257,7 @@
 	    <!-- All JavaScript at the bottom, except these. -->
 		{% block priority_js %}
 			<script src="/boilerplate/webcomponents/bower_components/webcomponentsjs/webcomponents.min.js"></script>	
-    		<script type="text/javascript" src="/boilerplate/js/libs/modernizr-2.7.1.min.js"></script>
+    		<script type="text/javascript" src="/{{theme}}/materialize/js/modernizr-2.7.1.min.js"></script>
    		 	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js"></script>
 		{% endblock %}
 
@@ -314,7 +323,7 @@
 				            <!-- START LEFT SIDEBAR NAV-->
 				            <aside id="left-sidebar-nav">
 				                <ul id="slide-out" class="side-nav fixed leftside-navigation">
-				                    <li class="user-details" style="background: url('{{brand_splash}}') no-repeat center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;margin-bottom: 15px;padding: 15px 0 0 15px;">
+				                    <li class="user-details brand-color" style="margin-bottom: 15px;padding: 15px 0 0 15px;">
 				                        <div class="row">
 				                            <div class="col col s4 m4 l4">
 												{% if has_picture %}
@@ -333,7 +342,7 @@
 				                                    <li><a href="{{ uri_for("logout") }}"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
 				                                    </li>
 				                                </ul>
-				                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn {{name_class}}" href="#" data-activates="profile-dropdown">{{name}} {{last_name_i}}<span style="margin-left: 8px;">✎</span></a>
+				                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn {{name_class}}" href="#" data-activates="profile-dropdown">{{name}} {{last_name_i}} <i class="mdi-action-settings right" style="font-size:16px;"></i></a>
 				                                <p class="user-roal">{{role}}</p>
 				                            </div>
 				                        </div>
@@ -345,7 +354,7 @@
 
                                     <li class="no-padding" style="margin-bottom: 15px; margin-top:15px;">
 				                        <ul class="collapsible collapsible-accordion">
-				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan {% if uri_for('materialize-polymer') in path or uri_for('materialize-cartodb') in path %}active{% endif %}"><i class="mdi-maps-layers grey-text"></i> Sections</a>
+				                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan {% if uri_for('materialize-polymer') in path or uri_for('materialize-cartodb') in path or uri_for('materialize-nlp') in path or uri_for('materialize-vision') in path%}active{% endif %}"><i class="mdi-maps-layers grey-text"></i> Sections</a>
 				                                <div class="collapsible-body">
 				                                    <ul>
 				                                        <li {% if path == uri_for('materialize-polymer') %}class="active"{% endif %}><a href="{{ uri_for("materialize-polymer") }}">Polymer</a>
@@ -365,7 +374,7 @@
 				                    <li class="bold"><a href="{{ uri_for("landing") }}" class="waves-effect waves-cyan"><i class="mdi-navigation-arrow-back grey-text"></i> Back to landing</a>
 				                    </li>
 				                </ul>
-				                <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating waves-effect waves-light hide-on-large-only darken-2" style="margin-top:-5px;"><i class="mdi-navigation-more-vert" style="color: rgb(62, 193, 251);background-color: white;" ></i></a>
+				                <a href="#" data-activates="slide-out" class="sidebar-collapse waves-effect waves-light hide-on-large-only darken-2" style="margin-top:-5px;"><i class="mdi-navigation-more-vert" style="color: {{brand_color}}; font-size:30px;" ></i></a>
 				            </aside>
 				            <!-- END LEFT SIDEBAR NAV-->
 			            {% endblock %}
@@ -806,13 +815,6 @@
 				        $.cookie('app-language', lang, { path: '/' });
 	    			}
 			    </script>
-			    {% if locale_language_id != "en" %}
-					{% if locale_iso.language == "pt" and locale_iso.territory == "BR" %}
-						<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_iso.language }}_{{ locale_iso.territory }}.js"></script>
-					{% else %}
-						<script src="/boilerplate/js/libs/jquery_validation/localization/messages_{{ locale_language_id }}.js"></script>
-					{% endif %}
-				{% endif %}
 			    {% if locale_language_id == "en" or locale_language_id == "es" %}
 			    	<!-- YOU CAN ADD MORE LANGUAGES BY ADDING A translate_<locale_language_id>.js AT BP_CONTENT/THEMES/DEFAULT/STATIC/MATERIALIZE/JS/PLUGINS/TRANSLATOR 
 			    	<script>forceLang('{{locale_language_id}}');</script>-->
