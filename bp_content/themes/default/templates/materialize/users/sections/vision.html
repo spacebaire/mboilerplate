@@ -2,7 +2,6 @@
 {% block title %}<title>{{app_name}} » Vision</title>{% endblock %}
 
 {% block page_css %}
-	<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css">
 	<style>
 	.collapsible-header{
 		display: block;
@@ -52,6 +51,24 @@
                 </div>    
 			    <div class="row" id="response"></div>
             </div>
+            <hr>
+            <div class="col s12">
+            	<div class="row" style="margin-bottom:20px;">
+            		<div class="input-field col s4 left">
+		                <button class="waves-effect waves-light brand-color white-text btn-large" id="capture" >Capture
+		                    <i class="mdi-av-play-arrow right"></i>
+		                </button>	                          
+		            </div>
+		            <div class="input-field col s4 left">
+		                <button class="waves-effect waves-light brand-color white-text btn-large" id="stop" >Stop
+		                    <i class="mdi-av-stop right"></i>
+		                </button>	                          
+		            </div>
+            	</div>
+            	<video autoplay></video>
+				<img id="vimg" src="">
+				<canvas style="display:none;" width="640" height="480"></canvas>
+            </div>
 	    </div>
     </div>
 </div>
@@ -65,6 +82,7 @@
 
 
 {% block page_scripts %}
+	<script src="/{{theme}}/materialize/js/plugins/desktop-notify/desktop-notify.js"></script>
 	<script>
 
 		function readFile() {
@@ -81,7 +99,6 @@
     	    Materialize.toast('<span class="toast-warning">Please add some file to process.</span>',4500);
 
 		  }
-
 		}
 
 		document.getElementById("inp").addEventListener("change", readFile, false);
@@ -95,7 +112,7 @@
 		    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 		}
 
-		function computeVision(){
+		function computeVision(source){
 		    $('#msg').show();
 	        document.getElementById('response').innerHTML = "";
 			console.log('computing vision analysis...')
@@ -135,68 +152,147 @@
 					]
 				}) 
 	        }).done(function(data) {
-	        	console.log(data);
-	        	var html = '<h5> The following data has been detected:</h5>';
-	        	
-	        	if (data.responses[0].faceAnnotations){
-	        		html += '<p style="font-family:roboto-black">Face annotations: '+ data.responses[0].faceAnnotations.length +'</p>';
-	        		for (var i=0, j=data.responses[0].faceAnnotations.length; i<j; i++){
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': face confidence :' + data.responses[0].faceAnnotations[i].detectionConfidence +'.</p>';
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': parts confidence :' + data.responses[0].faceAnnotations[i].landmarkingConfidence +'.</p>';
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': anger likelihood :' + data.responses[0].faceAnnotations[i].angerLikelihood +'.</p>';
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': blurred likelihood :' + data.responses[0].faceAnnotations[i].blurredLikelihood +'.</p>';
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': headwear likelihood :' + data.responses[0].faceAnnotations[i].headwearLikelihood +'.</p>';
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': joy likelihood :' + data.responses[0].faceAnnotations[i].joyLikelihood +'.</p>';
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': sorrow likelihood :' + data.responses[0].faceAnnotations[i].sorrowLikelihood +'.</p>';
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': surprise likelihood :' + data.responses[0].faceAnnotations[i].surpriseLikelihood +'.</p>';
-		        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': under exposed likelihood :'  + data.responses[0].faceAnnotations[i].underExposedLikelihood +'.</p>';
+	        	if (source == 'from video'){
+	        		$('#response').hide();
+	        		if (data.responses[0].faceAnnotations){
+
+	        			var dominant_mood = 'poker', max = 0;
+		        		for (var i=0, j=data.responses[0].faceAnnotations.length; i<j; i++){
+			        		//data.responses[0].faceAnnotations[i].detectionConfidence;
+			        		//data.responses[0].faceAnnotations[i].landmarkingConfidence;
+			        		max = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].angerLikelihood);
+			        		dominant_mood = max > 0 ? 'anger' : dominant_mood;
+			        		//data.responses[0].faceAnnotations[i].blurredLikelihood;
+			        		//data.responses[0].faceAnnotations[i].headwearLikelihood;
+			        		dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].joyLikelihood) > max ? 'joy' : dominant_mood;
+			        		dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].sorrowLikelihood) > max ? 'sorrow' : dominant_mood;
+			        		dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].surpriseLikelihood) > max ? 'surprise' : dominant_mood;
+			        		//data.responses[0].faceAnnotations[i].underExposedLikelihood;
+
+		        			pushNotification('Face detected !', 'It looks like '+ dominant_mood +' to me...', 'https://mboilerplate.appspot.com/default/materialize/images/moods/face-'+dominant_mood+'.png');
+			        	}
+			        	
+		        	}else{
+	        			pushNotification('oops !', 'we got no faces', 'none');
+
 		        	}
-		        	html += '<p style="font-family:roboto-light"> To see more on faces, see your chrome console.</p>';
+
+	        	}else{
+	        		console.log(data);
+		        	var html = '<h5> The following data has been detected:</h5>';
+		        	
+		        	if (data.responses[0].faceAnnotations){
+		        		html += '<p style="font-family:roboto-black">Face annotations: '+ data.responses[0].faceAnnotations.length +'</p>';
+		        		for (var i=0, j=data.responses[0].faceAnnotations.length; i<j; i++){
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': face confidence :' + data.responses[0].faceAnnotations[i].detectionConfidence +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': parts confidence :' + data.responses[0].faceAnnotations[i].landmarkingConfidence +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': anger likelihood :' + data.responses[0].faceAnnotations[i].angerLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': blurred likelihood :' + data.responses[0].faceAnnotations[i].blurredLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': headwear likelihood :' + data.responses[0].faceAnnotations[i].headwearLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': joy likelihood :' + data.responses[0].faceAnnotations[i].joyLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': sorrow likelihood :' + data.responses[0].faceAnnotations[i].sorrowLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': surprise likelihood :' + data.responses[0].faceAnnotations[i].surpriseLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': under exposed likelihood :'  + data.responses[0].faceAnnotations[i].underExposedLikelihood +'.</p>';
+			        	}
+			        	html += '<p style="font-family:roboto-light"> To see more on faces, see your chrome console.</p>';
+		        	}
+
+		        	html += '<p style="font-family:roboto-black">Safe-search annotations:</p>';
+		        	html += '<p style="font-family:roboto-thin">Adult content probability:' + data.responses[0].safeSearchAnnotation.adult + '</p>';
+		        	html += '<p style="font-family:roboto-thin">Medical content probability:' + data.responses[0].safeSearchAnnotation.medical + '</p>';
+		        	html += '<p style="font-family:roboto-thin">Spoof content probability:' + data.responses[0].safeSearchAnnotation.spoof + '</p>';
+		        	html += '<p style="font-family:roboto-thin">Violence content probability:' + data.responses[0].safeSearchAnnotation.violence + '</p>';
+		        	
+
+		        	if (data.responses[0].textAnnotations){
+		        		html += '<p style="font-family:roboto-black">Text annotations: '+ data.responses[0].textAnnotations.length +'</p>';
+		        		for (var i=0, j=data.responses[0].textAnnotations.length; i<j; i++){
+			        		html += '<p style="font-family:roboto-thin">' + data.responses[0].textAnnotations[i].description +'.</p>';
+			        	}
+		        	}
+		        	
+		        	if (data.responses[0].labelAnnotations){
+			        	html += '<p style="font-family:roboto-black">Label annotations: '+ data.responses[0].labelAnnotations.length +'</p>';
+						for (var i=0, j=data.responses[0].labelAnnotations.length; i<j; i++){
+			        		html += '<p style="font-family:roboto-thin">Label: ' + data.responses[0].labelAnnotations[i].description +', score: ' + data.responses[0].labelAnnotations[i].score + '.</p>';
+			        	}
+			        }
+
+			        if (data.responses[0].logoAnnotations){
+			        	html += '<p style="font-family:roboto-black">Logo annotations: '+ data.responses[0].logoAnnotations.length +'</p>';
+						for (var i=0, j=data.responses[0].logoAnnotations.length; i<j; i++){
+			        		html += '<p style="font-family:roboto-thin">Logo: ' + data.responses[0].logoAnnotations[i].description +', score: ' + data.responses[0].logoAnnotations[i].score + '.</p>';
+			        	}
+			        }
+
+		        	html += '<p style="font-family:roboto-black">Dominant colors: </p>';
+		        	for (var i=0, j=data.responses[0].imagePropertiesAnnotation.dominantColors.colors.length; i<j; i++){
+		        		html += '<p style="font-family:roboto-thin">Color: <input type="color" name="favcolor" value="' + rgbToHex(data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.red, data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.green, data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.blue) + '"> score: ' + data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].score + '.</p>';
+		        	}
+		        	console.log(html);
+			  		$('#msg').hide();
+		        	document.getElementById('response').innerHTML = html;
+	        		$('#response').show();
+
 	        	}
-
-	        	html += '<p style="font-family:roboto-black">Safe-search annotations:</p>';
-	        	html += '<p style="font-family:roboto-thin">Adult content probability:' + data.responses[0].safeSearchAnnotation.adult + '</p>';
-	        	html += '<p style="font-family:roboto-thin">Medical content probability:' + data.responses[0].safeSearchAnnotation.medical + '</p>';
-	        	html += '<p style="font-family:roboto-thin">Spoof content probability:' + data.responses[0].safeSearchAnnotation.spoof + '</p>';
-	        	html += '<p style="font-family:roboto-thin">Violence content probability:' + data.responses[0].safeSearchAnnotation.violence + '</p>';
-	        	
-
-	        	if (data.responses[0].textAnnotations){
-	        		html += '<p style="font-family:roboto-black">Text annotations: '+ data.responses[0].textAnnotations.length +'</p>';
-	        		for (var i=0, j=data.responses[0].textAnnotations.length; i<j; i++){
-		        		html += '<p style="font-family:roboto-thin">' + data.responses[0].textAnnotations[i].description +'.</p>';
-		        	}
-	        	}
-	        	
-	        	if (data.responses[0].labelAnnotations){
-		        	html += '<p style="font-family:roboto-black">Label annotations: '+ data.responses[0].labelAnnotations.length +'</p>';
-					for (var i=0, j=data.responses[0].labelAnnotations.length; i<j; i++){
-		        		html += '<p style="font-family:roboto-thin">Label: ' + data.responses[0].labelAnnotations[i].description +', score: ' + data.responses[0].labelAnnotations[i].score + '.</p>';
-		        	}
-		        }
-
-		        if (data.responses[0].logoAnnotations){
-		        	html += '<p style="font-family:roboto-black">Logo annotations: '+ data.responses[0].logoAnnotations.length +'</p>';
-					for (var i=0, j=data.responses[0].logoAnnotations.length; i<j; i++){
-		        		html += '<p style="font-family:roboto-thin">Logo: ' + data.responses[0].logoAnnotations[i].description +', score: ' + data.responses[0].logoAnnotations[i].score + '.</p>';
-		        	}
-		        }
-
-	        	html += '<p style="font-family:roboto-black">Dominant colors: </p>';
-	        	for (var i=0, j=data.responses[0].imagePropertiesAnnotation.dominantColors.colors.length; i<j; i++){
-	        		html += '<p style="font-family:roboto-thin">Color: <input type="color" name="favcolor" value="' + rgbToHex(data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.red, data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.green, data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.blue) + '"> score: ' + data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].score + '.</p>';
-	        	}
-	        	console.log(html);
-		  		$('#msg').hide();
-	        	document.getElementById('response').innerHTML = html;
-	        	
 	        }).error(function(data) {
 	        	console.log(data);
 	        	
 	        });
     	}
 
-    	
+    	function convertEmotionInfoToNum (emotion) {
+			return ({
+				VERY_UNLIKELY: 0,
+				UNLIKELY: 1,
+				POSSIBLE: 2,
+				LIKELY: 3,
+				VERY_LIKELY: 4
+			})[emotion]
+		}
 
+		var video = document.querySelector('video');
+		var canvas = document.querySelector('canvas');
+		var ctx = canvas.getContext('2d');
+		var localMediaStream = null;
+		function snapshot() {
+			if (localMediaStream) {
+				ctx.drawImage(video, 0, 0);
+				document.getElementById('vimg').src = canvas.toDataURL('image/jpg');
+				document.getElementById("b64").innerHTML = canvas.toDataURL('image/jpg');
+				computeVision('from video');
+			}
+		}
+		// video.addEventListener('click', setInterval(snapshot,3000), false);
+		$("#capture").click(function() {
+			timer = setInterval(snapshot, 3000);
+			$('#vimg').show();
+		});
+		$("#stop").click(function() {
+			$('#vimg').hide();
+			clearInterval(timer);
+		});
+
+		navigator.webkitGetUserMedia({video: true}, function(stream) {
+			video.src = window.URL.createObjectURL(stream);
+			localMediaStream = stream;
+		}, function(){});
+
+		$(function() {
+			notify.requestPermission()
+		});
+		var pushNotification = function(text, body, img) {
+			notify.config({
+				autoClose: 4000 
+			});
+			notification(text, body, img);
+			
+		}
+		var notification = function(text, body, img){
+			notify.createNotification(text, {
+				body: body,
+				icon: img
+			});
+		}
 	</script>
 {% endblock %}	
