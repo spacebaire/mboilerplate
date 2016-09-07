@@ -100,7 +100,7 @@ class AdminUserListHandler(BaseHandler):
                              ('name', 'Name'),
                              ('last_name', 'Last'),
                              ('link_referral', 'Unique Link'),
-                             ('rewards','Rewards'),
+                             ('amount','Rewards'),
                              ('created', 'Created'),
                              ('last_login', 'Last Login')
                              ],

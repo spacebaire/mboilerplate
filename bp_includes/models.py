@@ -73,6 +73,7 @@ class User(User):
     activated = ndb.BooleanProperty(default=False)                                                 #: Account activation verifies email    
     link_referral = ndb.StringProperty()                                                           #: Once verified, this link is used for referral sign ups (uses bit.ly)    
     rewards = ndb.StructuredProperty(Rewards, repeated = True)                                     #: Rewards allocation property, includes referral email tracking.    
+    amount = ndb.ComputedProperty(lambda self: self.get_rewards())                                 
     role = ndb.StringProperty(choices = ['NA','Member','Admin'], default = 'Admin')                #: Role in account
     notifications = ndb.StructuredProperty(Notifications)                                          #: Setup of notifications
     picture = ndb.BlobProperty()                                                                   #: User profile picture as an element in datastore of type blob
@@ -118,6 +119,13 @@ class User(User):
             else:
                 result['unused'].append(v)
         return result
+
+    def get_rewards(self):
+        amount = 0
+        for reward in self.rewards:
+            amount += reward.amount
+
+        return amount
 #--------------------------------------- ENDOF   U S E R    M O D E L -----------------------------------------------------          
 
 

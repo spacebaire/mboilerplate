@@ -216,6 +216,9 @@
 				    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #228DFF, 0 0 35px #228DFF, 0 0 40px #228DFF, 0 0 50px #228DFF, 0 0 75px #228DFF;
 				  }
 				}
+				footer ul li a:hover{
+					color:{{brand_secondary_color}}!important;
+				}
 				#counter_holder a {
 				  color: {{brand_color}};
 				  font-family: Monoton;
@@ -836,7 +839,7 @@
 				</div>
 				<div class="footer-copyright " style="text-align:right;">
 				  <div class="container tooltipped" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">
-				  	<a class="white-text" href="{{uri_for("license")}}">MIT License - </a>© 2015 {{app_name}}, All rights reserved. Made from real<i class="mdi-image-flash-on brand-secondary-color-text" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i> by <a class="brand-secondary-color-text" href="http://onesmart.tech">OneSmart.Tech</a>
+				  	{% if not is_mobile %}<a class="white-text" href="{{uri_for("license")}}">MIT License - </a>© 2015 {{app_name}}, All rights reserved.{% endif %} Made from real<i class="mdi-image-flash-on brand-secondary-color-text" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i> by <a class="brand-secondary-color-text" href="http://onesmart.tech">OneSmart.Tech</a>
 				  </div>
 				</div>
 			</footer>
