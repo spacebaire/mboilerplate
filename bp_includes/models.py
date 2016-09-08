@@ -66,6 +66,8 @@ class User(User):
     email = ndb.StringProperty()                                                                   #: User email
     phone = ndb.StringProperty()                                                                   #: User phone
     twitter_handle = ndb.StringProperty()                                                          #: User twitter handle for notification purposes
+    facebook_ID = ndb.StringProperty()                                                             #: User facebook ID for profile purposes
+    google_ID = ndb.StringProperty()                                                               #: User google ID for profile purposes
     address = ndb.StructuredProperty(Address)                                                      #: User georeference
     password = ndb.StringProperty()                                                                #: Hashed password. Only set for own authentication.    
     birth = ndb.DateProperty()                                                                     #: User birthday.
@@ -126,6 +128,36 @@ class User(User):
             amount += reward.amount
 
         return amount
+
+    def get_image_url(self):
+        if self.picture:
+            return "/media/serve/profile/%s/" % self._key.id()
+        elif self.facebook_ID is not None or self.google_ID is not None:
+            if self.facebook_ID is not None:
+                social = UserFB.query(UserFB.user_id == int(self._key.id())).get()
+            elif self.google_ID is not None:
+                social = UserGOOG.query(UserGOOG.user_id == int(self._key.id())).get()
+            if social is not None:
+                return social.picture
+        else:
+            return None
+
+class UserFB(ndb.Model):
+    user_id = ndb.IntegerProperty(required = True)
+    age_range = ndb.IntegerProperty()
+    first_name = ndb.StringProperty()
+    last_name = ndb.StringProperty()
+    gender = ndb.StringProperty()
+    picture = ndb.StringProperty()
+    cover = ndb.StringProperty()
+
+class UserGOOG(ndb.Model):
+    user_id = ndb.IntegerProperty(required = True)
+    first_name = ndb.StringProperty()
+    last_name = ndb.StringProperty()
+    gender = ndb.StringProperty()
+    picture = ndb.StringProperty()
+    cover = ndb.StringProperty()
 #--------------------------------------- ENDOF   U S E R    M O D E L -----------------------------------------------------          
 
 
