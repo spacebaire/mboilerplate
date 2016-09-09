@@ -116,7 +116,7 @@ class SendEmailHandler(BaseHandler):
                 sender = self.app.config.get('contact_sender')
             else:
                 app_id = app_identity.get_application_id()
-                sender = "%s Mail <no-reply@%s.appspotmail.com>" % (self.app.config.get('app_name'),app_id)
+                sender = "%s Mail <no-reply@%s.appspotmail.com>" % (self.brand['app_name'],app_id)
 
         if self.app.config['log_email']:
             try:
@@ -184,12 +184,12 @@ class ResendActivationEmailHandler(BaseHandler):
                                                 _full=True)
                 # load email's template
                 template_val = {
-                    "app_name": self.app.config.get('app_name'),
+                    "app_name": self.brand['app_name'],
                     "username": user.name,
                     "confirmation_url": confirmation_url,
-                    "brand_email_logo": self.app.config.get('brand_email_logo'),
-                    "brand_color": self.app.config.get('brand_color'),
-                    "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                    "brand_email_logo": self.brand['brand_email_logo'],
+                    "brand_color": self.brand['brand_color'],
+                    "brand_secondary_color": self.brand['brand_secondary_color'],
                     "support_url": self.uri_for("contact", _full=True),
                     "twitter_url": self.app.config.get('twitter_url'),
                     "facebook_url": self.app.config.get('facebook_url'),
@@ -252,9 +252,9 @@ class WelcomeHandler(BaseHandler):
                                 template_val = {
                                     "username": _username,
                                     "_url": self.uri_for("history", _full=True),
-                                    "brand_email_logo": self.app.config.get('brand_email_logo'),
-                                    "brand_color": self.app.config.get('brand_color'),
-                                    "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                                    "brand_email_logo": self.brand['brand_email_logo'],
+                                    "brand_color": self.brand['brand_color'],
+                                    "brand_secondary_color": self.brand['brand_secondary_color'],
                                     "support_url": self.uri_for("contact", _full=True),
                                     "twitter_url": self.app.config.get('twitter_url'),
                                     "facebook_url": self.app.config.get('facebook_url'),
@@ -354,14 +354,14 @@ class PasswordResetHandler(BaseHandler):
                 "username": user.name,
                 "email": user.email,
                 "reset_password_url": reset_url,
-                "brand_email_logo": self.app.config.get('brand_email_logo'),
-                "brand_color": self.app.config.get('brand_color'),
-                "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                "brand_email_logo": self.brand['brand_email_logo'],
+                "brand_color": self.brand['brand_color'],
+                "brand_secondary_color": self.brand['brand_secondary_color'],
                 "support_url": self.uri_for("contact", _full=True),
                 "twitter_url": self.app.config.get('twitter_url'),
                 "facebook_url": self.app.config.get('facebook_url'),
                 "faq_url": self.uri_for("faq", _full=True),
-                "app_name": self.app.config.get('app_name'),
+                "app_name": self.brand['app_name'],
             }
 
             body_path = "emails/reset_password.txt"
@@ -650,12 +650,12 @@ class MaterializeRegisterReferralHandler(BaseHandler):
                         _username = str(username)
                     # load email's template
                     template_val = {
-                        "app_name": self.app.config.get('app_name'),
+                        "app_name": self.brand['app_name'],
                         "username": _username,
                         "confirmation_url": confirmation_url,
-                        "brand_email_logo": self.app.config.get('brand_email_logo'),
-                        "brand_color": self.app.config.get('brand_color'),
-                        "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                        "brand_email_logo": self.brand['brand_email_logo'],
+                        "brand_color": self.brand['brand_color'],
+                        "brand_secondary_color": self.brand['brand_secondary_color'],
                         "support_url": self.uri_for("contact", _full=True),
                         "twitter_url": self.app.config.get('twitter_url'),
                         "facebook_url": self.app.config.get('facebook_url'),
@@ -827,7 +827,7 @@ class MaterializeRegisterRequestHandler(BaseHandler):
             try:
                 if not user[1].activated:
                     # send email
-                    #subject = _("%s Account Verification" % self.app.config.get('app_name'))
+                    #subject = _("%s Account Verification" % self.brand['app_name'])
                     subject = _(messages.email_activation_subject)
                     confirmation_url = self.uri_for("account-activation",
                                                     user_id=user[1].get_id(),
@@ -836,12 +836,12 @@ class MaterializeRegisterRequestHandler(BaseHandler):
 
                     # load email's template
                     template_val = {
-                        "app_name": self.app.config.get('app_name'),
+                        "app_name": self.brand['app_name'],
                         "username": name,
                         "confirmation_url": confirmation_url,
-                        "brand_email_logo": self.app.config.get('brand_email_logo'),
-                        "brand_color": self.app.config.get('brand_color'),
-                        "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                        "brand_email_logo": self.brand['brand_email_logo'],
+                        "brand_color": self.brand['brand_color'],
+                        "brand_secondary_color": self.brand['brand_secondary_color'],
                         "support_url": self.uri_for("contact", _full=True),
                         "twitter_url": self.app.config.get('twitter_url'),
                         "facebook_url": self.app.config.get('facebook_url'),
@@ -1166,9 +1166,9 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
             "country": country,
             "coordinates": coordinates,
             "message": message,
-            "brand_email_logo": self.app.config.get('brand_email_logo'),
-            "brand_color": self.app.config.get('brand_color'),
-            "brand_secondary_color": self.app.config.get('brand_secondary_color')
+            "brand_email_logo": self.brand['brand_email_logo'],
+            "brand_color": self.brand['brand_color'],
+            "brand_secondary_color": self.brand['brand_secondary_color']
         }
         try:
             # parsing user_agent and getting which os key to use
@@ -1193,9 +1193,9 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
                 "region": region,
                 "country": country,
                 "coordinates": coordinates,
-                "brand_email_logo": self.app.config.get('brand_email_logo'),
-                "brand_color": self.app.config.get('brand_color'),
-                "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                "brand_email_logo": self.brand['brand_email_logo'],
+                "brand_color": self.brand['brand_color'],
+                "brand_secondary_color": self.brand['brand_secondary_color'],
                 "browser": browser,
                 "browser_version": browser_version,
                 "operating_system": operating_system,
@@ -1417,13 +1417,13 @@ class MaterializeSettingsEmailRequestHandler(BaseHandler):
                         _username = user.email
                     # load email's template
                     template_val = {
-                        "app_name": self.app.config.get('app_name'),
+                        "app_name": self.brand['app_name'],
                         "username": _username,
                         "new_email": new_email,
                         "confirmation_url": confirmation_url,
-                        "brand_email_logo": self.app.config.get('brand_email_logo'),
-                        "brand_color": self.app.config.get('brand_color'),
-                        "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                        "brand_email_logo": self.brand['brand_email_logo'],
+                        "brand_color": self.brand['brand_color'],
+                        "brand_secondary_color": self.brand['brand_secondary_color'],
                         "support_url": self.uri_for("contact", _full=True),
                         "twitter_url": self.app.config.get('twitter_url'),
                         "facebook_url": self.app.config.get('facebook_url'),
@@ -1532,13 +1532,13 @@ class MaterializeSettingsReferralsRequestHandler(BaseHandler):
                 _username = user_info.username
              # load email's template
             template_val = {
-                "app_name": self.app.config.get('app_name'),
+                "app_name": self.brand['app_name'],
                 "user_email": user_info.email,
                 "user_name": _username,
                 "link_referral" : user_info.link_referral,
-                "brand_email_logo": self.app.config.get('brand_email_logo'),
-                "brand_color": self.app.config.get('brand_color'),
-                "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                "brand_email_logo": self.brand['brand_email_logo'],
+                "brand_color": self.brand['brand_color'],
+                "brand_secondary_color": self.brand['brand_secondary_color'],
                 "support_url": self.uri_for("contact", _full=True),
                 "twitter_url": self.app.config.get('twitter_url'),
                 "facebook_url": self.app.config.get('facebook_url'),
@@ -1669,13 +1669,13 @@ class MaterializeSettingsPasswordRequestHandler(BaseHandler):
                     _username = user.email
                 # load email's template
                 template_val = {
-                    "app_name": self.app.config.get('app_name'),
+                    "app_name": self.brand['app_name'],
                     "username": _username,
                     "email": user.email,
                     "reset_password_url": self.uri_for("password-reset", _full=True),
-                    "brand_email_logo": self.app.config.get('brand_email_logo'),
-                    "brand_color": self.app.config.get('brand_color'),
-                    "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                    "brand_email_logo": self.brand['brand_email_logo'],
+                    "brand_color": self.brand['brand_color'],
+                    "brand_secondary_color": self.brand['brand_secondary_color'],
                     "support_url": self.uri_for("contact", _full=True),
                     "twitter_url": self.app.config.get('twitter_url'),
                     "facebook_url": self.app.config.get('facebook_url'),
@@ -1921,13 +1921,13 @@ class MaterializeReferralsRequestHandler(BaseHandler):
                 _username = user_info.username
              # load email's template
             template_val = {
-                "app_name": self.app.config.get('app_name'),
+                "app_name": self.brand['app_name'],
                 "user_email": user_info.email,
                 "user_name": _username,
                 "link_referral" : user_info.link_referral,
-                "brand_email_logo": self.app.config.get('brand_email_logo'),
-                "brand_color": self.app.config.get('brand_color'),
-                "brand_secondary_color": self.app.config.get('brand_secondary_color'),
+                "brand_email_logo": self.brand['brand_email_logo'],
+                "brand_color": self.brand['brand_color'],
+                "brand_secondary_color": self.brand['brand_secondary_color'],
                 "support_url": self.uri_for("contact", _full=True),
                 "twitter_url": self.app.config.get('twitter_url'),
                 "facebook_url": self.app.config.get('facebook_url'),
