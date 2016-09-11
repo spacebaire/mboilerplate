@@ -101,7 +101,7 @@
       <div class="col s12">
           {% if total > 0 %}
               <div class="row" style="position:relative;">
-                <p class="col s11 offset-s1 flow-text" style="margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46); position: absolute; top: -15px; z-index:2;">You've invited
+                <p class="col s11 offset-s1 flow-text" style="margin-top:60px; margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46); position: absolute; top: -15px; z-index:2;">You've invited
                   {% if last_page > 1 %} more than {{ grand_total }} contacts ! 
                     (
                       {% if page > 1 %} 
@@ -155,7 +155,7 @@
               </form>
               {% else %}
               <div class="row">
-                <p class="col s12 flow-text" style="margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46);">You've invited {{total}} contacts.</p>
+                <p class="col s12 flow-text" style="margin-top:60px;margin-bottom: 40px;text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.46);">You've invited {{total}} contacts.</p>
                 <button onclick="window.open('{{ uri_for("materialize-referrals") }}', '_top')" class="waves-effect waves-light brand-color white-text btn center" style="margin-left: 12px;" id="connect-btn" name="action">Invite now
                       <i class="mdi-content-send right"></i>
                 </button>    
