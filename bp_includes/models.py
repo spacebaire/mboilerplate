@@ -2,7 +2,6 @@
 from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb, blobstore
 
-#---------------------------------------  B R A N D    M O D E L -------------------------------------------------------------------          
 class Brand(ndb.Model):
     app_name = ndb.StringProperty(default = '')
     brand_layout = ndb.StringProperty(default = 'splash', choices = ['splash', 'video'])
@@ -15,8 +14,8 @@ class Brand(ndb.Model):
     brand_color = ndb.StringProperty(default = '')
     brand_secondary_color = ndb.StringProperty(default = '')
     brand_tertiary_color = ndb.StringProperty(default = '')
+    brand_about = ndb.StringProperty(default = '')
 
-#--------------------------------------- USER MODEL PROPERTIES  -----------------------------------------------------------         
 class Rewards(ndb.Model):
     amount = ndb.IntegerProperty()                                                                  #: number of points acquired 
     earned = ndb.BooleanProperty()                                                                  #: to identify if earned or spent
@@ -51,7 +50,7 @@ class BlogPost(ndb.Model):
 
     def get_id(self):
         return self._key.id()
-#--------------------------------------- U S E R    M O D E L -----------------------------------------------------          
+
 class User(User):
     """
     Universal user model. Can be used with App Engine's default users API,
@@ -66,8 +65,6 @@ class User(User):
     email = ndb.StringProperty()                                                                   #: User email
     phone = ndb.StringProperty()                                                                   #: User phone
     twitter_handle = ndb.StringProperty()                                                          #: User twitter handle for notification purposes
-    facebook_ID = ndb.StringProperty()                                                             #: User facebook ID for profile purposes
-    google_ID = ndb.StringProperty()                                                               #: User google ID for profile purposes
     address = ndb.StructuredProperty(Address)                                                      #: User georeference
     password = ndb.StringProperty()                                                                #: Hashed password. Only set for own authentication.    
     birth = ndb.DateProperty()                                                                     #: User birthday.
@@ -76,20 +73,17 @@ class User(User):
     link_referral = ndb.StringProperty()                                                           #: Once verified, this link is used for referral sign ups (uses bit.ly)    
     rewards = ndb.StructuredProperty(Rewards, repeated = True)                                     #: Rewards allocation property, includes referral email tracking.    
     amount = ndb.ComputedProperty(lambda self: self.get_rewards())                                 
-    role = ndb.StringProperty(choices = ['NA','Member','Admin'], default = 'Admin')                #: Role in account
+    role = ndb.StringProperty(choices = ['NA','Member','Coord','Admin'], default = 'Admin')        #: Role in account
+    get_role = ndb.ComputedProperty(lambda self: self.has_role())                                 
+    level = ndb.IntegerProperty(choices = [0,1,2,3,4,5], default = 0)
     notifications = ndb.StructuredProperty(Notifications)                                          #: Setup of notifications
     picture = ndb.BlobProperty()                                                                   #: User profile picture as an element in datastore of type blob
-	
+    facebook_ID = ndb.StringProperty()                                                             #: User facebook ID for profile purposes
+    google_ID = ndb.StringProperty()                                                               #: User google ID for profile purposes
+    image_url = ndb.ComputedProperty(lambda self: self.get_image_url())                                 
+
     @classmethod
     def get_by_email(cls, email):
-        """Returns a user object based on an email.
-
-        :param email:
-            String representing the user email. Examples:
-
-        :returns:
-            A user object.
-        """
         return cls.query(cls.email == email).get()
 
     @classmethod
@@ -104,23 +98,6 @@ class User(User):
     @classmethod
     def delete_resend_token(cls, user_id, token):
         cls.token_model.get_key(user_id, 'resend-activation-mail', token).delete()
-
-    def get_social_providers_names(self):
-        social_user_objects = SocialUser.get_by_user(self.key)
-        result = []
-        for social_user_object in social_user_objects:
-            result.append(social_user_object.provider)
-        return result
-
-    def get_social_providers_info(self):
-        providers = self.get_social_providers_names()
-        result = {'used': [], 'unused': []}
-        for k,v in SocialUser.PROVIDERS_INFO.items():
-            if k in providers:
-                result['used'].append(v)
-            else:
-                result['unused'].append(v)
-        return result
 
     def get_rewards(self):
         amount = 0
@@ -138,9 +115,19 @@ class User(User):
             elif self.google_ID is not None:
                 social = UserGOOG.query(UserGOOG.user_id == int(self._key.id())).get()
             if social is not None:
-                return social.picture
+                return social.picture if social.picture is not None else -1
         else:
-            return None
+            return -1
+
+    def has_role(self):
+        if self.role == 'Member':
+            return "Operador"
+        elif self.role == 'Coord':
+            return "Coordinador"     
+        elif self.role == 'Admin':
+            return "Administrador"     
+        else:
+            return "NA"
 
 class UserFB(ndb.Model):
     user_id = ndb.IntegerProperty(required = True)
@@ -158,8 +145,56 @@ class UserGOOG(ndb.Model):
     gender = ndb.StringProperty()
     picture = ndb.StringProperty()
     cover = ndb.StringProperty()
-#--------------------------------------- ENDOF   U S E R    M O D E L -----------------------------------------------------          
 
+class Content(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add=True)                                              #: Creation date.
+    permission = ndb.IntegerProperty(required = True, default = 0)
+    title = ndb.StringProperty(required = True)
+    subtitle = ndb.StringProperty(required = True)
+    description = ndb.StringProperty(required = True)
+    kind = ndb.StringProperty(required = True, choices = ['video','audio','image','document','survey'])
+    link = ndb.StringProperty(required = True)
+    hidden = ndb.BooleanProperty(required = True, default = False)
+    
+    def get_id(self):
+        return self._key.id()
+
+class SpecialAccess(ndb.Model):
+    email= ndb.StringProperty(required = True)
+    name= ndb.StringProperty()
+    role = ndb.StringProperty(required = True, choices = ['NA','Member', 'Coord', 'Admin'], default = 'Member')
+
+    @classmethod
+    def get_by_email(cls, email):
+        """Returns an operator object based on an email.
+
+        :param email:
+            String representing the user email. Examples:
+
+        :returns:
+            A operator object.
+        """
+        return cls.query(cls.email == email).get()
+
+    def get_id(self):
+        return self._key.id()    
+
+    def is_active(self):
+        _user = User.get_by_email(self.email)
+        if _user:
+            return "*"
+        else:
+            return ""
+
+    def has_role(self):
+        if self.role == 'Member':
+            return "Operador"
+        elif self.role == 'Coord':
+            return "Coordinador"     
+        elif self.role == 'Admin':
+            return "Administrador"     
+        else:
+            return "NA"
 
 class LogVisit(ndb.Model):
     user = ndb.KeyProperty(kind=User)
@@ -187,58 +222,3 @@ class LogEmail(ndb.Model):
 
     def get_id(self):
         return self._key.id()
-
-class SocialUser(ndb.Model):
-    PROVIDERS_INFO = { # uri is for OpenID only (not OAuth)
-        'google': {'name': 'google', 'label': 'Google', 'uri': 'gmail.com'},
-        'github': {'name': 'github', 'label': 'Github', 'uri': ''},
-        'facebook': {'name': 'facebook', 'label': 'Facebook', 'uri': ''},
-        'linkedin': {'name': 'linkedin', 'label': 'LinkedIn', 'uri': ''},
-        'myopenid': {'name': 'myopenid', 'label': 'MyOpenid', 'uri': 'myopenid.com'},
-        'twitter': {'name': 'twitter', 'label': 'Twitter', 'uri': ''},
-        'yahoo': {'name': 'yahoo', 'label': 'Yahoo!', 'uri': 'yahoo.com'},
-    }
-
-    user = ndb.KeyProperty(kind=User)
-    provider = ndb.StringProperty()
-    uid = ndb.StringProperty()
-    extra_data = ndb.JsonProperty()
-
-    @classmethod
-    def get_by_user(cls, user):
-        return cls.query(cls.user == user).fetch()
-
-    @classmethod
-    def get_by_user_and_provider(cls, user, provider):
-        return cls.query(cls.user == user, cls.provider == provider).get()
-
-    @classmethod
-    def get_by_provider_and_uid(cls, provider, uid):
-        return cls.query(cls.provider == provider, cls.uid == uid).get()
-
-    @classmethod
-    def check_unique_uid(cls, provider, uid):
-        # pair (provider, uid) should be unique
-        test_unique_provider = cls.get_by_provider_and_uid(provider, uid)
-        if test_unique_provider is not None:
-            return False
-        else:
-            return True
-    
-    @classmethod
-    def check_unique_user(cls, provider, user):
-        # pair (user, provider) should be unique
-        test_unique_user = cls.get_by_user_and_provider(user, provider)
-        if test_unique_user is not None:
-            return False
-        else:
-            return True
-
-    @classmethod
-    def check_unique(cls, user, provider, uid):
-        # pair (provider, uid) should be unique and pair (user, provider) should be unique
-        return cls.check_unique_uid(provider, uid) and cls.check_unique_user(provider, user)
-    
-    @staticmethod
-    def open_id_providers():
-        return [k for k,v in SocialUser.PROVIDERS_INFO.items() if v['uri']]

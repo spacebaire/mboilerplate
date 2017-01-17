@@ -20,30 +20,11 @@ class AdminStatsHandler(BaseHandler):
         blogs = models.BlogPost.query()
         params['sum_blogs'] = blogs.count()
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('essentials/admin_stats.html', **params)
-
-class AdminUserGeoChartHandler(BaseHandler):
-    def get(self):
-        users = self.user_model.query().fetch(projection=['country'])
-        users_by_country = Counter()
-
-        users = self.user_model.query()
-        latlngs = []
-        for user in users:
-            if user.address is not None:
-                if user.address.latlng is not None:
-                    latlngs.append(user.address.latlng)
-
-        params = {
-            "data": users_by_country.items(),
-            "list_attrs": [('lat', 'lon')],
-            "latlngs": latlngs,
-        }
-        params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('admin_users_geochart.html', **params)
+        return self.render_template('%s/essentials/admin_stats.html' % self.app.config.get('app_lang'), **params)
 
 class EditProfileForm(forms.SettingsProfileForm):
     activated = fields.BooleanField('Activated')
+    permission = fields.IntegerField('Permission')
 
 class AdminUserListHandler(BaseHandler):
     def get(self):
@@ -95,20 +76,36 @@ class AdminUserListHandler(BaseHandler):
         self.view.pager_url = pager_url
         self.view.q = q
 
-        params = {
-            "list_columns": [('username', 'Username | Email'),
+        if self.app.config.get('app_lang') == 'es':
+            list_columns = [('username', 'Correo'),
+                             ('name', 'Nombre'),
+                             ('last_name', 'Apellido'),
+                             ('level', 'Nivel de acceso'),
+                             ('get_role', 'Rol'),
+                             ('link_referral', u'Link único'),
+                             ('amount','Recompensas'),
+                             ('created', u'Creación'),
+                             ('last_login', u'Último ingreso')
+                             ]
+        else:
+            list_columns = [('username', 'Email'),
                              ('name', 'Name'),
-                             ('last_name', 'Last'),
-                             ('link_referral', 'Unique Link'),
+                             ('last_name', 'Lastname'),
+                             ('level', 'Access'),
+                             ('get_role', 'Role'),
+                             ('link_referral', u'Unique link'),
                              ('amount','Rewards'),
                              ('created', 'Created'),
-                             ('last_login', 'Last Login')
-                             ],
+                             ('last_login', u'Last login')
+                             ]
+
+        params = {
+            "list_columns": list_columns,
             "users": users,
             "count": count
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('users/admin_users_list.html', **params)
+        return self.render_template('%s/users/admin_users_list.html' % self.app.config.get('app_lang'), **params)
 
 class AdminUserEditHandler(BaseHandler):
     def get_or_404(self, user_id):
@@ -131,6 +128,7 @@ class AdminUserEditHandler(BaseHandler):
             gender = self.request.get('gender')
             phone = self.request.get('phone')
             birth = self.request.get('birth')
+            permission = int(self.request.get('permission'))
             picture = self.request.get('picture') if len(self.request.get('picture'))>1 else None
             activated = True if 'on' in self.request.get('activated') else False
 
@@ -139,6 +137,7 @@ class AdminUserEditHandler(BaseHandler):
                 user_info.name = name
                 user_info.activated = activated
                 user_info.last_name = last_name
+                user_info.level = permission
                 if (len(birth) > 9):
                     user_info.birth = date(int(birth[:4]), int(birth[5:7]), int(birth[8:]))
                 if 'male' in gender:
@@ -163,7 +162,7 @@ class AdminUserEditHandler(BaseHandler):
             'user': user
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('users/admin_user_edit.html', **params)
+        return self.render_template('%s/users/admin_user_edit.html' % self.app.config.get('app_lang'), **params)
 
     @webapp2.cached_property
     def form(self):
@@ -237,25 +236,15 @@ class AdminLogsVisitsHandler(BaseHandler):
             if(self.user_model.get_by_id(long(_visit.user.id())) != None):
                 _visits.append(_visit)
 
-        # maxValue = 1
-        # histogram = []
-        # for t in temp:
-        #     histogram.append(temp[t])
-        #     if (temp[t]> maxValue):
-        #         maxValue = temp[t]
+        if self.app.config.get('app_lang') == 'es':
+            list_columns = [('timestamp', 'Fecha'), ('ip', 'IP'),('uastring', 'Navegador')]
+        else:
+            list_columns = [('timestamp', 'Date'), ('ip', 'IP'),('uastring', 'Browser')]
         
         params = {
-            "list_columns": [('timestamp', 'Timestamp'),
-                             ('ip', 'IP'),
-                             ('uastring', 'Browser')
-            ],
+            "list_columns": list_columns,
             "visits": _visits,
             "count": qry.count()
-            # "avg": avg,
-            # "histogram": histogram,
-            # "maxValue": maxValue,
-            # "ids": ids,
-            # "len_hist": len(histogram)
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('users/admin_logs_visits.html', **params)
+        return self.render_template('%s/users/admin_logs_visits.html' % self.app.config.get('app_lang'), **params)

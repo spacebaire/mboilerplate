@@ -1,0 +1,92 @@
+{% extends base_layout %}
+{% block title %}<title>{{app_name}} » Home</title>{% endblock %}
+
+{% block page_css %}
+{% endblock %}
+
+{% block breadcrums %}
+<!--breadcrumbs start-->
+<div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
+    <div class="container">
+        <div class="row">
+          <div class="col s12">
+          <ol class="breadcrumb" style="font-size: 29px;">
+                <li class="active">My dashboard</li>
+            </ol></div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+{% endblock %}
+
+
+{% block page_content %}
+<div class="section">
+    <div class="container">
+        <h5 class="grey-text" style="margin-bottom:-10px;">Welcome...</h5>
+        <br><br>
+        {% if has_contents %}
+        <div class="row">
+            {% for content in contents %}
+                {% if content.permission <= user_permission %}
+                <div class="col s12 m3">
+                    <div class="card" style="height:240px; overflow-y:scroll;">
+                        <div class="card-content" style="min-height: 180px;">
+                              <span class="card-title" style="font-weight:bold">{{content.title}}</span> <br>
+                              <span class="card-title activator grey-text text-darken-4">{{content.subtitle}}<i class="mdi-navigation-more-vert right"></i></span>
+                        </div>
+                        <div class="card-action">
+                            <a class="btn-floating activator brand-secondary-color btn-move-up waves-effect waves-light darken-2 right" style="top:-40px!important;">
+                                {% if content.kind == 'image' %}<i class="mdi-image-crop-original"></i>
+                                {% elif content.kind == 'video' %}<i class="mdi-av-videocam"></i>
+                                {% elif content.kind == 'audio' %}<i class="mdi-av-volume-down"></i>
+                                {% elif content.kind == 'document' %}<i class="mdi-action-description"></i>
+                                {% elif content.kind == 'survey' %}<i class="mdi-action-help"></i>{% endif %}
+                              </a>
+                              
+                            <a href="{{content.link}}" target="_blank">See this content</a>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4" style="font-weight:bold">{{content.title}}<i class="mdi-navigation-close right"></i></span> <br>
+                            <span class="card-title grey-text text-darken-4">{{content.subtitle}}</span> <br>
+                            <p>{{content.description}}</p>
+                          </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}            
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+<!-- Remove floating button from home -->
+{% block page_floatings %}
+{% endblock %}
+
+
+
+{% block page_scripts %} 
+<script src="/materializecss/js/plugins/desktop-notify/desktop-notify.js"></script>
+<script>
+    notify.requestPermission();
+        
+    notification = function(text, body, img){
+      notify.createNotification(text, {
+        body: body,
+        icon: img
+      });
+    };
+
+    pushNotification = function(text, body, img){
+      notify.config({
+        autoClose: 4000
+      });
+      notification(text,body,img);
+    };
+
+    setTimeout(function(){pushNotification('Notification!', 'This is just a demo', '{{brand_logo}}');}, 3000)
+</script>
+{% endblock %}

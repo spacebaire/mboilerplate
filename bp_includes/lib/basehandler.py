@@ -97,6 +97,10 @@ class BaseHandler(webapp2.RequestHandler):
     def add_message(self, message, level=None):
         self.session.add_flash(message, level, key='_messages')
 
+    def send_json(self, r):
+        self.response.headers['content-type'] = 'text/plain'
+        self.response.write(json.dumps(r))
+
     @webapp2.cached_property
     def auth_config(self):
         """
@@ -288,6 +292,7 @@ class BaseHandler(webapp2.RequestHandler):
             params['brand_color'] = self.app.config.get('brand_color') if brand.brand_color == '' else brand.brand_color 
             params['brand_secondary_color'] = self.app.config.get('brand_secondary_color') if brand.brand_secondary_color == '' else brand.brand_secondary_color 
             params['brand_tertiary_color'] = self.app.config.get('brand_tertiary_color') if brand.brand_tertiary_color == '' else brand.brand_tertiary_color 
+            params['brand_about'] = self.app.config.get('brand_about') if brand.brand_about == '' else brand.brand_about 
         else:
             params['app_name'] = self.app.config.get('app_name')
             params['brand_layout'] = self.app.config.get('brand_layout')
@@ -300,8 +305,9 @@ class BaseHandler(webapp2.RequestHandler):
             params['brand_color'] = self.app.config.get('brand_color')
             params['brand_secondary_color'] = self.app.config.get('brand_secondary_color')
             params['brand_tertiary_color'] = self.app.config.get('brand_tertiary_color')
+            params['brand_about'] = self.app.config.get('brand_about')
         return params
-
+    
     def render_template(self, filename, **kwargs):
         locales = self.app.config.get('locales') or []
         locale_iso = None
@@ -329,6 +335,7 @@ class BaseHandler(webapp2.RequestHandler):
             'theme': self.get_theme,
             'app_name': self.brand['app_name'],
             'app_domain': self.app.config.get('app_domain'),
+            'app_lang': self.app.config.get('app_lang'),
             'brand_layout': self.brand['brand_layout'],
             'brand_video': self.brand['brand_video'],
             'brand_splash': self.brand['brand_splash'],
@@ -339,6 +346,7 @@ class BaseHandler(webapp2.RequestHandler):
             'brand_color': self.brand['brand_color'],
             'brand_secondary_color': self.brand['brand_secondary_color'],
             'brand_tertiary_color': self.brand['brand_tertiary_color'],
+            'brand_about': self.brand['brand_about'],
             'user_id': self.user_id,
             'username': self.username,
             'name': self.name,
@@ -354,7 +362,16 @@ class BaseHandler(webapp2.RequestHandler):
             'locales': self.locales,
             'enable_federated_login': self.app.config.get('enable_federated_login'),
             'base_layout': self.get_base_layout,
-            'landing_layout': self.get_landing_layout
+            'landing_layout': self.get_landing_layout,
+            'has_contents': self.app.config.get('has_contents'),
+            'has_specials': self.app.config.get('has_specials'),
+            'has_blog': self.app.config.get('has_blog'),
+            'has_referrals': self.app.config.get('has_referrals'),
+            'has_translation': self.app.config.get('has_translation'),
+            'has_basics': self.app.config.get('has_basics'),
+            'has_notifications': self.app.config.get('has_notifications'),
+            'simplify': self.app.config.get('simplify'),
+            'app_id': self.app.config.get('app_id')
         })
         kwargs.update(self.auth_config)
         if hasattr(self, 'form'):

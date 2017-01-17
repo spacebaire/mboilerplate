@@ -15,7 +15,7 @@ from datetime import date, timedelta
 import time
 
 # appengine imports
-import webapp2
+import os, webapp2 #, MySQLdb
 from webapp2_extras import security
 from webapp2_extras.auth import InvalidAuthIdError, InvalidPasswordError
 from webapp2_extras.i18n import gettext as _
@@ -32,9 +32,14 @@ import models, messages, forms
 from lib import utils, captcha, bitly
 from lib.cartodb import CartoDBAPIKey, CartoDBException
 from lib.basehandler import BaseHandler
-from lib.decorators import user_required, taskqueue_method
+from lib.decorators import user_required, taskqueue_method, user_admin_role_required, user_coord_role_required, user_member_role_required
 
-""" --------------- GLOBAL UTILS --------------- """
+# global variables
+CLOUDSQL_CONNECTION_NAME = os.environ.get('CLOUDSQL_CONNECTION_NAME')
+CLOUDSQL_USER = os.environ.get('CLOUDSQL_USER')
+CLOUDSQL_PASSWORD = os.environ.get('CLOUDSQL_PASSWORD')
+
+""" --------------- HELPERS --------------- """
 
 def captchaBase(self):
     if self.app.config.get('captcha_public_key') == "" or \
@@ -63,11 +68,11 @@ def disclaim(_self, **kwargs):
     _params['last_name_i'] = user_info.last_name[0] + "." if len(user_info.last_name) >= 1 else ""
     _params['name'] = user_info.name
     _params['name_i'] = user_info.name[0].upper()
-    _params['role'] = 'Administrator' if user_info.role == 'Admin' else 'Member'
+    _params['role'] = user_info.get_role
     _params['phone'] = user_info.phone if user_info.phone != None else ""
     _params['gender'] = user_info.gender if user_info.gender != None else ""
     _params['birth'] = user_info.birth.strftime("%Y-%m-%d") if user_info.birth != None else ""
-    _params['has_picture'] = True if user_info.picture is not None else False
+    _params['has_picture'] = True if user_info.image_url != -1 else False
     _params['has_address'] = True if user_info.address is not None else False
     _params['address_from'] = False
     if _params['has_address']:
@@ -78,11 +83,38 @@ def disclaim(_self, **kwargs):
         _params['address_from'] = user_info.address.address_from
     if not _params['has_picture']:
         _params['disclaim'] = True
-    _params['link_referral'] = user_info.link_referral
+    else:
+        _params['user_picture_url'] = user_info.image_url
+    if _self.app.config.get('has_referrals'):
+        _params['link_referral'] = user_info.link_referral
     _params['date'] = date.today().strftime("%Y-%m-%d")
-
     return _params, user_info
 
+def connect_to_cloudsql():
+    # When deployed to App Engine, the `SERVER_SOFTWARE` environment variable
+    # will be set to 'Google App Engine/version'.
+    if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/'):
+        # Connect using the unix socket located at
+        # /cloudsql/cloudsql-connection-name.
+        cloudsql_unix_socket = os.path.join(
+            '/cloudsql', CLOUDSQL_CONNECTION_NAME)
+
+        db = MySQLdb.connect(
+            unix_socket=cloudsql_unix_socket,
+            user=CLOUDSQL_USER,
+            passwd=CLOUDSQL_PASSWORD)
+
+    # If the unix socket is unavailable, then try to connect using TCP. This
+    # will work if you're running a local MySQL server or using the Cloud SQL
+    # proxy, for example:
+    #
+    #   $ cloud_sql_proxy -instances=your-connection-name=tcp:3306
+    #
+    else:
+        db = MySQLdb.connect(
+            host='127.0.0.1', user=CLOUDSQL_USER, passwd=CLOUDSQL_PASSWORD)
+
+    return db
 
 
 """ --------------- EMAIL + TASKQUEUES HANDLERS --------------- """
@@ -195,7 +227,7 @@ class ResendActivationEmailHandler(BaseHandler):
                     "facebook_url": self.app.config.get('facebook_url'),
                     "faq_url": self.uri_for("faq", _full=True)
                 }
-                body_path = "emails/account_activation.txt"
+                body_path = "%s/emails/account_activation.txt" % self.app.config.get('app_lang')
                 body = self.jinja2.render_template(body_path, **template_val)
 
                 email_url = self.uri_for('taskqueue-send-email')
@@ -221,78 +253,6 @@ class ResendActivationEmailHandler(BaseHandler):
             self.add_message(message, 'danger')
             return self.redirect_to('login')
 
-class WelcomeHandler(BaseHandler):
-    """
-    Core Handler for sending users welcome message
-    Use with TaskQueue
-    """
-
-    @taskqueue_method
-    def post(self):
-        count = 0
-        offset = int(self.request.get("offset"))
-        attempt = 1
-        if (self.request.get("attempt")):
-            attempt = int(self.request.get("attempt")) + 1
-
-        #Case "One taskqueue, many homes"
-        homes = models.Home.query()
-        for home in homes:
-            if home.cfe.rpu != -1 and home.cfe.connected and home.tips_email_counter == 0:
-                logging.info("Welcoming Home ID: %s" % home.key.id())
-                count += 1
-                if count > offset:
-                    try:
-                        for habitant in home.habitant:
-                            user_info = self.user_model.get_by_id(long(habitant))
-                            if user_info != None:
-                                _username = user_info.name
-                                logging.info("Welcome message being sent to: %s" % user_info.email)
-                                subject = messages.email_welcome_subject
-                                template_val = {
-                                    "username": _username,
-                                    "_url": self.uri_for("history", _full=True),
-                                    "brand_email_logo": self.brand['brand_email_logo'],
-                                    "brand_color": self.brand['brand_color'],
-                                    "brand_secondary_color": self.brand['brand_secondary_color'],
-                                    "support_url": self.uri_for("contact", _full=True),
-                                    "twitter_url": self.app.config.get('twitter_url'),
-                                    "facebook_url": self.app.config.get('facebook_url'),
-                                    "faq_url": self.uri_for("faq", _full=True)
-                                }
-                                body_path = "emails/welcome.txt"
-                                body = self.jinja2.render_template(body_path, **template_val)
-                                email = user_info.email
-                                email_url = self.uri_for('taskqueue-send-email')
-                                
-                                taskqueue.add(url=email_url, params={
-                                    'to': str(user_info.email),
-                                    'subject': subject,
-                                    'body': body,
-                                })
-
-                        home.tips_email_counter = 1
-                        home.tips_email_lastdate = date.today()
-                        home.put()
-
-                    except Exception, e:
-                        logging.error("Error welcoming home: %s. Retrying taskqueue in 5 seconds." % e)
-                        logging.info("Attempt number: %s" % attempt)
-                        time.sleep(5)
-                        if attempt < 10:
-                            welcome_url = self.uri_for('taskqueue-welcome')
-                            taskqueue.add(url=welcome_url, params={
-                                'offset': count - 1,
-                                'attempt': attempt,
-                            })
-                        else:
-                            welcome_url = self.uri_for('taskqueue-welcome')
-                            taskqueue.add(url=welcome_url, params={
-                                'offset': count,
-                            })
-                        break
-
-
 
 """ --------------- ACCOUNT HANDLERS --------------- """
 
@@ -314,7 +274,7 @@ class PasswordResetHandler(BaseHandler):
         params = {
             'captchahtml': captchaBase(self),
         }
-        return self.render_template('materialize/landing/password_reset.html', **params)
+        return self.render_template('%s/materialize/landing/password_reset.html' % self.app.config.get('app_lang'), **params)
 
     def post(self):
         # check captcha
@@ -364,7 +324,7 @@ class PasswordResetHandler(BaseHandler):
                 "app_name": self.brand['app_name'],
             }
 
-            body_path = "emails/reset_password.txt"
+            body_path = "%s/emails/reset_password.txt" % self.app.config.get('app_lang')
             body = self.jinja2.render_template(body_path, **template_val)
             taskqueue.add(url=email_url, params={
                 'to': user.email,
@@ -398,7 +358,7 @@ class PasswordResetCompleteHandler(BaseHandler):
             params = {
                 '_username':user.name
             }
-            return self.render_template('materialize/landing/password_reset_complete.html', **params)
+            return self.render_template('%s/materialize/landing/password_reset_complete.html' % self.app.config.get('app_lang'), **params)
 
     def post(self, user_id, token):
         verify = self.user_model.get_by_auth_token(int(user_id), token)
@@ -434,14 +394,16 @@ class MaterializeLoginRequestHandler(BaseHandler):
         """ Returns a simple HTML form for login """
 
         if self.user:
-            self.redirect_to('landing')
+            if self.app.config.get('simplify'):
+                return self.redirect_to('materialize-home')
+            return self.redirect_to('landing')
 
         params = {
             'captchahtml': captchaBase(self),
         }
         continue_url = self.request.get('continue').encode('ascii', 'ignore')
         params['continue_url'] = continue_url
-        return self.render_template('materialize/landing/login.html', **params)
+        return self.render_template('%s/materialize/landing/login.html' % self.app.config.get('app_lang'), **params)
 
     def post(self):
         """
@@ -513,15 +475,15 @@ class MaterializeLoginRequestHandler(BaseHandler):
             if continue_url:
                 self.redirect(continue_url)
             else:
-                message = _('Welcome back, %s! ' % user.name)
-                self.add_message(message, 'success')
-                self.redirect_to('landing')
+                message = _(messages.logged).format(user.name)
+                self.add_message(message, 'success')                
+                return self.redirect_to('landing')
         except (InvalidAuthIdError, InvalidPasswordError), e:
             # Returns error message to self.response.write in
             # the BaseHandler.dispatcher
             message = _(messages.user_pass_mismatch)
             self.add_message(message, 'danger')
-            self.redirect_to('login', continue_url=continue_url) if continue_url else self.redirect_to('login')
+            return self.redirect_to('login', continue_url=continue_url) if continue_url else self.redirect_to('login')
 
     @webapp2.cached_property
     def form(self):
@@ -566,7 +528,7 @@ class MaterializeRegisterReferralHandler(BaseHandler):
                 '_email': user.email,
                 'is_referral' : True
             }
-            return self.render_template('materialize/landing/register.html', **params)
+            return self.render_template('%s/materialize/landing/register.html' % self.app.config.get('app_lang'), **params)
         else:
             return self.redirect_to('landing')
 
@@ -661,7 +623,7 @@ class MaterializeRegisterReferralHandler(BaseHandler):
                         "facebook_url": self.app.config.get('facebook_url'),
 						"faq_url": self.uri_for("faq", _full=True)
                     }
-                    body_path = "emails/account_activation.txt"
+                    body_path = "%s/emails/account_activation.txt" % self.app.config.get('app_lang')
                     body = self.jinja2.render_template(body_path, **template_val)
 
                     email_url = self.uri_for('taskqueue-send-email')
@@ -758,10 +720,11 @@ class MaterializeRegisterRequestHandler(BaseHandler):
         params = {
             'captchahtml': captchaBase(self),
         }
-        return self.render_template('materialize/landing/register.html', **params)
+        return self.render_template('%s/materialize/landing/register.html' % self.app.config.get('app_lang'), **params)
 
     def post(self):
         """ Get fields from POST dict """
+
 
         # check captcha
         response = self.request.POST.get('g-recaptcha-response')
@@ -790,6 +753,12 @@ class MaterializeRegisterRequestHandler(BaseHandler):
         email = self.form.email.data.lower()
         username = email
         password = self.form.password.data.strip()
+
+        #if this is a simple app, no one will be able to register if not invited
+        if self.app.config.get('simplify') and not models.SpecialAccess.get_by_email(email):
+            message = _(messages.no_access)
+            self.add_message(message, 'danger')
+            return self.get()
 
 
         aUser = self.user_model.get_by_email(email)
@@ -825,6 +794,15 @@ class MaterializeRegisterRequestHandler(BaseHandler):
             # User registered successfully
             # But if the user registered using the form, the user has to check their email to activate the account ???
             try:
+                sa = models.SpecialAccess.get_by_email(user[1].email)
+                if sa:
+                    user[1].activated = True
+                    user[1].role = sa.role
+                    user[1].put()
+                    # Slack Incoming WebHooks
+                    from google.appengine.api import urlfetch            
+                    urlfetch.fetch(self.app.config.get('slack_webhook_url'), payload='{"channel": "#general", "username": "webhookbot", "text": "just got a new user at '+self.app.config.get('app_id')+'! Go surprise him at '+user[1].email+'", "icon_emoji": ":bowtie:"}', method='POST')
+
                 if not user[1].activated:
                     # send email
                     #subject = _("%s Account Verification" % self.brand['app_name'])
@@ -847,7 +825,7 @@ class MaterializeRegisterRequestHandler(BaseHandler):
                         "facebook_url": self.app.config.get('facebook_url'),
                         "faq_url": self.uri_for("faq", _full=True)
                     }
-                    body_path = "emails/account_activation.txt"
+                    body_path = "%s/emails/account_activation.txt" % self.app.config.get('app_lang')
                     body = self.jinja2.render_template(body_path, **template_val)
 
                     email_url = self.uri_for('taskqueue-send-email')
@@ -900,6 +878,7 @@ class MaterializeAccountActivationHandler(BaseHandler):
             # create unique url for sharing & referrals purposes
             long_url = self.uri_for("register-referral",user_id=user.get_id(),_full=True)
             logging.info("Long URL: %s" % long_url)
+            user.link_referral = long_url
             
             #The goo.gl way:
             # post_url = 'https://www.googleapis.com/urlshortener/v1/url'            
@@ -911,17 +890,22 @@ class MaterializeAccountActivationHandler(BaseHandler):
             # short_url = j['id']
 
             #The bit.ly way:
-            api = bitly.Api(login=self.app.config.get('bitly_login'), apikey=self.app.config.get('bitly_apikey'))
-            short_url=api.shorten(long_url)
-            logging.info("Bitly response: %s" % short_url)
+            if self.app.config.get('has_referrals'):
+                api = bitly.Api(login=self.app.config.get('bitly_login'), apikey=self.app.config.get('bitly_apikey'))
+                short_url=api.shorten(long_url)
+                logging.info("Bitly response: %s" % short_url)
+                user.link_referral = short_url
 
-            user.link_referral = short_url
             reward = models.Rewards(amount = 100,earned = True, category = 'configuration',
                 content = 'Activation',timestamp = utils.get_date_time(),status = 'completed')                 
             user.rewards.append(reward)
 
             #Role init
-            user.role = 'Admin'
+            sa = models.SpecialAccess.get_by_email(user.email)
+            if sa:
+                user.role = sa.role
+            else:
+                user.role = 'NA'
 
             #Datastore allocation
             user.put()
@@ -996,7 +980,11 @@ class MaterializeAccountActivationReferralHandler(BaseHandler):
 
 
             #Role init
-            referred_user.role = 'Admin'
+            sa = models.SpecialAccess.get_by_email(user.email)
+            if sa:
+                user.role = sa.role
+            else:
+                referred_user.role = 'NA'
 
             #Datastore allocation
             referred_user.put()
@@ -1032,7 +1020,6 @@ class MaterializeAccountActivationReferralHandler(BaseHandler):
             return self.redirect_to('login')
 
 
-
 """ --------------- VISITOR HANDLERS --------------- """
 
 # LANDING
@@ -1047,20 +1034,14 @@ class MaterializeLandingRequestHandler(BaseHandler):
         params = {}
         if not self.user:
             params['captchahtml'] = captchaBase(self)
-            import random
-            r = random.choice('gbm')
-            if r == 'g':
-                message = _('Welcome! Did you knew GAE stands for Google AppEngine?')
-            elif r == 'b':
-                message = _('Welcome! Did you knew Boilerplate means not to reinvent the wheel?')
-            elif r == 'm':
-                message = _('Welcome! Did you knew Materialize is a Google web design idea?')
-
-            self.add_message(message, 'success')
-            return self.render_template('materialize/landing/base.html', **params)
+            if self.app.config.get('simplify'):
+                return self.redirect_to('login')
+            return self.render_template('%s/materialize/landing/base.html' % self.app.config.get('app_lang'), **params)
         else:
             params, user_info = disclaim(self)            
-            return self.render_template('materialize/landing/base.html', **params)
+            if self.app.config.get('simplify'):
+                return self.redirect_to('materialize-home')
+            return self.render_template('%s/materialize/landing/base.html' % self.app.config.get('app_lang'), **params)
 
 class MaterializeLandingFaqRequestHandler(BaseHandler):
     """
@@ -1073,7 +1054,7 @@ class MaterializeLandingFaqRequestHandler(BaseHandler):
         else:
             params = {} 
         params['captchahtml'] = captchaBase(self)
-        return self.render_template('materialize/landing/faq.html', **params)
+        return self.render_template('%s/materialize/landing/faq.html' % self.app.config.get('app_lang'), **params)
 
 class MaterializeLandingTouRequestHandler(BaseHandler):
     """
@@ -1086,7 +1067,7 @@ class MaterializeLandingTouRequestHandler(BaseHandler):
         else:
             params = {} 
         params['captchahtml'] = captchaBase(self)
-        return self.render_template('materialize/landing/tou.html', **params)
+        return self.render_template('%s/materialize/landing/tou.html' % self.app.config.get('app_lang'), **params)
 
 class MaterializeLandingPrivacyRequestHandler(BaseHandler):
     """
@@ -1099,7 +1080,7 @@ class MaterializeLandingPrivacyRequestHandler(BaseHandler):
         else:
             params = {} 
         params['captchahtml'] = captchaBase(self)
-        return self.render_template('materialize/landing/privacy.html', **params)
+        return self.render_template('%s/materialize/landing/privacy.html' % self.app.config.get('app_lang'), **params)
 
 class MaterializeLandingLicenseRequestHandler(BaseHandler):
     """
@@ -1112,7 +1093,7 @@ class MaterializeLandingLicenseRequestHandler(BaseHandler):
         else:
             params = {} 
         params['captchahtml'] = captchaBase(self)
-        return self.render_template('materialize/landing/license.html', **params)
+        return self.render_template('%s/materialize/landing/license.html' % self.app.config.get('app_lang'), **params)
 
 class MaterializeLandingContactRequestHandler(BaseHandler):
     """
@@ -1135,7 +1116,7 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
 
         params['t'] = str(self.request.get('t')) if len(self.request.get('t')) > 1 else 'no'
 
-        return self.render_template('materialize/landing/contact.html', **params)
+        return self.render_template('%s/materialize/landing/contact.html' % self.app.config.get('app_lang'), **params)
 
     def post(self):
         """ validate contact form """
@@ -1210,7 +1191,7 @@ class MaterializeLandingContactRequestHandler(BaseHandler):
             if exception != "":
                 subject = "{} (Exception error: {})".format(subject, exception)
 
-            body_path = "emails/contact.txt"
+            body_path = "%s/emails/contact.txt" % self.app.config.get('app_lang')
             body = self.jinja2.render_template(body_path, **template_val)
 
             email_url = self.uri_for('taskqueue-send-email')
@@ -1256,7 +1237,7 @@ class MaterializeLandingBlogRequestHandler(BaseHandler):
             for category in post.category:
                 categories += str(category) + ", "
             params['posts'].append((post.key.id(), post.updated.strftime("%Y-%m-%d"), post.title, post.subtitle, post.blob_key, post.author, post.brief, categories[0:-2]))
-        return self.render_template('materialize/landing/blog.html', **params)
+        return self.render_template('%s/materialize/landing/blog.html' % self.app.config.get('app_lang'), **params)
 
 class MaterializeLandingBlogPostRequestHandler(BaseHandler):
     """
@@ -1276,10 +1257,9 @@ class MaterializeLandingBlogPostRequestHandler(BaseHandler):
             params['blob_key'] = blog.blob_key
             params['author'] = blog.author
             params['content'] = blog.content
-            return self.render_template('materialize/landing/blogpost.html', **params)
+            return self.render_template('%s/materialize/landing/blogpost.html' % self.app.config.get('app_lang'), **params)
         else:
             return self.error(404)
-
 
 
 """ --------------- USER HANDLERS --------------- """
@@ -1299,7 +1279,11 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
         params['google_clientID'] = self.app.config.get('google_clientID')
         params['facebook_appID'] = self.app.config.get('facebook_appID')
         params['google_maps_key'] = self.app.config.get('google_maps_key')
-        return self.render_template('materialize/users/settings/profile.html', **params)
+        params['user'] = user_info
+        params['captchahtml'] = captchaBase(self)
+        for auth_id in user_info.auth_ids:
+            logging.info("auth id: %s" % auth_id)
+        return self.render_template('%s/materialize/users/settings/profile.html' % self.app.config.get('app_lang'), **params)
 
     def post(self):
         """ Get fields from POST dict """
@@ -1358,16 +1342,6 @@ class MaterializeSettingsProfileRequestHandler(BaseHandler):
         f = forms.SettingsProfileForm(self)
         return f
 
-class MaterializeSettingsAccountRequestHandler(BaseHandler):
-    @user_required
-    def get(self):
-        """ returns simple html for a get request """
-        params, user_info = disclaim(self)
-        params['captchahtml'] = captchaBase(self)
-        for auth_id in user_info.auth_ids:
-            logging.info("auth id: %s" % auth_id)
-        return self.render_template('materialize/users/settings/account.html', **params)
-
 class MaterializeSettingsEmailRequestHandler(BaseHandler):
     """
         Handler for materialized settings email
@@ -1379,7 +1353,7 @@ class MaterializeSettingsEmailRequestHandler(BaseHandler):
         if not self.form.validate():
             _message = _(messages.saving_error)
             self.add_message(_message, 'danger')
-            return self.redirect_to('materialize-settings-account')
+            return self.redirect_to('materialize-settings-profile')
         new_email = self.form.new_email.data.strip()
         password = self.form.password.data.strip()
 
@@ -1430,10 +1404,10 @@ class MaterializeSettingsEmailRequestHandler(BaseHandler):
                         "faq_url": self.uri_for("faq", _full=True)
                     }
 
-                    old_body_path = "emails/email_changed_notification_old.txt"
+                    old_body_path = "%s/emails/email_changed_notification_old.txt" % self.app.config.get('app_lang')
                     old_body = self.jinja2.render_template(old_body_path, **template_val)
 
-                    new_body_path = "emails/email_changed_notification_new.txt"
+                    new_body_path = "%s/emails/email_changed_notification_new.txt" % self.app.config.get('app_lang')
                     new_body = self.jinja2.render_template(new_body_path, **template_val)
 
                     email_url = self.uri_for('taskqueue-send-email')
@@ -1451,11 +1425,11 @@ class MaterializeSettingsEmailRequestHandler(BaseHandler):
                     # display successful message
                     msg = _(messages.emailchanged_success)
                     self.add_message(msg, 'success')
-                    return self.redirect_to('materialize-settings-account')
+                    return self.redirect_to('materialize-settings-profile')
 
                 else:
                     self.add_message(_(messages.emailchanged_error), "warning")
-                    return self.redirect_to('materialize-settings-account')
+                    return self.redirect_to('materialize-settings-profile')
 
 
             except (InvalidAuthIdError, InvalidPasswordError), e:
@@ -1463,7 +1437,7 @@ class MaterializeSettingsEmailRequestHandler(BaseHandler):
                 # the BaseHandler.dispatcher
                 message = _(messages.password_wrong)
                 self.add_message(message, 'danger')
-                return self.redirect_to('materialize-settings-account')
+                return self.redirect_to('materialize-settings-profile')
 
         except (AttributeError, TypeError), e:
             login_error_message = _(messages.expired_session)
@@ -1494,7 +1468,7 @@ class MaterializeSettingsReferralsRequestHandler(BaseHandler):
         if last > len(rewards):
             last = len(rewards)
         for i in range(offset, last):
-            if 'invite' in rewards[i].category and rewards[i].content != '' and 'Invitado Invictus' not in rewards[i].content and rewards[i].content not in unique_emails:
+            if 'invite' in rewards[i].category and rewards[i].content != '' and rewards[i].content not in unique_emails:
                 params['referrals'].append(rewards[i])
                 unique_emails.append(rewards[i].content)
                 if rewards[i].status == 'invited':
@@ -1508,7 +1482,40 @@ class MaterializeSettingsReferralsRequestHandler(BaseHandler):
         params['grand_total'] = int(len(rewards))
         params['properties'] = ['timestamp','content','status']
 
-        return self.render_template('materialize/users/settings/referrals.html', **params)
+        p = self.request.get('p')
+        c = self.request.get('c')
+        forward = True if p not in ['prev'] else False
+        cursor = Cursor(urlsafe=c)
+
+        recipients =  models.Reward.query( ndb.AND(models.Reward.referrer_id == long(self.user_id), models.Reward.category == 'invite') )
+        count = recipients.count()
+        PAGE_SIZE = 30
+        if forward:
+            recipients, next_cursor, more = recipients.order(-models.Reward.created, models.Reward.key).fetch_page(PAGE_SIZE, start_cursor=cursor)
+            if next_cursor and more:
+                self.view.next_cursor = next_cursor
+            if c:
+                self.view.prev_cursor = cursor.reversed()
+        else:
+            recipients, next_cursor, more = recipients.order(models.Reward.created, models.Reward.key).fetch_page(PAGE_SIZE, start_cursor=cursor)
+            recipients = list(reversed(recipients))
+            if next_cursor and more:
+                self.view.prev_cursor = next_cursor
+            self.view.next_cursor = cursor.reversed()
+
+        def pager_url(p, cursor):
+            params = OrderedDict()
+            if cursor:
+                params['c'] = cursor.urlsafe()
+            return self.uri_for('materialize-settings-referrals', **params)
+
+        self.view.pager_url = pager_url
+
+        params['recipients'] = recipients
+        params['count'] = count
+        params['page_size'] = PAGE_SIZE
+        return self.render_template('%s/materialize/users/settings/referrals.html' % self.app.config.get('app_lang'), **params)
+
 
     def post(self):
         """ Get fields from POST dict """
@@ -1544,7 +1551,7 @@ class MaterializeSettingsReferralsRequestHandler(BaseHandler):
                 "facebook_url": self.app.config.get('facebook_url'),
                 "faq_url": self.uri_for("faq", _full=True)
             }
-            body_path = "emails/referrals.txt"
+            body_path = "%s/emails/referrals.txt" % self.app.config.get('app_lang')
             body = self.jinja2.render_template(body_path, **template_val)
 
             email_url = self.uri_for('taskqueue-send-email')
@@ -1643,7 +1650,7 @@ class MaterializeSettingsPasswordRequestHandler(BaseHandler):
 
         if not self.form.validate():
             self.add_message(_(messages.passwords_mismatch), 'danger')
-            return self.redirect_to('materialize-settings-account')
+            return self.redirect_to('materialize-settings-profile')
 
         current_password = self.form.current_password.data.strip()
         password = self.form.password.data.strip()
@@ -1681,7 +1688,7 @@ class MaterializeSettingsPasswordRequestHandler(BaseHandler):
                     "facebook_url": self.app.config.get('facebook_url'),
                     "faq_url": self.uri_for("faq", _full=True)
                 }
-                email_body_path = "emails/password_changed.txt"
+                email_body_path = "%s/emails/password_changed.txt" % self.app.config.get('app_lang')
                 email_body = self.jinja2.render_template(email_body_path, **template_val)
                 email_url = self.uri_for('taskqueue-send-email')
                 taskqueue.add(url=email_url, params={
@@ -1694,13 +1701,13 @@ class MaterializeSettingsPasswordRequestHandler(BaseHandler):
                 #Login User
                 self.auth.get_user_by_password(user.auth_ids[0], password)
                 self.add_message(_(messages.passwordchange_success), 'success')
-                return self.redirect_to('materialize-settings-account')
+                return self.redirect_to('materialize-settings-profile')
             except (InvalidAuthIdError, InvalidPasswordError), e:
                 # Returns error message to self.response.write in
                 # the BaseHandler.dispatcher
                 message = _(messages.password_wrong)
                 self.add_message(message, 'danger')
-                return self.redirect_to('materialize-settings-account')
+                return self.redirect_to('materialize-settings-profile')
         except (AttributeError, TypeError), e:
             login_error_message = _(messages.expired_session)
             self.add_message(login_error_message, 'danger')
@@ -1731,12 +1738,12 @@ class MaterializeSettingsDeleteRequestHandler(BaseHandler):
         else:
             _message = _(messages.captcha_error)
             self.add_message(_message, 'danger')
-            return self.redirect_to('materialize-settings-account')
+            return self.redirect_to('materialize-settings-profile')
 
         if not self.form.validate():
             message = _(messages.password_wrong)
             self.add_message(message, 'danger')
-            return self.redirect_to('materialize-settings-account')
+            return self.redirect_to('materialize-settings-profile')
 
         password = self.form.password.data.strip()
 
@@ -1771,14 +1778,14 @@ class MaterializeSettingsDeleteRequestHandler(BaseHandler):
                 else:
                     message = _(messages.password_wrong)
                     self.add_message(message, 'danger')
-                    return self.redirect_to('materialize-settings-account')
+                    return self.redirect_to('materialize-settings-profile')
 
             except (InvalidAuthIdError, InvalidPasswordError), e:
                 # Returns error message to self.response.write in
                 # the BaseHandler.dispatcher
                 message = _(messages.password_wrong)
                 self.add_message(message, 'danger')
-                return self.redirect_to('materialize-settings-account')
+                return self.redirect_to('materialize-settings-profile')
 
         except (AttributeError, TypeError), e:
             login_error_message = _(messages.expired_session)
@@ -1788,6 +1795,65 @@ class MaterializeSettingsDeleteRequestHandler(BaseHandler):
     @webapp2.cached_property
     def form(self):
         return forms.DeleteAccountForm(self)
+
+class MaterializeSettingsSocialRequestHandler(BaseHandler):
+    @user_required
+    def post(self):
+        _user_id = int(self.request.get('user_id'))
+
+        if not self.user_id or int(self.user_id) != _user_id:
+            self.abort(403)
+
+        reportDict = {}
+
+        kind = self.request.get('kind')
+        first_name = self.request.get('first_name')
+        last_name = self.request.get('last_name')
+        gender = self.request.get('gender')
+        picture = self.request.get('picture')
+        cover = self.request.get('cover')
+        social_id = self.request.get('id')
+
+        try:
+            if kind == 'google':
+                social = models.UserGOOG.query(models.UserGOOG.user_id == _user_id).get()
+                if social is None:
+                    social = models.UserGOOG()
+                if social_id != 'none':
+                    user_info = self.user_model.get_by_id(long(self.user_id))
+                    user_info.google_ID = str(social_id)
+                    user_info.put()
+
+            if kind == 'facebook':
+                social = models.UserFB.query(models.UserFB.user_id == _user_id).get()
+                if social is None:
+                    social = models.UserFB()
+                if social_id != 'none':
+                    user_info = self.user_model.get_by_id(long(self.user_id))
+                    user_info.facebook_ID = str(social_id)
+                    user_info.put()
+                age_range = self.request.get('age_range')
+                social.age_range = int(age_range) if age_range != 'none' else social.age_range
+
+            social.user_id = _user_id
+
+            social.first_name = first_name if first_name != 'none' else social.first_name
+            social.last_name = last_name if last_name != 'none' else social.last_name
+            social.gender = gender if gender != 'none' else social.gender
+            social.picture = picture if picture != 'none' else social.picture
+            social.cover = cover if cover != 'none' else social.cover
+            social.put()
+            reportDict['status'] = 'success'
+            reportDict['contents'] = 'user social profile for kind %s has been saved' % kind
+
+        except Exception as e:
+            reportDict['status'] = 'error'
+            reportDict['contents'] = '%s' % e
+            pass
+
+        self.response.headers.add_header("Access-Control-Allow-Origin", "*")
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.write(json.dumps(reportDict))
 
 # USER SECTIONS
 
@@ -1806,28 +1872,13 @@ class MaterializeHomeRequestHandler(BaseHandler):
         ####-------------------- P R E P A R A T I O N S --------------------####
         params, user_info = disclaim(self)
         ####------------------------------------------------------------------####
+
+        params['contents'] = models.Content.query(models.Content.hidden == False)
+        params['user_permission'] = user_info.level
         
-        return self.render_template('materialize/users/sections/home.html', **params)
+        return self.render_template('%s/materialize/users/sections/home.html' % self.app.config.get('app_lang'), **params)
 
-class MaterializePolymerRequestHandler(BaseHandler):
-    """
-    Handler for materialized polymer
-    """
-    @user_required
-    def get(self):
-        """ Returns a simple HTML form for materialize home """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
-
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-        
-        return self.render_template('materialize/users/sections/polymer.html', **params)
-
-class MaterializeCartoDBRequestHandler(BaseHandler):
+class MaterializeDemosRequestHandler(BaseHandler):
     """
     Handler for materialized home
     """
@@ -1844,48 +1895,12 @@ class MaterializeCartoDBRequestHandler(BaseHandler):
         ####------------------------------------------------------------------####
 
         params['google_maps_key'] = self.app.config.get('google_maps_key')
-        
-        return self.render_template('materialize/users/sections/cartodb.html', **params)
-
-class MaterializeNLPRequestHandler(BaseHandler):
-    """
-    Handler for materialized home
-    """
-    @user_required
-    def get(self):
-        """ Returns a simple HTML form for materialize home """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
-
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-
         params['google_nlp_key'] = self.app.config.get('google_nlp_key')
-        
-        return self.render_template('materialize/users/sections/nlp.html', **params)
-
-class MaterializeVisionRequestHandler(BaseHandler):
-    """
-    Handler for materialized home
-    """
-    @user_required
-    def get(self):
-        """ Returns a simple HTML form for materialize home """
-        ####-------------------- R E D I R E C T I O N S --------------------####
-        if not self.user:
-            return self.redirect_to('login')
-        ####------------------------------------------------------------------####
-
-        ####-------------------- P R E P A R A T I O N S --------------------####
-        params, user_info = disclaim(self)
-        ####------------------------------------------------------------------####
-
         params['google_vision_key'] = self.app.config.get('google_vision_key')
+        import bp_includes.lib.i18n as i18n
+        params['coordinates']= i18n.get_city_lat_long(self.request)
         
-        return self.render_template('materialize/users/sections/vision.html', **params)
+        return self.render_template('%s/materialize/users/sections/demos.html' % self.app.config.get('app_lang'), **params)
 
 class MaterializeReferralsRequestHandler(BaseHandler):
     """
@@ -1895,9 +1910,34 @@ class MaterializeReferralsRequestHandler(BaseHandler):
     def get(self):
         """ returns simple html for a get request """
         params, user_info = disclaim(self)
-        params['link_referral'] = user_info.link_referral
+
+        if not user_info.link_referral:
+            # create unique url for sharing & referrals purposes
+            long_url = self.uri_for("register-referral",user_id=user_info.get_id(),_full=True)
+            logging.info("Long URL: %s" % long_url)
+            user_info.link_referral = long_url
+            
+            #The goo.gl way:
+            # post_url = 'https://www.googleapis.com/urlshortener/v1/url'            
+            # payload = {'longUrl': long_url}
+            # headers = {'content-type': 'application/json'}
+            # r = requests.post(post_url, data=json.dumps(payload), headers=headers)
+            # j = json.loads(r.text)
+            # logging.info("Google response: %s" % j)
+            # short_url = j['id']
+
+            #The bit.ly way:
+            if self.app.config.get('has_referrals'):
+                api = bitly.Api(login=self.app.config.get('bitly_login'), apikey=self.app.config.get('bitly_apikey'))
+                short_url=api.shorten(long_url)
+                logging.info("Bitly response: %s" % short_url)
+                user_info.link_referral = short_url
+
+            user_info.put()
+            params['link_referral'] = user_info.link_referral
+
         params['google_clientID'] = self.app.config.get('google_clientID')
-        return self.render_template('materialize/users/sections/referrals.html', **params)
+        return self.render_template('%s/materialize/users/sections/referrals.html' % self.app.config.get('app_lang'), **params)
 
     def post(self):
         """ Get fields from POST dict """
@@ -1933,7 +1973,7 @@ class MaterializeReferralsRequestHandler(BaseHandler):
                 "facebook_url": self.app.config.get('facebook_url'),
                 "faq_url": self.uri_for("faq", _full=True)
             }
-            body_path = "emails/referrals.txt"
+            body_path = "%s/emails/referrals.txt" % self.app.config.get('app_lang')
             body = self.jinja2.render_template(body_path, **template_val)
 
             email_url = self.uri_for('taskqueue-send-email')
@@ -1989,7 +2029,6 @@ class MaterializeReferralsRequestHandler(BaseHandler):
         return f
 
 
-
 """ --------------- MEDIA HANDLERS --------------- """
 
 class MediaDownloadHandler(BaseHandler):
@@ -2042,18 +2081,7 @@ class BlobDownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
         else:
             self.send_blob(photo_key)
 
-
-
-""" --------------- CRONJOB + TASKQUEUE handlers --------------- """
-
-class WelcomeCronjobHandler(BaseHandler):
-    def get(self):
-        welcome_url = self.uri_for('taskqueue-welcome')
-        taskqueue.add(url=welcome_url, params={
-            'offset': 0
-        })
-        
-
+      
 
 """ --------------- SEO HANDLERS --------------- """
 class RobotsHandler(BaseHandler):

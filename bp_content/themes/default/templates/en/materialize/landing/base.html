@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="{{ locale_language_id }}"> <!--<![endif]-->
+
+
+{% block document_head %}
+	<head>
+  		{% block title %}<title>{{app_name}}</title>{% endblock %}
+
+		<!-- All meta tags from config files -->
+	    {% block metadata %}
+			{{ meta_tags_code }}
+	    {% endblock %}
+
+		{% block favicons %}
+		    <link rel="icon" href="{{brand_favicon}}" sizes="32x32">
+		    {% if is_mobile %}
+				<!-- For iPhone -->
+				<link rel="apple-touch-icon-precomposed" href="{{brand_favicon}}">
+				<!-- For Windows Phone -->
+				<meta name="msapplication-TileColor" content="#00bcd4">
+				<meta name="msapplication-TileImage" content="{{brand_favicon}}">
+		    {% endif %}
+		{% endblock %}
+
+        <!-- All stylesheets   -->
+	  	{% block stylesheets %}
+		    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+			<!-- CORE CSS-->
+			<link href="/materializecss/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
+			<link href="/materializecss/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+			<!-- Custom CSS-->    
+			<link href="/materializecss/css/custom/custom.css?v=5" type="text/css" rel="stylesheet" media="screen,projection">
+
+			<!-- Branded CSS -->
+			<style>
+				.g-recaptcha{
+					{% if simplify and is_mobile %}margin-left: -10%;{% elif not is_mobile %} margin-left: 23%;{% endif %}				  
+					-webkit-transform: scale(0.8);
+					transform: scale(0.8);
+				}
+				li .active a{
+					color:{{brand_secondary_color}}!important;
+				}
+				ul.side-nav.leftside-navigation li.active > a{
+					color:{{brand_secondary_color}}!important;
+				}
+				/*BRANDING*/
+				.brand-color{
+					background-color: {{brand_color}}!important;
+				}
+				.brand-color-text{
+					color:{{brand_color}}!important;
+				}
+				.brand-secondary-color{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.brand-secondary-color-text{
+					color:{{brand_secondary_color}}!important;
+				}
+				.brand-tertiary-color{
+					background-color: {{brand_tertiary_color}}!important;
+				}
+				.brand-tertiary-color-text{
+					color:{{brand_tertiary_color}}!important;
+				}
+				.btn{
+					background-color: {{brand_color}};
+					font-family: roboto-light;
+				}
+				.btn:hover{
+					background-color: {{brand_secondary_color}}!important;
+					color:white!important;
+				}
+				.btn-large{
+					background-color: {{brand_color}};
+					font-family: roboto-light;
+				}
+				.btn-large:hover{
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.btn-floating{
+					background-color: {{brand_color}};
+				}
+				.btn-floating:hover{
+					background-color: {{brand_secondary_color}}!important;
+				}			
+
+				{% if is_mobile %}
+				.btn{
+					margin-top:15px;
+				}
+				.btn-large{
+					margin-top:15px;
+				}
+				.modal{
+					max-height: 90%!important;
+					width: 95%!important;
+					top:5%!important;
+				}
+				{% endif %}    
+				#loader {
+					border-top-color: {{brand_color}}!important;
+				}
+				#loader:before {
+					border-top-color: {{brand_secondary_color}}!important;
+				}
+				#loader:after {
+					border-top-color: {{brand_tertiary_color}}!important;
+				}
+				[type=checkbox].filled-in:checked+label:after{
+					border: 2px solid {{brand_secondary_color}}!important;
+					background-color: {{brand_secondary_color}}!important;
+				}
+				.breadcrumb:last-child {
+					color: {{brand_color}}!important;
+					font-family: roboto-light;
+					{% if is_mobile %}font-size:14px!important;{% endif %}
+				}
+				.breadcrumb li a {
+					color: {{brand_secondary_color}};
+					font-family: roboto-thin;
+					{% if is_mobile %}font-size:14px!important;{% endif %}
+				}
+				.breadcrumb li a.btn{
+					font-size: 20px;
+					{% if is_mobile %}font-size:14px!important;margin-top:-1px;width: 80px;{% endif %}
+				}
+				.dropdown-content li > a, .dropdown-content li > span{
+					color: {{brand_secondary_color}}!important;
+				}
+				.picker__day--selected{
+					background-color: {{brand_color}}!important;
+				}
+				.picker__date-display{
+					background-color: {{brand_color}}!important;
+				}
+				.picker__weekday-display{
+					background-color: {{brand_color}}!important;
+				}
+				.picker__close, .picker__today{
+					color: {{brand_color}}!important;
+				}
+				.footer-item:hover{
+					color: {{brand_secondary_color}}!important;
+				}
+				.section{
+					padding: 18px!important;
+				}
+				p{
+					letter-spacing: 1px;
+					text-align: justify;
+					line-height: 20pt;
+					font-size: 16px;
+				}
+			</style>
+
+		    {% block page_css %}
+		    <style>
+		    	video { 
+                   position: absolute;
+                   top: 50%;
+                   left: 50%;
+                   min-width: 100%;
+                   min-height: 100%;
+                   width: auto;
+                   height: auto;
+                   z-index: -100;
+                   transform: translateX(-50%) translateY(-50%);
+                   background: black;
+                   transition: 1s opacity;
+				}		 
+		    </style>
+		    {% endblock %}
+		{% endblock %}
+		
+		<!-- All google, mixpanel and analytics tags from config files. -->
+		{% block analytics %}
+			{{ google_analytics_code }}
+		{% endblock %}
+	    
+	    <!-- All JavaScript at the bottom, except these. -->
+		{% block priority_js %}
+   		 	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js"></script>
+		{% endblock %}
+
+		<!--  POLYMER   -->
+		{% block webcomponents %}
+			{% block page_components %}{% endblock %}
+		{% endblock %} 
+
+	</head>
+{% endblock %}
+
+{% block document_body %}
+	<body>
+		
+		{% if not simplify %}
+
+			{% block navbar %}
+				<!-- START NAVBAR -->
+	            <div class="navbar-fixed" style="height: 0px">
+					<nav style="background-color: rgba(0, 0, 0, 0.15);" class="z-depth-0">
+						<div class="nav-wrapper" style="">
+						  <a href="{{uri_for("landing")}}" class="brand-logo"><img src="{{brand_logo}}" style="{% if is_mobile %}max-height:60px;margin-top: -2px{% else %}max-height:65px;margin-top: 0px{% endif %} width: auto;"></a>
+						  <a href="#" data-activates="mobile-demo" class="button-collapse right"><i class="mdi-navigation-more-vert"></i></a>						  
+						  <ul id="nav-mobile" class="right hide-on-med-and-down">						  	
+						    {% if not user_id %}
+						    <li id="nav-login" ><a href="#modal1" class="modal-trigger menu-item btn" style="margin-right: 20px;">Sign in</a></li>
+						    <li id="nav-register" ><a href="#modal2" class="modal-trigger menu-item btn" style="margin-right: 20px;">Sign up</a></li>
+						    {% endif %}
+						  	{% if has_blog %}
+						    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
+						  	{% endif %}
+						    {% if user_id %}
+						    <ul id="profile-dropdown" class="dropdown-content" style="margin-top:10px; border-radius:4px; padding:10px">
+				                  <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-home") }}">My dashboard</a>
+			                        </li>
+			                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("materialize-settings-profile") }}">My profile</a>
+			                        </li>
+			                      <li><a  style="font-size: 1rem;padding: 0.5rem;" class="brand-color-text" href="{{ uri_for("logout") }}">Logout</a>
+			                        </li>
+				            </ul>
+						    <li class="nav-user" style="padding-left:15px;">
+		                        	{% if has_picture %}
+										<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
+												<div style="position: absolute;left: 0px;"><img src="{{user_picture_url}}" alt="" class="circle responsive-img valign profile-image" style=" height: 30px; margin-top:6px; height:35px"></div>
+												<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
+				                        </a>
+									{% else %}
+										<a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn right" href="#" data-activates="profile-dropdown" style="    height: 45px; margin-top: 8px;    line-height: 1.5rem;    position: relative;">
+												<div style="position: absolute;left: 0px;">
+													<span class="circle white brand-color-text lighten-1" style="width: 35px;   height: 35px; display: inline-block;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300;margin-top: 5px;line-height: 2.2rem;">{{ name_i }}</span>
+												</div>
+												<span style="padding: 15px;height: 46px;text-transform: none;" class="valign-wrapper">{{name}} <i class="material-icons right" style="margin-left: 5px; font-size: 14px;">arrow_drop_down</i></span>
+				                        </a>
+									{% endif %}
+		                     </li>	
+						    {% endif %}
+						  </ul>
+						  <ul class="side-nav" id="mobile-demo">
+						    {% if not user_id %}
+						    <li id="nav-login"><a href="#modal1" class="modal-trigger menu-item">Sign in</a></li>
+						    <li id="nav-register"><a href="#modal2" class="modal-trigger menu-item">Sign up</a></li>
+						    {% else %}
+						    <li class="no-padding">
+		                        <ul class="collapsible collapsible-accordion">
+		                            <li class="bold">
+		                            	<a class="collapsible-header waves-effect waves-cyan">
+								    	{% if has_picture %}
+											<img src="{{user_picture_url}}" alt="" class="circle responsive-img valign profile-image" style="margin-top: 10px;height: 50px;margin-bottom: -15px;">
+										{% else %}
+				                        	<span class="circle white-text brand-color" style="width: 35px;   height: 35px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; margin-top: 10px;margin-left: 10px; line-height: 35px;">{{ name_i }}</span>
+										{% endif %}
+										</a>
+		                            	<div class="collapsible-body">
+		                                    <ul>
+											  <li><a href="{{ uri_for("materialize-home") }}">My dashboard</a>
+				                                </li>
+				                              <li><a href="{{ uri_for("materialize-settings-profile") }}">My profile</a>
+				                                </li>
+				                              <li><a href="{{ uri_for("logout") }}">Logout</a>
+				                                </li>
+		                                    </ul>
+		                                </div>
+		                            </li>
+		                        </ul>
+		                     </li>
+						     <li class="divider"></li>
+						    {% endif %}
+						  	{% if has_blog %}
+						    <li id="nav-blog"><a href="{{uri_for("blog")}}" class="modal-trigger menu-item">Blog</a></li>
+						  	{% endif %}
+						  </ul>
+						</div>
+					</nav>
+				</div>
+				<!-- END NAVBAR -->
+			{% endblock %}
+		
+		{% endif %}
+
+		{% block header_content %}
+			{% if not is_mobile and brand_layout == 'video' %}
+	            <div class="parallax-container" style="height: 84vh">
+	                <div class="section no-pad-bot">
+	                    <div id="tagline" style="opacity: 1;" class="container">
+	                        <br>
+	                        <br>
+	                        <div class="row center">
+	                            <br>
+	                            <br>
+	                            <br>
+	                            <h1 class="header center brand-color-text text-lighten-2 hero-title" style="font-family: roboto-black;line-height: 42pt;letter-spacing: 6px;{% if is_mobile %}font-size: 25px;{% else %}font-size: 65px;{% endif %}">{{app_name}}</h1>
+	                            <p class="white-text col s12 center" style="font-family: roboto-thin; {% if is_mobile %}font-size: 12px;{% else %}font-size: 22px;{% endif %}">Smart Web App</p>
+	                            <div class="col s12">
+				      	  			{% if not user_id %}
+	                                <h1><a class="btn-floating btn-large brand-color modal-trigger" href="#modal2" style="font-family: roboto-thin;text-transform: none;">Join now</a></h1>
+				      	  			{% else %}
+	                                <h1><a class="btn-floating btn-large brand-color" href="{{uri_for('materialize-home')}}" style="font-family: roboto-thin;text-transform: none;">My dashboard</a></h1>
+				      	  			{% endif %}
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="parallax">
+	                    <video autoplay="autoplay" id="bgvid" loop >
+	                      <source src="{{brand_video}}" type="video/mp4">
+	                    </video>    
+	                </div>
+	            </div>                
+	        {% else %}
+				<div class="parallax-container z-depth-3" style="height:84vh">
+					<div class="section no-pad-bot">
+					  <div class="container">
+					    <br><br>
+					    <br><br>
+					    {% if not is_mobile %}
+					    <div class="row center" style="margin-bottom:0px">
+					    	<div class="col {% if not is_mobile %}s6 offset-s3{% else %}s8 offset-s2{% endif %}">
+					    		<img src="{{brand_logo}}" alt="{{app_name}}" class="responsive-img" style="max-width: 300px;">
+					    	</div>
+					    </div>
+					    {% endif %}
+					    <h1 class="header center white-text text-lighten-2" style="font-family:roboto-black; line-height: 42pt;letter-spacing: 2px;{% if is_mobile %}font-size: 45px;{% else %}font-size: 65px;{% endif %}">{{app_name}}</h1>
+					    <p class="white-text col s12 center" style="font-family: roboto-thin; {% if is_mobile %}font-size: 18px;{% else %}font-size: 22px;{% endif %}">Smart Web App</p>
+					    <div class="row center">
+					      <div class="col s12">
+                            {% if not user_id %}
+                            <h1><a class="btn-large brand-color modal-trigger" href="#modal2" style="font-family: roboto-thin;text-transform: none;">Join now</a></h1>
+		      	  			{% else %}
+                            <h1><a class="btn-large brand-color" href="{{uri_for('materialize-home')}}" style="font-family: roboto-thin;text-transform: none;">My dashboard</a></h1>
+		      	  			{% endif %}
+                        </div>
+
+					    </div>
+					    <div class="row center">
+					    </div>
+					    <br>
+					    <br>
+					  </div>
+					</div>
+					<div class="parallax"><img src="/default/materialize/images/landing/mac.png" alt="Unsplashed background img 1" style="display: block; -webkit-filter: brightness({{brand_splash_light}}%);"></div>
+				</div>
+	        {% endif %}
+		{% endblock %}
+
+		{% block body_content %}
+			<div class="container" id="contents">
+				<div class="section">
+
+				  <div class="row">
+				   	<h3 class="col s12 light center header grey-text" style="font-family:roboto-thin;">We are triggering a systematic change in web apps development</h3>
+				    <div class="row">
+				    	<div class="col s12 m4">
+					      <div class="icon-block">
+					        <h2 class="center brand-color-text"><i class="material-icons">flash_on</i></h2>
+					        <h5 class="center">Instant deploys</h5>
+
+					        <p class="light">An exceptional experience for developers. Models, templates, handlers and routes - ready for instantaneous deployment and prototyping.</p>
+					      </div>
+					    </div>
+
+					    <div class="col s12 m4">
+					      <div class="icon-block">
+					        <h2 class="center brand-color-text"><i class="material-icons">group</i></h2>
+					        <h5 class="center">Human-centered</h5>
+
+					        <p class="light">A cross-platform responsive system with a standardized user model for a more unified, scalability-ready, user experience.</p>
+					      </div>
+					    </div>
+
+					    <div class="col s12 m4">
+					      <div class="icon-block">
+					        <h2 class="center brand-color-text"><i class="material-icons">settings</i></h2>
+					        <h5 class="center">Easy, powerful and low-cost</h5>
+
+					        <p class="light">A super low-costs, high-performance, cloud service leveraging the use of <a target="_blank" href="https://cloud.google.com/appengine/docs">Google AppEngine</a> (<a href="https://www.youtube.com/watch?v=pHoHEWspcYg" target="_blank">what is this?</a>) and its <a target="_blank" href="https://cloud.google.com/appengine/docs/quotas">Free Quotas</a>.</p>
+					      </div>
+					    </div>
+				    </div>
+
+				  </div>
+				</div>
+			</div>
+			<div class="parallax-container z-depth-3" style="height:300px">
+				<div class="section no-pad-bot" style="{% if not is_mobile %}margin-top: 62px;{% else %}margin-top: 42px;{% endif %}">
+				  <div class="container">
+				    <br><br>
+				    <div class="row center">
+				      <h5 class="header col s12 white-text light" style="line-height: 2; font-family: roboto-black">Quick prototyping, astonishingly beautiful in the cheapest and most powerful cloud</h5>
+				    </div>
+				  </div>
+				</div>
+				<div class="parallax"><img src="/default/materialize/images/landing/mac.png" alt="Unsplashed background img horse" style="display: block; transform: translate3d(-50%, 386px, 0px); -webkit-filter:brightness(50%)"></div>
+			</div>
+			<div class="section">
+				 <div class="row">
+				   	<h3 class="col s12 light center header grey-text" style="font-family:roboto-thin;">Tens of amazing technologies ready to use</h3>
+				    <div class="col s12 m6">
+				      <div class="icon-block">
+				      	<h3 class="center"><i class="mdi-action-dns brand-color-text" style="font-size:45px;"></i></h3>
+				        <h5 class="center">Back-end</h5>
+
+				        <p class="light" >Because beauty isn't only at front-end, this boilerplate includes beautiful technologies at its back-end. Among the most interesting you'll find: 
+					        <a target="_blank" href="https://www.python.org/download/releases/2.7.5/">Python</a>,
+					        <a target="_blank" href="http://developers.google.com/appengine/docs/python/ndb/">NDB</a> (<a href="https://www.youtube.com/watch?v=HQiARz8b6VE" target="_blank">unlimited scalability</a>),
+					        <a target="_blank" href="http://wtforms.simplecodes.com/">WTForms</a>,
+							<a target="_blank" href="http://babel.edgewall.org/">Babel</a>,
+					        <a target="_blank" href="http://jinja.pocoo.org/docs/">Jinja2</a>,					        
+					        <a target="_blank" href="http://webapp-improved.appspot.com/">WebApp2</a>.
+				        </p>
+				      </div>
+				    </div>
+
+				    <div class="col s12 m6">
+				      <div class="icon-block">
+				      	<h3 class="center"><i class="mdi-av-web brand-color-text" style="font-size:45px;"></i></h3>
+				        <h5 class="center">Front-end</h5>
+						 <p class="light" >Integrations ready to implement, all of them with a promising future:
+					        <a target="_blank" href="http://html5boilerplate.com/">HTML5</a>,
+					        <a target="_blank" href="http://materializecss.com/)">MaterializeCSS</a>,
+					        <a target="_blank" href="https://console.developers.google.com/apis/library">Google APIs</a>: <a href="https://developers.google.com/maps/web/" target="_blank">Maps</a>, <a href="https://cloud.google.com/natural-language/" target="_blank">NLP</a> and <a href="https://cloud.google.com/vision/" target="_blank">Vision</a>;<a target="_blank" href="https://highcharts.com">HighCharts</a>, <a target="_blank" href="http://d3js.org/">D3</a>, <a target="_blank" href="https://gionkunz.github.io/chartist-js/">ChartistJS</a>, <a target="_blank" href="https://www.datatables.net/">Data Tables</a>, <a target="_blank" href="http://slack.com">Slack</a>, <a target="_blank" href="http://zendesk.com">Zendesk</a>, <a target="_blank" href="http://sendgrid.com">Sendgrid</a>, <a target="_blank" href="http://mailchimp.com">Mailchimp</a>, <a target="_blank" href="https://cartodb.com/solutions/cartodb-on-google-platform/">CartoDB</a>, <a target="_blank" href="https://bitly.com">Bit.ly</a> and many more!
+				        </p>
+				        
+				      </div>
+				    </div>
+				  </div>
+			</div>
+			<div class="section">
+
+			  <div class="row">
+			    <div class="col s12 center">
+				  <ul class="collection">
+	                  <li class="collection-item avatar" style="height:auto;">
+	                    <img src="/materializecss/images/avatar.jpg" alt="" class="circle">
+	                    <span class="title" style="font-family:roboto-light!important;"><strong>Innate benefits (<a href="https://cloud.google.com/appengine/" target="_blank">Google AppEngine</a>)</strong></span>
+	                    <p style="margin-top:10px;">
+	                    <span class="blue-text text-darken-3">(1)</span> Ideal choice for getting your idea out quickly and seeing if there is a viable market <span class="blue-text text-darken-3">(2)</span> Zero to App in a few minutes, no other provider out there gets you set up and developing in as little time <span class="blue-text text-darken-3">(3)</span> Admin interface that gives access to everything you need <span class="blue-text text-darken-3">(4)</span> <a href="https://cloud.google.com/appengine/docs" target="_blank">Excellent documentation</a> as well as active stack overflow community <span class="blue-text text-darken-3">(5)</span> Free for vast quotas, but you can <a href="https://cloud.google.com/products/calculator/" target="_blank"> calculate</a> how much you <a href="https://cloud.google.com/appengine/#pricing" target="_blank">need to pay</a> when you have proven there's a viable market <span class="blue-text text-darken-3">(6)</span> Amazing performance and real-time <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.cloudconsole" target="_blank">on-the-go monitoring</a> <span class="blue-text text-darken-3">(7)</span> Custom domain if you need or free appspot.com <span class="blue-text text-darken-3">(8)</span> Scaling is automagical.
+	                    </p>
+	                  </li>
+	                  <li class="collection-item avatar" style="height:auto;">
+	                    <i class="mdi-hardware-memory circle green"></i>
+	                    <span class="title" style="font-family:roboto-light!important;" ><strong>Essential features (<a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a>)</strong></span>
+	                    <p style="margin-top:10px;" >
+	                    <span class="green-text text-darken-3">(1)</span> Authentication: login, logout, register <span class="green-text text-darken-3">(2)</span> Login via your favorite social network <span class="green-text text-darken-3">(3)</span> Reset password <span class="green-text text-darken-3">(4)</span> Update user profile <span class="green-text text-darken-3">(5)</span> Contact form <span class="green-text text-darken-3">(6)</span> Client side and server side form validation <span class="green-text text-darken-3">(7)</span> Automatic detection of user language <span class="green-text text-darken-3">(8)</span> Support for many languages <span class="green-text text-darken-3">(9)</span> Visitors log <span class="green-text text-darken-3">(10)</span> Notifications and confirmation for users when they change their email or password <span class="green-text text-darken-3">(11)</span> Responsive design for viewing on PCs, tablets, and mobile phones <span class="green-text text-darken-3">(12)</span> Mobile device recognition <span class="green-text text-darken-3">(13)</span> Unit testing <span class="green-text text-darken-3">(14)</span> Error handling <span class="green-text text-darken-3">(15)</span> Basic user management features available under <em>/admin/</em> for GAE Administrators.
+	                    </p>
+	                  </li>
+	                  <li class="collection-item avatar" style="height:auto;">
+	                    <i class="mdi-communication-vpn-key circle grey darken-2"></i>
+	                    <span class="title" style="font-family:roboto-light!important;" ><strong>Security and passwords (<a target="_blank" href="https://github.com/coto/gae-boilerplate/">GAE Boilerplate</a>)</strong></span>
+	                    <p style="margin-top:10px;" >
+	                    <span class="grey-text text-darken-4">(1)</span> SSL is enabled site wide by adding <em>secure: always</em> to the section: <em>- url: /.*</em> in app.yaml <span class="grey-text text-darken-4">(2)</span> SSL either requires a free google app engine *.appspot.com domain or a <a target="_blank" href="https://developers.google.com/appengine/docs/ssl">custom domain and certificate</a> <span class="grey-text text-darken-4">(3)</span> Alternatively SSL can be enabled at a controller level via webapp2 schemes. Use the secure_scheme provided in routes.py <span class="grey-text text-darken-4">(4)</span> It is recommended to enable ssl site wide to help prevent <a target="_blank" href="http://en.wikipedia.org/wiki/Session_hijacking">session hijacking</a> <span class="grey-text text-darken-4">(5)</span> Passwords are hashed and encrypted with SHA512 and PyCrypto <span class="grey-text text-darken-4">(6)</span> Forms are secured through <a target="_blank" href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">cross-site request forgery</a> protection.
+	                    </p>
+	                  </li>
+	                  <li class="collection-item avatar" style="height:auto;">
+	                    <i class="mdi-av-new-releases circle yellow darken-2"></i>
+	                    <span class="title" style="font-family:roboto-light!important;"><strong>Additional perks (<a target="_blank" href="#">MBoilerplate</a>)</strong></span>
+	                    <p style="margin-top:10px;">
+	                    <span class="yellow-text text-darken-3">(1)</span> <a href="https://www.dropbox.com/referrals" target="_blank">Dropbox-inspired referrals system</a> for users to invite with their unique link <span class="yellow-text text-darken-3">(2)</span> Rewards system for you to praise users' loyalty <span class="yellow-text text-darken-3">(3)</span> Pre-loaded web components for easier chart generation <span class="yellow-text text-darken-3">(4)</span> Beautiful email templates for a bunch of situations <span class="yellow-text text-darken-3">(5)</span> Pretty server-client messaging through toast, dismissible, swipeable notifications <span class="yellow-text text-darken-3">(6)</span> API Key - based handlers for complete REST API <span class="yellow-text text-darken-3">(7)</span> Enabled <a target="_blank" href="https://cloud.google.com/appengine/docs/python/endpoints/">Endpoints</a> for Google-based API as mobile backend for running cloud endpoint clients such as Android and iOS apps <span class="yellow-text text-darken-3">(8)</span> Image handling ready ! Dispatching files using <a href="https://cloud.google.com/appengine/docs/python/ndb/properties#types" target="_blank">Google's NDB Blob Properties</a> and <a href="https://cloud.google.com/appengine/docs/python/images/usingimages" target="_blank">Google Images API</a> <span class="yellow-text text-darken-3">(9)</span> Konami-code surprise for the fun of it <span class="yellow-text text-darken-3">(10)</span> Super easy blogging tool <span class="yellow-text text-darken-3">(11)</span> Profile connection to favorite social networks <span class="yellow-text text-darken-3">(12)</span> Beautiful examples using Polymer, CartoDB, Google Maps API, Google NLP API, Google Vision API <span class="yellow-text text-darken-3">(13)</span> Simple emailing tool for newsletter <span class="yellow-text text-darken-3">(14)</span> Easy branding with colors, images and landing layout ...to be continued...
+	                    </p>
+	                  </li>
+	                </ul>
+			    </div>
+			    <div class="col s12 center">
+			      <h3><i class="mdi-file-file-download brand-color-text" style="font-size:45px;"></i></h3>
+			      <h4 data-translate="landing-header4">The source is the source, of course, of course...</h4>
+			      <p class="center light col s12 m10 offset-m1" data-translate="landing-description11">After all charm, it wouldn't be love if you couldn't own it. So go for it ! Also if you want to see technologies in action, don't hesitate and <a href="#modal2" class="modal-trigger">register</a> to find it out. Additionally, if you want some help just reach me out and I can do it for you but charges apply for laziness.</p>
+			      <div class="col s12 center">
+			      		<br>
+                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}?t=bug" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-action-bug-report left"></i>Report a bug</a>
+                      <a style="margin-bottom:30px;" href="https://github.com/chuycepeda/mboilerplate" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-file-file-download left"></i>Github Download</a>
+                      <a style="margin-bottom:30px;" href="{{uri_for("contact")}}" class="waves-effect waves-light brand-color white-text btn-large "><i class="mdi-communication-comment left"></i>Reach me out!</a>
+                  </div>
+			    </div>
+			  </div>
+			</div>			
+			<div class="parallax-container z-depth-3" style="height:300px">
+				<div class="section no-pad-bot" style="  margin-top: 42px;">
+				  <div class="container">
+				    <div class="row center">
+				      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+						<input type="hidden" name="cmd" value="_s-xclick">
+						<input type="hidden" name="hosted_button_id" value="85VURVHH53HVY">
+						<input type="image" src="/materializecss/images/buymeabeer.jpg" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" class="responsive-img circle z-depth-5 tooltipped" style="max-height: 200px;  border: 7px solid {{brand_color}};z-index:1;" data-position="top" data-delay="50" data-tooltip="Donate with PayPal!">
+					  </form>
+				    </div>
+				  </div>
+				</div>
+				<div class="parallax"><img src="/materializecss/images/thanks.jpg" alt="thanks" style="display: block; transform: translate3d(-50%, 230px, 0px); -webkit-filter:brightness(50%)"></div>
+			</div>
+		{% endblock %}
+
+		{% block modals_content %}
+			<div id="modal1" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	        	<form id="form_login_user" action="/login/" method="post">
+		            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+			        <div class="row">
+			          <div class="input-field col s12 center">
+			            <p class="center login-form-text">Use your credentials</p>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-social-person-outline prefix brand-color-text"></i>
+			            <input id="login_email" name="email" type="email" class="validate">
+			            <label for="email" class="center-align">Email</label>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-action-lock-outline prefix brand-color-text"></i>
+			            <input id="login_password" name="password" type="password">
+			            <label for="password">Password</label>
+			          </div>
+			        </div>
+			        <div class="row">
+			          <div class="input-field col s12">
+			            <a class="btn waves-effect waves-light col s12" style="cursor:pointer;" onclick="sendForm('form_login_user')">Sign in</a>
+			          </div>
+			        </div>
+			        <div class="row">
+				        <p class="margin right-align medium-small left"><a class="brand-secondary-color-text" href="{{ uri_for("register") }}">Sign Up</a></p>
+				        <p class="margin right-align medium-small right"><a class="brand-secondary-color-text" href="{{ uri_for("password-reset") }}">Forgot password?</a></p>
+			        </div>
+			      </form>
+		      </div>
+		    </div>
+		    <div id="modal2" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px; max-height:80%;">
+		      <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+		      <div class="modal-content">
+	        	<form id="form_register_user" action="/register/" method="post">
+		            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+			        <div class="row">
+			          <div class="input-field col s12 center">
+			            <p class="center login-form-text">Join our movement</p>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-social-person-outline prefix brand-color-text"></i>
+			            <input id="register_name" name="name" type="text">
+			            <label for="name" class="center-align">Name</label>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-communication-email prefix brand-color-text"></i>
+			            <input id="register_email" name="email" type="email" class="validate">
+			            <label for="email" class="center-align">Email</label>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			            <i class="mdi-action-lock-outline prefix brand-color-text"></i>
+			            <input id="register_password" name="password" type="password">
+			            <label for="password">Password</label>
+			          </div>
+			        </div>
+			        <div class="row margin">
+			          <div class="input-field col s12">
+			        	{{captchahtml | safe}}
+			          </div>
+			        </div>
+			        <div class="row">
+			          <div class="input-field col s12">
+			            <a class="btn waves-effect waves-light col s12" style="cursor:pointer;" onclick="sendForm('form_register_user')">Sign up</a>
+			          </div>
+			        </div>
+			        <div class="row">
+			        	<p class="margin right-align medium-small left"><a class="brand-secondary-color-text" href="{{uri_for("login")}}">Already a user?</a></p>
+			        	{% if has_basics %}
+				        <p class="margin right-align medium-small right">
+				        	<a class="brand-secondary-color-text" href="{{uri_for("privacy")}}">Privacy policy</a><br>
+				        	<a class="brand-secondary-color-text" href="{{uri_for("tou")}}">Terms of use</a>
+				        </p>
+				        {% endif %}
+			        </div>
+			      </form>
+		      </div>
+		    </div>
+		{% endblock %}
+
+		{% block footer %}
+			{% block footer_head %}
+			<div id="footer-head" class="container">
+				<div class="section" id="download">
+				  <div class="row">
+				    <div class="col s12 center">
+				      <h4><br> <img src="{{brand_email_logo}}" alt="" class="responsive-img" style="max-height:110px; vertical-align: middle;margin-top: -15px;"></h4>
+				      <div class="col s12 center">
+				      		<br>
+				      	  {% if not user_id %}
+	                      <a style="margin-right:12px; margin-bottom:30px;" href="#modal1" class="modal-trigger waves-effect waves-light brand-color white-text btn-large">Sign in</a>
+	                      <a style="margin-right:12px; margin-bottom:30px;" href="#modal2" class="modal-trigger waves-effect waves-light brand-color white-text btn-large">Sign up</a>
+					  		{% if has_basics %}
+	                      <a style="margin-right:12px; margin-bottom:30px;" href="{{uri_for('contact')}}" class="waves-effect waves-light brand-color white-text btn-large">Contact</a>
+					  		{% endif %}
+	                      {% else %}
+	                      <a style="margin-bottom:30px;" href="{{uri_for('materialize-home')}}" class="waves-effect waves-light brand-color white-text btn-large "></i>My dashboard</a>
+	                      <a style="margin-bottom:30px;" href="{{uri_for('materialize-settings-profile')}}" class="waves-effect waves-light brand-color white-text btn-large "></i>My profile</a>
+	                      {% endif %}
+	                  </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			{% endblock %}
+			<!-- START FOOTER -->
+			<footer id="footer-content" class="page-footer brand-color darken-1">
+				<a href="#"><i class="mdi-navigation-expand-less white-text right" style="padding: 10px;"></i></a>
+				<div class="container">
+				  <div class="row">
+				    <div class="col m7 s12">
+				      <h5 class="white-text" style="font-family: roboto-black">About</h5>
+				      <p class="grey-text text-lighten-4">{{brand_about}}</p>
+				    </div>
+				    <div class="col offset-m2 m3 s12" style="margin-top:-10px;">
+				      <ul>
+				        <li><a class="white-text footer-item" href="{{uri_for("landing")}}">Home</a></li>
+					  	{% if has_blog %}
+				        <li><a class="white-text footer-item" href="{{uri_for("blog")}}">Blog</a></li>
+					  	{% endif %}
+					  	{% if has_basics %}
+				        <li><a class="white-text footer-item" href="{{uri_for("faq")}}">FAQ</a></li>
+				        <li><a class="white-text footer-item" href="{{uri_for("tou")}}">Terms</a></li>
+				        <li><a class="white-text footer-item" href="{{uri_for("privacy")}}">Privacy</a></li>
+				        <li><a class="white-text footer-item" href="{{uri_for("contact")}}">Contact</a></li>
+					  	{% endif %}
+				      </ul>
+				    </div>
+				  </div>
+				</div>
+				<div class="footer-copyright " style="text-align:right;">
+				  <div class="container tooltipped" style="text-align:right;" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">{% if not is_mobile %}{% if has_basics %}<a class="white-text" href="{{uri_for("license")}}">MIT License - </a>{% endif %}© 2015 {{app_name}}, All rights reserved.{% endif %} Made from real<i class="mdi-image-flash-on brand-secondary-color-text text-lighten-1" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i> by <a class="brand-secondary-color-text" href="http://onesmart.tech">OneSmart.Tech</a></div>
+				</div>
+			</footer>
+			<!-- END FOOTER -->
+		{% endblock %}
+
+	  	<!-- All Scripts start here -->
+		{% block scripts %}
+			<!-- jQuery Library -->
+		    <script type="text/javascript" src="/materializecss/js/plugins/jquery-1.11.2.min.js"></script>    
+		    <!--materialize js-->
+		    <script type="text/javascript" src="/materializecss/js/materialize.js"></script>
+		    <!--prism
+		    <script type="text/javascript" src="js/prism/prism.js"></script>-->
+		    <!--scrollbar-->
+		    <script type="text/javascript" src="/materializecss/js/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+		    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+		    <script type="text/javascript" src="/materializecss/js/plugins.js"></script>
+		    <!--custom-script.js - Add your own theme custom JS-->
+		    <script type="text/javascript" src="/materializecss/js/custom-script.js?v=5"></script>
+
+
+		  	<!-- Toast Notification -->
+		    {% if messages|safe %}
+			    {% for message in messages %}
+		    		<script type="text/javascript">
+		            	var resendIndex = 0 ;
+		            	var _text = "{{ message[0]|safe }}";
+		            	var _textAdditionals = "";
+						resendIndex = _text.search('resend');
+						if ( resendIndex > 0 ){
+							//this is the case when resend-activation-link is sent
+							// 1: Add this text as html to toast additionals
+							_textAdditionals = '<a class="toast-warning" href="/'+_text.substr(resendIndex).replace(/ /g,'/')+'/">Clic here if you need us to resend activation link. Previous link will be forgotten.</a>';
+							// 2: Trim this text from toast
+							_text = _text.substr(0, resendIndex-1);							
+						}
+						var _msg = '<span class="toast-{{ message[1]|safe }}">'+_text+'</span>';
+		            	Materialize.toast(_msg, 4500);
+		            	if (_textAdditionals != "") Materialize.toast(_textAdditionals, 10000);
+		            </script>
+			    {% endfor %}
+			{% endif %}	
+
+	        {% block raptor %}
+				<script src="https://hammerjs.github.io/dist/hammer.js"></script>
+				<script src="/materializecss/js/plugins/raptor/raptor.js?v=5"></script>
+				<script type="text/javascript">
+					$(document).ready(function() {
+						$('body').raptorize({
+							'enterOn' : 'konami-code'
+						});
+					});
+				</script>
+			{% endblock %}
+	        
+	        {% block onload_methods %}
+				<script type="text/javascript">
+	    			var is_Safari = false, not_Chrome = false;
+					$(document).ready(function(){	
+
+					    $('.button-collapse').sideNav({
+					      edge: 'right'
+					    });
+					    
+						$(".menu-item").click(function(){
+							$('.button-collapse').sideNav('hide');
+						});
+
+						var BrowserDetect = {
+							init: function() {
+								this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
+								this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "an unknown version";
+								this.OS = this.searchString(this.dataOS) || "an unknown OS";
+								console.log("Detected " + this.browser + " v." + this.version + " running {{app_name}} in a " + this.OS);
+								if (this.browser != 'Chrome' && this.browser.indexOf('Safari') == -1 && this.browser.indexOf('iPhone') == -1 && this.browser != 'Firefox') {
+									alert("Sorry, this is a system for the future, use Google Chrome.");
+								}
+								else if (this.browser.indexOf("Safari") != -1)
+									is_Safari = true;
+								else if (this.browser.indexOf("Chrome") == -1)
+									not_Chrome = true;
+							},
+							searchString: function(data) {
+								for (var i = 0; i < data.length; i++) {
+									var dataString = data[i].string;
+									var dataProp = data[i].prop;
+									this.versionSearchString = data[i].versionSearch || data[i].identity;
+									if (dataString) {
+										if (dataString.indexOf(data[i].subString) != -1) return data[i].identity;
+									} else if (dataProp) return data[i].identity;
+								}
+							},
+							searchVersion: function(dataString) {
+								var index = dataString.indexOf(this.versionSearchString);
+								if (index == -1) return;
+								return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+							},
+							dataBrowser: [{
+								string: navigator.userAgent,
+								subString: "Chrome",
+								identity: "Chrome"
+							}, {
+								string: navigator.userAgent,
+								subString: "OmniWeb",
+								versionSearch: "OmniWeb/",
+								identity: "OmniWeb"
+							}, {
+								string: navigator.vendor,
+								subString: "Apple",
+								identity: "Safari",
+								versionSearch: "Version"
+							}, {
+								prop: window.opera,
+								identity: "Opera",
+								versionSearch: "Version"
+							}, {
+								string: navigator.vendor,
+								subString: "iCab",
+								identity: "iCab"
+							}, {
+								string: navigator.vendor,
+								subString: "KDE",
+								identity: "Konqueror"
+							}, {
+								string: navigator.userAgent,
+								subString: "Firefox",
+								identity: "Firefox"
+							}, {
+								string: navigator.vendor,
+								subString: "Camino",
+								identity: "Camino"
+							}, { // for newer Netscapes (6+)
+								string: navigator.userAgent,
+								subString: "Netscape",
+								identity: "Netscape"
+							}, {
+								string: navigator.userAgent,
+								subString: "MSIE",
+								identity: "Explorer",
+								versionSearch: "MSIE"
+							}, {
+								string: navigator.userAgent,
+								subString: "Gecko",
+								identity: "Mozilla",
+								versionSearch: "rv"
+							}, { // for older Netscapes (4-)
+								string: navigator.userAgent,
+								subString: "Mozilla",
+								identity: "Netscape",
+								versionSearch: "Mozilla"
+							}],
+							dataOS: [{
+								string: navigator.platform,
+								subString: "Win",
+								identity: "Windows"
+							}, {
+								string: navigator.platform,
+								subString: "Mac",
+								identity: "Mac"
+							}, {
+								string: navigator.userAgent,
+								subString: "iPhone",
+								identity: "iPhone/iPod"
+							}, {
+								string: navigator.platform,
+								subString: "Linux",
+								identity: "Linux"
+							}]
+						};
+						BrowserDetect.init();	
+				        
+				        $(window).resize(function() { setDimensions();});
+					}); 
+
+				    var heroTextEl = $(".hero-title"), currentHeroTextSize = 0;
+				    function setDimensions() {
+				      var e = $(window).height(),
+				          t = e - $("header").height();
+				      var n = Math.floor(heroTextEl.width() / 18);
+				      n = Math.min(n, 70), currentHeroTextSize !== n && (heroTextEl.css("font-size", n + "px"), currentHeroTextSize = n);
+				    }
+					function sendForm(formID){
+			    		if (formID == "form_login_user"){
+			    			if (document.getElementById('login_email').value != "" && document.getElementById('login_password') != ""){
+			    				document.getElementById(formID).submit();
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Did you missed some fields ?</span>',4500);
+			    			}
+			    		}else if (formID == "form_login"){
+			    			if (document.getElementById('email').value != "" && document.getElementById('password') != ""){
+			    				document.getElementById(formID).submit();
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Did you missed some fields ?</span>',4500);
+			    			}
+			    		}else if (formID == "form_register_user"){
+			    			if (document.getElementById('register_name').value != "" && document.getElementById('register_email').value != "" && document.getElementById('register_password').value != ""){
+			    				if (cleanUpSpecialChars(document.getElementById('register_password').value) == document.getElementById('register_password').value && cleanUpMailSpecialChars(document.getElementById('register_email').value) == document.getElementById('register_email').value)
+			    					document.getElementById(formID).submit();
+			    				else
+			    					Materialize.toast('<span class="toast-warning">Oops! Please avoid any special characters on your email address.</span>',4500);
+
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Did you missed some fields ?</span>',4500);
+			    			}
+			    		}else if (formID == "form_register"){
+			    			if (document.getElementById('r_name').value != "" && document.getElementById('r_email').value != "" && document.getElementById('r_password').value != ""){
+			    				if (cleanUpSpecialChars(document.getElementById('r_password').value) == document.getElementById('r_password').value && cleanUpMailSpecialChars(document.getElementById('r_email').value) == document.getElementById('r_email').value)
+			    					document.getElementById(formID).submit();
+			    				else
+			    					Materialize.toast('<span class="toast-warning">Oops! Please avoid any special characters on your email address.</span>',4500);
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Are you missing an input field ?</span>',4500);
+			    			}
+			    		}else if (formID == "form_pass_reset"){
+			    			if (document.getElementById('password').value != ""){
+			    				if (cleanUpSpecialChars(document.getElementById('password').value) == document.getElementById('password').value){
+			    					document.getElementById('c_password').value = document.getElementById('password').value;
+			    					document.getElementById(formID).submit();
+			    				}else
+			    					Materialize.toast('<span class="toast-warning">Oops! Please avoid any special characters on your email address.</span>',4500);
+
+			    			}else{
+			    				Materialize.toast('<span class="toast-warning">Oops! Did you missed some fields ?</span>',4500);
+			    			}
+			    		}
+					}
+					
+					{% if is_mobile %}
+					document.body.requestFullscreen();
+					{% endif %}
+				</script>
+			{% endblock %}
+
+			{% block translate %}
+			    {% if locale_language_id == "en" or locale_language_id == "es" %}
+			    	<!-- YOU CAN ADD MORE LANGUAGES BY ADDING A translate_<locale_language_id>.js AT BP_CONTENT/THEMES/DEFAULT/STATIC/MATERIALIZE/JS/PLUGINS/TRANSLATOR 
+			    	<script>forceLang('{{locale_language_id}}');</script>-->
+				{% endif %}
+			{% endblock %}
+
+			{% block page_scripts %}
+			{% endblock %}						
+		{% endblock %}
+
+	</body>        
+{% endblock %}
+</html>

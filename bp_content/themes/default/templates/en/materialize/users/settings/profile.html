@@ -1,0 +1,672 @@
+{% extends base_layout %}
+
+<!-- ADD PAGE HEAD ELEMENTS -->
+{% block title %}<title>{{app_name}} » Settings Profile</title>{% endblock %}
+   
+{% block page_css %}
+	<style>
+        #avatar-container{
+            width: 250px;
+            height: 250px;
+            border-radius:50%;
+        }
+        .tabs .indicator{
+            background-color: {{brand_secondary_color}}!important;
+        }
+              
+  	</style>
+    <link href="/materializecss/js/plugins/sweetalert/dist/sweetalert.css" type="text/css" rel="stylesheet" media="screen,projection">
+{% endblock %}
+
+{% block page_components %}
+{% endblock %}
+
+<!-- ADD PAGE BODY ELEMENTS-->
+{% block breadcrums %}
+{% endblock %}
+
+{% block page_content %}
+	<div class="section">
+		<div class="container">		    
+    		
+    		<!-- TAB MENU -->
+            <div class="row">
+                <div class="col s12">
+                    <ul class="tabs white">
+                        <li class="tab col s4" id="map-tab">
+                            <a class="brand-color-text" href="#test1">
+                                <span class="hide-on-med-and-down">Profile</span>
+                                <i class="mdi-action-account-circle hide-on-large-only" style="font-size: 2rem;"></i>
+                            </a>
+                        </li>
+                                                
+                        <li class="tab col s4">
+                            <a class="brand-color-text" href="#test2">
+                                <span class="hide-on-med-and-down">Password</span>
+                                <i class="mdi-action-lock-outline hide-on-large-only" style="font-size: 2rem;"></i>
+                            </a>
+                        </li>
+                        <li class="tab col s4">
+                            <a class="brand-color-text" href="#test3">
+                                <span class="hide-on-med-and-down">Email</span>
+                                <i class="mdi-communication-email hide-on-large-only" style="font-size: 2rem;"></i>
+                            </a>
+                        </li>
+                        <li class="tab col s4">
+                            <a class="brand-color-text" href="#test4">
+                                <span class="hide-on-med-and-down">Account</span>
+                                <i class="mdi-action-delete hide-on-large-only red-text" style="font-size: 2rem;"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>		
+    		<!-- END TAB MENU -->
+    		
+    		
+    		<!-- TAB CONTENTS -->
+    		<div class="row" id="test1">
+    	        
+    	        <form class="col s12" id="form_edit_profile" action="{{ url|safe }}" enctype="multipart/form-data" method="post">
+    		        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <input type='file' id="picture" name="picture" hidden/>
+    				<!-- LEFT PANEL -->
+    				<div class="col s12 l2">
+                    
+                        <div id="profile-page-header" class="card" style="height: 240px">
+                            <div class="card-image waves-effect waves-block waves-light" style="height: 160px">
+                                <img class="" src="/materializecss/images/user-bg-simple.jpg" alt="user background">             
+                            </div>
+                            
+                            <figure id="avatar-container" class="card-profile-image" style="width:160px;top:50px;">
+                                {% if has_picture %}
+                                <img id="blah" src="/media/serve/profile/{{user_id}}/" class="circle z-depth-2 responsive-img pp">
+                                {% else %}
+                                <img id="blah" class="circle responsive-img z-depth-1" style="max-height:160px;cursor:pointer;display:none;"/>
+                                <img data-name="{{ name_i }}" data-font-weight="100" data-back-color="{{brand_secondary_color}}" data-font-size="45" class="circle avatar-initial pp"/>
+                                <span class="ultra-small" style="font-family: roboto-light;">Click to update.</span> 
+                                {% endif %}                    
+                            </figure>
+                            
+                            <div class="card-content" style="margin-top:-20px">
+                                <div class="row">                    
+                                    <div class="col s7 offset-s5" style="display: none;">
+                                        <h4 class="card-title grey-text text-darken-4" style="font-size: 20px;">Click picture to update</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+              
+    					{% if google_clientID != '' or facebook_appID != '' %}
+    					<div class="divider" style="margin-bottom: 10px;"></div>
+    	                <span class="col s12" style="font-size: 1.1em;font-family: roboto-light;margin-bottom: 10px;">Connect your social profiles.</span>
+    	                {% endif %}     
+    					{% if google_clientID != '' %}
+    	                <div class="row" style="margin-bottom: 14px; margin-top: 14px;">
+    	                	<google-signin  class="left" clientId="{{google_clientID}}" scopes="https://www.googleapis.com/auth/plus.me" labelSignin="Connect profile" labelSignout="Disconnect"width="wide" height="tall" style="max-width:290px;"></google-signin>
+    	                </div>      
+    	                {% endif %}     
+    	                {% if facebook_appID != '' %}
+    	                <div class="col s12">
+    	                	<div class="left fb-login-button" style="margin-left: -18px;" data-max-rows="3" data-size="large" data-show-faces="true" data-auto-logout-link="true" scope="public_profile,user_friends,email" onlogin="checkFBLogin();"></div>
+    	                </div>      
+    	                {% endif %}       
+    				
+    				</div>
+                    
+                    <!-- RIGHT PANEL -->
+    	            <div class="col s12 l10">
+    		            <div class="card-panel">
+    		                <div class="row">
+                                <div class="col s12">
+        		                    <h4 class="header2">Your personal information</h4>
+        		                    
+        		                    <div class="row">
+        		                      <div class="input-field col s6">
+        		                        <input id="name" name="name" type="text" value="{{name}}">
+        		                        <label for="name">Name</label>
+        		                      </div>
+        		                    
+        		                      <div class="input-field col s6">
+        		                        <input id="last_name" name="last_name" type="text" value="{{last_name}}">
+        		                        <label for="last_name">Last name</label>
+        		                      </div>
+        		                    </div>        		                    
+        		                    <div class="row">
+        		                      
+        		                      <div class="input-field col s6 m4">
+        		                        <input id="phone" name="phone" type="tel" value="{{phone}}">
+        		                        <label for="phone">Phone</label>
+        		                      </div>
+
+                                      <div class="input-field col s6 m4">
+                                        <input id="birth" name="birth" type="date" class="mydatepicker" value="{{birth}}">
+                                        <label for="birth">Birth</label>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+        		                      
+        		                      <div class="input-field col s12 m4">
+        		                        <select id="gender" name="gender">
+        		                          {% if gender == '' or gender == 'male' %}
+        		                          	<option value="male" selected>Man</option>
+        		                          	<option value="female">Woman</option>
+        		                          {% else %}
+        		                          	<option value="male">Man</option>
+        		                          	<option value="female" selected>Woman</option>
+        		                          {% endif %}
+        		                        </select>
+        		                        <label>Gender</label>
+        		                      </div>                        
+        		                    </div>
+
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <input id="address_from" name="address_from" type="text" class="validate" value="{{address_from}}" placeholder="Type in your address or click on map to locate you." onkeydown="if (event.keyCode == 13) codeAddress('from');">
+                                            <label for="address_from" class="active">Address</label>
+                                            <div id="map" style="width:100%; height: 500px; top: 35px; border-radius: 4px; margin-bottom:60px"></div>
+                                        </div>                
+                                        <input type="text" id ="address_from_coord" name="address_from_coord" value="{{address_from_coord}}" hidden>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12 center">
+                                          <a class="waves-effect waves-light brand-color white-text btn right sbmt" id="edit_profile" >Save profile
+                                            <i class="mdi-content-send right"></i>
+                                          </a>                            
+                                        </div>
+                                    </div>
+                                </div>
+    		                </div>		                
+    		            </div>
+    		        </div>
+                
+                </form>
+    	    
+    	    </div>
+    	    
+    		<div class="row" id ="test2">
+				
+				<form class="col s12" id="form_edit_password" action="{{ uri_for("materialize-settings-password") }}" method="post" >
+		          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    		            <div class="card-panel">
+    		                <div class="row">
+                                <div class="col s12">
+		          
+                		          <div class="row">
+                		            <div class="input-field col s12">
+                		              <i class="mdi-action-lock-outline prefix brand-color-text"></i>
+                		              <input id="current_password" name="current_password" type="password">
+                		              <label for="current_password">Current password</label>
+                		            </div>
+                		          </div>
+                		          <div class="row">
+                		            <div class="input-field col s12">
+                		              <i class="mdi-action-lock prefix brand-color-text"></i>
+                		              <input id="password" name="password" type="password">
+                		              <label for="password">New password</label>
+                		            </div>
+                		          </div>
+                		          <div class="row">
+                		            <div class="input-field col s12">
+                		              <i class="mdi-communication-vpn-key prefix brand-color-text"></i>
+                		              <input id="c_password" name="c_password" type="password">
+                		              <label for="c_password">Confirm new password</label>
+                		            </div>
+                		          </div>
+                		          <div class="row">
+                		              <div class="input-field col s12">
+                		                <a class="waves-effect waves-light brand-color white-text btn right sbmt" id="edit_password">Change password
+                		                  <i class="mdi-content-send right"></i>
+                		                </a>
+                		              </div>
+                		          </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+		        </form>
+    			
+    		</div>
+    			
+    		<div class="row" id ="test3">
+    			
+		        <form class="col s12" id="form_edit_email" action="{{ uri_for("materialize-settings-email") }}" method="post" >
+		            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    		            <div class="card-panel">
+    		                <div class="row">
+                                <div class="col s12">
+    		                      <div class="row">
+                                    <div class="input-field col s12">
+                                      <i class="mdi-communication-email prefix brand-color-text brand-color-text text-darken-3"></i>
+                                      <input id="current_email" type="email" value="{{email}}" disabled>
+                                      <label for="current_email">Current email</label>
+                                    </div>
+                                </div>
+                		          <div class="row">
+                		            <div class="input-field col s12">
+                		              <i class="mdi-communication-email prefix brand-color-text"></i>
+                		              <input placeholder="{{email}}" id="new_email" name="new_email" type="email" class="validate">
+                		              <label for="new_email">New email</label>
+                		            </div>
+                		          </div>
+                		          <div class="row">
+                		            <div class="input-field col s12">
+                		              <i class="mdi-action-lock-outline prefix brand-color-text"></i>
+                		              <input id="password" name="password" type="password" class="required">
+                		              <label for="password">Type your password</label>
+                		            </div>
+                		          </div>
+                		          <div class="row">
+                		              <div class="input-field col s12">
+                		                <a class="waves-effect waves-light brand-color white-text btn right sbmt" id="edit_email">Save changes
+                		                  <i class="mdi-content-send right"></i>
+                		                </a>
+                		              </div>
+                		          </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+		        </form>
+    		    
+    		</div>
+    		
+    		<div class="row" id ="test4">
+				
+				<form class="col s12" id="form_delete_account" action="{{ uri_for("materialize-settings-delete") }}" method="post">
+		          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    		            <div class="card-panel">
+    		                <div class="row">
+                                <div class="col s12">
+		          
+                		          <div class="row">
+                		            <div class="input-field col s12">
+                		              <i class="mdi-action-lock-outline prefix red-text"></i>
+                		              <input id="password" name="password" type="password">
+                		              <label for="password">Type your password</label>
+                		            </div>
+                		          </div>
+                		          <div class="row">
+                		            <div class="input-field col s12">
+                		              <div class="controls" id="captcha">
+                		                  {{captchahtml | safe}}
+                		              </div>
+                		            </div>
+                		          </div>
+                		          <div class="row">
+                		              <div class="input-field col s12">
+                		                <a class="btn red waves-effect waves-light right sbmt" id="delete_account">Delete forever
+                		                  <i class="mdi-content-send right"></i>
+                		                </a>
+                		              </div>
+                		          </div>
+                                </div>
+    		                </div>
+    		            </div>
+		        </form>
+    		
+    		</div>
+	    
+	    </div>
+   	</div>
+{% endblock %}
+
+{% block disclaimers %}
+{% endblock %}
+
+{% block sidebar_right %}
+{% endblock %}
+
+{% block page_floatings %}
+{% endblock %}
+
+{% block page_footer %}
+{% endblock %}
+
+<!-- ADD PAGE SCRIPT ELEMENTS-->
+{% block page_scripts %}
+  	<!--initial avatar-->
+    <script type="text/javascript" src="/materializecss/js/plugins/initial/initial.js"></script>
+	<!-- dialog -->
+	<script type="text/javascript" src="/materializecss/js/plugins/sweetalert/dist/sweetalert.min.js"></script> 
+    <!-- MAPS -->
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,visualization&key={{google_maps_key}}"></script>
+	
+	<script type="text/javascript">
+
+        $('.mydatepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 80, // Creates a dropdown of years to control year
+            format: 'yyyy-mm-dd', // Creates adequate html5 default formatting
+            formatSubmit: 'yyyy-mm-dd', // Creates adequate html5 default formatting
+            today: 'Today',
+            clear: '',
+            close: 'Close',
+            max: new Date(),
+            monthsFull: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
+            monthsShort: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ],
+            weekdaysFull: [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ],
+            weekdaysShort: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
+        });
+		
+		function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('.pp').css('opacity',0);
+                        $('#avatar-container').css({
+                            'background-image': 'url('+e.target.result+')',
+                            'width': '160px',
+                            'height': '160px',
+                            'border-radius':'0%',
+                            'background-size': '155px',
+                            'background-repeat': 'no-repeat',
+                            'background-position': '50%'
+                        });	    
+	            }
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    $("#picture").change(function(){
+	        readURL(this);
+	    });        
+        
+        $('.pp').click(function(){$('#picture').click()});
+
+	    
+	    /* MAPS RELATED */
+		var homeCoords = (document.getElementById('address_from_coord').value).split(",").map(Number);
+		var mapCenter = [homeCoords[0]||25.683956577519417,homeCoords[1]||-100.20524472216799];
+		var map;
+		var sublayers = [];
+		google.maps.event.addDomListener(window,'load', init);
+		var geocoder = new google.maps.Geocoder();
+	    var gmarker = null;
+	    var gmarkers = [];
+
+	    function markerFitBounds() {
+	        var bounds = new google.maps.LatLngBounds();
+	        for(var i=0; i<gmarkers.length; i++) {
+	            bounds.extend( gmarkers[i].getPosition() );
+	        }
+	        map.fitBounds(bounds);
+	    }
+	        
+	    function dropMarker (loc) {	                
+	        if (gmarker == null){
+	            gmarker = new google.maps.Marker({
+	        			animation: google.maps.Animation.DROP,
+	        			position: loc,
+	        			map: map,
+	        			draggable: true,
+	        			icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|4BAF50'
+	            });
+	            google.maps.event.addListener(gmarker,'dragend',function(event) {
+	                    codeAddress(event.latLng);
+	            });        
+	        }else{
+	            gmarker.setPosition(loc);
+	        }
+
+	    }
+
+	    function init(){
+			
+			
+			/*  MAP  */
+			var mapOptions = {
+				center: new google.maps.LatLng(mapCenter[0], mapCenter[1]),
+				zoom: {% if is_mobile %}10{% else %}12{% endif %},
+				//minZoom:5,
+				zoomControl: true,
+				zoomControlOptions: {
+					style: google.maps.ZoomControlStyle.SMALL,
+					position: google.maps.ControlPosition.LEFT_BOTTOM	
+				},
+				mapTypeControl: true,
+				mapTypeControlOptions: { 
+					mapTypeIds: [google.maps.MapTypeId.ROADMAP,google.maps.MapTypeId.SATELLITE]
+				},
+				scrollwheel: false,
+				streetViewControl: true,
+				StreetViewControlOptions: {
+					position: google.maps.ControlPosition.BOTTOM_LEFT
+				},
+
+				panControl:false,
+				backgroundColor: 'rgb(249, 249, 249)',
+				rotateControl:true,
+				overviewMapControl:true
+			};
+			map = new google.maps.Map(document.getElementById('map'), mapOptions);
+			
+            $('#map-tab').click(function(){
+                setTimeout(function() {
+                    google.maps.event.trigger(map, 'resize')
+                }, 100);
+            });			
+			
+			google.maps.event.addDomListener(window, 'resize', function() {
+	            //map.setCenter({lat: mapCenter[0], lng: mapCenter[1]});
+	            window.setTimeout(function() {
+	                  map.panTo({lat: mapCenter[0], lng: mapCenter[1]});
+	            }, 400);                            
+	            
+	        });
+			
+
+			//From field
+			var address_from = document.getElementById('address_from');
+			var autocomplete_from = new google.maps.places.Autocomplete(address_from);
+			autocomplete_from.bindTo('bounds', map);
+			autocomplete_from.addListener('place_changed', function() {
+			    //address_from.className = '';
+			    var place = autocomplete_from.getPlace();
+			    if (!place.geometry) {
+			      // Inform the user that the place was not found and return.
+			      //input.className = 'No se encontró la ubicación';
+			      return;
+			    }
+			    // If the place has a geometry, then present it on a map.
+			    if (place.geometry.viewport) {
+			      map.fitBounds(place.geometry.viewport);
+			      dropMarker(place.geometry.location);
+			    }else{
+			      map.setCenter(place.geometry.location);
+			      map.setZoom(17);
+			      dropMarker(place.geometry.location);
+			    }
+			});									              
+	        
+			google.maps.event.addListener(map, 'click', function(event) {
+	            console.log(event.latLng);
+	            dropMarker(event.latLng);
+	            codeAddress(event.latLng);
+	        });
+	                		
+	    	if(document.getElementById('address_from_coord').value){
+	        	var coof = document.getElementById('address_from_coord').value;
+	            var m1 = coof.split(',').map(Number);            
+	        	var latlng = new google.maps.LatLng(m1[0],m1[1]);
+	        	dropMarker (latlng);
+	    	}		    	  
+		}
+
+        $('.sbmt').click(function(){          
+            if(this.id == 'delete_account'){
+                swal(   { title: "Are you sure?",
+                          text: "Your account will be deleted forever!",   
+                          type: "warning",   
+                          showCancelButton: true,   
+                          cancelButtonText:"Cancel",
+                          confirmButtonColor: "#DD6B55",   
+                          confirmButtonText: "Yes, please delete.",   
+                          closeOnConfirm: false 
+                        }, 
+                        function(){   
+                            swal({  title: "Done !",   
+                                    text: "Your account will be deleted.",   
+                                    showConfirmButton: false,
+                                    type: "success",
+                                    allowEscapeKey: true,
+                                    allowOutsideClick: true 
+                                });
+                            document.getElementById('form_delete_account').submit();
+                        }
+                );        
+            }else{
+                if(this.id == 'edit_profile'){
+        			if(gmarker) document.getElementById("address_from_coord").value = gmarker.getPosition().toString().slice(1,-1);	            
+                }
+                document.getElementById('form_'+this.id).submit();
+            }            
+        });
+
+
+		/* ADDRESS BAR METHODS */
+		function codeAddress(input) {
+	        var address, obj;
+	        if (typeof(input) === 'string') {
+	            address = document.getElementById('address_'+input).value;
+	            obj = { 'address': address };
+	        }else{
+	            address = input;
+	            obj = { 'location': address};
+	        }
+	        geocoder.geocode( obj, function(results, status) {
+	            if (status == google.maps.GeocoderStatus.OK) {
+	                
+	                if (typeof(input) === 'string') {
+	                    map.setCenter(results[0].geometry.location);
+	                    switch (results[0].geometry.location_type){
+	                        case 'ROOFTOP': map.setZoom(17); break;
+	                        case 'RANGE_INTERPOLATED': map.setZoom(16); break;
+	                        case 'GEOMETRIC_CENTER': map.setZoom(15); break;
+	                        case 'APPROXIMATE': map.setZoom(13); break;
+	                    }
+	                    dropMarker(results[0].geometry.location);
+	                }else{
+	                    if (results[1]) {
+	                        console.log(results);
+	                        document.getElementById('address_from').value = results[1].formatted_address;
+	                    } else {
+	                        window.alert('No results found');
+	                    }
+	                }
+	            
+	            } else {
+	                alert('Geocode was not successful for the following reason: ' + status);
+	            }
+	        });
+	    }
+
+	</script>
+	
+	{% if google_clientID != '' %}
+		<!-- DOC: https://elements.polymer-project.org/elements/google-signin -->
+		<script type="text/javascript">
+			  var first_time = true, go_accessToken = '';
+			  document.querySelector('google-signin').addEventListener('google-signin-success', function(e) {
+			    console.log(e.type, e.detail.result, e.detail.gapi);
+			    go_accessToken = e.detail.result.access_token;
+			    if (first_time){					
+					url = 'https://content.googleapis.com/plus/v1/people/me?access_token='+go_accessToken;
+					$.get(url,
+						function(data){
+							console.log('go_user', data);
+
+							/*
+
+									TO-DO: WHY DON'T WE SAVE SOMETHING INTO OUR GOOGLE DATASTORE ?
+
+							*/
+						}
+					);
+			    }
+			    first_time = !first_time;
+			  });
+		</script>
+	{% endif %}
+	
+	{% if facebook_appID != '' %}
+		<!-- DOC: https://developers.facebook.com/docs/facebook-login/web/login-button -->
+		<div id="fb-root"></div>
+		<script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId={{facebook_appID}}";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));</script>
+	    <script>
+	    	var fb_accessToken = '';
+	    	$(document).ready(function() {
+		        $.ajaxSetup({ cache: true });
+		    });
+
+		    function checkFBLogin() {
+			    FB.getLoginStatus(function(response) {
+					if (response.status === 'connected') {
+						var uid = response.authResponse.userID;
+	    				fb_accessToken = response.authResponse.accessToken;
+						//GET User: https://developers.facebook.com/docs/graph-api/reference/user/
+						FB.api(
+						    "/me",
+						    {
+						      fields: ['id','about','age_range','bio','birthday','education','email','first_name','gender','hometown','inspirational_people','last_name','link','location','locale','middle_name','name','relationship_status','religion','significant_other','quotes','timezone','work','cover']
+						    },
+						    function (response) {
+						      if (response && !response.error) {
+						        console.log('fb_user', response);
+
+						        /*
+
+									TO-DO: WHY DON'T WE SAVE SOMETHING INTO OUR GOOGLE DATASTORE ?
+
+						        */
+						      }
+						    }
+						);
+
+						//GET User Picture: https://developers.facebook.com/docs/graph-api/reference/user/picture/
+						FB.api(
+						    "/me/picture",
+						    { 
+						      "type": "large" 
+						    },
+						    function (response) {
+						      if (response && !response.error) {
+						        console.log('fb_pic', response);
+
+						        /*
+
+									TO-DO: WHY DON'T WE SAVE SOMETHING INTO OUR GOOGLE DATASTORE ?
+
+						        */
+						      }
+						    }
+						);
+
+						//GET User Friends: https://developers.facebook.com/docs/graph-api/reference/v2.5/user/friends
+						FB.api(
+						    "/me/friends",
+						    function (response) {
+						      if (response && !response.error) {
+						        console.log('fb_friends', response);
+
+						        /*
+
+									TO-DO: WHY DON'T WE SAVE SOMETHING INTO OUR GOOGLE DATASTORE ?
+
+						        */					        
+						      }
+						    }
+						);
+					}
+			    });
+			}
+	    </script>
+	{% endif %}
+{% endblock %}

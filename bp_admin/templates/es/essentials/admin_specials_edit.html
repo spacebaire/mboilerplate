@@ -1,0 +1,214 @@
+{% extends 'es/admin_base.html' %}
+
+{% block page_css %}
+  <link href="/materializecss/js/plugins/sweetalert/dist/sweetalert.css" type="text/css" rel="stylesheet" media="screen,projection">
+<style type="text/css">
+    td {
+        padding: 3px!important;
+        padding-top:7px!important;
+    }
+
+    thead {
+        border-bottom: 1px dotted rgba(37, 50, 56, 0.1)!important;
+    }
+    select {
+        display: block!important;
+    }
+    .dataTables_length{
+        display: none!important;
+      }
+</style>
+{% endblock %}
+
+{% block breadcrums %}
+<div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
+    <div class="container">
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <ol class="breadcrumb" style="font-size: 29px;">
+                <li class="active"><a href="{{ uri_for('admin-specials') }}">Permisos especiales</a> | Permiso </li>
+            </ol>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block page_content %}
+<div class="container">
+      <div class="section">
+       <div class="row" style="margin-top:30px">
+            <div class="row">
+              <h3 class="col s12 m7 offset-m1 grey-text" style="font-weight: 200; line-height: 60px; letter-spacing: 0.2px;">Edita el permiso de acceso.</h3>
+            </div>
+            {% if _user %}
+            <div class="card-panel">
+              <h5 class="brand-color-text">Perfil del usuario</h5>
+              <div class="row">
+                  <div class="col s12 m3 center" style="margin-top:8px;">
+                      <div class="form-group">
+                          <label class="controls">
+                              {% if _user.picture %}
+                                <img id="blah" src="/media/serve/profile/{{_user.key.id()}}/" alt="your image" class="circle responsive-img valign z-depth-1" style="max-height:150px; border: 1px solid #00464F;"/>
+                              {% else %}
+                                <img id="blah" src="" alt="your image" class="circle responsive-img valign valign z-depth-1" style="max-height:150px; cursor:pointer;display:none;"/>
+                                <div id="initial" class="circle red lighten-1" style="width: 110px;   height: 110px; display: inline-block;   vertical-align: middle;   text-align: center;   font-size: 1.5rem;   color: #fff;   font-weight: 300; position: relative;"><span style="position: absolute;top: 25px;left: 42px;font-size: 40px;">{{_user.name[0]}}</span></div>
+                              {% endif %}
+                              <input class="btn btn-success" type='file' id="picture" name="picture" style="display:none;" disabled="" />
+                          </label>
+                      </div>                      
+                  </div>
+                  <div class="col s12 m9">
+                      <div class="row">
+                          <div class="row">
+                            <div class="input-field col s6">
+                              <input id="name" name="name" type="text" value="{% if _user.name %}{{_user.name}}{% endif %}" disabled="" style="color: #00464F;">
+                              <label for="name">Nombre</label>
+                            </div>
+                          
+                            <div class="input-field col s6">
+                              <input id="last_name" name="last_name" type="text" value="{% if _user.last_name %}{{_user.last_name}}{% endif %}" disabled="" style="color: #00464F;">
+                              <label for="last_name">Apellido</label>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="input-field col s6 m4">
+                              <input id="phone" name="phone" type="tel" value="{% if _user.phone %}{{_user.phone}}{% endif %}" disabled="" style="color: #00464F;">
+                              <label for="phone">Teléfono</label>
+                            </div>                       
+                            <div class="input-field col s6 m4">
+                              <input id="birth" name="birth" type="date" class="datepicker" value="{% if _user.birth %}{{_user.birth}}{% endif %}" disabled="" style="color: #00464F;">
+                              <label for="birth">Fecha de nacimiento</label>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            {% else %}
+             <div class="card-panel red lighten-2">
+              <h5 class="white-text">El usuario no ha creado su cuenta.</h5>
+             </div>
+            {% endif %}
+            <div class="card-panel" style="margin-bottom:30px;">
+                <form id="form_operator" action="{{ url|safe }}" method="post">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="delete" id="delete" value="no">
+                  <div class="row margin">
+                    <div class="input-field col s12">
+                      <i class="mdi-social-person prefix brand-color-text"></i>
+                      <input id="opsadminname" name="opsadminname" type="text" value="{{operator.name}}">
+                      <label for="opsadminname" class="center-align">Nombre del usuario</label>
+                    </div>
+                  </div>
+                  <div class="row margin">
+                    <div class="input-field col s12">
+                      <i class="mdi-communication-email prefix brand-color-text"></i>
+                      <input id="opsadminemail" name="opsadminemail" type="email" value="{{operator.email}}">
+                      <label for="opsadminemail" class="center-align">Email del usuario</label>
+                    </div>
+                  </div>
+                  <div class="row margin">
+                    <div class="input-field col s12 l6">
+                        <!-- Dropdown Trigger -->
+                        <i class="mdi-action-group-work left brand-color-text active" style="font-size: 32px;margin-left:5px;"></i>
+                        <input type="hidden" id="opsadminrole" name="opsadminrole" value="{{operator.role}}">
+                        <label for="opsadminrole" class="center-align" style="margin-left:45px;">Rol:</label><br><br>
+                        <a data-hover="false" id="rolebtn" class='dropdown-button btn brand-color truncate' href='#' data-activates='roledd' style="min-width: 250px; min-height: 45px; line-height: 45px;">{{operator.has_role()}}</a>
+                        <blockquote id="permission" class="grey-text text-lighten-1 left" style="text-align: justify; margin-left: 45px;margin-top: 10px;border-left: 5px solid {{brand_color}};"></blockquote>
+                        <!-- Dropdown Structure -->
+                        <ul id='roledd' class='dropdown-content' style="max-height: 250px; font-weight: bolder;">
+                            <li> <a class="brand-color-text" href="#" onclick="fillDd('Member', this);return false;">Operador</a></li>
+                            <li> <a class="brand-color-text" href="#" onclick="fillDd('Coord', this);return false;">Coordinador</a></li>
+                            <li> <a class="brand-color-text" href="#" onclick="fillDd('Admin', this);return false;">Administrador</a></li>
+                        </ul>                
+                    </div>
+                  </div>
+                  <div class="row container" style="padding:25px;padding-left: 55px!important; margin-top:40px;">
+                    <button class="waves-effect waves-light brand-secondary-color white-text btn right" id="submit_ops_form" >Guardar Cambios
+                      <i class="mdi-content-send right"></i>
+                    </button>  
+                    <a class="waves-effect waves-light grey white-text btn left sbmt" id="access_delete" >Eliminar Permiso
+                      <i class="mdi-action-delete right"></i>
+                    </a>                           
+                  </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+
+{% block page_floatings %}
+{% endblock %}
+
+
+{% block page_scripts %}
+<script type="text/javascript" src="/materializecss/js/plugins/sweetalert/dist/sweetalert.min.js"></script> 
+<script type="text/javascript">
+    document.querySelector('#submit_ops_form').addEventListener('click', function() { 
+      if (document.getElementById('opsadminname').value==""){
+        Materialize.toast('<span class="toast-warning">Oops! Llena el campo de nombre por favor.</span>',4500);
+
+      }else if(document.getElementById('opsadminemail').value==""){
+        Materialize.toast('<span class="toast-warning">Oops! Llena el campo de email por favor.</span>',4500);
+      }else{
+        document.getElementById("delete").value = "operator_edition";
+        document.getElementById("form_operator").submit();
+      }
+    });
+
+    function fillDd(val, elem){
+        $('#opsadminrole').val(val);
+        $('#rolebtn').html(elem.innerHTML);
+        populateBlockquote(val);
+    }
+
+    function populateBlockquote(val){
+      switch(val){
+        case 'Member':
+          document.getElementById('permission').innerHTML = 'Este nivel de acceso permite al Operador ingresar a toda pantalla de su nivel.';
+          break;
+        case 'Admin':
+          document.getElementById('permission').innerHTML = 'Este nivel de acceso permite al Administrador ingresar a toda pantalla de su nivel.';
+          break;
+        case 'Coord':
+          document.getElementById('permission').innerHTML = 'Este nivel de acceso permite al Coordinador ingresar a toda pantalla de su nivel.';
+          break;
+      }
+    }
+
+    populateBlockquote('{{operator.role}}');
+
+    $('.sbmt').click(function(){          
+          if(this.id == 'access_delete'){
+              swal(   { title: "¿Seguro que deseas eliminar este acceso especial?",
+                        text: "Podrás crearlo de nuevo en cualquier momento",   
+                        type: "warning",   
+                        showCancelButton: true,   
+                        cancelButtonText:"Cancelar",
+                        confirmButtonColor: "#DD6B55",   
+                        confirmButtonText: "Si, quiero eliminarlo.",   
+                        closeOnConfirm: false 
+                      }, 
+                      function(){   
+                          swal({  title: "¡Listo!",   
+                                  text: "El acceso especial se está eliminando.",   
+                                  showConfirmButton: false,
+                                  type: "success",
+                                  allowEscapeKey: true,
+                                  allowOutsideClick: true 
+                              });
+                          document.getElementById("delete").value = "confirmed_deletion";
+                          document.getElementById("form_operator").submit();
+                      }
+              );        
+          }          
+      });
+
+
+</script>
+{% endblock %}

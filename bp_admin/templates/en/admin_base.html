@@ -1,0 +1,616 @@
+{% import 'en/admin_macros.html' as lib with context %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="{{ locale_language_id }}"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="{{ locale_language_id }}"> <!--<![endif]-->
+
+
+{% block document_head %}
+    <head>
+        {% block title %}<title>{{app_name}}</title>{% endblock %}
+
+        <!-- All meta tags from config files -->
+        {% block metadata %}
+            {{ meta_tags_code }}
+        {% endblock %}
+
+        {% block favicons %}
+            <link rel="icon" href="{{brand_favicon}}">
+            {% if is_mobile %}
+                <!-- For iPhone -->
+                <link rel="apple-touch-icon-precomposed" href="{{brand_favicon}}">
+                <!-- For Windows Phone -->
+                <meta name="msapplication-TileColor" content="#00bcd4">
+                <meta name="msapplication-TileImage" content="{{brand_favicon}}">
+            {% endif %}
+        {% endblock %}
+
+        <!-- All stylesheets   -->
+        {% block stylesheets %}
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+            <!-- CORE CSS-->
+            <link href="/materializecss/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
+            <link href="/materializecss/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+            <!-- Custom CSS-->    
+            <link href="/materializecss/css/custom/custom.css?v=6" type="text/css" rel="stylesheet" media="screen,projection">
+
+            <!-- Branded CSS -->
+            <style>
+                .g-recaptcha{
+                    {% if simplify and is_mobile %}margin-left: -10%;{% elif not is_mobile %} margin-left: 23%;{% endif %}                
+                    -webkit-transform: scale(0.8);
+                    transform: scale(0.8);
+                }
+                li .active a{
+                    color:{{brand_secondary_color}}!important;
+                }
+                ul.side-nav.leftside-navigation li.active > a{
+                    color:{{brand_secondary_color}}!important;
+                }
+                /*BRANDING*/
+                .brand-color{
+                    background-color: {{brand_color}}!important;
+                }
+                .brand-color-text{
+                    color:{{brand_color}}!important;
+                }
+                .brand-secondary-color{
+                    background-color: {{brand_secondary_color}}!important;
+                }
+                .brand-secondary-color-text{
+                    color:{{brand_secondary_color}}!important;
+                }
+                .brand-tertiary-color{
+                    background-color: {{brand_tertiary_color}}!important;
+                }
+                .brand-tertiary-color-text{
+                    color:{{brand_tertiary_color}}!important;
+                }
+                .btn{
+                    background-color: {{brand_color}};
+                    font-family: roboto-light;
+                }
+                .btn:hover{
+                    background-color: {{brand_secondary_color}}!important;
+                    color:white!important;
+                }
+                .btn-large{
+                    background-color: {{brand_color}};
+                    font-family: roboto-light;
+                }
+                .btn-large:hover{
+                    background-color: {{brand_secondary_color}}!important;
+                }
+                .btn-floating{
+                    background-color: {{brand_color}};
+                }
+                .btn-floating:hover{
+                    background-color: {{brand_secondary_color}}!important;
+                }           
+
+                {% if is_mobile %}
+                .btn{
+                    margin-top:15px;
+                }
+                .btn-large{
+                    margin-top:15px;
+                }
+                .modal{
+                    max-height: 90%!important;
+                    width: 95%!important;
+                    top:5%!important;
+                }
+                {% endif %}    
+                #loader {
+                    border-top-color: {{brand_color}}!important;
+                }
+                #loader:before {
+                    border-top-color: {{brand_secondary_color}}!important;
+                }
+                #loader:after {
+                    border-top-color: {{brand_tertiary_color}}!important;
+                }
+                [type=checkbox].filled-in:checked+label:after{
+                    border: 2px solid {{brand_secondary_color}}!important;
+                    background-color: {{brand_secondary_color}}!important;
+                }
+                .breadcrumb:last-child {
+                    color: {{brand_color}}!important;
+                    font-family: roboto-thin;
+                    {% if is_mobile %}font-size:14px!important;{% endif %}
+                }
+                .breadcrumb li a {
+                    color: {{brand_secondary_color}};
+                    font-family: roboto-thin;
+                    {% if is_mobile %}font-size:14px!important;{% endif %}
+                }
+                .breadcrumb li a.btn{
+                    font-size: 20px;
+                    {% if is_mobile %}font-size:14px!important;margin-top:-1px;width: 80px;{% endif %}
+                }
+                .dropdown-content li > a, .dropdown-content li > span{
+                    color: {{brand_secondary_color}}!important;
+                }
+                .picker__day--selected{
+                    background-color: {{brand_color}}!important;
+                }
+                .picker__date-display{
+                    background-color: {{brand_color}}!important;
+                }
+                .picker__weekday-display{
+                    background-color: {{brand_color}}!important;
+                }
+                .picker__close, .picker__today{
+                    color: {{brand_color}}!important;
+                }                
+                {% if not is_mobile %}
+                    ul.side-nav.leftside-navigation{
+                        top:64px!important;
+                    }
+                {% endif %}
+            </style>
+
+            <!-- Custom inline CSS -->
+            <style>
+                footer {
+                    position: fixed!important;
+                    bottom: 0px!important;
+                    width: 100%!important;
+                    z-index: 1!important;
+                    opacity: 0.95!important;
+                }
+                footer.page-footer {
+                    background-color: white!important;
+                }
+            </style>
+            
+            {% block page_css %}{% endblock %}
+            {% if user_id %}
+                {{ zendesk_imports }}
+            {% endif %}
+        {% endblock %}
+
+        <!-- All google, mixpanel and analytics tags from config files. -->
+        {% block analytics %}{{ google_analytics_code }}{% endblock %}
+        
+        <!-- All JavaScript at the bottom, except these. -->
+        {% block priority_js %}
+            <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js"></script>
+        {% endblock %}
+
+        <!--  POLYMER   -->
+        {% block webcomponents %}
+            {% block page_components %}{% endblock %}
+        {% endblock %} 
+
+    </head>
+{% endblock %}
+
+{% block document_body %}
+    <body>
+        {% block loader %}
+            <!-- Start Page Loading -->
+            <div id="loader-wrapper">
+                <div id="loader"></div>        
+                <div class="loader-section section-left"></div>
+                <div class="loader-section section-right"></div>
+            </div>
+            <!-- End Page Loading -->
+        {% endblock %}
+
+        {% block header %}
+            <!-- START HEADER -->
+            <header id="header" class="page-topbar">
+                <!-- start header nav-->
+                <div class="navbar-fixed">
+                    <nav class="white">
+                        <div class="nav-wrapper">
+                            <h1 class="logo-wrapper"><a href="{{ uri_for('admin') }}" class="brand-logo darken-1 center"><img src="{{brand_email_logo}}" alt="materialize logo" style="max-height: 45px;width: auto; margin-top:-5px;"></a></h1>
+                            <ul class="right hide-on-med-and-down">
+                                <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen grey-text text-ligthen-1"><i class="mdi-action-settings-overscan"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                <!-- end header nav-->
+            </header>
+            <!-- END HEADER -->
+        {% endblock %}
+
+
+        {% block main %}
+            <!-- START MAIN -->
+            <div id="main" style="padding-left: 0px;margin-bottom: 70px;">
+                {% block wrapper %}
+                    <!-- START WRAPPER -->
+                    <div class="wrapper">                                               
+
+                        {% block sidebar_left %}
+                            <!-- START LEFT SIDEBAR NAV-->
+                            <aside id="left-sidebar-nav">
+                                <ul id="slide-out" class="side-nav leftside-navigation">
+                                    <li class="user-details brand-color" style="margin-bottom: 15px;padding: 15px 0 0 15px;">
+                                        <div class="row">
+                                            <div class="col col s12" style="    margin-bottom: 15px;">
+                                                <a class="btn-flat waves-effect waves-light white-text profile-btn truncate">{{nickname}}</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    
+                                    <li class="no-padding" style="margin-bottom: 15px; margin-top:15px;">
+                                        <ul class="collapsible collapsible-accordion">
+                                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan {% if path == uri_for('admin') or uri_for('admin-brand') in path or uri_for('admin-contents') in path or uri_for('admin-specials') in path %}active{% endif %}"><i class="mdi-action-settings grey-text left"></i>Essentials</a>
+                                               <div class="collapsible-body">
+                                                    <ul>
+                                                        <li {% if path == uri_for('admin') %}class="active"{% endif %}><a href="{{ uri_for('admin') }}">Summary</a></li>
+                                                        <li {% if path == uri_for('admin-brand') %}class="active"{% endif %}><a href="{{ uri_for('admin-brand') }}">Branding</a></li>
+                                                        {% if has_contents %}
+                                                        <li {% if path == uri_for('admin-contents') %}class="active"{% endif %}><a href="{{ uri_for('admin-contents') }}">Contents</a></li>
+                                                        {% endif %}
+                                                        {% if has_specials %}
+                                                        <li {% if path == uri_for('admin-specials') %}class="active"{% endif %}><a href="{{ uri_for('admin-specials') }}">Special access</a></li>
+                                                        {% endif %}
+                                                    </ul>
+                                               </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
+
+
+                                    <li class="no-padding" style="margin-bottom: 15px; margin-top:15px;">
+                                        <ul class="collapsible collapsible-accordion">
+                                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan {% if uri_for('admin-users-list') in path or uri_for('admin-logs-visits') in path %}active{% endif %}"><i class="mdi-action-favorite grey-text left"></i>Engagement</a>
+                                               <div class="collapsible-body">
+                                                    <ul>
+                                                        <li {% if path == uri_for('admin-users-list') %}class="active"{% endif %}><a href="{{ uri_for('admin-users-list') }}">Users</a></li>
+                                                        <li {% if path == uri_for('admin-logs-visits') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-visits') }}">Visits</a></li>
+                                                    </ul>
+                                               </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
+
+                                    <li class="no-padding" style="margin-bottom: 15px; margin-top:15px;">
+                                        <ul class="collapsible collapsible-accordion">
+                                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan {% if uri_for('admin-logs-emails') in path or uri_for('admin-send-email') in path %}active{% endif %}"><i class="mdi-communication-email grey-text left"></i>Emails</a>
+                                               <div class="collapsible-body">
+                                                    <ul>
+                                                        <li {% if path == uri_for('admin-logs-emails') %}class="active"{% endif %}><a href="{{ uri_for('admin-logs-emails') }}">Emails sent</a></li>
+                                                        <li {% if path == uri_for('admin-send-email') %}class="active"{% endif %}><a href="{{ uri_for('admin-send-email') }}">Send an email</a></li>
+                                                    </ul>
+                                               </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    
+                                    <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
+
+                                    {% if has_blog %}
+                                    <li class="no-padding" style="margin-bottom: 15px; margin-top:15px;">
+                                        <ul class="collapsible collapsible-accordion">
+                                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan {% if uri_for('admin-blog') in path or uri_for('admin-tools-css') in path or uri_for('admin-tools-icons') in path or uri_for('admin-tools-media') in path %}active{% endif %}"><i class="mdi-content-create grey-text left"></i>Blog</a>
+                                               <div class="collapsible-body">
+                                                    <ul>
+                                                        <li {% if path == uri_for('admin-blog') %}class="active"{% endif %}><a href="{{ uri_for('admin-blog') }}">Posts</a></li>
+                                                        <li {% if path == uri_for('admin-tools-css') %}class="active"{% endif %}><a href="{{ uri_for("admin-tools-css") }}">Grid and colors</a></li>  
+                                                        <li {% if path == uri_for('admin-tools-icons') %}class="active"{% endif %}><a href="{{ uri_for("admin-tools-icons") }}">Icons</a></li>  
+                                                        <li {% if path == uri_for('admin-tools-media') %}class="active"{% endif %}><a href="{{ uri_for("admin-tools-media") }}">Media</a></li>  
+                                                    </ul>
+                                               </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="li-hover"><div class="divider" style="  padding: 2px;"></div></li>
+                                    {% endif %}
+
+                                    <li class="no-padding" style="margin-bottom: 15px; margin-top:15px;">
+                                        <ul class="collapsible collapsible-accordion">
+                                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-navigation-more-horiz grey-text left"></i>More</a>
+                                               <div class="collapsible-body">
+                                                    <ul>
+                                                        <li><a href="/" target="_blank">Visit site</a></li>
+                                                        <li><a href="{{ uri_for('admin-logout') }}">Logout</a></li>
+                                                    </ul>
+                                               </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+
+
+                                </ul>
+                                <a href="#" data-activates="slide-out" class="sidebar-collapse brand-color-text waves-effect waves-light " style="margin-top: -10px;font-size: 30px;"><i class="mdi-navigation-menu"></i></a>
+                            </aside>
+                            <!-- END LEFT SIDEBAR NAV-->
+                        {% endblock %}
+                        
+                        {% block disclaimers %}
+                            {% if disclaim %}
+                                <style type="text/css">
+                                    .disclaimer{margin-bottom: 0px;width: 101%;height: auto;left: 0px;text-align: center;z-index: 9999;background: rgb(205, 55, 53);color: white;font-size: 14px;font-family: roboto-thin;letter-spacing: 1.5px; padding:10px;cursor: pointer;border-bottom: 1px solid rgb(240, 240, 240);}
+                                </style>
+                                {% if disclaim_type == 1 %}
+                                    <div id="card-alert" class="card light-blue lighten-5" style="margin:0!important;">
+                                      <div class="card-content light-blue-text text-darken-2">
+                                        <p>Este es un ejemplo de disclaimer.</p>
+                                      </div>
+                                      <button type="button" class="close light-blue-text text-darken-2" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                      </button>
+                                    </div>
+                                {% else %}
+                                    <div id="card-alert" class="card light-blue lighten-5" style="margin:0!important;">
+                                      <div class="card-content light-blue-text text-darken-2">
+                                        <p>¿Qué tal si subimos una imagen en tu perfil? <span onclick="window.open('{{ uri_for("materialize-settings-profile") }}', '_top')" style="text-decoration: underline; font-family: roboto; cursor: pointer">sólo has clic aquí</span></p>
+                                      </div>
+                                      <button type="button" class="close light-blue-text text-darken-2" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                      </button>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endblock %}   
+                        <!-- //////////////////////////////////////////////////////////////////////////// -->
+
+                        {% block content %}
+                            <!-- START CONTENT -->
+                            <section id="content">
+
+                                {% block breadcrums %}
+                                {% endblock %}
+                                
+                                <!--start container-->
+                                <div class="container">
+                                    {% block page_content %}
+                                    {% endblock %}
+
+                                    {% block page_floatings %}
+                                        <!-- Floating Action Button -->
+                                        <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+                                            <a class="btn-floating btn-large red">
+                                              <i class="large mdi-editor-mode-edit"></i>
+                                            </a>
+                                            <ul>
+                                              <li><a href="#" id="zen_alias" class="btn-floating red"><i class="large mdi-communication-live-help"></i></a></li>
+                                              <li><a href="#" class="btn-floating yellow darken-1"><i class="large mdi-device-now-widgets"></i></a></li>
+                                              <li><a href="#" class="btn-floating green"><i class="large mdi-editor-insert-invitation"></i></a></li>
+                                              <li><a href="#" class="btn-floating blue"><i class="large mdi-communication-email"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <!-- Floating Action Button -->
+                                    {% endblock %}
+
+                                </div>
+                                <!--end container-->
+                            </section>
+                            <!-- END CONTENT -->
+                        {% endblock %}
+
+                        <!-- //////////////////////////////////////////////////////////////////////////// -->
+
+                        {% block sidebar_right %}
+                            <!-- START RIGHT SIDEBAR NAV-->
+                            <!-- <aside id="right-sidebar-nav">
+                                <ul id="chat-out" class="side-nav rightside-navigation">
+                                    <li class="li-hover">
+                                    <a href="#" data-activates="chat-out" class="chat-close-collapse right"><i class="mdi-navigation-close"></i></a>
+                                    <div id="right-search" class="row">
+                                        <form class="col s12">
+                                            <div class="input-field">
+                                                <i class="mdi-action-search prefix"></i>
+                                                <input id="icon_prefix" type="text" class="validate">
+                                                <label for="icon_prefix">Search</label>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    </li>
+                                </ul>
+                            </aside> -->
+                            <!-- END RIGHT SIDEBAR NAV-->
+                        {% endblock %}
+
+                    </div>
+                    <!-- END WRAPPER -->
+                {% endblock %}
+            </div>
+            <!-- END MAIN -->
+        {% endblock %}
+
+
+        {% block footer %}
+            <!-- START FOOTER -->
+            <footer class="page-footer" style="padding-left: 0px; {% if not is_mobile %}position: fixed; width: 100%;bottom: 0px;{% endif %}">
+                {% block page_footer %}{% endblock %}
+                <div class="footer-copyright white grey-text text-lighten-2">
+                    <div class="container">
+                        <div class="container" style="text-align:right;" data-position="top" data-delay="50" data-tooltip="You should try the Konami-code">Made from real<i class="mdi-image-flash-on brand-color-text text-lighten-1" style="font-size: 15px;margin-left: 3px;-webkit-animation: pulsate 3s ease-out; -webkit-animation-iteration-count: infinite;"></i> by <a class="brand-color-text" href="http://onesmart.tech">OneSmart.Tech</a></div>
+                    </div>
+                </div>
+            </footer>
+            <!-- END FOOTER -->
+        {% endblock %}
+
+        <!-- All Scripts start here -->
+        {% block scripts %}
+            <!-- jQuery Library -->
+            <script type="text/javascript" src="/materializecss/js/plugins/jquery-1.11.2.min.js"></script>    
+            <!--materialize js-->
+            <script type="text/javascript" src="/materializecss/js/materialize.js"></script>
+            <!--prism
+            <script type="text/javascript" src="js/prism/prism.js"></script>-->
+            <!--scrollbar-->
+            <script type="text/javascript" src="/materializecss/js/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+            <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+            <script type="text/javascript" src="/materializecss/js/plugins.js"></script>
+            <!--custom-script.js - Add your own theme custom JS-->
+            <script type="text/javascript" src="/materializecss/js/custom-script.js?v=5"></script>
+
+
+            <!-- Toast Notification -->
+            {% if messages|safe %}
+                {% for message in messages %}
+                    <script type="text/javascript">
+                        var resendIndex = 0 ;
+                        var _text = "{{ message[0]|safe }}";
+                        var _textAdditionals = "";
+                        resendIndex = _text.search('resend');
+                        if ( resendIndex > 0 ){
+                            //this is the case when resend-activation-link is sent
+                            // 1: Add this text as html to toast additionals
+                            _textAdditionals = '<a class="toast-warning" href="/'+_text.substr(resendIndex).replace(/ /g,'/')+'/">Clic here if you need us to resend activation link. Previous link will be forgotten.</a>';
+                            // 2: Trim this text from toast
+                            _text = _text.substr(0, resendIndex-1);                         
+                        }
+                        var _msg = '<span class="toast-{{ message[1]|safe }}">'+_text+'</span>';
+                        Materialize.toast(_msg, 4500);
+                        if (_textAdditionals != "") Materialize.toast(_textAdditionals, 10000);
+                    </script>
+                {% endfor %}
+            {% endif %} 
+
+            {% block raptor %}
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="/materializecss/js/plugins/raptor/raptor.js?v=5"></script>
+                <script type="text/javascript">
+                    $(window).load(function() {
+                        $('body').raptorize({
+                            'enterOn' : 'konami-code'
+                        });
+                    });
+                </script>
+            {% endblock %}
+
+            {% block onload_methods %}
+                <script>
+                    var is_Safari = false, not_Chrome = false;
+                    $(document).ready(function(){
+
+                            var BrowserDetect = {
+                                init: function() {
+                                    this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
+                                    this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "an unknown version";
+                                    this.OS = this.searchString(this.dataOS) || "an unknown OS";
+                                    console.log("Detected " + this.browser + " v." + this.version + " running {{app_name}} in a " + this.OS);
+                                    if (this.browser != 'Chrome' && this.browser.indexOf('Safari') == -1 && this.browser.indexOf('iPhone') == -1 && this.browser != 'Firefox') {
+                                        alert("Sorry, this is a system for the future, use Google Chrome.");
+                                    }
+                                    else if (this.browser.indexOf("Safari") != -1)
+                                        is_Safari = true;
+                                    else if (this.browser.indexOf("Chrome") == -1)
+                                        not_Chrome = true;
+                                },
+                                searchString: function(data) {
+                                    for (var i = 0; i < data.length; i++) {
+                                        var dataString = data[i].string;
+                                        var dataProp = data[i].prop;
+                                        this.versionSearchString = data[i].versionSearch || data[i].identity;
+                                        if (dataString) {
+                                            if (dataString.indexOf(data[i].subString) != -1) return data[i].identity;
+                                        } else if (dataProp) return data[i].identity;
+                                    }
+                                },
+                                searchVersion: function(dataString) {
+                                    var index = dataString.indexOf(this.versionSearchString);
+                                    if (index == -1) return;
+                                    return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+                                },
+                                dataBrowser: [{
+                                    string: navigator.userAgent,
+                                    subString: "Chrome",
+                                    identity: "Chrome"
+                                }, {
+                                    string: navigator.userAgent,
+                                    subString: "OmniWeb",
+                                    versionSearch: "OmniWeb/",
+                                    identity: "OmniWeb"
+                                }, {
+                                    string: navigator.vendor,
+                                    subString: "Apple",
+                                    identity: "Safari",
+                                    versionSearch: "Version"
+                                }, {
+                                    prop: window.opera,
+                                    identity: "Opera",
+                                    versionSearch: "Version"
+                                }, {
+                                    string: navigator.vendor,
+                                    subString: "iCab",
+                                    identity: "iCab"
+                                }, {
+                                    string: navigator.vendor,
+                                    subString: "KDE",
+                                    identity: "Konqueror"
+                                }, {
+                                    string: navigator.userAgent,
+                                    subString: "Firefox",
+                                    identity: "Firefox"
+                                }, {
+                                    string: navigator.vendor,
+                                    subString: "Camino",
+                                    identity: "Camino"
+                                }, { // for newer Netscapes (6+)
+                                    string: navigator.userAgent,
+                                    subString: "Netscape",
+                                    identity: "Netscape"
+                                }, {
+                                    string: navigator.userAgent,
+                                    subString: "MSIE",
+                                    identity: "Explorer",
+                                    versionSearch: "MSIE"
+                                }, {
+                                    string: navigator.userAgent,
+                                    subString: "Gecko",
+                                    identity: "Mozilla",
+                                    versionSearch: "rv"
+                                }, { // for older Netscapes (4-)
+                                    string: navigator.userAgent,
+                                    subString: "Mozilla",
+                                    identity: "Netscape",
+                                    versionSearch: "Mozilla"
+                                }],
+                                dataOS: [{
+                                    string: navigator.platform,
+                                    subString: "Win",
+                                    identity: "Windows"
+                                }, {
+                                    string: navigator.platform,
+                                    subString: "Mac",
+                                    identity: "Mac"
+                                }, {
+                                    string: navigator.userAgent,
+                                    subString: "iPhone",
+                                    identity: "iPhone/iPod"
+                                }, {
+                                    string: navigator.platform,
+                                    subString: "Linux",
+                                    identity: "Linux"
+                                }]
+                            };
+                            BrowserDetect.init();   
+                    }); 
+                </script>
+            {% endblock %}
+
+            {% block translate %}
+                {% if locale_language_id == "en" or locale_language_id == "es" %}
+                    <!-- YOU CAN ADD MORE LANGUAGES BY ADDING A translate_<locale_language_id>.js AT BP_CONTENT/THEMES/DEFAULT/STATIC/MATERIALIZE/JS/PLUGINS/TRANSLATOR 
+                    <script>forceLang('{{locale_language_id}}');</script>-->
+                {% endif %}
+            {% endblock %}
+
+            {% block page_scripts %}
+            {% endblock %}            
+        {% endblock %}
+
+    </body>        
+{% endblock %}
+
+
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>Server Error | {{ exception }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="NOINDEX, NOFOLLOW">
+    <meta name="description" content="default error {{ exception }}">
+    <link rel="icon" href="/default/materialize/images/brand/fav.png" sizes="180x180">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- CORE CSS-->
+    <link href="/materializecss/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="/materializecss/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <!-- Custom CSS-->    
+    <link href="/materializecss/css/custom/custom.css?v=5" type="text/css" rel="stylesheet" media="screen,projection">
+
+
+    <script>
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-XXXXX-X']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+</head>
+
+<body>
+
+<div class="container">
+    <h1 style="margin-bottom: 1em;">Lo sentimos, algo ha salido mal.</h1>
+
+    <div>
+        <p class="label">Error: {{ exception }}</p>
+        <h2>¿Qué pudo causarlo?</h2>
+        <ul>
+            <li>Un error técnico de nuestro equipo.</li>
+            <li>Probablemente removimos el contenido en la última actualización.</li>
+            <li>El link que seleccionaste ya no existe o es viejo.</li>
+            <li>O bien, quizás tecleaste algún error en la URL.</li>
+        </ul>
+
+        <h2>¿Qué puedes hacer?</h2>
+        <ul>
+            <li>Escribe nuevamente la URL.</li>
+            <li>Regresa a la <a href="/">página de inicio</a>. </li>
+        </ul>
+
+        <div>
+            <strong>Una cosa más:</strong><br />
+            Si gustas ayudarnos a mejorar y evitar este inconveniente en el futuro, estamos para servirte.
+            Por favor contáctanos diciendo <a href="/contact/?exception={{ exception }}-{{ url }}">qué salió mal</a>.
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

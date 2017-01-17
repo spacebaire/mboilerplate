@@ -1,0 +1,187 @@
+{% extends base_layout %}
+
+<!-- ADD PAGE HEAD ELEMENTS -->
+{% block title %}<title>{{app_name}} » Settings Referrals</title>{% endblock %}
+   
+{% block page_css %}
+  <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="https://cdn.datatables.net/responsive/2.1.0/css/responsive.dataTables.min.css" rel="stylesheet" type="text/css" media="screen,projection" />
+{% endblock %}
+
+{% block page_components %}
+{% endblock %}
+
+<!-- ADD PAGE BODY ELEMENTS-->
+{% block breadcrums %}
+  <!--breadcrumbs start-->
+    <div id="breadcrumbs-wrapper" class=" grey lighten-3">
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <ol class="breadcrumb" style="font-size: 29px;">
+                  <li class="active">Invitados</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--breadcrumbs end-->
+{% endblock %}
+
+{% block page_content %}
+
+<div class="container">
+    <div class="section">
+        
+        <div class="row">
+            
+            <div class="col s12">
+                <form id="form_referrals" action="{{ url|safe }}" method="post">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" id="emails" name="emails">
+                    <a class="waves-effect waves-light brand-color white-text btn right" id="referrals">
+                        Invitar de nuevo<i class="mdi-content-send right"></i>
+                    </a>
+                </form>
+            </div>            
+            
+            <div class="col s12">
+                <p>Tienes {{count}} contactos.</p>
+                <table id="data-table-contacts" class="dt-responsive no-wrap centered display compact">
+                    <thead>
+                        <tr class="brand-color white-text">
+                            <th>Desde</th>
+                            <th>Contacto</th>
+                            <th>Estatus</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for r in recipients %}
+                        <tr>
+                            <td class="timestamp">{{r.updated}}</td>
+                            <td>{{r.recipient_email}}</td>
+                            <td> 
+                            {% if r.action == 'invited' %}
+                                <input type="checkbox" id="{{r.recipient_email}}"><label for="{{r.recipient_email}}">Invitar de nuevo</label>                            
+                            {% elif r.action == 'registered' %}
+                                <span style="color:#c48527">Se registro.</span>
+                            {% elif r.action == 'joined' %}
+                                <span style="color:#43CC20">Se unió!</span>
+                            {% elif r.action == 'inelegible' %}
+                                <span style="color:#00A0D7">Ya tenía cuenta</span>
+                            {% endif %}
+                            </td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% if not count < page_size %}
+                {{ lib.render_pager() }}
+            {% endif %}
+            </div>
+                    
+        </div>
+        
+        <div class="row">
+            <div class="col s12">
+                <p class="left">No ves a algún invitado? <a href='{{ uri_for("materialize-referrals") }}'>Haz clic aqui para invitarlo.</a></p>  
+            </div>
+        </div>
+    
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block sidebar_right %}
+{% endblock %}
+
+{% block page_floatings %}
+{% endblock %}
+
+{% block page_footer %}
+{% endblock %}
+
+
+<!-- ADD PAGE SCRIPT ELEMENTS-->
+{% block page_scripts %}
+    <script src="/materializecss/js/plugins/moment/moment-with-locales.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+    <script>
+        moment.locale('es');
+        emails = [];
+
+        $(document).ready(function(){
+        
+            $('#referrals').click(function(){            
+                document.getElementById('emails').value = JSON.stringify(emails);
+                if (document.getElementById('emails').value != '[]'){
+                    document.getElementById('form_'+this.id).submit();
+                }else{
+                    Materialize.toast('<span class="toast-warning">Selecciona al menos 1 contacto.</span>', 4500);
+                }            
+            });         
+            
+            $('input:checkbox').change(function(){
+                if ($(this).is(':checked')) {
+                    emails.push(this.id);
+                }else{
+                    emails.splice(emails.indexOf(this.id),1);
+                }
+            });         
+         
+            $('#data-table-contacts').DataTable({
+                scrollCollapse: true,
+                paging: false,
+                responsive: true,
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: -1
+                    }
+                },
+                columnDefs: [ {
+                    className: 'control',
+                    orderable: false,
+                    targets:   -1
+                } ],
+                "dom": 'lrtip',
+                "lengthMenu": [[100], [100]],
+                "language": {
+                  "lengthMenu": "Mostrar _MENU_ contactos por página",
+                  "search": "Buscar en los contactos de esta tabla:",
+                  "zeroRecords": "Ningún reporte encontrado",
+                  "info": "Mostrando _TOTAL_ contactos",
+                  "infoFiltered": "(filtrando sobre _MAX_ contactos)",
+                  "paginate": {
+                      "first":      "Inicio",
+                      "last":       "Final",
+                      "next":       "Siguiente",
+                      "previous":   "Previo"
+                  }
+                }
+            });
+                  
+            var y, m, d;
+            var x = document.getElementsByClassName("timestamp");
+            for (var i = 0, j = x.length; i < j; i++) {
+                y = parseInt(x[i].innerHTML.trim().substr(0, 4));
+                m = parseInt(x[i].innerHTML.trim().substr(5, 2)) - 1;
+                if (m < 0) m = 12;
+                d = parseInt(x[i].innerHTML.trim().substr(8, 2));
+                var a = moment([y, m, d]);
+                var _b = new Date()
+                var b = moment([_b.getFullYear(), _b.getMonth(), _b.getDate()]);
+                if (a.from(b, true) != 'unos segundos') x[i].innerHTML = a.from(b, true);
+                else x[i].innerHTML = 'menos de un día';
+            }
+        
+        });
+
+
+    </script>
+{% endblock %}

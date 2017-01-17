@@ -1,0 +1,634 @@
+{% extends 'en/admin_base.html' %}
+
+{% block page_css %}
+  <!-- <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" type="text/css" rel="stylesheet" media="screen,projection"/> -->
+  <link href="https://cdn.datatables.net/responsive/2.1.0/css/responsive.dataTables.min.css" rel="stylesheet" type="text/css" media="screen,projection" />
+  <link href="/materializecss/js/plugins/sweetalert/dist/sweetalert.css" type="text/css" rel="stylesheet" media="screen,projection">
+{% endblock %}
+
+{% block breadcrums %}
+<!--breadcrumbs start-->
+<div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
+    <div class="container">
+        <div class="row">
+          <div class="col s12">
+          <ol class="breadcrumb" style="font-size: 29px;">
+                <li class="active">Add your contents with specific permissions <a class="btn waves-effect waves-light right brand-color modal-trigger white-text" href="#modal1" onclick="cleanForm();return false;">{%if not is_mobile %}Add{% endif %}<i class="mdi-av-my-library-add left"></i></a></li>
+            </ol></div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+{% endblock %}
+
+
+{% block page_content %}
+<div class="container">
+      <div class="section">
+       <div class="row" style="margin-top:30px">
+            <div class="row">
+              <h3 class="col s12 m7 offset-m1 grey-text" style="font-weight: 200; line-height: 60px; letter-spacing: 0.2px;">Customize with your own content.</h3>
+            </div>
+            <div class="card-panel" style="margin-bottom:30px;">
+                <div class="row container" style="padding:25px; padding-left: 55px!important;">
+                    {% if i_count > 0 %}
+                    <h4 class="brand-secondary-color-text"><i class="mdi-image-crop-original"></i> Images</h4>
+                    <hr>
+                        <table id="data-table-simple-images" class="dt-responsive no-wrap centered display compact">
+                            <thead style="font-family:roboto; color:#777777;">
+                              <tr class="brand-color white-text">
+                                  <th>See</th>
+                                  <th>Edit</th>
+                                  <th>Title</th>
+                                  <th>Subtitle</th>
+                                  <th>Description</th>
+                                  <th>Permission level</th>
+                                  <th>Visibility</th>
+                                  <th>Delete</th>
+                                  <th></th>
+                              </tr>
+                            </thead>
+                            <tbody id="report_table" style="font-family:roboto-light;">
+                                {% for content in images %}
+                                  <tr>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="{{content.link}}" target="_blank"><i class="mdi-action-visibility brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="#" onclick="populateForm('{{content.get_id()}}','{{content.kind}}','{{content.title}}','{{content.subtitle}}','{{content.description}}','{{content.link}}',{{content.permission}}); return false;"><i class="mdi-editor-mode-edit brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td style="width:120px">{{content.title}}</td>
+                                      <td style="width:120px">{{content.subtitle}}</td>
+                                      <td style="width:280px">{{content.description}}</td>
+                                      <td>{{content.permission}}</td>
+                                      <td style="width:185px">
+                                        <div>    
+                                        {% if content.hidden %}
+                                            <a class="btn green lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-show', content_id=content.get_id()) }}"> Show</a>
+                                        {% else %}
+                                            <a class="btn red lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-hide', content_id=content.get_id()) }}"> Hide</a>
+                                        {% endif %}
+                                        </div>  
+                                      </td>
+                                      <td>
+                                        <div>    
+                                            <a class="icon" href="#" onclick="warnDelete('{{ uri_for('admin-content-delete', content_id=content.get_id()) }}')"> <i class="mdi-action-delete red-text small"></i></a>
+                                        </div>   
+                                      </td>
+                                      <td></td>
+                                  </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    {% if v_count > 0 %}
+                    <h4 class="brand-secondary-color-text"><i class="mdi-av-videocam"></i> Videos</h4>
+                    <hr>
+                        <table id="data-table-simple-videos" class="dt-responsive no-wrap centered display compact">
+                            <thead style="font-family:roboto; color:#777777;">
+                              <tr class="brand-color white-text">
+                                  <th>See</th>
+                                  <th>Edit</th>
+                                  <th>Title</th>
+                                  <th>Subtitle</th>
+                                  <th>Description</th>
+                                  <th>Permission level</th>
+                                  <th>Visibility</th>
+                                  <th>Delete</th>
+                                  <th></th>
+                              </tr>
+                            </thead>
+                            <tbody id="report_table" style="font-family:roboto-light;">
+                                {% for content in videos %}
+                                  <tr>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="{{content.link}}" target="_blank"><i class="mdi-action-visibility brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="#" onclick="populateForm('{{content.get_id()}}','{{content.kind}}','{{content.title}}','{{content.subtitle}}','{{content.description}}','{{content.link}}',{{content.permission}}); return false;"><i class="mdi-editor-mode-edit brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td style="width:120px">{{content.title}}</td>
+                                      <td style="width:120px">{{content.subtitle}}</td>
+                                      <td style="width:280px">{{content.description}}</td>
+                                      <td>{{content.permission}}</td>
+                                      <td style="width:185px">
+                                        <div>    
+                                        {% if content.hidden %}
+                                            <a class="btn green lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-show', content_id=content.get_id()) }}"> Show</a>
+                                        {% else %}
+                                            <a class="btn red lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-hide', content_id=content.get_id()) }}"> Hide</a>
+                                        {% endif %}
+                                        </div>  
+                                      </td>
+                                      <td>
+                                        <div>    
+                                            <a class="icon" href="#" onclick="warnDelete('{{ uri_for('admin-content-delete', content_id=content.get_id()) }}')"> <i class="mdi-action-delete red-text small"></i></a>
+                                        </div>   
+                                      </td>
+                                      <td></td>
+                                  </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+
+                    {% if a_count > 0 %}
+                    <h4 class="brand-secondary-color-text"><i class="mdi-av-volume-down"></i> Audios</h4>
+                    <hr>
+                        <table id="data-table-simple-audios" class="dt-responsive no-wrap centered display compact">
+                            <thead style="font-family:roboto; color:#777777;">
+                              <tr class="brand-color white-text">
+                                  <th>See</th>
+                                  <th>Edit</th>
+                                  <th>Title</th>
+                                  <th>Subtitle</th>
+                                  <th>Description</th>
+                                  <th>Permission level</th>
+                                  <th>Visibility</th>
+                                  <th>Delete</th>
+                                  <th></th>
+                              </tr>
+                            </thead>
+                            <tbody id="report_table" style="font-family:roboto-light;">
+                                {% for content in audios %}
+                                  <tr>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="{{content.link}}" target="_blank"><i class="mdi-action-visibility brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="#" onclick="populateForm('{{content.get_id()}}','{{content.kind}}','{{content.title}}','{{content.subtitle}}','{{content.description}}','{{content.link}}',{{content.permission}}); return false;"><i class="mdi-editor-mode-edit brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td style="width:120px">{{content.title}}</td>
+                                      <td style="width:120px">{{content.subtitle}}</td>
+                                      <td style="width:280px">{{content.description}}</td>
+                                      <td>{{content.permission}}</td>
+                                      <td style="width:185px">
+                                        <div>    
+                                        {% if content.hidden %}
+                                            <a class="btn green lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-show', content_id=content.get_id()) }}"> Show</a>
+                                        {% else %}
+                                            <a class="btn red lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-hide', content_id=content.get_id()) }}"> Hide</a>
+                                        {% endif %}
+                                        </div>  
+                                      </td>
+                                      <td>
+                                        <div>    
+                                            <a class="icon" href="#" onclick="warnDelete('{{ uri_for('admin-content-delete', content_id=content.get_id()) }}')"> <i class="mdi-action-delete red-text small"></i></a>
+                                        </div>   
+                                      </td>
+                                      <td></td>
+                                  </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+
+                    {% if d_count > 0 %}
+                    <h4 class="brand-secondary-color-text"><i class="mdi-action-description"></i> Documents</h4>
+                    <hr>
+                        <table id="data-table-simple-documents" class="dt-responsive no-wrap centered display compact">
+                            <thead style="font-family:roboto; color:#777777;">
+                              <tr class="brand-color white-text">
+                                  <th>See</th>
+                                  <th>Edit</th>
+                                  <th>Title</th>
+                                  <th>Subtitle</th>
+                                  <th>Description</th>
+                                  <th>Permission level</th>
+                                  <th>Visibility</th>
+                                  <th>Delete</th>
+                                  <th></th>
+                              </tr>
+                            </thead>
+                            <tbody id="report_table" style="font-family:roboto-light;">
+                                {% for content in documents %}
+                                  <tr>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="{{content.link}}" target="_blank"><i class="mdi-action-visibility brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="#" onclick="populateForm('{{content.get_id()}}','{{content.kind}}','{{content.title}}','{{content.subtitle}}','{{content.description}}','{{content.link}}',{{content.permission}}); return false;"><i class="mdi-editor-mode-edit brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td style="width:120px">{{content.title}}</td>
+                                      <td style="width:120px">{{content.subtitle}}</td>
+                                      <td style="width:280px">{{content.description}}</td>
+                                      <td>{{content.permission}}</td>
+                                      <td style="width:185px">
+                                        <div>    
+                                        {% if content.hidden %}
+                                            <a class="btn green lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-show', content_id=content.get_id()) }}"> Show</a>
+                                        {% else %}
+                                            <a class="btn red lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-hide', content_id=content.get_id()) }}"> Hide</a>
+                                        {% endif %}
+                                        </div>  
+                                      </td>
+                                      <td>
+                                        <div>    
+                                            <a class="icon" href="#" onclick="warnDelete('{{ uri_for('admin-content-delete', content_id=content.get_id()) }}')"> <i class="mdi-action-delete red-text small"></i></a>
+                                        </div>   
+                                      </td>
+                                      <td></td>
+                                  </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+
+                    {% if s_count > 0 %}
+                    <h4 class="brand-secondary-color-text"><i class="mdi-action-help"></i> Surveys</h4>
+                    <hr>
+                        <table id="data-table-simple-surveys" class="dt-responsive no-wrap centered display compact">
+                            <thead style="font-family:roboto; color:#777777;">
+                              <tr class="brand-color white-text">
+                                  <th>See</th>
+                                  <th>Edit</th>
+                                  <th>Title</th>
+                                  <th>Subtitle</th>
+                                  <th>Description</th>
+                                  <th>Permission level</th>
+                                  <th>Visibility</th>
+                                  <th>Delete</th>
+                                  <th></th>
+                              </tr>
+                            </thead>
+                            <tbody id="report_table" style="font-family:roboto-light;">
+                                {% for content in surveys %}
+                                  <tr>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="{{content.link}}" target="_blank"><i class="mdi-action-visibility brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td>
+                                          <div>    
+                                              <a class="icon" href="#" onclick="populateForm('{{content.get_id()}}','{{content.kind}}','{{content.title}}','{{content.subtitle}}','{{content.description}}','{{content.link}}',{{content.permission}}); return false;"><i class="mdi-editor-mode-edit brand-color-text"></i></a>
+                                          </div>                          
+                                      </td>
+                                      <td style="width:120px">{{content.title}}</td>
+                                      <td style="width:120px">{{content.subtitle}}</td>
+                                      <td style="width:280px">{{content.description}}</td>
+                                      <td>{{content.permission}}</td>
+                                      <td style="width:185px">
+                                        <div>    
+                                        {% if content.hidden %}
+                                            <a class="btn green lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-show', content_id=content.get_id()) }}"> Show</a>
+                                        {% else %}
+                                            <a class="btn red lighten-2 white-text" style="font-size:12px" href="{{ uri_for('admin-content-hide', content_id=content.get_id()) }}"> Hide</a>
+                                        {% endif %}
+                                        </div>  
+                                      </td>
+                                      <td>
+                                        <div>    
+                                            <a class="icon" href="#" onclick="warnDelete('{{ uri_for('admin-content-delete', content_id=content.get_id()) }}')"> <i class="mdi-action-delete red-text small"></i></a>
+                                        </div>   
+                                      </td>
+                                      <td></td>
+                                  </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+
+
+                </div>
+                
+                  
+            </div>           
+        </div>
+      </div>
+    </div>
+
+  <!-- MODALS -->
+  <div id="modal1" class="modal white brand-color-text center" style="display: none; opacity: 1; top: 0px;">
+          <i class="mdi-navigation-close brand-color-text right modal-action modal-close" style="padding: 10px;"></i>
+          <div class="modal-content">
+              <div class="row">
+                <div class="input-field col s12 center">
+                  <p class="center login-form-text">Fill information to upload your content.</p>
+                </div>
+              <div class="row">
+                <form id="form_content" action="{{ url|safe }}" method="post">
+                  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"/>
+                  <input type="hidden" name="content_id" id="content_id" value=""/>
+                  <input type="hidden" name="kind" id="kind" value="image"/>
+                  <div class="input-field col s12">
+                      <div id="kind_container">
+                          <span class="col s12" style="margin-bottom: 10px">Kind of content:</span>
+                          <a data-hover="false" id='kindbtn' class='dropdown-button btn brand-color truncate' href='#' data-activates='kindd' style="width: 250px;">Image</a>
+                          <ul id='kindd' class='dropdown-content white' style="max-height: 250px; font-weight: bolder;">
+                              <li> <a class="brand-color-text" href="#" onclick="document.getElementById('kindbtn').innerHTML=this.innerHTML; document.getElementById('kind').value = ('image').trim(); return false;">Image</a></li>
+                              <li> <a class="brand-color-text" href="#" onclick="document.getElementById('kindbtn').innerHTML=this.innerHTML; document.getElementById('kind').value = ('video').trim(); return false;">Video</a></li>
+                              <li> <a class="brand-color-text" href="#" onclick="document.getElementById('kindbtn').innerHTML=this.innerHTML; document.getElementById('kind').value = ('audio').trim(); return false;">Audio</a></li>
+                              <li> <a class="brand-color-text" href="#" onclick="document.getElementById('kindbtn').innerHTML=this.innerHTML; document.getElementById('kind').value = ('document').trim(); return false;">Document</a></li>
+                              <li> <a class="brand-color-text" href="#" onclick="document.getElementById('kindbtn').innerHTML=this.innerHTML; document.getElementById('kind').value = ('survey').trim(); return false;">Survey</a></li>
+                             </ul>                
+                      </div>
+                  </div>
+                  <div class="input-field col s12 l6">
+                      <i class="mdi-action-picture-in-picture prefix brand-color-text"></i>
+                      <input id="title" name="title" type="text" value="">
+                      <label for="title" class="center-align">Title</label>
+                  </div>
+                  <div class="input-field col s12 l6">
+                      <i class="mdi-av-subtitles prefix brand-color-text"></i>
+                      <input id="subtitle" name="subtitle" type="text" value="">
+                      <label for="subtitle" class="center-align">Subtitle</label>
+                  </div>
+                  <div class="input-field col s12">
+                      <i class="mdi-action-subject prefix brand-color-text"></i>
+                      <input id="description" name="description" type="text" value="">
+                      <label for="description" class="center-align">Description</label>
+                  </div>
+                  <div class="input-field col s12" style="margin-top: 30px;">
+                      <i class="mdi-content-link prefix brand-color-text"></i>
+                      <input id="link" name="link" type="text" value="">
+                      <label for="link" class="center-align">Link (No Link? <a href="{{uri_for('blob-form')}}" target="_blank">Create it here</a>)</label>
+                  </div>
+                  <div class="input-field col s12 l6">
+                      <i class="mdi-action-accessibility prefix brand-color-text"></i>
+                      <input id="permission" name="permission" type="number" value="0" min="0" max="5">
+                      <label for="permission" class="center-align">Permission level</label>
+                  </div>
+                </form>
+                <div class="input-field col s12">
+                  <a class="btn-large waves-effect waves-light col s4 grey white-text modal-action modal-close" style="cursor:pointer;">Cancel</a>
+                  <a class="btn-large waves-effect waves-light col s4 offset-s4 brand-color white-text" style="cursor:pointer;" id="submit_form">Create</a>
+                </div>
+              </div>
+          </div>
+        </div>
+  </div>
+{% endblock %}
+
+
+{% block page_floatings %}
+{% endblock %}
+
+
+{% block page_scripts %}
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" src="/materializecss/js/plugins/sweetalert/dist/sweetalert.min.js"></script> 
+<script type="text/javascript">
+    
+    document.querySelector('#submit_form').addEventListener('click', function() {
+      var incomplete = false;
+      
+      if(document.getElementById('title').value == "")
+        incomplete = true;
+      else if(document.getElementById('subtitle').value == "")
+        incomplete = true;
+      else if(document.getElementById('description').value == "")
+        incomplete = true;
+      else if(document.getElementById('link').value == "")
+        incomplete = true;
+
+      if (incomplete)
+        Materialize.toast('<span class="toast-warning">Oops, Did you miss any field?</span>', 4500);
+      else
+        document.getElementById('form_content').submit();
+    });
+
+    $('#data-table-simple-images').DataTable({
+            scrollCollapse: true,
+            paging: false,
+            responsive: true,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: -1
+                }
+            },
+            columnDefs: [ {
+                className: 'control',
+                orderable: false,
+                targets:   -1
+            } ],
+            "dom": 'lrtip',
+            "lengthMenu": [[100], [100]],
+            "language": {
+              "lengthMenu": "_MENU_ contents per page",
+              "search": "Search in this table:",
+              "zeroRecords": "No content found",
+              "info": "",
+              "infoFiltered": "(filtering over _MAX_ contents)",
+              "infoEmpty": "",
+              "emptyTable": "No data",
+              "paginate": {
+                  "first":      "Start",
+                  "last":       "End",
+                  "next":       "Next",
+                  "previous":   "Previous"
+              }
+            }
+        });
+    $('#data-table-simple-videos').DataTable({
+            scrollCollapse: true,
+            paging: false,
+            responsive: true,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: -1
+                }
+            },
+            columnDefs: [ {
+                className: 'control',
+                orderable: false,
+                targets:   -1
+            } ],
+            "dom": 'lrtip',
+            "lengthMenu": [[100], [100]],
+            "language": {
+              "lengthMenu": "_MENU_ contents per page",
+              "search": "Search in this table:",
+              "zeroRecords": "No content found",
+              "info": "",
+              "infoFiltered": "(filtering over _MAX_ contents)",
+              "infoEmpty": "",
+              "emptyTable": "No data",
+              "paginate": {
+                  "first":      "Start",
+                  "last":       "End",
+                  "next":       "Next",
+                  "previous":   "Previous"
+              }
+            }
+        });
+    $('#data-table-simple-audios').DataTable({
+            scrollCollapse: true,
+            paging: false,
+            responsive: true,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: -1
+                }
+            },
+            columnDefs: [ {
+                className: 'control',
+                orderable: false,
+                targets:   -1
+            } ],
+            "dom": 'lrtip',
+            "lengthMenu": [[100], [100]],
+            "language": {
+              "lengthMenu": "_MENU_ contents per page",
+              "search": "Search in this table:",
+              "zeroRecords": "No content found",
+              "info": "",
+              "infoFiltered": "(filtering over _MAX_ contents)",
+              "infoEmpty": "",
+              "emptyTable": "No data",
+              "paginate": {
+                  "first":      "Start",
+                  "last":       "End",
+                  "next":       "Next",
+                  "previous":   "Previous"
+              }
+            }
+        });
+    $('#data-table-simple-documents').DataTable({
+            scrollCollapse: true,
+            paging: false,
+            responsive: true,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: -1
+                }
+            },
+            columnDefs: [ {
+                className: 'control',
+                orderable: false,
+                targets:   -1
+            } ],
+            "dom": 'lrtip',
+            "lengthMenu": [[100], [100]],
+            "language": {
+              "lengthMenu": "_MENU_ contents per page",
+              "search": "Search in this table:",
+              "zeroRecords": "No content found",
+              "info": "",
+              "infoFiltered": "(filtering over _MAX_ contents)",
+              "infoEmpty": "",
+              "emptyTable": "No data",
+              "paginate": {
+                  "first":      "Start",
+                  "last":       "End",
+                  "next":       "Next",
+                  "previous":   "Previous"
+              }
+            }
+        });
+    $('#data-table-simple-surveys').DataTable({
+            scrollCollapse: true,
+            paging: false,
+            responsive: true,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: -1
+                }
+            },
+            columnDefs: [ {
+                className: 'control',
+                orderable: false,
+                targets:   -1
+            } ],
+            "dom": 'lrtip',
+            "lengthMenu": [[100], [100]],
+            "language": {
+              "lengthMenu": "_MENU_ contents per page",
+              "search": "Search in this table:",
+              "zeroRecords": "No content found",
+              "info": "",
+              "infoFiltered": "(filtering over _MAX_ contents)",
+              "infoEmpty": "",
+              "emptyTable": "No data",
+              "paginate": {
+                  "first":      "Start",
+                  "last":       "End",
+                  "next":       "Next",
+                  "previous":   "Previous"
+              }
+            }
+        });
+
+    function populateForm(_id, _kind, _title, _subtitle, _description, _link, _permission){
+        dict = {
+          'image': 'Image',
+          'video': 'Video',
+          'audio': 'Audio',
+          'document': 'Document',
+          'survey': 'Survey',
+        }
+        document.getElementById('content_id').value = _id;
+        document.getElementById('kind').value = _kind;
+        document.getElementById('title').value = _title;
+        document.getElementById('subtitle').value = _subtitle;
+        document.getElementById('description').value = _description;
+        document.getElementById('link').value = _link;
+        document.getElementById('permission').value = _permission;
+
+        document.getElementById('kindbtn').innerHTML = dict[_kind];
+
+        $('label').addClass('active');
+        $('#modal1').openModal();
+
+    }
+
+    function cleanForm(){
+        document.getElementById('content_id').value = "";
+        document.getElementById('kind').value = "image";
+        document.getElementById('title').value = "";
+        document.getElementById('subtitle').value = "";
+        document.getElementById('description').value = "";
+        document.getElementById('link').value = "";
+        document.getElementById('permission').value = 0;
+        document.getElementById('kindbtn').innerHTML = 'Image';
+    }
+
+    function warnDelete(url){
+      swal(   { 
+          title: "Are you sure you wanna delete this content?",
+          text: "You won't be able to recover!",   
+          type: "warning",   
+          showCancelButton: true,   
+          cancelButtonText:"Cancel",
+          confirmButtonColor: "#DD6B55",   
+          confirmButtonText: "Yes, please delete.",   
+          closeOnConfirm: false 
+        }, 
+        function(){   
+            swal({  title: "Done !",   
+                    text: "Your content is being deleted.",   
+                    showConfirmButton: false,
+                    type: "success",
+                    allowEscapeKey: true,
+                    allowOutsideClick: true 
+                });
+            window.location.replace(url);
+        }
+      );  
+    }
+
+
+</script>
+{% endblock %}

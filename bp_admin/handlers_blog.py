@@ -56,17 +56,18 @@ class AdminBlogHandler(BaseHandler):
         self.view.pager_url = pager_url
         self.view.q = q
 
+        if self.app.config.get('app_lang') == 'es':
+            list_columns = [('title', u'Título'), ('author', 'Autor'), ('created', u'Fecha de creación'), ('updated', u'Fecha de actualización'), ('category', u'Categorías')]
+        else:
+            list_columns = [('title', u'Title'), ('author', 'Author'), ('created', u'Created'), ('updated', u'Updated'), ('category', u'Categories')]
+
         params = {
-            "list_columns": [('title', 'Title'),
-                             ('author', 'Author'),
-                             ('created', 'Created'),
-                             ('updated', 'Updated'),
-                             ('category', 'Categories')],
+            "list_columns": list_columns,
             "blogs": blogs,
             "count": count
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('blog/admin_blog.html', **params)
+        return self.render_template('%s/blog/admin_blog.html' % self.app.config.get('app_lang'), **params)
 
     def post(self):
         blog_id = self.request.get('blog_id')
@@ -102,7 +103,7 @@ class AdminBlogEditHandler(BaseHandler):
                 params['content'] = blog.content
                 params['category'] = blog.category
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('blog/admin_blog_edit.html', **params)
+        return self.render_template('%s/blog/admin_blog_edit.html' % self.app.config.get('app_lang'), **params)
 
     def post(self, post_id):
         if post_id == '1':
@@ -171,16 +172,16 @@ class AdminCSSHandler(BaseHandler):
     def get(self):
         params = {}
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('blog/admin_tools_css.html', **params)
+        return self.render_template('%s/blog/admin_tools_css.html' % self.app.config.get('app_lang'), **params)
 
 class AdminIconsHandler(BaseHandler):
     def get(self):
         params = {}
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('blog/admin_tools_icons.html', **params)
+        return self.render_template('%s/blog/admin_tools_icons.html' % self.app.config.get('app_lang'), **params)
 
 class AdminMediaHandler(BaseHandler):
     def get(self):
         params = {}
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('blog/admin_tools_media.html', **params)
+        return self.render_template('%s/blog/admin_tools_media.html' % self.app.config.get('app_lang'), **params)

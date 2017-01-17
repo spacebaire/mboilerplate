@@ -1,0 +1,115 @@
+/*================================================================================
+	Item Name: Materialize - Material Design Admin Template
+	Version: 3.1
+	Author: GeeksLabs
+	Author URL: http://www.themeforest.net/user/geekslabs
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN CSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+@font-face {font-family: "Roboto-Black"; src: url(/materializecss/font/roboto/Roboto-Black.ttf) ;}
+@font-face {font-family: "Roboto-BlackItalic"; src: url(/materializecss/font/roboto/Roboto-BlackItalic.ttf);}
+@font-face {font-family: "Roboto-Bold"; src: url(/materializecss/font/roboto/Roboto-Bold.ttf);}
+@font-face {font-family: "Roboto-BoldItalic"; src: url(/materializecss/font/roboto/Roboto-BoldItalic.ttf);}
+@font-face {font-family: "Roboto-Italic"; src: url(/materializecss/font/roboto/Roboto-Italic.ttf);}
+@font-face {font-family: "Roboto-Light"; src: url(/materializecss/font/roboto/Roboto-Light.ttf);}
+@font-face {font-family: "Roboto-LightItalic"; src: url(/materializecss/font/roboto/Roboto-LightItalic.ttf);}
+@font-face {font-family: "Roboto-Medium"; src: url(/materializecss/font/roboto/Roboto-Medium.ttf);}
+@font-face {font-family: "Roboto-MediumItalic"; src: url(/materializecss/font/roboto/Roboto-MediumItalic.ttf);}
+@font-face {font-family: "Roboto-Regular"; src: url(/materializecss/font/roboto/Roboto-Regular.ttf);}
+@font-face {font-family: "Roboto-Thin"; src: url(/materializecss/font/roboto/Roboto-Thin.ttf);}
+@font-face {font-family: "Roboto-ThinItalic"; src: url(/materializecss/font/roboto/Roboto-ThinItalic.ttf);}
+
+.toast {background-color: white!important;}
+.toast-success{ color: #037732!important; line-height: 18px;}
+.toast-danger{ color: #CE1212!important; line-height: 18px;}
+.toast-warning{ color: #CEB029!important; line-height: 18px;}
+.toast-info{ color: #2095CB!important; line-height: 18px;}
+@-webkit-keyframes pulsate {
+	0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+	50% {opacity: 1.0;}
+	100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+}
+#sidenav-overlay{
+	display: none!important;
+}
+.icon-block {
+	padding: 0 15px;
+}
+.icon-block .material-icons {
+	font-size: inherit;
+}
+ul li{
+	font-family: roboto-light!important;
+}
+html, body { height: 100%; margin: 0; padding: 0; }
+#map {height: 90%}
+.spacer{margin-bottom: 35px;}
+.pager{
+	padding-left: 0;
+	margin: 20px 0;
+	text-align: center;
+	list-style: none;
+}
+.pager:before{
+	display: table;
+	content: " ";
+	box-sizing: border-box;
+}
+.pager li{
+	display: inline;
+}
+.pager li>a, .pager li>span{
+	display: inline-block;
+	padding: 5px 14px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 15px;
+}
+.pager:after{
+	clear: both;
+	content: " ";
+	box-sizing: border-box;
+}
+ul li{
+	font-family: roboto-light!important;
+}
+.section{
+	padding-bottom: 80px;
+}
+.side-nav .collapsible-body li a {
+	text-align: right;
+	background: rgba(221, 221, 221, 0.15);
+}
+.side-nav .collapsible-body li a:hover {
+	background: rgba(221, 221, 221, 0.35);
+}
+.side-nav .collapsible-body li a {
+	margin: 0 1rem 0 2rem;
+}
+.dataTables_scrollBody {
+	min-height: 200px;
+}
+ol{
+	list-style-type: none!important;
+}
+.breadcrumb{
+	height: 15px;
+	margin-top: 15px;
+}
+#breadcrumbs-wrapper{
+	line-height: 40px;
+	height: 70px;
+}
+.materialboxed{
+	cursor: auto;
+}
+.cartodb-logo{
+	display: none!important;
+}
+
+ul.side-nav.leftside-navigation li.user-details {
+  background: url("/default/materialize/images/brand/user-bg.jpg") no-repeat center center;
+}

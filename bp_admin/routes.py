@@ -9,6 +9,12 @@ import handlers_crontasks
 _routes = [
     RedirectRoute('/admin/logout/', handlers_essentials.AdminLogoutHandler, name='admin-logout', strict_slash=True),
     RedirectRoute('/admin/brand/', handlers_essentials.AdminBrandHandler, name='admin-brand', strict_slash=True),
+    RedirectRoute('/admin/contents/', handlers_essentials.AdminContentsHandler, name='admin-contents', strict_slash=True),
+    RedirectRoute('/admin/delete/<content_id>/', handlers_essentials.AdminContentDeleteHandler, name='admin-content-delete', strict_slash=True),
+    RedirectRoute('/admin/show/<content_id>/', handlers_essentials.AdminContentShowHandler, name='admin-content-show', strict_slash=True),
+    RedirectRoute('/admin/hide/<content_id>/', handlers_essentials.AdminContentHideHandler, name='admin-content-hide', strict_slash=True),
+    RedirectRoute('/admin/specials/', handlers_essentials.AdminSpecialsHandler, name='admin-specials', strict_slash=True),
+    RedirectRoute('/admin/specials/<operator_id>/', handlers_essentials.AdminSpecialsEditHandler, name='admin-specials-edit', strict_slash=True, handler_method='edit'),
     RedirectRoute('/admin/', handlers_users.AdminStatsHandler, name='admin', strict_slash=True),
     RedirectRoute('/admin/blog/', handlers_blog.AdminBlogHandler, name='admin-blog', strict_slash=True),
     RedirectRoute('/admin/blog/<post_id>/', handlers_blog.AdminBlogEditHandler, name='admin-blog-edit', strict_slash=True),

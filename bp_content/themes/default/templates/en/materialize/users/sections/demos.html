@@ -1,0 +1,735 @@
+{% extends base_layout %}
+{% block title %}<title>{{app_name}} » Demos</title>{% endblock %}
+
+{% block page_css %}
+	<style>
+	.collapsible-header{
+		display: block;
+	    cursor: pointer;
+	    height: 3rem;
+	    line-height: 3rem;
+	    padding: 0 1rem;
+	    background-color: #fff;
+	    border-bottom: 1px solid #ddd;
+	}
+	.collapsible-header:after{
+		color:white;
+	}
+	div.cartodb-popup div.cartodb-popup-tip-container{
+		width: 190px!important;
+	}
+	div.cartodb-popup{
+		width: 195px!important
+	}
+	</style>
+{% endblock %}
+
+{% block breadcrums %}
+<!--breadcrumbs start-->
+<div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
+    <div class="container">
+        <div class="row">
+          <div class="col s12">
+          <ol class="breadcrumb" style="font-size: 29px;">
+                <li class="active">Google Cloud APIs</li>
+            </ol></div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+{% endblock %}
+
+
+{% block page_content %}
+<div class="section">
+    <div class="container">
+        <h5 class="grey-text">Google NLP API</h5>
+        <div class="container card" style="padding:50px;">
+	    	<div class="col s10 offset-s1">
+	    		<div class="row">
+                    <div class="input-field col s12 l6">
+                        <i class="mdi-maps-map prefix brand-color-text brand-color-text"></i>
+                        <textarea id="nlp_input" name="nlp_input" class="materialize-textarea" length="500" style="height: 22px;" type="text" >
+                        Google, headquartered in Mountain View, unveiled the new Android phone at the Consumer Electronic Show.  Sundar Pichai said in his keynote that users love their new Android phones.
+                        </textarea>
+                        <label for="nlp_input" class="active">Text to parse using Google NLP API</label>
+                    </div>
+                    <div class="row">
+			        	<div class="input-field col s10 offset-s1 center">
+			                <button class="waves-effect waves-light brand-color white-text btn-large right" id="submit_report_form" >Submit
+			                    <i class="mdi-content-send right"></i>
+			                </button>	                          
+			            </div>
+			        </div>
+			        <div class="row" id="nlp_response"></div>
+                </div>    
+            </div>
+	    </div>
+    </div>
+</div>
+<div class="section">
+    <div class="container">
+        <h5 class="grey-text">Google Vision API</h5>
+        <div class="container card" style="padding:50px;">
+	    	<div class="col s10 offset-s1">
+	    		<div class="row">
+                    <div class="col s12 l3">
+					    <input id="inp" type='file'>
+						<p id="b64" style="display:none;"></p>
+						<p id="msg" style="display:none;"> wait a second, computing vision analysis...</p>
+						<img id="img" class="responsive-img">
+                    </div>
+                </div>    
+			    <div class="row" id="vision_response"></div>
+            </div>
+            <hr style="margin: 50px;">
+            <div class="col s12">
+            	<div class="row" style="margin-bottom:20px;">
+            		<div class="input-field col s4 left">
+		                <button class="waves-effect waves-light brand-color white-text btn-large" id="capture">Capture
+		                    <i class="mdi-av-play-arrow right"></i>
+		                </button>	                          
+		            </div>
+		            <div class="input-field col s4 left">
+		                <button class="waves-effect waves-light brand-color white-text btn-large" id="stop" style="display: none">Stop
+		                    <i class="mdi-av-stop right"></i>
+		                </button>	                          
+		            </div>
+            	</div>
+            	<video autoplay></video>
+				<img id="vimg" src="">
+				<canvas style="display:none;" width="640" height="480"></canvas>
+            </div>
+	    </div>
+    </div>
+</div>
+<div class="section">
+    <div class="container">
+        <h5 class="grey-text">Google Maps API + Carto API</h5>
+        <div class="container card" style="padding:50px;">
+	    	<div class="col s10 offset-s1">
+	    		<div class="row">
+                    <div class="col s12">
+	                    <div class="input-field">
+	                        <i class="mdi-action-search prefix brand-color-text"></i>
+	                        <input class="icon_prefix brand-color-text searchControl" type="text" id="searchbox">
+	                        <label for="searchbox" style="margin-left: 2rem;" class="active">Search map layer...</label>
+	                    </div>
+
+	                    <div class="input-field">
+	                        <div class="switch" style="padding: 25px;">
+                                <label>
+                                    <input class="stylesControl" id="red" type="checkbox">
+                                    <span class="lever"></span>red
+                                </label>
+                            </div>
+	                    </div>
+	                    <div class="input-field">
+	                        <input id="search_address" type="text" placeholder="Search map address..." onkeydown="if (event.keyCode == 13) geocode('search_address');" style="    background-color: white;border-radius: 4px;line-height: 20px;text-align: center;box-shadow: 0 1px 0 0 white!important;border: 1px solid white!important;padding-left: 12px;padding-right: 12px;">
+	                    </div>
+	                </div>
+                    <div class="col s12">
+                        <div id="map" style="height:40vh; width:100%;"></div>
+			        </div>
+                </div>    
+            </div>
+	    </div>
+    </div>
+</div>
+{% endblock %}
+
+
+<!-- Remove floating button from home -->
+{% block page_floatings %}
+{% endblock %}
+
+
+
+{% block page_scripts %}
+	<!-- NLP SCRIPTS -->
+	<script>
+		$( "#submit_report_form" ).click(function() {
+			value = document.getElementById('nlp_input').value;
+			if (value != ''){
+				$.ajax({
+		            url: "https://language.googleapis.com/v1beta1/documents:analyzeEntities?key={{google_nlp_key}}",
+		            type: 'POST',
+		            contentType: "application/json; charset=utf-8",
+		            data: JSON.stringify({
+					  "document":{
+					    "type":"PLAIN_TEXT",
+					    "content": value
+					  },
+					  "encodingType":"UTF8"
+					}) 
+		        }).done(function(data) {
+		        	console.log(data);
+		        	var html = '<h5> The following entities have been detected (language: '+ data.language +'):</h5>';
+		        	for (var i=0, j=data.entities.length; i<j; i++){
+		        		html += '<p style="font-family:roboto-thin">"' + data.entities[i].name + '" interpreted as a ' + data.entities[i].type +' with a relevance among context of ' + data.entities[i].salience +'.</p>';
+		        	}
+		        	console.log(html);
+		        	document.getElementById('nlp_response').innerHTML = html;
+
+		        	if (data.language == "en"){
+		        		$.ajax({
+				            url: "https://language.googleapis.com/v1beta1/documents:analyzeSentiment?key={{google_nlp_key}}",
+				            type: 'POST',
+				            contentType: "application/json; charset=utf-8",
+				            data: JSON.stringify({
+							  "document":{
+							    "type":"PLAIN_TEXT",
+							    "content": value
+							  }
+							}) 
+				        }).done(function(data) {
+				        	console.log(data);
+				        	document.getElementById('nlp_response').innerHTML += '<p style="font-family:roboto-black"> Sentiment detected has a magnitude of ' + data.documentSentiment.magnitude + ' with polarity of ' + data.documentSentiment.polarity + '.</p>';
+				        });
+				        
+				        $.ajax({
+				            url: "https://language.googleapis.com/v1beta1/documents:annotateText?key={{google_nlp_key}}",
+				            type: 'POST',
+				            contentType: "application/json; charset=utf-8",
+				            data: JSON.stringify({
+							  "document":{
+							    "type":"PLAIN_TEXT",
+							    "content": value
+							  },
+							  "features": {
+							  	"extractSyntax": true,
+								"extractEntities": true,
+								"extractDocumentSentiment": true,
+							  },
+					  		  "encodingType":"UTF8"
+							}) 
+				        }).done(function(data) {
+				        	console.log(data);
+				        	document.getElementById('nlp_response').innerHTML += '<p style="font-family:roboto-black"> Total sentences: ' + data.sentences.length + '.</p>';
+				        	document.getElementById('nlp_response').innerHTML += '<p style="font-family:roboto-black"> Total entities: ' + data.entities.length + '.</p>';
+				        });
+		        	}
+		        });
+
+		        
+			}
+		    else
+    	        Materialize.toast('<span class="toast-warning">Please add some value to process.</span>',4500);
+    	});
+	</script>
+
+	<!-- VISION SCRIPTS -->
+	<script src="/materializecss/js/plugins/desktop-notify/desktop-notify.js"></script>
+	<script>
+
+		function readFile() {
+		  if (this.files && this.files[0]) {
+		    var FR= new FileReader();
+		    FR.onload = function(e) {
+		      document.getElementById("img").src       = e.target.result;
+		      document.getElementById("b64").innerHTML = e.target.result;
+		      computeVision();
+		    };       
+		    FR.readAsDataURL( this.files[0] );
+		  }
+		  else{
+    	    Materialize.toast('<span class="toast-warning">Please add some file to process.</span>',4500);
+
+		  }
+		}
+
+		document.getElementById("inp").addEventListener("change", readFile, false);
+
+		function componentToHex(c) {
+		    var hex = c.toString(16);
+		    return hex.length == 1 ? "0" + hex : hex;
+		}
+
+		function rgbToHex(r, g, b) {
+		    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+		}
+
+		function computeVision(source){
+		    $('#msg').show();
+	        document.getElementById('vision_response').innerHTML = "";
+			console.log('computing vision analysis...')
+			value = document.getElementById("b64").innerHTML.split(',')[1];
+			$.ajax({
+	            url: "https://vision.googleapis.com/v1/images:annotate?key={{google_vision_key}}",
+	            type: 'POST',
+	            contentType: "application/json; charset=utf-8",
+	            data: JSON.stringify({
+		            "requests": [{
+						  "image":{					    
+						    "content": value
+						  },
+						  "features":[
+						  	{"type": "TYPE_UNSPECIFIED"},
+						  	{"type": "FACE_DETECTION"},
+						  	{"type": "LANDMARK_DETECTION"},
+						  	{"type": "LOGO_DETECTION"},
+						  	{"type": "LABEL_DETECTION"},
+						  	{"type": "TEXT_DETECTION"},
+						  	{"type": "SAFE_SEARCH_DETECTION"},
+						  	{"type": "IMAGE_PROPERTIES"}
+							// TYPE_UNSPECIFIED	Unspecified feature type.
+							// FACE_DETECTION	Run face detection.
+							// LANDMARK_DETECTION	Run landmark detection.
+							// LOGO_DETECTION	Run logo detection.
+							// LABEL_DETECTION	Run label detection.
+							// TEXT_DETECTION	Run OCR.
+							// SAFE_SEARCH_DETECTION	Run various computer vision models to compute image safe-search properties.
+							// IMAGE_PROPERTIES	Compute a set of properties about the image (such as the image's dominant colors).							  
+						  ]
+						  // ,
+						  // "imageContext":{
+
+						  // }
+						}
+					]
+				}) 
+	        }).done(function(data) {
+	        	if (source == 'from video'){
+	        		$('#vision_response').hide();
+	        		if (data.responses[0].faceAnnotations){
+
+	        			var dominant_mood = 'poker', max = 0;
+		        		for (var i=0, j=data.responses[0].faceAnnotations.length; i<j; i++){
+			        		//data.responses[0].faceAnnotations[i].detectionConfidence;
+			        		//data.responses[0].faceAnnotations[i].landmarkingConfidence;
+			        		max = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].angerLikelihood);
+			        		dominant_mood = max > 0 ? 'anger' : dominant_mood;
+			        		//data.responses[0].faceAnnotations[i].blurredLikelihood;
+			        		//data.responses[0].faceAnnotations[i].headwearLikelihood;
+			        		dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].joyLikelihood) > max ? 'joy' : dominant_mood;
+			        		dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].sorrowLikelihood) > max ? 'sorrow' : dominant_mood;
+			        		dominant_mood = convertEmotionInfoToNum(data.responses[0].faceAnnotations[i].surpriseLikelihood) > max ? 'surprise' : dominant_mood;
+			        		//data.responses[0].faceAnnotations[i].underExposedLikelihood;
+
+		        			pushNotification('Face detected !', 'It looks like '+ dominant_mood +' to me...', '/materializecss/images/moods/face-'+dominant_mood+'.png');
+			        	}
+			        	
+		        	}else{
+	        			pushNotification('oops !', 'we got no faces', 'none');
+
+		        	}
+
+	        	}else{
+	        		console.log(data);
+		        	var html = '<h5> The following data has been detected:</h5>';
+		        	
+		        	if (data.responses[0].faceAnnotations){
+		        		html += '<p style="font-family:roboto-black">Face annotations: '+ data.responses[0].faceAnnotations.length +'</p>';
+		        		for (var i=0, j=data.responses[0].faceAnnotations.length; i<j; i++){
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': face confidence :' + data.responses[0].faceAnnotations[i].detectionConfidence +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': parts confidence :' + data.responses[0].faceAnnotations[i].landmarkingConfidence +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': anger likelihood :' + data.responses[0].faceAnnotations[i].angerLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': blurred likelihood :' + data.responses[0].faceAnnotations[i].blurredLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': headwear likelihood :' + data.responses[0].faceAnnotations[i].headwearLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': joy likelihood :' + data.responses[0].faceAnnotations[i].joyLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': sorrow likelihood :' + data.responses[0].faceAnnotations[i].sorrowLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': surprise likelihood :' + data.responses[0].faceAnnotations[i].surpriseLikelihood +'.</p>';
+			        		html += '<p style="font-family:roboto-thin"> Face ' + i + ': under exposed likelihood :'  + data.responses[0].faceAnnotations[i].underExposedLikelihood +'.</p>';
+			        	}
+			        	html += '<p style="font-family:roboto-light"> To see more on faces, see your chrome console.</p>';
+		        	}
+
+		        	html += '<p style="font-family:roboto-black">Safe-search annotations:</p>';
+		        	html += '<p style="font-family:roboto-thin">Adult content probability:' + data.responses[0].safeSearchAnnotation.adult + '</p>';
+		        	html += '<p style="font-family:roboto-thin">Medical content probability:' + data.responses[0].safeSearchAnnotation.medical + '</p>';
+		        	html += '<p style="font-family:roboto-thin">Spoof content probability:' + data.responses[0].safeSearchAnnotation.spoof + '</p>';
+		        	html += '<p style="font-family:roboto-thin">Violence content probability:' + data.responses[0].safeSearchAnnotation.violence + '</p>';
+		        	
+
+		        	if (data.responses[0].textAnnotations){
+		        		html += '<p style="font-family:roboto-black">Text annotations: '+ data.responses[0].textAnnotations.length +'</p>';
+		        		for (var i=0, j=data.responses[0].textAnnotations.length; i<j; i++){
+			        		html += '<p style="font-family:roboto-thin">' + data.responses[0].textAnnotations[i].description +'.</p>';
+			        	}
+		        	}
+		        	
+		        	if (data.responses[0].labelAnnotations){
+			        	html += '<p style="font-family:roboto-black">Label annotations: '+ data.responses[0].labelAnnotations.length +'</p>';
+						for (var i=0, j=data.responses[0].labelAnnotations.length; i<j; i++){
+			        		html += '<p style="font-family:roboto-thin">Label: ' + data.responses[0].labelAnnotations[i].description +', score: ' + data.responses[0].labelAnnotations[i].score + '.</p>';
+			        	}
+			        }
+
+			        if (data.responses[0].logoAnnotations){
+			        	html += '<p style="font-family:roboto-black">Logo annotations: '+ data.responses[0].logoAnnotations.length +'</p>';
+						for (var i=0, j=data.responses[0].logoAnnotations.length; i<j; i++){
+			        		html += '<p style="font-family:roboto-thin">Logo: ' + data.responses[0].logoAnnotations[i].description +', score: ' + data.responses[0].logoAnnotations[i].score + '.</p>';
+			        	}
+			        }
+
+		        	html += '<p style="font-family:roboto-black">Dominant colors: </p>';
+		        	for (var i=0, j=data.responses[0].imagePropertiesAnnotation.dominantColors.colors.length; i<j; i++){
+		        		html += '<p style="font-family:roboto-thin">Color: <input type="color" name="favcolor" value="' + rgbToHex(data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.red, data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.green, data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].color.blue) + '"> score: ' + data.responses[0].imagePropertiesAnnotation.dominantColors.colors[i].score + '.</p>';
+		        	}
+		        	console.log(html);
+			  		$('#msg').hide();
+		        	document.getElementById('vision_response').innerHTML = html;
+	        		$('#vision_response').show();
+
+	        	}
+	        }).error(function(data) {
+	        	console.log(data);
+	        	
+	        });
+    	}
+
+    	function convertEmotionInfoToNum (emotion) {
+			return ({
+				VERY_UNLIKELY: 0,
+				UNLIKELY: 1,
+				POSSIBLE: 2,
+				LIKELY: 3,
+				VERY_LIKELY: 4
+			})[emotion]
+		}
+
+		var video = document.querySelector('video');
+		var canvas = document.querySelector('canvas');
+		var ctx = canvas.getContext('2d');
+		var localMediaStream = null;
+		function snapshot() {
+			if (localMediaStream) {
+				ctx.drawImage(video, 0, 0);
+				document.getElementById('vimg').src = canvas.toDataURL('image/jpg');
+				document.getElementById("b64").innerHTML = canvas.toDataURL('image/jpg');
+				computeVision('from video');
+			}
+		}
+		// video.addEventListener('click', setInterval(snapshot,3000), false);
+		$("#capture").click(function() {
+			timer = setInterval(snapshot, 3000);
+			$('#stop').show();
+			$('#vimg').show();
+		});
+		$("#stop").click(function() {
+			$('#stop').hide();
+			$('#vimg').hide();
+			clearInterval(timer);
+		});
+
+		navigator.webkitGetUserMedia({video: true}, function(stream) {
+			video.src = window.URL.createObjectURL(stream);
+			localMediaStream = stream;
+		}, function(){});
+
+		$(function() {
+			notify.requestPermission()
+		});
+		var pushNotification = function(text, body, img) {
+			notify.config({
+				autoClose: 4000 
+			});
+			notification(text, body, img);
+			
+		}
+		var notification = function(text, body, img){
+			notify.createNotification(text, {
+				body: body,
+				icon: img
+			});
+		}
+	</script>
+
+
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing,places,panoramio,weather,visualization&key={{google_maps_key}}"></script>
+	<script src="/materializecss/js/plugins/cartodb/cartodb.js"></script>
+	<!-- CARTO SCRIPTS-->
+	<script>
+		function enableControls(){
+			// enable stylesControl
+	        $('.stylesControl').change(function() {
+	            if (this.checked) setCSS('red');
+	            else setCSS('blue');
+
+	            var styleBtns = document.getElementsByClassName('stylesControl');
+	            for (var i = 0 , j = styleBtns.length; i<j; i++){
+	                if (styleBtns[i].id != this.id)
+	                    styleBtns[i].checked = false;
+	            }
+	        });
+
+	        // enable searchControl
+	        $('.searchControl').keydown(function() {
+	            setSQL();
+	        });
+		}
+		function get_interactivity(layer_id){
+	        // select column_name from information_schema.columns where table_name='your_table'
+	        switch(layer_id){
+	            case 0: 
+	                // nacional_municipios @ https://mexico.carto.com/tables/nacional_municipios/table
+	                return ["nom_mun"];
+	        }
+	    }
+		function setSQL(){
+	        /* 
+	            sublayers[0] is the most important layer for filtering, it's the unidades table
+	            sublayers[0].setSQL()
+	            sublayers[0].setCartoCSS()
+	            or use
+	    		var sql = new cartodb.SQL({ user: cartodb_user });
+	            sql.execute(query)
+	            .done(function(response) {
+	                console.log('query response', response);
+	            });
+	        */
+	        console.log('changing cartoSQL...');
+	        var q = 'SELECT * FROM nacional_municipios';
+
+
+	        // searchbox keydown
+	        var searchval = document.getElementById('searchbox').value;
+	        if (searchval != '')
+	            if (q == 'SELECT * FROM nacional_municipios'){
+	                q += " WHERE (nom_mun ilike '%"+searchval+"%')";
+	            }else{
+	                q += " AND (nom_mun ilike '%"+searchval+"%')";
+	            }
+	        
+
+	        // set query
+	        console.log('query to set for nacional_municipios: ', q);
+	        sublayers[0].setSQL(q);     
+	    }
+	    function setCSS(style){
+	        /* 
+	            sublayers[0] is the most important layer for styling, it's the unidades table
+	            sublayers[0].setCartoCSS()
+	        */
+	        console.log('changing cartoCSS...');
+	        switch(style){
+	            case 'red':
+	                sublayers[0].setCartoCSS("#nacional_municipios{polygon-fill: red;polygon-opacity: 0.7;line-color: #FFF;line-width: 0.5;line-opacity: 1;}");
+	                break;
+	            case 'blue':
+	                sublayers[0].setCartoCSS("#nacional_municipios{polygon-fill: blue;polygon-opacity: 0.7;line-color: #FFF;line-width: 0.5;line-opacity: 1;}");
+	                break;
+	        }    
+	    }
+	    function createLayers(){
+	        // MAP LAYERS
+	        var elem_css = "#nacional_municipios{polygon-fill: blue;polygon-opacity: 0.7;line-color: #FFF;line-width: 0.5;line-opacity: 1;}";
+
+	        layerSource = {
+	            user_name: 'mexico',
+	            type: 'cartodb',
+	            sublayers: [
+	            {
+	                cartocss: elem_css,
+	                sql: "SELECT * FROM nacional_municipios"
+	            }
+	            ]
+	        }
+	        cartodb.createLayer(map,layerSource, {
+	        	'https': true
+	        })
+	        .on('done', function(layer) {
+	            map.overlayMapTypes.setAt(0, layer);
+	            for (var i = 0, j = layer.getSubLayerCount(); i < j; i++) {
+	               sublayers[i] = layer.getSubLayer(i);
+	               cartodb.vis.Vis.addInfowindow(map, layer.getSubLayer(i), get_interactivity(i));
+	               console.log("Congrats, you added sublayer #" + i + "! -> " + layerSource.sublayers[i].sql);
+	               sublayers[i].on('featureClick', function(e, latlng, pos, data, layerIndex) {
+	                    console.log('clicked element: ', data, latlng, layerIndex);
+	               });
+	            }
+	        });        
+	    }
+	</script>
+	<!-- MAPS SCRIPTS -->
+	<script>
+		var sublayers = [];
+	    var panorama, sv = new google.maps.StreetViewService();
+	    var mapCenter = [25.7047919623, -100.297410371], map, mapzoom = 5;
+	    var marker = null, markers = [];
+	    var marker_color = "{{brand_color}}", marker_icon = 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|'+marker_color.substr(1);
+		var geocoder = new google.maps.Geocoder();
+
+	    google.maps.event.addDomListener(window,'load',init);
+
+	    function markerDrop (loc) {
+	        //Marker idea from: http://stackoverflow.com/questions/7095574/google-maps-api-3-custom-marker-color-for-default-dot-marker	                
+	        if (marker == null){
+	            marker = new google.maps.Marker({
+                        animation: google.maps.Animation.DROP,
+	        			position: loc,
+	        			map: map,
+	        			draggable: true,
+	        			icon: marker_icon
+	            });
+	            google.maps.event.addListener(marker,'dragend',function(event) {
+                    geocode(event.latLng);
+	            });        
+	        }else{
+	            marker.setPosition(loc);
+	        }
+	    }
+		function geocode(input) {
+	        var address, obj;
+	        if (typeof(input) === 'string') {
+	            address = document.getElementById('search_address').value;
+	            obj = { 'address': address };
+	        }else{
+	            address = input;
+	            obj = { 'location': address};
+	        }
+	        geocoder.geocode( obj, function(results, status) {
+	            if (status == google.maps.GeocoderStatus.OK) {
+	                if (typeof(input) === 'string') {
+	                    map.setCenter(results[0].geometry.location);
+	                    switch (results[0].geometry.location_type){
+	                        case 'ROOFTOP': map.setZoom(17); break;
+	                        case 'RANGE_INTERPOLATED': map.setZoom(16); break;
+	                        case 'GEOMETRIC_CENTER': map.setZoom(15); break;
+	                        case 'APPROXIMATE': map.setZoom(13); break;
+	                    }
+	                    markerDrop(results[0].geometry.location);
+	                }else{
+	                    if (results[1]) {
+	                        document.getElementById('search_address').value = results[1].formatted_address;
+	                    } else {
+	                        Materialize.toast('<span class="toast-warning">Oops! No logramos obtener la dirección.</span>',4500);
+	                    }
+	                }
+	            } else {
+	                Materialize.toast('<span class="toast-warning">Oops! No logramos obtener la dirección.</span>',4500);
+	            }
+	        });
+	    }
+		function CenterControl(controlDiv, map) {
+	        // Set CSS for the control border.
+	        var controlUI = document.createElement('div');
+	        controlUI.style.backgroundColor = '#fff';
+	        controlUI.style.border = '2px solid #fff';
+	        controlUI.style.borderRadius = '3px';
+	        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+	        controlUI.style.cursor = 'pointer';
+	        controlUI.style.marginBottom = '2px';
+	        controlUI.style.marginRight = '10px';
+	        controlUI.style.textAlign = 'center';
+	        controlUI.title = 'Click to locate you.';
+	        controlDiv.appendChild(controlUI);
+
+	        // Set CSS for the control interior.
+	        var controlText = document.createElement('div');
+	        controlText.style.color = 'rgb(25,25,25)';
+	        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+	        controlText.style.fontSize = '16px';
+	        controlText.style.lineHeight = '15px';
+	        controlText.innerHTML = '<i class="mdi-maps-my-location grey-text text-darken-1" style="font-size:20px; padding:3px;"></i>';
+	        controlUI.appendChild(controlText);
+
+	        // Setup the click event listeners: simply set the map to Chicago.
+	        controlUI.addEventListener('click', function() {
+	            $('#main-preloader').show();
+	            // if (navigator.geolocation) {
+	            //     navigator.geolocation.getCurrentPosition(mapGoPosition);
+	            // } else {
+	                Materialize.toast('<span class="toast-warning">IP was required to get location.</span>',4500);
+				 	var coord_str = '{{coordinates}}';
+		        	var coof = coord_str.split(',').map(Number);
+		        	var latlng = new google.maps.LatLng(coof[0],coof[1]);
+		        	markerDrop (latlng);
+		            geocode(event.latLng);
+		            var pos = {
+				              lat: coof[0],
+				              lng: coof[1]
+				            };
+				    map.setCenter(pos);
+					map.setZoom(14);
+					$('#main-preloader').hide();
+	            // }
+	        });
+	    }
+	    function mapGoPosition(position) {
+	        map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+	        map.setZoom(14);
+	        $('#main-preloader').hide();
+	    }
+	    function init(){
+	        
+	        var mapOptions = {
+	            center: new google.maps.LatLng(mapCenter[0], mapCenter[1]),
+	            zoom: mapzoom,
+	            minZoom:5,
+	            // maxZoom:12,
+	            zoomControl: {% if not is_mobile %}true{% else %}false{% endif %},
+	            zoomControlOptions: {
+	                position: google.maps.ControlPosition.LEFT_BOTTOM 
+	            },
+	            scrollwheel: true,
+	            streetViewControl: {% if not is_mobile %}true{% else %}false{% endif %},
+	            streetViewControlOptions: {
+	                position: google.maps.ControlPosition.LEFT_BOTTOM   
+	            },
+	            mapTypeControl: {% if not is_mobile %}true{% else %}false{% endif %},
+	            mapTypeControlOptions: {
+	                mapTypeIds: [google.maps.MapTypeId.SATELLITE, 'style_1','style_2','style_3','style_4','style_5','style_6'],
+	                style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+	                position: google.maps.ControlPosition.RIGHT_TOP   
+	            },
+	            panControl:{% if not is_mobile %}true{% else %}false{% endif %},
+	            backgroundColor: 'rgb(249, 249, 249)',
+	            rotateControl:{% if not is_mobile %}true{% else %}false{% endif %},
+	            overviewMapControl:{% if not is_mobile %}true{% else %}false{% endif %}
+	        };
+
+	        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+	        var centerControlDiv = document.createElement('div');
+			var centerControl = new CenterControl(centerControlDiv, map);
+			centerControlDiv.index = 1;
+			map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv);
+
+	        /* GMAPS STYLES courtesy of http://snazzymaps.com/ */
+	        var styler1 = [];
+	        var styler2 = [{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]}];
+	        var styler3 =[{"featureType":"water","elementType":"geometry","stylers":[{"color":"#a2daf2"}]},{"featureType":"landscape.man_made","elementType":"geometry","stylers":[{"color":"#f7f1df"}]},{"featureType":"landscape.natural","elementType":"geometry","stylers":[{"color":"#d0e3b4"}]},{"featureType":"landscape.natural.terrain","elementType":"geometry","stylers":[{"visibility":"off"}]},{"featureType":"poi.park","elementType":"geometry","stylers":[{"color":"#bde6ab"}]},{"featureType":"poi","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"poi.medical","elementType":"geometry","stylers":[{"color":"#fbd3da"}]},{"featureType":"poi.business","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#ffe15f"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#efd151"}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"road.local","elementType":"geometry.fill","stylers":[{"color":"black"}]},{"featureType":"transit.station.airport","elementType":"geometry.fill","stylers":[{"color":"#cfb2db"}]}];
+	        var styler4 = [{"featureType":"water","stylers":[{"saturation":43},{"lightness":-11},{"hue":"#0088ff"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"hue":"#ff0000"},{"saturation":-100},{"lightness":99}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#808080"},{"lightness":54}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#ece2d9"}]},{"featureType":"poi.park","elementType":"geometry.fill","stylers":[{"color":"#ccdca1"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#767676"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]},{"featureType":"poi","stylers":[{"visibility":"off"}]},{"featureType":"landscape.natural","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#b8cb93"}]},{"featureType":"poi.park","stylers":[{"visibility":"on"}]},{"featureType":"poi.sports_complex","stylers":[{"visibility":"on"}]},{"featureType":"poi.medical","stylers":[{"visibility":"on"}]},{"featureType":"poi.business","stylers":[{"visibility":"simplified"}]}];
+	        var styler5 = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#675a4b"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry","stylers":[{"color":"#ffebc5"},{"lightness":"-10"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#675a4b"}]},{"featureType":"administrative.country","elementType":"labels.text.fill","stylers":[{"color":"#b70046"}]},{"featureType":"administrative.province","elementType":"geometry.fill","stylers":[{"visibility":"off"}]},{"featureType":"administrative.province","elementType":"geometry.stroke","stylers":[{"color":"#675a4b"},{"weight":"0.50"}]},{"featureType":"administrative.province","elementType":"labels.text.fill","stylers":[{"color":"#675a4b"}]},{"featureType":"administrative.locality","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"administrative.locality","elementType":"labels.text.fill","stylers":[{"color":"#ff850a"}]},{"featureType":"administrative.neighborhood","elementType":"geometry","stylers":[{"visibility":"on"}]},{"featureType":"administrative.neighborhood","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"landscape","elementType":"geometry.fill","stylers":[{"saturation":"-71"},{"lightness":"-2"},{"color":"#ffebc5"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.park","elementType":"geometry.fill","stylers":[{"color":"#70bfaf"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45},{"visibility":"simplified"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#675a4c"}]},{"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"color":"#675a4b"}]},{"featureType":"road.arterial","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"road.arterial","elementType":"labels.text.fill","stylers":[{"color":"#675a4b"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#7ccff0"},{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"color":"#cfeae4"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#109579"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]}];
+	        var styler6 = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"administrative.province","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"administrative.locality","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"administrative.neighborhood","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"landscape.man_made","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"landscape.natural","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0e5166"},{"lightness":5}]},{"featureType":"poi","elementType":"labels","stylers":[{"visibility":"simplified"}]},{"featureType":"poi","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#7aecff"}]},{"featureType":"poi","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"labels.icon","stylers":[{"visibility":"simplified"}]},{"featureType":"poi.attraction","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.place_of_worship","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.sports_complex","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#e7ff00"},{"visibility":"on"},{"weight":"0.90"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25},{"visibility":"off"}]},{"featureType":"road.highway","elementType":"labels.text","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#2aff00"},{"visibility":"on"},{"weight":"0.80"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16},{"visibility":"off"}]},{"featureType":"road.arterial","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"road.local","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#00ab69"},{"weight":"0.80"}]},{"featureType":"road.local","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#ff0000"},{"weight":"0.90"}]},{"featureType":"transit","elementType":"labels.text","stylers":[{"visibility":"simplified"},{"color":"#ff6300"}]},{"featureType":"transit","elementType":"labels.icon","stylers":[{"visibility":"on"},{"color":"#ff3f00"},{"weight":"0.80"}]},{"featureType":"transit.station.bus","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit.station.bus","elementType":"geometry","stylers":[{"visibility":"off"}]},{"featureType":"transit.station.bus","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#010a33"}]}];
+	        
+	        var styleMap1 = new google.maps.StyledMapType(styler1,{name: "Map"});   
+	        var styleMap2 = new google.maps.StyledMapType(styler2,{name: "Black"}); 
+	        var styleMap3 = new google.maps.StyledMapType(styler3,{name: "Apple Maps"});    
+	        var styleMap4 = new google.maps.StyledMapType(styler4,{name: "Mapbox "});   
+	        var styleMap5 = new google.maps.StyledMapType(styler5,{name: "Outspoken "});    
+	        var styleMap6 = new google.maps.StyledMapType(styler6,{name: "Midnight "}); 
+	        
+	        map.mapTypes.set('style_1', styleMap1);
+	        map.mapTypes.set('style_2', styleMap2);
+	        map.mapTypes.set('style_3', styleMap3);
+	        map.mapTypes.set('style_4', styleMap4);
+	        map.mapTypes.set('style_5', styleMap5);
+	        map.mapTypes.set('style_6', styleMap6);
+
+	        map.setMapTypeId('style_1');
+	        
+	        google.maps.event.addDomListener(window, "resize", function() {
+	              var center = map.getCenter();
+	              google.maps.event.trigger(map, "resize");
+	              map.setCenter(center);
+	        });
+
+	        var autocomplete_from = new google.maps.places.Autocomplete(document.getElementById('search_address'))
+	        autocomplete_from.bindTo('bounds', map);
+	        google.maps.event.addListener(autocomplete_from, 'place_changed', function() {
+	            var place = autocomplete_from.getPlace();
+	            if (place.geometry.viewport) {
+	              map.fitBounds(place.geometry.viewport);
+	            }else{
+	              map.setCenter(place.geometry.location);
+	              map.setZoom(17);
+	            }
+	        }); 
+
+	        createLayers();
+	        enableControls();
+	    }
+	</script>
+{% endblock %}	

@@ -1,0 +1,16 @@
+{
+  "short_name": "M-Boilerplate",
+  "name": "M-Boilerplate App v0.1",
+  "icons": [
+    {
+      "src": "/materializecss/images/favicon/fav-red.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FF0000",
+  "theme_color": "#FF0000"
+}

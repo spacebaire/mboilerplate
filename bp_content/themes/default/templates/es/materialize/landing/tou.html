@@ -1,0 +1,77 @@
+{% extends landing_layout %}
+
+{% block title %}
+	<title>{{app_name}} » Terms</title>
+{% endblock %}
+
+{% block page_css %}
+<style>
+	.parallax-container{
+		height: 300px!important;
+	}
+	{% if simplify %}
+		#footer-head{
+			display: none;
+		}
+		#footer-content{
+			display: none;
+		}
+	{% endif %}
+</style>
+{% endblock %}
+
+{% block header_content %}
+	{% if simplify %}
+    <div id="login-page" class="row center" style="{% if not is_mobile %}margin-top:5vh{% else %}margin-top:2vh{% endif %}">
+        <div class="col s10 offset-s1 m8 offset-m2 z-depth-4 card-panel">
+		    <h1 class="header center brand-color-text " >Términos de uso</h1>
+          	<div class="container">
+				<div class="section">
+				 <div class="row">
+			        <div class="col s12 m4 offset-m4">
+			          <div class="icon-block">
+			            <h2 class="center brand-color-text"><i class="mdi-editor-border-color" style="font-size: 40px;"></i></h2>
+			            <h5 class="center">Agrega aquí tus Términos de uso</h5>
+			          </div>
+			        </div>
+			      </div>
+				</div>
+			</div>
+        </div>
+    </div>
+  	{% else %}
+	<div class="parallax-container z-depth-3">
+		<div class="section no-pad-bot">
+		  <div class="container">
+		    <br><br>
+		    <h1 class="header center white-text" style="font-family: roboto-black">Términos de uso</h1>
+		    <div class="row center">
+		      <h5 class="header col s12 white-text light">{{app_name}}</h5>
+		    </div>
+		    <div class="row center">
+		    </div>
+		    <br>
+		    <br>
+		  </div>
+		</div>
+		<div class="parallax"><img src="{{brand_splash}}" alt="Unsplashed background img 1" style="display: block; transform: translate3d(-50%, 351px, 0px);"></div>
+	</div>
+	{% endif %}
+{% endblock %}
+
+{% block body_content %}
+	{% if not simplify %}
+	<div class="container">
+		<div class="section">
+		 <div class="row">
+	        <div class="col s12 m4 offset-m4">
+	          <div class="icon-block">
+	            <h2 class="center brand-color-text"><i class="mdi-editor-border-color" style="font-size: 40px;"></i></h2>
+	            <h5 class="center">Agrega aquí tus Términos de uso</h5>
+	          </div>
+	        </div>
+	      </div>
+		</div>
+	</div>
+	{% endif %}
+{% endblock %}

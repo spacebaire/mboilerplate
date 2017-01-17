@@ -5,19 +5,15 @@
 
     <name> -- <role> -- <twitter>
 	Jesus Cepeda -- The Mechanic -- @chuycepeda
-	Jesus Del Bosque -- The Beerman -- @chuydb
 	
 # THANKS
 
-    @ebidel for the Polymer Project
 	@coto for the GaeBoilerplate
 	@materializecss for the Material Design heavy lifting
 
 # TECHNOLOGY COLOPHON
 
     HTML5, CSS3, MaterializeCSS
-    jQuery, Modernizr
-	Webcomponents, Polymer
-	Python, GAEBoilerplate
+    Javascript, Python 2.7
 	WebApp2, Jinja2
-	IDE: Sublime Text
+	IDE: VIM, Sublime Text

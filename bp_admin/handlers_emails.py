@@ -60,18 +60,18 @@ class AdminLogsEmailsHandler(BaseHandler):
         self.view.pager_url = pager_url
         self.view.q = q
 
+        if self.app.config.get('app_lang') == 'es':
+            list_columns = [('when', 'Fecha'),('to', 'Destinatario'),('subject', 'Asunto'),('sender', 'Remitente')]
+        else:
+            list_columns = [('when', 'Date'),('to', 'Recipient'),('subject', 'Subject'),('sender', 'Sender')]
+
         params = {
-            "list_columns": [('when', 'When'),
-                             ('to', 'Recipient'),
-                             ('subject', 'Subject'),
-                             ('sender', 'Sender'),
-            #                 ('body', 'Body')
-            ],
+            "list_columns": list_columns,
             "emails": emails,
             "count": qry.count()
         }
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('emails/admin_logs_emails.html', **params)
+        return self.render_template('%s/emails/admin_logs_emails.html' % self.app.config.get('app_lang'), **params)
 
 
 class AdminLogsEmailViewHandler(BaseHandler):
@@ -83,7 +83,7 @@ class AdminLogsEmailViewHandler(BaseHandler):
                     'emailinfo': emaildata
                 }
                 params['nickname'] = g_users.get_current_user().email().lower()
-                return self.render_template('emails/admin_logs_email_view.html', **params)
+                return self.render_template('%s/emails/admin_logs_email_view.html' % self.app.config.get('app_lang'), **params)
         except ValueError:
             pass
         self.abort(404)
@@ -96,7 +96,7 @@ class AdminSendEmailListHandler(BaseHandler):
             "recipent": email_id,
         }        
         params['nickname'] = g_users.get_current_user().email().lower()
-        return self.render_template('emails/admin_send_email.html', **params)
+        return self.render_template('%s/emails/admin_send_email.html' % self.app.config.get('app_lang'), **params)
             
     def post(self):
         

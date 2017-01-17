@@ -1,0 +1,269 @@
+{% extends 'es/admin_base.html' %}
+
+{% block page_css %}
+<link href="/materializecss/js/plugins/ionRangeSlider/css/ion.rangeSlider.css" type="text/css" rel="stylesheet" media="screen,projection">
+<!--Flat Skin-->
+<link href="/materializecss/js/plugins/ionRangeSlider/css/ion.rangeSlider.skinFlat.css" type="text/css" rel="stylesheet" media="screen,projection">
+{% endblock %}
+
+{% block breadcrums %}
+<!--breadcrumbs start-->
+<div id="breadcrumbs-wrapper" class=" grey lighten-3" style="  min-height: 70px;">
+    <div class="container">
+        <div class="row">
+          <div class="col s12">
+          <ol class="breadcrumb" style="font-size: 29px;">
+                <li class="active">Configura tu marca</li>
+            </ol></div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+{% endblock %}
+
+
+{% block page_content %}
+<div class="container">
+      <div class="section">
+       <div class="row" style="margin-top:30px">
+            <div class="row">
+              <h3 class="col s12 m7 offset-m1 grey-text" style="font-weight: 200; line-height: 60px; letter-spacing: 0.2px;">Personaliza con tu imagen y colores.</h3>
+            </div>
+            <div class="card-panel" style="margin-bottom:30px;">
+                <div class="row container" style="padding:25px; padding-left: 55px!important;">
+
+                    <a class="waves-effect waves-light brand-secondary-color white-text btn right" id="clear_form">Limpiar campos
+                      <i class="mdi-communication-clear-all right"></i>
+                    </a>
+
+                </div>
+
+                <form id="form_brand" action="{{ url|safe }}" method="post">
+                  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+                  <div class="row margin">
+                    <div class="input-field col s12">
+                      <i class="mdi-hardware-phonelink prefix brand-color-text"></i>
+                      <input id="app_name" name="app_name" type="text" value="{{app_name}}">
+                      <label for="app_name" class="center-align">Nombre de tu aplicación</label>
+                    </div>
+                  </div>
+
+                  <div class="row margin">
+                    <div class="input-field col s12">
+                      <i class="mdi-action-description prefix brand-color-text"></i>
+                      <textarea id="brand_about" name="brand_about" class="materialize-textarea" length="500" style="height: 22px;" type="text" >{{brand_about}}</textarea>
+                      <label for="brand_about" class="center-align">Descripción de tu aplicación</label>
+                    </div>
+                  </div>
+
+                  <div class="row margin">
+                      <i class="mdi-image-colorize left brand-color-text" style="margin-left: 22px;"></i>
+                      <p class="grey-text">Color primario</p>
+                      <input id="brand_color" name="brand_color" type="color" style="margin-left:50px; height: 45px;" value="{{brand_color}}">
+                  </div>
+
+                  <div class="row margin">
+                      <i class="mdi-image-colorize left brand-color-text" style="margin-left: 22px;"></i>
+                      <p class="grey-text">Color secundario</p>
+                      <input id="brand_secondary_color" name="brand_secondary_color" type="color" style="margin-left:50px; height: 45px;" value="{{brand_secondary_color}}">
+                  </div>
+
+                  <div class="row margin">
+                      <i class="mdi-image-colorize left brand-color-text" style="margin-left: 22px;"></i>
+                      <p class="grey-text">Color de soporte</p>
+                      <input id="brand_tertiary_color" name="brand_tertiary_color" type="color" style="margin-left:50px; height: 45px;" value="{{brand_tertiary_color}}">
+                  </div>
+
+                  <div class="row margin">
+                    <div class="input-field col s12" style="margin-top: 30px;">
+                      <i class="mdi-image-image prefix brand-color-text"></i>
+                      <input id="brand_fav_logo" name="brand_fav_logo" type="text" value="{{brand_favicon}}">
+                      <label for="brand_fav_logo" class="center-align">Favicon URL (No tienes URL? <a href="{{uri_for('blob-form')}}" target="_blank">Has clic aquí</a>)</label>
+                    </div>
+                    <div class="col s12 m3" style="margin-left: 45px;">
+                      <div class="card-panel grey lighten-5 z-depth-1">
+                        <div class="row center">
+                          <div class="col s12">
+                            <img id="logo_fav" src="{{brand_favicon}}" alt=" Please use a valid URL." class=" responsive-img valign" style="height: 60px;">
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div>
+
+                  <div class="row margin">
+                    <div class="input-field col s12" style="margin-top: 30px;">
+                      <i class="mdi-image-image prefix brand-color-text"></i>
+                      <input id="brand_logo" name="brand_logo" type="text" value="{{brand_logo}}">
+                      <label for="brand_logo" class="center-align">Logo URL (No tienes URL? <a href="{{uri_for('blob-form')}}" target="_blank">Has clic aquí</a>)</label>
+                    </div>
+                    <div class="col s12 m3" id="logo_view" style="margin-left: 45px;">
+                      <div class="card-panel grey lighten-5 z-depth-1">
+                        <div class="row center">
+                          <div class="col s12">
+                            <img id="logo1" src="{{brand_logo}}" alt=" Please use a valid URL." class=" responsive-img valign" style="height: 60px;">
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div>
+
+                  <div class="row margin">
+                    <div class="input-field col s12" style="margin-top: 30px;">
+                      <i class="mdi-image-image prefix brand-color-text"></i>
+                      <input id="brand_email_logo" name="brand_email_logo" type="text" value="{{brand_email_logo}}">
+                      <label for="brand_email_logo" class="center-align">Emails & Admin Logo URL (No tienes URL? <a href="{{uri_for('blob-form')}}" target="_blank">Has clic aquí</a>)</label>
+                    </div>
+                    <div class="col s12 m3" id="email_logo_view" style="margin-left: 45px;">
+                      <div class="card-panel grey lighten-5 z-depth-1">
+                        <div class="row center">
+                          <div class="col s12">
+                            <img id="logo_email" src="{{brand_email_logo}}" alt=" Please use a valid URL." class=" responsive-img valign" style="height: 60px;">
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div>
+
+                  <div class="row margin">
+                    <div class="input-field col s12">
+                      <i class="mdi-image-image prefix brand-color-text"></i>
+                      <input id="brand_splash" name="brand_splash" type="text" value="{{brand_splash}}">
+                      <label for="brand_splash" class="center-align">Imagen principal URL (No tienes URL? <a href="{{uri_for('blob-form')}}" target="_blank">Has clic aquí</a>)</label>
+                    </div>
+                    <div class="col s12 m6" id"splash_view" style="margin-left: 45px;">
+                      <div class="card-panel grey lighten-5 z-depth-1">
+                        <div class="row valign-wrapper">
+                          <div class="col m6">
+                            <img src="{{brand_splash}}" alt=" Please use a valid URL." id="splash1" class="responsive-img valign" style="display: block; -webkit-filter: brightness({{brand_splash_light}}%);">
+                          </div>
+                          <div class="col m6" id="light1">
+                            <span >
+                                <input type="text" id="brand_splash_light" name="brand_splash_light" ></input>
+                            </span>
+                            <span class="black-text">Establece un brillo que te guste.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row margin">
+                    <div class="input-field col s12" style="margin-top: 30px;">
+                      <i class="mdi-av-videocam prefix brand-color-text"></i>
+                      <input id="brand_video" name="brand_video" type="text" value="{{brand_video}}">
+                      <label for="brand_video" class="center-align">Video URL (No tienes URL? <a href="{{uri_for('blob-form')}}" target="_blank">Has clic aquí</a>)</label>
+                    </div>
+                  </div>
+
+                  <div class="row margin">
+                      <div class="input-field col s12 l6">
+                          <i class="mdi-av-web prefix brand-color-text"></i>
+                          <p class="grey-text" style="margin-left:45px;">Layout de página principal:</p>
+                          <input type="hidden" name="brand_layout" id="brand_layout" value="{{brand_layout}}">
+                          <a data-hover="false" id="catGroupbtn" class="dropdown-button btn brand-color truncate" href="#" data-activates="catGroupdd" style="min-width: 250px; min-height: 45px; line-height: 45px;margin-left:45px;">{{brand_layout}}</a>
+                          <ul id="catGroupdd" class="dropdown-content" style="margin-left:45px;">
+
+                            <li> <a class="brand-color-text" onclick="fillDd(this);return false;">splash</a></li>
+                            <li> <a class="brand-color-text" onclick="fillDd(this);return false;">video</a></li>
+
+                          </ul>
+                      </div>
+                  </div>
+
+                  <div class="row container" style="padding:25px; padding-left: 55px!important;">
+                    <a class="waves-effect waves-light brand-secondary-color white-text btn right" id="submit_brand_form" >Guardar cambios
+                      <i class="mdi-content-send right"></i>
+                    </a>                          
+                  </div>
+                </form>
+            </div>           
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+
+{% block page_floatings %}
+{% endblock %}
+
+
+{% block page_scripts %}
+<script src="/materializecss/js/plugins/ionRangeSlider/js/ion.rangeSlider.js"></script>
+<script type="text/javascript">
+    
+    //Selector to clear form
+    document.querySelector('#clear_form').addEventListener('click', function() {
+        $("form#form_brand :input").each(function(){
+          if ($(this).attr('name') != "_csrf_token") $(this).val('');
+        });
+    });
+        
+    //Get Selectors
+    var submitBtn = document.querySelector('#submit_brand_form');
+    var brand_logoUrl = document.querySelector('#brand_logo');
+    var brand_logoImg = document.querySelector('#logo1');
+    var brand_fav_logoUrl = document.querySelector('#brand_fav_logo');
+    var brand_fav_logoImg = document.querySelector('#logo_fav');
+    var brand_email_logoUrl = document.querySelector('#brand_email_logo');
+    var brand_email_logoImg = document.querySelector('#logo_email');
+    var brand_splashUrl = document.querySelector('#brand_splash');
+    var brand_splashImg = document.querySelector('#splash1');
+    
+    //Add Events    
+    submitBtn.addEventListener('click', function() {
+      document.getElementById("form_brand").submit();
+    });
+
+
+    brand_logoUrl.addEventListener('change', function() {
+      $('#logo1').attr('src',brand_logoUrl.value);
+      $('#brand_logo').css('color','#000000');
+    });
+    brand_logoImg.addEventListener('error', function() {
+      $('#brand_logo').css('color','#F76E78');
+    });
+    brand_fav_logoUrl.addEventListener('change', function() {
+      $('#logo_fav').attr('src',brand_fav_logoUrl.value);
+      $('#brand_fav_logo').css('color','#000000');
+    });
+    brand_fav_logoImg.addEventListener('error', function() {
+      $('#brand_fav_logo').css('color','#F76E78');
+    });
+    brand_email_logoUrl.addEventListener('change', function() {
+      $('#logo_email').attr('src',brand_email_logoUrl.value);
+      $('#brand_email_logo').css('color','#000000');
+    });
+    brand_email_logoImg.addEventListener('error', function() {
+      $('#brand_email_logo').css('color','#F76E78');
+    });
+
+    brand_splashUrl.addEventListener('change', function() {
+      $('#splash1').attr('src',brand_splashUrl.value);
+      $('#brand_splash').css('color','#000000');
+      $('#light1').show();
+    });
+    brand_splashImg.addEventListener('error', function() {
+      $('#brand_splash').css('color','#F76E78');
+      $('#light1').hide();
+    });
+
+    $("#brand_splash_light").ionRangeSlider({
+        min: 0,
+        max: 100,
+        from: {{brand_splash_light}},
+        onChange: function (data) {
+            $('#splash1').css( "-webkit-filter", "brightness("+data.from+"%)");
+        },
+    });
+
+    function fillDd(pKey){
+        pKey = (pKey.innerHTML).trim();
+        document.getElementById('brand_layout').value=pKey;
+        document.getElementById('catGroupbtn').innerHTML = pKey;
+    }
+
+
+</script>
+{% endblock %}

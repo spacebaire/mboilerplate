@@ -1,0 +1,90 @@
+{% extends landing_layout %}
+
+{% block title %}
+  <title>{{app_name}} » Blog</title>
+{% endblock %}
+
+{% block page_css %}
+  <style>
+  .blog-post-full-cat{
+    padding: 5px!important;
+    margin: 25px;
+    right: 0px;
+    left: inherit!important;
+    font-size: 15px!important;
+    font-weight: 500!important;
+    letter-spacing: 1px;
+    text-transform: uppercase;  
+    border-radius: 0px!important;
+  }
+  .blog-post-full-cat a{  
+    color: #fff;
+    text-shadow:none;
+  }
+  .card-title{
+      background: rgba(128, 128, 128, 0.42);
+      border-radius: 2px 35px 0px 0px;
+  }
+</style>
+{% endblock %}
+
+{% block header_content %}
+  <div class="parallax-container z-depth-3">
+    <div class="section no-pad-bot">
+      <div class="container row">
+        <h6 class="center counter_holder col m3 offset-m8 s8 offset-s4 hide-on-small-only animated rubberBand sloop white-text" style="font-family: roboto-thin; margin-top: 70px; font-size:35px; margin-bottom: -50px;padding: 2px;">Blog</h6>
+        <div class="card-panel col m3 offset-m8 s8 offset-s4 z-index-3" style="    opacity: 0.76;    margin-top: 80px;">
+          <h5 class="header col s12 brand-color-text light" style="line-height: 40px;">Welcome, please fasten your seatbelts.<br>
+        <div class="row center">
+          <a class="glow btn-floating btn-large brand-color" href="#more"><i class="mdi-navigation-expand-more"></i></a>
+        </div>    
+          </h5>
+        </div>
+      </div>
+    </div>
+    <div class="parallax"><img src="{{brand_splash}}" alt="onesmart.city" style="/*-webkit-animation: sunrise 10s ease-out; -webkit-animation-iteration-count: infinite;*/"></div>
+  </div>
+{% endblock %}
+
+{% block body_content %}
+  <div class="container">
+    <div class="section" id="more">
+        {% if total == 0 %}
+        <div class="row">
+          <div class="col s12 m4 offset-m4">
+            <div class="icon-block">
+              <h2 class="center brand-color-text"><i class="mdi-editor-border-color" style="font-size: 40px;"></i></h2>
+              <h5 class="center">There are {{total}} blog posts, create the first one at <a href="{{uri_for('admin-blog')}}">Blog Admin</a>.</h5>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="row">
+          {% for id, created, title, subtitle, blob_key, author, brief, category in posts %}
+              <div class="card medium">
+                    <div class="card-image">
+                      <img src="/blobstore/serve/{{blob_key}}/" alt="" style="-webkit-filter: brightness(75%);">
+                      <span class="card-title">{{title}} - <span style="font-family:roboto-thin">{{subtitle}}</span></span>
+                      <span class="card-title blog-post-full-cat right orange"><a style="cursor:pointer">#: {{category}}</a></span>
+                    </div>
+                    <div class="card-content">
+                      <p class="ultra-small">{{created}}</p>
+                      <p class="truncate">{{brief}}</p>
+                    </div>
+                    <div class="card-action">
+                      By <a href="http://www.twitter.com/{{author}}" target="_blank">@{{author}}</a>
+                      <a href="/blog/{{id}}/" class="right">Read more &gt;</a>
+                    </div>
+              </div>
+          {% endfor %}
+        </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer_head %}
+{% endblock %}
+
+
+{% block page_scripts %}
+{% endblock %}

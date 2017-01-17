@@ -33,17 +33,14 @@ _routes = [
     
     # User
     RedirectRoute('/user/home/', handlers.MaterializeHomeRequestHandler, name='materialize-home', strict_slash=True),
+    RedirectRoute('/user/demos/', handlers.MaterializeDemosRequestHandler, name='materialize-demos', strict_slash=True),
     RedirectRoute('/user/referrals/', handlers.MaterializeReferralsRequestHandler, name='materialize-referrals', strict_slash=True),
-    RedirectRoute('/user/polymer/', handlers.MaterializePolymerRequestHandler, name='materialize-polymer', strict_slash=True),
-    RedirectRoute('/user/cartodb/', handlers.MaterializeCartoDBRequestHandler, name='materialize-cartodb', strict_slash=True),
-    RedirectRoute('/user/nlp/', handlers.MaterializeNLPRequestHandler, name='materialize-nlp', strict_slash=True),
-    RedirectRoute('/user/vision/', handlers.MaterializeVisionRequestHandler, name='materialize-vision', strict_slash=True),
     RedirectRoute('/user/settings/profile/', handlers.MaterializeSettingsProfileRequestHandler, name='materialize-settings-profile', strict_slash=True),
     RedirectRoute('/user/settings/email/', handlers.MaterializeSettingsEmailRequestHandler, name='materialize-settings-email', strict_slash=True),
     RedirectRoute('/user/settings/password/', handlers.MaterializeSettingsPasswordRequestHandler, name='materialize-settings-password', strict_slash=True),
     RedirectRoute('/user/settings/delete/', handlers.MaterializeSettingsDeleteRequestHandler, name='materialize-settings-delete', strict_slash=True),
     RedirectRoute('/user/settings/referrals/', handlers.MaterializeSettingsReferralsRequestHandler, name='materialize-settings-referrals', strict_slash=True),
-    RedirectRoute('/user/settings/account/', handlers.MaterializeSettingsAccountRequestHandler, name='materialize-settings-account', strict_slash=True),
+    RedirectRoute('/user/settings/social/', handlers.MaterializeSettingsSocialRequestHandler, name='materialize-settings-social', strict_slash=True),
     RedirectRoute('/user/change-email/<user_id>/<encoded_email>/<token>', handlers.MaterializeEmailChangedCompleteHandler, name='materialize-email-changed-check', strict_slash=True),
     
     # SEO
@@ -52,12 +49,8 @@ _routes = [
     RedirectRoute(r'/sitemap.xml', handlers.SitemapHandler, name='sitemap', strict_slash=True),
     RedirectRoute(r'/crossdomain.xml', handlers.CrossDomainHandler, name='crossdomain', strict_slash=True),
     
-    #Cronjobs
-    RedirectRoute('/cronjob-welcome/', handlers.WelcomeCronjobHandler, name='cronjob-welcome', strict_slash=True),  
-    
     #Taskqueues
     RedirectRoute('/taskqueue-send-email/', handlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
-    RedirectRoute('/taskqueue-welcome/', handlers.WelcomeHandler, name='taskqueue-welcome', strict_slash=True),
 
     #Email Bouncer
     RedirectRoute('/_ah/bounce/', handlers.LogBounceHandler, name='bouncer', strict_slash=True),

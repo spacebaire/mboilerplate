@@ -12,8 +12,6 @@ secure_scheme = 'https'
 
 _routes = [
 	
-	#THIS IS JUST AN EASY CALL FOR TEMPORARY HTML TO EASILY SEE EMAIL DESIGN.
-    RedirectRoute('/emails/', handlers.EmailsRequestHandler, name='emails', strict_slash=True)
 ]
 
 def get_routes():
