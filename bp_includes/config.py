@@ -28,6 +28,14 @@ config = {
     'app_lang': 'en', # currently: 'en', 'es', this conditional calls which emails/ and templates/ are loaded in jinja's render_template
     'base_layout': '/en/materialize/users/base.html', #remember to take into account the app_lang element
     'landing_layout': '/en/materialize/landing/base.html', #remember to take into account the app_lang element
+    # add status codes and templates used to catch and display errors
+    # if a status code is not listed here it will use the default app engine
+    # stacktrace error page or browser error page, remember app.yaml has routes that should be fixed to app language
+    'error_templates': {
+        403: '/en/errors/forbidden_access.html',
+        404: '/en/errors/404.html',
+        500: '/en/errors/500.html',
+    },
     'simplify': False, # means web app has no landing, just login directly
     'has_contents': False, # means web app includes contents to share from administrator tu users
     'has_specials': False, # means web app includes special user roles
@@ -122,16 +130,6 @@ config = {
           ga('send', 'pageview');
 
         </script>""",
-
-    
-    # add status codes and templates used to catch and display errors
-    # if a status code is not listed here it will use the default app engine
-    # stacktrace error page or browser error page
-    'error_templates': {
-        403: 'errors/forbidden_access.html',
-        404: 'errors/404.html',
-        500: 'errors/500.html',
-    },
 
     # Enable Federated login (OpenID and OAuth)
     # Google App Engine Settings must be set to Authentication Options: Federated Login
