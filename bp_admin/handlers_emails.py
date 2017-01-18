@@ -114,9 +114,9 @@ class AdminSendEmailListHandler(BaseHandler):
 
         try:
             if to == 'ALLUSERS':
-                users = self.user_model.query()
-                for user in users:
-                    sendEmail (user.email,subject,body)
+                emails = [x.email for x in self.user_model.query()]
+                if len(emails) > 0:
+                    sendEmail (', '.join(emails),subject,body)
             else:
                 for recipents in to.split(','):
                     sendEmail (recipents.strip(),subject,body)
