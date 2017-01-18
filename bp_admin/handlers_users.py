@@ -92,7 +92,7 @@ class AdminUserListHandler(BaseHandler):
                              ('name', 'Name'),
                              ('last_name', 'Lastname'),
                              ('level', 'Access'),
-                             ('get_role', 'Role'),
+                             ('role', 'Role'),
                              ('link_referral', u'Unique link'),
                              ('amount','Rewards'),
                              ('created', 'Created'),

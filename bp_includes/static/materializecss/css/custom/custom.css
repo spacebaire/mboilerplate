@@ -32,9 +32,6 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 	50% {opacity: 1.0;}
 	100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
 }
-#sidenav-overlay{
-	display: none!important;
-}
 .icon-block {
 	padding: 0 15px;
 }

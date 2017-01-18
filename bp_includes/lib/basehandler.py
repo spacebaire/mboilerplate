@@ -5,6 +5,7 @@ import logging
 import re
 import pytz
 import os
+import json
 # related third party imports
 import webapp2
 from webapp2_extras import jinja2
@@ -98,6 +99,7 @@ class BaseHandler(webapp2.RequestHandler):
         self.session.add_flash(message, level, key='_messages')
 
     def send_json(self, r):
+        # self.response.headers.add_header("Access-Control-Allow-Origin", "*")
         self.response.headers['content-type'] = 'text/plain'
         self.response.write(json.dumps(r))
 

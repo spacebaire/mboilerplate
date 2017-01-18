@@ -73,7 +73,7 @@ class User(User):
     link_referral = ndb.StringProperty()                                                           #: Once verified, this link is used for referral sign ups (uses bit.ly)    
     rewards = ndb.StructuredProperty(Rewards, repeated = True)                                     #: Rewards allocation property, includes referral email tracking.    
     amount = ndb.ComputedProperty(lambda self: self.get_rewards())                                 
-    role = ndb.StringProperty(choices = ['NA','Member','Coord','Admin'], default = 'Admin')        #: Role in account
+    role = ndb.StringProperty(choices = ['NA','Member','Coord','Admin'], default = 'NA')        #: Role in account
     get_role = ndb.ComputedProperty(lambda self: self.has_role())                                 
     level = ndb.IntegerProperty(choices = [0,1,2,3,4,5], default = 0)
     notifications = ndb.StructuredProperty(Notifications)                                          #: Setup of notifications

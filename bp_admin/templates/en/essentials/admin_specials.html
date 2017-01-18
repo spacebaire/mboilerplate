@@ -65,7 +65,7 @@
                           </td>
                           <td>{{operator.name}}</td>
                           <td>{{operator.email}}</td>
-                          <td>{{operator.has_role()}}</td>
+                          <td>{% if operator.has_role() == 'Operador' %}Operator{% elif operator.has_role() == 'Coordinador' %}Coordinator{% else %} Administrator {% endif %}</td>
                           <td>{{operator.is_active()}}</td>
                           <td></td>
                       </tr>
