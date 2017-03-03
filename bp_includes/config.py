@@ -25,7 +25,7 @@ config = {
     'app_name':  unicode('M-Boilerplate','utf-8'),
     'app_id': 'mboilerplate',
     'app_domain':  'http://mboilerplate.appspot.com',
-    'app_lang': 'en', # currently: 'en', 'es', this conditional calls which emails/ and templates/ are loaded in jinja's render_template
+    'app_lang': 'es', # currently: 'en', 'es', this conditional calls which emails/ and templates/ are loaded in jinja's render_template
     'base_layout': '/en/materialize/users/base.html', #remember to take into account the app_lang element
     'landing_layout': '/en/materialize/landing/base.html', #remember to take into account the app_lang element
     # add status codes and templates used to catch and display errors
