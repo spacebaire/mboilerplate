@@ -5,9 +5,11 @@ Simple route: http://webapp-improved.appspot.com/guide/routing.html#simple-route
 RedirectRoute: http://webapp-improved.appspot.com/api/webapp2_extras/routes.html#webapp2_extras.routes.RedirectRoute
 """
 from webapp2_extras.routes import RedirectRoute
-from bp_includes import handlers as handlers
+from bp_includes import handlers
+from bp_includes.config import config
 
 secure_scheme = 'https'
+appid = config['app_id']
 
 _routes = [
     RedirectRoute('/_ah/login_required', handlers.LoginRequiredHandler),
@@ -52,8 +54,13 @@ _routes = [
     #Taskqueues
     RedirectRoute('/taskqueue-send-email/', handlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
 
+    #Rest helpers: to-do implement Cloud Endpoints
+    RedirectRoute('/user/helper/basic/', handlers.RestBasicHelper, name='helper-basic', strict_slash=True),
+    RedirectRoute('/user/helper/mysql/', handlers.RestMySQLHelper, name='helper-mysql', strict_slash=True),
+
     #Email Bouncer
-    RedirectRoute('/_ah/bounce/', handlers.LogBounceHandler, name='bouncer', strict_slash=True),
+    RedirectRoute('/_ah/bounce/', handlers.LogBounceHandler),
+    RedirectRoute('/_ah/mail/no-reply@%s.appspotmail.com' % appid, handlers.LogReceivedEmailHandler),
    
     # Blob handlers for media
     RedirectRoute('/media/serve/<kind>/<media_id>/', handlers.MediaDownloadHandler, name='media-serve', strict_slash=True),

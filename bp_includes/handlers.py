@@ -15,7 +15,7 @@ from datetime import date, timedelta
 import time
 
 # appengine imports
-import os, webapp2 #, MySQLdb
+import os, webapp2, MySQLdb
 from webapp2_extras import security
 from webapp2_extras.auth import InvalidAuthIdError, InvalidPasswordError
 from webapp2_extras.i18n import gettext as _
@@ -25,7 +25,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.api import taskqueue, users, images
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.runtime import apiproxy_errors
-from google.appengine.ext.webapp.mail_handlers import BounceNotificationHandler
+from google.appengine.ext.webapp import mail_handlers
 
 # local imports
 import models, messages, forms
@@ -36,6 +36,7 @@ from lib.decorators import user_required, taskqueue_method, user_admin_role_requ
 
 # global variables
 CLOUDSQL_CONNECTION_NAME = os.environ.get('CLOUDSQL_CONNECTION_NAME')
+CLOUDSQL_DB = os.environ.get('CLOUDSQL_DB')
 CLOUDSQL_USER = os.environ.get('CLOUDSQL_USER')
 CLOUDSQL_PASSWORD = os.environ.get('CLOUDSQL_PASSWORD')
 
@@ -102,7 +103,8 @@ def connect_to_cloudsql():
         db = MySQLdb.connect(
             unix_socket=cloudsql_unix_socket,
             user=CLOUDSQL_USER,
-            passwd=CLOUDSQL_PASSWORD)
+            passwd=CLOUDSQL_PASSWORD,
+            db=CLOUDSQL_DB)
 
     # If the unix socket is unavailable, then try to connect using TCP. This
     # will work if you're running a local MySQL server or using the Cloud SQL
@@ -116,14 +118,181 @@ def connect_to_cloudsql():
 
     return db
 
+class RestBasicHelper(BaseHandler):
+    @user_required
+    def get(self):
+        r = {}
+        r['rows'] = []
+        r['total_rows'] = 0
+        r['error'] = 'none'
+        r['status'] = '200'
+
+        try:
+            #do the rows and total rows loading according to GET helper use cases
+            logging.info("Success retrieving data: %s" % r['rows'])
+        except Exception, e:
+            logging.error("Error retrieving data: %s" % e)
+            r['error'] = "Error retrieving data: %s" % e
+            r['status'] = '500'
+
+        self.send_json(r)
+
+    @user_required
+    def post(self):
+        
+        d = {}
+        d['rows'] = []
+        d['error'] = 'none'
+        d['status'] = '200'
+        
+        try:
+            #do the rows and total rows loading according to POST helper use cases
+            logging.info("Success saving data: %s" % r['rows'])
+        except Exception, e:
+            logging.error("Error saving data: %s" % e)
+            d['rows'] = []
+            d['error'] = "Error saving data: %s" % e
+            d['status'] = '500'
+            pass
+
+        d['total_rows'] = len(d['rows']) 
+        self.send_json(d)
+
+class RestMySQLHelper(BaseHandler):
+    # https://cloud.google.com/sql/docs/mysql/quickstart shows how to create tables directly at cloud console
+
+    @user_admin_role_required
+    def get(self):
+        """Simple request handler that shows all of the MySQL variables."""
+        # Example query invariant for strings or numbers
+        # with protection against SQL injections
+        #   cursor.execute("""SELECT name, phone_number 
+        #                       FROM coworkers 
+        #                       WHERE name=%s 
+        #                       AND clue > %s 
+        #                       LIMIT 5""",
+        #                   (name, clue_threshold)) #important hint: if there's only one element in query params, a comma must be included as if second value is null
+        self.response.headers['Content-Type'] = 'application/json'
+
+        # ensure there's no command to modify our database
+        q = self.request.get('q') if (self.request.get('q') and 'insert' not in self.request.get('q').lower() and 'update' not in self.request.get('q').lower() and 'delete' not in self.request.get('q').lower() and 'create' not in self.request.get('q').lower() and 'alter' not in self.request.get('q').lower() and 'rename' not in self.request.get('q').lower() and 'drop' not in self.request.get('q').lower()) else 'SHOW VARIABLES'        
+        
+        d = {}
+        d['rows'] = []
+        d['error'] = 'none'
+        d['status'] = '200'
+
+        try:
+            db = connect_to_cloudsql()
+            cursor = db.cursor()
+
+            # add here if-else statements according to GET helper use cases
+            cursor.execute(q)
+
+            for r in cursor.fetchall():
+                d['rows'].append(r)
+
+            cursor.close()
+            db.close()
+
+        except MySQLdb.Error, e:
+            try:
+                d['error'] = "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                #d['error-ref'] = 'https://dev.mysql.com/doc/refman/5.6/en/error-messages-server.html'
+            except IndexError:
+                d['error'] = "MySQL Error: %s" % str(e)
+            d['rows'] = []
+            d['status'] = '500'
+            pass                
+
+        d['total_rows'] = len(d['rows'])
+        self.send_json(d)
+
+    @user_admin_role_required
+    def post(self):
+        kind = self.request.get('kind') if self.request.get('kind') != '' else None
+        
+        d = {}
+        d['rows'] = []
+        d['error'] = 'none'
+        d['status'] = '200'
+
+        try:
+            db = connect_to_cloudsql()
+            cursor = db.cursor()
+
+            # cursor.execute("SELECT * FROM TABLE WHERE PARAM_A = %s AND PARAM_B = %s", 
+            #                     (VALUE_A, VALUE_B))
+            # d['msg'] = "item already exists in TABLE: PARAM_A '%s' PARAM_B '%s'" % (VALUE_A, VALUE_B)
+            # # if there's no exact pair, try to update with PARAM_B as key
+            # if cursor.rowcount == 0:
+            #     cursor.execute("UPDATE TABLE SET PARAM_A = %s WHERE PARAM_B = %s", 
+            #             (VALUE_A, VALUE_B))
+            #     d['msg'] = "updated row in TABLE: PARAM_A '%s' PARAM_B '%s'" % (VALUE_A, VALUE_B)
+            #     # if there's no exact PARAM_B, try to insert
+            #     if cursor.rowcount == 0:
+            #         cursor.execute("INSERT INTO TABLE (PARAM_A, PARAM_B) VALUES (%s, %s)", 
+            #                         (ocr_text_match, VALUE_B))
+            
+            # for r in cursor.fetchall():
+            #     d['rows'].append(r)
+            
+            logging.info(d['msg'])
+            # Make sure data is committed to the database
+            db.commit()
+            cursor.close()
+            db.close()
+
+        except MySQLdb.Error, e:
+            try:
+                d['error'] = "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                d['msg'] = d['error']
+            except IndexError:
+                d['error'] = "MySQL Error: %s" % str(e)
+                d['msg'] = d['error']
+            
+            logging.info(d['msg'])
+            d['rows'] = []
+            d['status'] = '500'
+
+            if db:
+                db.rollback()
+            pass
+        
+        d['total_rows'] = len(d['rows']) # also available at cursor.rowcount
+        self.send_json(d)
+
 
 """ --------------- EMAIL + TASKQUEUES HANDLERS --------------- """
 
-class LogBounceHandler(BounceNotificationHandler):
+class LogBounceHandler(mail_handlers.BounceNotificationHandler):
     def receive(self, bounce_message):
         logging.info('Received bounce post ... [%s]', self.request)
         logging.info('Bounce original: %s', bounce_message.original)
         logging.info('Bounce notification: %s', bounce_message.notification)
+
+class LogReceivedEmailHandler(mail_handlers.InboundMailHandler):
+    def receive(self, mail_message):
+        try:
+            import re
+            email_pattern = re.compile(r'([\w\-\.]+@(\w[\w\-]+\.)+[\w\-]+)')
+            match = email_pattern.findall(mail_message.sender)
+            email_addr = match[0][0] if match else ''
+            title = mail_message.subject
+            content = ''
+            for content_t, body in mail_message.bodies('text/plain'):
+                content += body.decode()
+            attachments = getattr(mail_message, 'attachments', None)
+
+            logging.info('Received email post...')
+            logging.info('From: %s' % email_addr)
+            logging.info('Subject: %s' % title)
+            logging.info('Content: %s' % content)
+            logging.info('Attachments: %s' % attachments)
+
+        except Exception, e:
+            logging.info('Received email post but something went wrong: %s' % e)
+        
 
 class SendEmailHandler(BaseHandler):
     """
@@ -252,7 +421,6 @@ class ResendActivationEmailHandler(BaseHandler):
             message = _(messages.post_error)
             self.add_message(message, 'danger')
             return self.redirect_to('login')
-
 
 """ --------------- ACCOUNT HANDLERS --------------- """
 
@@ -1019,7 +1187,6 @@ class MaterializeAccountActivationReferralHandler(BaseHandler):
             self.add_message(message, 'danger')
             return self.redirect_to('login')
 
-
 """ --------------- VISITOR HANDLERS --------------- """
 
 # LANDING
@@ -1260,7 +1427,6 @@ class MaterializeLandingBlogPostRequestHandler(BaseHandler):
             return self.render_template('%s/materialize/landing/blogpost.html' % self.app.config.get('app_lang'), **params)
         else:
             return self.error(404)
-
 
 """ --------------- USER HANDLERS --------------- """
 
@@ -2028,7 +2194,6 @@ class MaterializeReferralsRequestHandler(BaseHandler):
         f = forms.ReferralsForm(self)
         return f
 
-
 """ --------------- MEDIA HANDLERS --------------- """
 
 class MediaDownloadHandler(BaseHandler):
@@ -2080,8 +2245,6 @@ class BlobDownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
             self.error(404)
         else:
             self.send_blob(photo_key)
-
-      
 
 """ --------------- SEO HANDLERS --------------- """
 class RobotsHandler(BaseHandler):

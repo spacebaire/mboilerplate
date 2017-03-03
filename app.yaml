@@ -1,5 +1,6 @@
 application: mboilerplate
 version: production
+# module: default
 runtime: python27
 api_version: 1
 threadsafe: true
@@ -17,9 +18,11 @@ threadsafe: true
 
 env_variables:
   theme: 'default'
-  CLOUDSQL_CONNECTION_NAME: mysql:unix_socket=/cloudsql/YOUR_PROJECT_ID:us-central1:YOUR_CLOUDSQL_INSTANCE;dbname=YOUR_CLOUDSQL_DATABASE
-  CLOUDSQL_USER: root
-  CLOUDSQL_PASSWORD: ""
+  #https://cloud.google.com/appengine/docs/python/cloud-sql/
+  # CLOUDSQL_CONNECTION_NAME: <app_id>:us-central1:<db_instance>
+  # CLOUDSQL_DB: <db_name>
+  # CLOUDSQL_USER: <db_user>
+  # CLOUDSQL_PASSWORD: <db_password>
 
 default_expiration: "30d"
 
@@ -110,3 +113,4 @@ error_handlers:
     
 inbound_services:
 - mail_bounce
+- mail

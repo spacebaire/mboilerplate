@@ -13,8 +13,14 @@
         .tabs .indicator{
             background-color: {{brand_secondary_color}}!important;
         }
+        .dropify-message p{
+          text-align: center!important;
+          font-family: roboto-thin;
+          font-size: 18px;
+        }
               
-  	</style>
+    </style>
+    <link href="/materializecss/js/plugins/dropify/css/dropify.css" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="/materializecss/js/plugins/sweetalert/dist/sweetalert.css" type="text/css" rel="stylesheet" media="screen,projection">
 {% endblock %}
 
@@ -73,19 +79,15 @@
     				<!-- LEFT PANEL -->
     				<div class="col s12 l2">
                     
+                        {% if has_picture %}
+                        <input type='file' id="picture" name="picture" hidden/>
                         <div id="profile-page-header" class="card" style="height: 240px">
                             <div class="card-image waves-effect waves-block waves-light" style="height: 160px">
                                 <img class="" src="/materializecss/images/user-bg-simple.jpg" alt="user background">             
                             </div>
                             
-                            <figure id="avatar-container" class="card-profile-image" style="width:160px;top:50px;">
-                                {% if has_picture %}
-                                <img id="blah" src="/media/serve/profile/{{user_id}}/" class="circle z-depth-2 responsive-img pp">
-                                {% else %}
-                                <img id="blah" class="circle responsive-img z-depth-1" style="max-height:160px;cursor:pointer;display:none;"/>
-                                <img data-name="{{ name_i }}" data-font-weight="100" data-back-color="{{brand_secondary_color}}" data-font-size="45" class="circle avatar-initial pp"/>
-                                <span class="ultra-small" style="font-family: roboto-light;">Click to update.</span> 
-                                {% endif %}                    
+                            <figure id="avatar-container" class="card-profile-image" style="width:60%;top:50px;">
+                                <img src="/media/serve/profile/{{user_id}}/" class="circle z-depth-2 responsive-img pp">
                             </figure>
                             
                             <div class="card-content" style="margin-top:-20px">
@@ -96,6 +98,9 @@
                                 </div>
                             </div>
                         </div>
+                        {% else %}
+                            <input type="file" id="picture" name="picture" class="dropify profile-img" data-default-file="" accept="image/*" />
+                        {% endif %}  
               
     					{% if google_clientID != '' or facebook_appID != '' %}
     					<div class="divider" style="margin-bottom: 10px;"></div>
@@ -327,6 +332,7 @@
 {% block page_scripts %}
   	<!--initial avatar-->
     <script type="text/javascript" src="/materializecss/js/plugins/initial/initial.js"></script>
+    <script type="text/javascript" src="/materializecss/js/plugins/dropify/js/dropify.js"></script>
 	<!-- dialog -->
 	<script type="text/javascript" src="/materializecss/js/plugins/sweetalert/dist/sweetalert.min.js"></script> 
     <!-- MAPS -->
@@ -349,12 +355,13 @@
             max: new Date()
         });
 		
-		function readURL(input) {
-	        if (input.files && input.files[0]) {
-	            var reader = new FileReader();
-	            
-	            reader.onload = function (e) {
-	                $('.pp').css('opacity',0);
+		{% if has_picture %}
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function (e) {
+                    $('.pp').css('opacity',0);
                         $('#avatar-container').css({
                             'background-image': 'url('+e.target.result+')',
                             'width': '160px',
@@ -363,15 +370,16 @@
                             'background-size': '155px',
                             'background-repeat': 'no-repeat',
                             'background-position': '50%'
-                        });	    
-	            }
-	            reader.readAsDataURL(input.files[0]);
-	        }
-	    }
-	    
-	    $("#picture").change(function(){
-	        readURL(this);
-	    });        
+                        });     
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        $("#picture").change(function(){
+            readURL(this);
+        });        
+        {% endif %}     
         
         $('.pp').click(function(){$('#picture').click()});
 

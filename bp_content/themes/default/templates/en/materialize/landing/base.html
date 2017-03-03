@@ -159,6 +159,7 @@
 			</style>
 
 		    {% block page_css %}
+			<link href="/materializecss/js/plugins/addtohomescreen/addtohomescreen.css" type="text/css" rel="stylesheet" media="screen,projection">
 		    <style>
 		    	video { 
                    position: absolute;
@@ -285,7 +286,7 @@
 
 		{% block header_content %}
 			{% if not is_mobile and brand_layout == 'video' %}
-	            <div class="parallax-container" style="height: 84vh">
+	            <div class="parallax-container" style="height: 100vh">
 	                <div class="section no-pad-bot">
 	                    <div id="tagline" style="opacity: 1;" class="container">
 	                        <br>
@@ -313,7 +314,7 @@
 	                </div>
 	            </div>                
 	        {% else %}
-				<div class="parallax-container z-depth-3" style="height:84vh">
+				<div class="parallax-container z-depth-3" style="height:100vh">
 					<div class="section no-pad-bot">
 					  <div class="container">
 					    <br><br>
@@ -343,7 +344,7 @@
 					    <br>
 					  </div>
 					</div>
-					<div class="parallax"><img src="/default/materialize/images/landing/mac.png" alt="Unsplashed background img 1" style="display: block; -webkit-filter: brightness({{brand_splash_light}}%);"></div>
+					<div class="parallax"><img src="{{brand_splash}}" alt="Unsplashed background img 1" style="display: block; -webkit-filter: brightness({{brand_splash_light}}%);"></div>
 				</div>
 	        {% endif %}
 		{% endblock %}
@@ -657,6 +658,7 @@
 		    <script type="text/javascript" src="/materializecss/js/plugins.js"></script>
 		    <!--custom-script.js - Add your own theme custom JS-->
 		    <script type="text/javascript" src="/materializecss/js/custom-script.js?v=5"></script>
+		    <script type="text/javascript" src="/materializecss/js/plugins/addtohomescreen/addtohomescreen.js?v=1"></script>
 
 
 		  	<!-- Toast Notification -->
@@ -697,6 +699,7 @@
 				<script type="text/javascript">
 	    			var is_Safari = false, not_Chrome = false;
 					$(document).ready(function(){	
+						addToHomescreen();
 
 					    $('.button-collapse').sideNav({
 					      edge: 'right'

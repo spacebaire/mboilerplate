@@ -100,7 +100,7 @@ class BaseHandler(webapp2.RequestHandler):
 
     def send_json(self, r):
         # self.response.headers.add_header("Access-Control-Allow-Origin", "*")
-        self.response.headers['content-type'] = 'text/plain'
+        self.response.headers['content-type'] = 'application/json'
         self.response.write(json.dumps(r))
 
     @webapp2.cached_property
