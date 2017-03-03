@@ -40,3 +40,5 @@ contact_success = unicode('Thanks ! Your message has been sent.','utf-8') if con
 contact_subject = unicode('Someone has written a message','utf-8') if config['app_lang'] == 'en' else unicode('Alguien ha enviado un mensaje','utf-8')
 account_delete_success = unicode('We are sorry to see you leave, all your data has been deleted.','utf-8') if config['app_lang'] == 'en' else unicode('Sentimos que te vayas, tu cuenta ha sido eliminada.','utf-8')
 resend_success = unicode('Message has been sent to {}, please check email to activate.','utf-8') if config['app_lang'] == 'en' else unicode('El mensaje se ha reenviado. Por favor revisa tu correo {} para activar tu cuenta.','utf-8')
+
+incoming_email_notification = unicode('We got your email!','utf-8') if config['app_lang'] == 'en' else unicode('¡Recibimos tu email!','utf-8')

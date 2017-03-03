@@ -69,24 +69,9 @@
 
 
 {% block page_scripts %} 
-<script src="/materializecss/js/plugins/desktop-notify/desktop-notify.js"></script>
-<script>
-    notify.requestPermission();
-        
-    notification = function(text, body, img){
-      notify.createNotification(text, {
-        body: body,
-        icon: img
-      });
-    };
-
-    pushNotification = function(text, body, img){
-      notify.config({
-        autoClose: 4000
-      });
-      notification(text,body,img);
-    };
-
-    setTimeout(function(){pushNotification('Notification!', 'This is just a demo', '{{brand_logo}}');}, 3000)
-</script>
+    {% if has_notifications %}
+        <script>            
+            setTimeout(function(){pushNotification('Notification!', 'This is just a demo', '{{brand_logo}}');}, 3000)
+        </script>
+    {% endif %}
 {% endblock %}

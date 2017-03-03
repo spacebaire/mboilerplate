@@ -114,3 +114,4 @@ error_handlers:
 inbound_services:
 - mail_bounce
 - mail
+- channel_presence

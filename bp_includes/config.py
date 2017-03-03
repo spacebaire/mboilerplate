@@ -43,7 +43,7 @@ config = {
     'has_referrals': False, # if this is set to true, remember we should fix referrals and settings/referrals htmls
     'has_translation': False, # this is a simple conditional to use i.e. if user wants to implement jquery translator
     'has_basics': True, # means web app includes FAQ Terms Privacy Contact
-    'has_notifications': False, # means web app pushes chrome-like notifications
+    'has_notifications': True, # means web app pushes chrome-like notifications sent through a socket
 
     # application branding 
     'brand_logo': 'http://mboilerplate.appspot.com/default/materialize/images/brand/logo.png',

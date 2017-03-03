@@ -26,6 +26,7 @@ from google.appengine.api import taskqueue, users, images
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.runtime import apiproxy_errors
 from google.appengine.ext.webapp import mail_handlers
+from google.appengine.api import channel
 
 # local imports
 import models, messages, forms
@@ -117,7 +118,7 @@ def connect_to_cloudsql():
             host='127.0.0.1', user=CLOUDSQL_USER, passwd=CLOUDSQL_PASSWORD)
 
     return db
-
+       
 class RestBasicHelper(BaseHandler):
     @user_required
     def get(self):
@@ -262,15 +263,14 @@ class RestMySQLHelper(BaseHandler):
         d['total_rows'] = len(d['rows']) # also available at cursor.rowcount
         self.send_json(d)
 
-
-""" --------------- EMAIL + TASKQUEUES HANDLERS --------------- """
-
+""" --------------- MESSAGING + TASKQUEUES HANDLERS --------------- """
+#inbound service: mail bounce
 class LogBounceHandler(mail_handlers.BounceNotificationHandler):
     def receive(self, bounce_message):
         logging.info('Received bounce post ... [%s]', self.request)
         logging.info('Bounce original: %s', bounce_message.original)
         logging.info('Bounce notification: %s', bounce_message.notification)
-
+#inbound service: mail
 class LogReceivedEmailHandler(mail_handlers.InboundMailHandler):
     def receive(self, mail_message):
         try:
@@ -290,10 +290,14 @@ class LogReceivedEmailHandler(mail_handlers.InboundMailHandler):
             logging.info('Content: %s' % content)
             logging.info('Attachments: %s' % attachments)
 
+            if email_addr != '':
+                user = models.User.get_by_email(email_addr)
+                if user:
+                    channel.send_message(get_notification_client_id(user.key.id()), json.dumps(messages.incoming_email_notification))
+
         except Exception, e:
             logging.info('Received email post but something went wrong: %s' % e)
         
-
 class SendEmailHandler(BaseHandler):
     """
     Core Handler for sending Emails
@@ -421,6 +425,22 @@ class ResendActivationEmailHandler(BaseHandler):
             message = _(messages.post_error)
             self.add_message(message, 'danger')
             return self.redirect_to('login')
+
+#inbound service: channel presence
+def get_notification_client_id(user):
+    return 'notify-' + str(user)
+
+class GetChannelToken(BaseHandler):
+
+    @user_required
+    def get(self):
+        client_id = get_notification_client_id(self.user_id)
+        token = channel.create_channel(client_id, 60) # default channel expiration is set to 60 minutes
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.write(json.dumps({'token': token}))
+        # once the channel is open we can send a message using (see example with LogReceivedEmailHandler):
+        #channel.send_message(get_notification_client_id(user), json.dumps("Hello darkness my old friend."))
+ 
 
 """ --------------- ACCOUNT HANDLERS --------------- """
 

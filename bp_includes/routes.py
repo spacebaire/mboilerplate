@@ -58,9 +58,10 @@ _routes = [
     RedirectRoute('/user/helper/basic/', handlers.RestBasicHelper, name='helper-basic', strict_slash=True),
     RedirectRoute('/user/helper/mysql/', handlers.RestMySQLHelper, name='helper-mysql', strict_slash=True),
 
-    #Email Bouncer
+    #Inbound services
     RedirectRoute('/_ah/bounce/', handlers.LogBounceHandler),
     RedirectRoute('/_ah/mail/no-reply@%s.appspotmail.com' % appid, handlers.LogReceivedEmailHandler),
+    RedirectRoute('/_in/channel/notify_token/', handlers.GetChannelToken, name='inbound-channel-token', strict_slash=True),
    
     # Blob handlers for media
     RedirectRoute('/media/serve/<kind>/<media_id>/', handlers.MediaDownloadHandler, name='media-serve', strict_slash=True),

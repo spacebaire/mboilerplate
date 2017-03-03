@@ -206,7 +206,7 @@
 		        <div class="navbar-fixed">
 		            <nav class="white">
 		                <div class="nav-wrapper">
-		                    <h1 class="logo-wrapper"><a href="{{ uri_for("landing") }}" class="brand-logo darken-1 center"><img src="{{brand_email_logo}}" alt="materialize logo" style="max-height: 45px;width: auto; margin-top:-5px;"></a></h1>
+		                    <h1 class="logo-wrapper"><a href="{{ uri_for("materialize-home") }}" class="brand-logo darken-1 center"><img src="{{brand_email_logo}}" alt="materialize logo" style="max-height: 45px;width: auto; margin-top:-5px;"></a></h1>
 		                </div>
 		            </nav>
 		        </div>
@@ -503,7 +503,27 @@
 		    <script type="text/javascript" src="/materializecss/js/plugins.js"></script>
 		    <!--custom-script.js - Add your own theme custom JS-->
 		    <script type="text/javascript" src="/materializecss/js/custom-script.js?v=5"></script>
+			{% if has_notifications %}
+		    	<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+	        	<script src="/materializecss/js/plugins/desktop-notify/desktop-notify.js"></script>
+	        	<script>
+	        		notify.requestPermission();
+	                
+		            notification = function(text, body, img){
+		              notify.createNotification(text, {
+		                body: body,
+		                icon: img
+		              });
+		            };
 
+		            pushNotification = function(text, body, img){
+		              notify.config({
+		                autoClose: 4000
+		              });
+		              notification(text,body,img);
+		            };
+	        	</script>
+		    {% endif %}
 
 	        <!-- Toast Notification -->
 		    {% if messages|safe %}
@@ -540,6 +560,50 @@
 			{% endblock %}
 
 	        {% block onload_methods %}
+	        	{% if has_notifications %}
+	        		<script>
+	        			(function (window) {
+							"use strict";
+							// create a channel and connect the socket
+							var setupChannel = function(token) {
+								var channel = new goog.appengine.Channel(token);
+								var socket = channel.open();
+								socket.onopen = function() {
+									console.log('Channel opened!');
+								};
+								socket.onmessage = function (msg) {
+									var _msg = '<span class="toast-info">'+msg.data+'</span>';
+		            				Materialize.toast(_msg, 4500);
+            						pushNotification('{{app_name}}', msg.data, '{{brand_logo}}');
+									console.log('Channel received a message!');
+								};
+								socket.onerror = function(err) {
+									// reconnect on timeout
+									if (err.code == 401) {
+										channel_init();
+										console.log('Channel re-opened!');
+									}
+								};
+								socket.onclose = function() {
+									console.log('Channel closed!');
+								};
+							};
+
+							// get channel token from the backend and connect
+							var channel_init = function() {
+								var tokenReq = new XMLHttpRequest();
+								tokenReq.onload = function () {
+									var token = JSON.parse(this.responseText).token;
+									setupChannel(token);
+									console.log('channel token', token);
+								};
+								tokenReq.open("get", "{{uri_for('inbound-channel-token')}}", true);
+								tokenReq.send();
+							};
+							channel_init();
+						}(this));
+	        		</script>
+	        	{% endif %}
 				<script>
 		    		var is_Safari = false, not_Chrome = false;
 					$(document).ready(function(){
