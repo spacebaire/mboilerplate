@@ -429,7 +429,6 @@ class ResendActivationEmailHandler(BaseHandler):
 #inbound service: channel presence
 def get_notification_client_id(user):
     return 'notify-' + str(user)
-
 class GetChannelToken(BaseHandler):
 
     @user_required
@@ -440,7 +439,12 @@ class GetChannelToken(BaseHandler):
         self.response.write(json.dumps({'token': token}))
         # once the channel is open we can send a message using (see example with LogReceivedEmailHandler):
         #channel.send_message(get_notification_client_id(user), json.dumps("Hello darkness my old friend."))
- 
+class ClientConnectedHandler(BaseHandler):
+    def post(self):
+        logging.info('{} has connected a channel'.format(self.request.get('from')))
+class ClientDisconnectedHandler(BaseHandler):
+    def post(self):
+        logging.info('{} has disconnected a channel'.format(self.request.get('from')))
 
 """ --------------- ACCOUNT HANDLERS --------------- """
 

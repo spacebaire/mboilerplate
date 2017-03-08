@@ -62,6 +62,8 @@ _routes = [
     RedirectRoute('/_ah/bounce/', handlers.LogBounceHandler),
     RedirectRoute('/_ah/mail/no-reply@%s.appspotmail.com' % appid, handlers.LogReceivedEmailHandler),
     RedirectRoute('/_in/channel/notify_token/', handlers.GetChannelToken, name='inbound-channel-token', strict_slash=True),
+    RedirectRoute('/_ah/channel/connected/', handlers.ClientConnectedHandler),
+    RedirectRoute('/_ah/channel/disconnected/', handlers.ClientDisconnectedHandler),
    
     # Blob handlers for media
     RedirectRoute('/media/serve/<kind>/<media_id>/', handlers.MediaDownloadHandler, name='media-serve', strict_slash=True),
