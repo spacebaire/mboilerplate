@@ -75,7 +75,6 @@
     	        
     	        <form class="col s12" id="form_edit_profile" action="{{ url|safe }}" enctype="multipart/form-data" method="post">
     		        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                    <input type='file' id="picture" name="picture" hidden/>
     				<!-- LEFT PANEL -->
     				<div class="col s12 l2">
                     
@@ -339,7 +338,14 @@
 	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,visualization&key={{google_maps_key}}"></script>
 	
 	<script type="text/javascript">
-
+        $('.dropify').dropify({
+            messages: {
+                default: 'Click here or drag and drop a picture to upload',
+                replace: 'Drag and drop or click to replace main picture',
+                remove:  'Remove',
+                error:   'Sorry, this file is too large'
+            }
+        });
         $('.mydatepicker').pickadate({
             selectMonths: true, // Creates a dropdown to control month
             selectYears: 80, // Creates a dropdown of years to control year
