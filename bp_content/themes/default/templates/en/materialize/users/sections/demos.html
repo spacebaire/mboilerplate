@@ -271,6 +271,7 @@
 						  	{"type": "LABEL_DETECTION"},
 						  	{"type": "TEXT_DETECTION"},
 						  	{"type": "SAFE_SEARCH_DETECTION"},
+						  	{"type": "WEB_DETECTION"},
 						  	{"type": "IMAGE_PROPERTIES"}
 							// TYPE_UNSPECIFIED	Unspecified feature type.
 							// FACE_DETECTION	Run face detection.
@@ -279,7 +280,10 @@
 							// LABEL_DETECTION	Run label detection.
 							// TEXT_DETECTION	Run OCR.
 							// SAFE_SEARCH_DETECTION	Run various computer vision models to compute image safe-search properties.
-							// IMAGE_PROPERTIES	Compute a set of properties about the image (such as the image's dominant colors).							  
+							// WEB DETECTION Web entities requests return information about the contents of the image as they relate to the Google Knowledge Graph, as well as the image's relation to other pages and images on the web.
+							// IMAGE_PROPERTIES	Compute a set of properties about the image (such as the image's dominant colors).	
+
+							// for latest elements refer to https://cloud.google.com/vision/docs/other-features						  
 						  ]
 						  // ,
 						  // "imageContext":{
@@ -361,6 +365,42 @@
 			        		html += '<p style="font-family:roboto-thin">Logo: ' + data.responses[0].logoAnnotations[i].description +', score: ' + data.responses[0].logoAnnotations[i].score + '.</p>';
 			        	}
 			        }
+
+			        if (data.responses[0].landmarkAnnotations){
+	                    html += '<p style="font-family:roboto-black">Landmark annotations: '+ data.responses[0].landmarkAnnotations.length +'</p>';
+	                    for (var i=0, j=data.responses[0].landmarkAnnotations.length; i<j; i++){
+	                      html += '<p style="font-family:roboto-thin">Landmark: ' + data.responses[0].landmarkAnnotations[i].description +', score: ' + data.responses[0].landmarkAnnotations[i].score + '.</p>';
+	                    }
+	                }
+
+	                if (data.responses[0].webDetection){
+	                    var total = 0, we = false, pmi = false, fmi = false;
+	                    if (data.responses[0].webDetection.webEntities){
+	                      total += data.responses[0].webDetection.webEntities.length;
+	                      we = true;
+	                    }
+	                    if (data.responses[0].webDetection.partialMatchingImages){
+	                      total += data.responses[0].webDetection.partialMatchingImages.length;
+	                      pmi = true;
+	                    }
+	                    if (data.responses[0].webDetection.fullMatchingImages){
+	                      total += data.responses[0].webDetection.fullMatchingImages.length;
+	                      fmi = true;
+	                    }
+	                      html += '<p style="font-family:roboto-black">Web annotations: '+ total +'</p>';
+	                      if (we)
+	                        for (var i=0, j=data.responses[0].webDetection.webEntities.length; i<j; i++){
+	                          html += '<p style="font-family:roboto-thin">Pages related: ' + data.responses[0].webDetection.webEntities[i].description +', score: ' + data.responses[0].webDetection.webEntities[i].score + '.</p>';
+	                        }
+	                    if (pmi)
+	                        for (var i=0, j=data.responses[0].webDetection.partialMatchingImages.length; i<j; i++){
+	                          html += '<p style="font-family:roboto-thin">Pages with partial match: ' + data.responses[0].webDetection.partialMatchingImages[i].url + '.</p>';
+	                        }
+	                    if (fmi)
+	                        for (var i=0, j=data.responses[0].webDetection.fullMatchingImages.length; i<j; i++){
+	                          html += '<p style="font-family:roboto-thin">Pages with full match: ' + data.responses[0].webDetection.fullMatchingImages[i].url + '.</p>';
+	                        }
+	                }
 
 		        	html += '<p style="font-family:roboto-black">Dominant colors: </p>';
 		        	for (var i=0, j=data.responses[0].imagePropertiesAnnotation.dominantColors.colors.length; i<j; i++){
