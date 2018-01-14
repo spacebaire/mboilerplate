@@ -78,8 +78,8 @@ handlers:
   login: admin
 
 # endpoints handler: this must be /_ah/spi for endpoints
-- url: /_ah/spi/.*
-  script: api.APPLICATION
+# - url: /_ah/spi/.*
+#   script: api.APPLICATION
 
 # main
 - url: /.*
@@ -95,8 +95,8 @@ libraries:
   version: "0.15"
 - name: pycrypto
   version: "2.6"
-- name: endpoints
-  version: 1.0
+# - name: endpoints
+#   version: 1.0
 - name: MySQLdb
   version: "latest"
 

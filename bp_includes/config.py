@@ -43,7 +43,7 @@ config = {
     'has_referrals': False, # if this is set to true, remember we should fix referrals and settings/referrals htmls
     'has_translation': False, # this is a simple conditional to use i.e. if user wants to implement jquery translator
     'has_basics': True, # means web app includes FAQ Terms Privacy Contact
-    'has_notifications': True, # means web app pushes chrome-like notifications sent through a socket
+    'has_notifications': False, # means web app pushes chrome-like notifications sent through a socket
 
     # application branding 
     'brand_logo': 'http://mboilerplate.appspot.com/default/materialize/images/brand/logo.png',
@@ -54,7 +54,7 @@ config = {
     'brand_tertiary_color' : '#EBEBEB', # if sublime package color picker, select color and press 'cmd+shift+C' to easily see and select color
     'brand_layout': 'splash',  #splash or video choices
     'brand_video': 'http://mboilerplate.appspot.com/default/materialize/video/space.mp4',
-    'brand_splash': 'http://mboilerplate.appspot.com/default/materialize/images/landing/splash.png',
+    'brand_splash': 'http://mboilerplate.appspot.com/default/materialize/images/landing/mboilerplate.png',
     'brand_splash_light':  '95',
     'brand_about': unicode("""
             MBoilerplate by OneSmart.Tech: Quick prototyping, astonishingly beautiful in the cheapest and most powerful cloud.
@@ -74,13 +74,13 @@ config = {
             <meta property="og:type" content="website"/>
             <meta property="og:description" content="MBoilerplate by OneSmart.Tech: Quick prototyping, astonishingly beautiful in the cheapest and most powerful cloud."/>
             <meta property="og:url" content="mboilerplate.appspot.com"/>
-            <meta property="og:image" content="http://mboilerplate.appspot.com/default/materialize/images/landing/splash.png"/>
+            <meta property="og:image" content="http://mboilerplate.appspot.com/default/materialize/images/landing/mboilerplate.png"/>
             <meta name="twitter:card" content="summary_large_image">
             <meta name="twitter:site" content="MBoilerplate by OneSmart.Tech: Quick prototyping, astonishingly beautiful in the cheapest and most powerful cloud.">
             <meta name="twitter:creator" content="@chuycepeda">
             <meta name="twitter:title" content="mboilerplate.appspot.com">
             <meta name="twitter:description" content="MBoilerplate by OneSmart.Tech: Quick prototyping, astonishingly beautiful in the cheapest and most powerful cloud.">
-            <meta name="twitter:image" content="http://mboilerplate.appspot.com/default/materialize/images/landing/splash.png">
+            <meta name="twitter:image" content="http://mboilerplate.appspot.com/default/materialize/images/landing/mboilerplate.png">
             <meta property="twitter:url" content="mboilerplate.appspot.com"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
@@ -106,7 +106,7 @@ config = {
     'twitter_handle': '',
     'facebook_url': '',
     'facebook_handle':'',
-    'facebook_appID': '', #GET IT FROM: https://developers.facebook.com/apps/
+    'facebook_appID': '523620084480399', #GET IT FROM: https://developers.facebook.com/apps/
     'google_clientID': '', #GET IT FROM: https://console.cloud.google.com/apis/credentials?project=<PROJECT_ID>
 
     # get your own recaptcha keys by registering at http://www.google.com/recaptcha/
@@ -176,6 +176,7 @@ config = {
     'google_maps_key': 'AIzaSyBaSx2JjNt0VSrilJVRcsEwX3W-zft_FQM', #remember to enable Geocode API at GCP console
     'google_nlp_key': 'AIzaSyCXbP34cg9cLJEAJXi501DxrR34L_tsxqk',
     'google_vision_key': 'AIzaSyA1lWQlYlEaPATMaElEe6iTVl_cjkvonVQ',
+    'google_speech_key': 'AIzaSyA8gXPoaXOLlweHa7Ik4_FSOpBXigR_T9g',
 
     #zendesk integration
     'zendesk_imports': '',

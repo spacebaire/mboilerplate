@@ -2084,6 +2084,7 @@ class MaterializeDemosRequestHandler(BaseHandler):
         params, user_info = disclaim(self)
         ####------------------------------------------------------------------####
 
+        params['google_speech_key'] = self.app.config.get('google_speech_key')
         params['google_maps_key'] = self.app.config.get('google_maps_key')
         params['google_nlp_key'] = self.app.config.get('google_nlp_key')
         params['google_vision_key'] = self.app.config.get('google_vision_key')
@@ -2091,6 +2092,32 @@ class MaterializeDemosRequestHandler(BaseHandler):
         params['coordinates']= i18n.get_city_lat_long(self.request)
         
         return self.render_template('%s/materialize/users/sections/demos.html' % self.app.config.get('app_lang'), **params)
+
+class MaterializeDemosNLPRequestHandler(BaseHandler):
+    """
+    Handler for materialized home
+    """
+    @user_required
+    def get(self):
+        """ Returns a simple HTML form for materialize home """
+        ####-------------------- R E D I R E C T I O N S --------------------####
+        if not self.user:
+            return self.redirect_to('login')
+        ####------------------------------------------------------------------####
+
+        ####-------------------- P R E P A R A T I O N S --------------------####
+        params, user_info = disclaim(self)
+        ####------------------------------------------------------------------####
+
+        params['google_speech_key'] = self.app.config.get('google_speech_key')
+        params['google_maps_key'] = self.app.config.get('google_maps_key')
+        params['google_nlp_key'] = self.app.config.get('google_nlp_key')
+        params['google_vision_key'] = self.app.config.get('google_vision_key')
+        import bp_includes.lib.i18n as i18n
+        params['coordinates']= i18n.get_city_lat_long(self.request)
+        
+        return self.render_template('%s/materialize/users/sections/demos_nlp.html' % self.app.config.get('app_lang'), **params)
+
 
 class MaterializeReferralsRequestHandler(BaseHandler):
     """

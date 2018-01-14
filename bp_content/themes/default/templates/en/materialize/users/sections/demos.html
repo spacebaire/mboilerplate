@@ -43,7 +43,7 @@
 {% block page_content %}
 <div class="section">
     <div class="container">
-        <h5 class="grey-text">Google NLP API</h5>
+        <h5 class="grey-text">Google NLP API (and SPEECH API)</h5>
         <div class="container card" style="padding:50px;">
 	    	<div class="col s10 offset-s1">
 	    		<div class="row">
@@ -145,7 +145,7 @@
 
 
 
-{% block page_scripts %}
+{% block page_scripts %}	
 	<!-- NLP SCRIPTS -->
 	<script>
 		$( "#submit_report_form" ).click(function() {
@@ -388,17 +388,17 @@
 	                      fmi = true;
 	                    }
 	                      html += '<p style="font-family:roboto-black">Web annotations: '+ total +'</p>';
-	                      if (we)
+	                    if (we)
 	                        for (var i=0, j=data.responses[0].webDetection.webEntities.length; i<j; i++){
-	                          html += '<p style="font-family:roboto-thin">Pages related: ' + data.responses[0].webDetection.webEntities[i].description +', score: ' + data.responses[0].webDetection.webEntities[i].score + '.</p>';
+	                          html += '<p style="font-family:roboto-thin">Associated searches: ' + data.responses[0].webDetection.webEntities[i].description +', score: ' + data.responses[0].webDetection.webEntities[i].score + '.</p>';
 	                        }
 	                    if (pmi)
 	                        for (var i=0, j=data.responses[0].webDetection.partialMatchingImages.length; i<j; i++){
-	                          html += '<p style="font-family:roboto-thin">Pages with partial match: ' + data.responses[0].webDetection.partialMatchingImages[i].url + '.</p>';
+	                          html += '<p style="font-family:roboto-thin">Partial matching urls: <a href="'+data.responses[0].webDetection.partialMatchingImages[i].url+'" target="_blank">' + data.responses[0].webDetection.partialMatchingImages[i].url + '</a>.</p>';
 	                        }
 	                    if (fmi)
 	                        for (var i=0, j=data.responses[0].webDetection.fullMatchingImages.length; i<j; i++){
-	                          html += '<p style="font-family:roboto-thin">Pages with full match: ' + data.responses[0].webDetection.fullMatchingImages[i].url + '.</p>';
+	                          html += '<p style="font-family:roboto-thin">Full match urls: <a href="'+data.responses[0].webDetection.fullMatchingImages[i].url+'" target="_blank">' + data.responses[0].webDetection.fullMatchingImages[i].url + '</a>.</p>';
 	                        }
 	                }
 

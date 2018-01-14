@@ -36,6 +36,7 @@ _routes = [
     # User
     RedirectRoute('/user/home/', handlers.MaterializeHomeRequestHandler, name='materialize-home', strict_slash=True),
     RedirectRoute('/user/demos/', handlers.MaterializeDemosRequestHandler, name='materialize-demos', strict_slash=True),
+    RedirectRoute('/user/nlp/', handlers.MaterializeDemosNLPRequestHandler, name='materialize-demos-nlp', strict_slash=True),
     RedirectRoute('/user/referrals/', handlers.MaterializeReferralsRequestHandler, name='materialize-referrals', strict_slash=True),
     RedirectRoute('/user/settings/profile/', handlers.MaterializeSettingsProfileRequestHandler, name='materialize-settings-profile', strict_slash=True),
     RedirectRoute('/user/settings/email/', handlers.MaterializeSettingsEmailRequestHandler, name='materialize-settings-email', strict_slash=True),
